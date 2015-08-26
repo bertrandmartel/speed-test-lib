@@ -17,6 +17,8 @@ https://github.com/akinaru/speed-test-lib/releases
 * For download process, library will download file from given speed test server parameters and calculate transfer rate
 * For upload process, library will generate a random file with a given size and will upload this file to a server calculating transfer rate
 
+No external file are required and no file are stored in Hard Disk.
+
 <hr/>
 
 <h3>How to use ?</h3>
