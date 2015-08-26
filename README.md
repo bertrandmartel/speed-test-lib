@@ -127,3 +127,5 @@ in folder ./http-endec-java/release
 <h3>TODO</h3>
 
 manage unexpected socket disconnection for downloading and uploading
+
+![Speed Test output](https://raw.github.com/akinaru/speed-test-lib/master/speed-test.png)
