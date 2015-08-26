@@ -11,10 +11,11 @@ Speed Test library featuring :
 * download and upload progress monitoring
 * speed test server / port / uri can be configured easily
 
-Library is available in release folder, buildable with build.xml ant file.
+<b>Last release ></b>
+https://github.com/akinaru/speed-test-lib/releases
 
-* For download process, library will download file from given speed test server parameters and calculate transfer rate for downloading this file from server
-* For upload process, library will generate a random file with a given size and will upload this file to a server calculating transfer rate for uploading this file to server
+* For download process, library will download file from given speed test server parameters and calculate transfer rate
+* For upload process, library will generate a random file with a given size and will upload this file to a server calculating transfer rate
 
 <hr/>
 
