@@ -11,10 +11,10 @@ Speed Test library featuring :
 * download and upload progress monitoring
 * speed test server / port / uri can be configured easily
 
-<b>Last release ></b>
+<b>Last release</b><br/>
 https://github.com/akinaru/speed-test-lib/releases/tag/1.0
 
-<b>Last release for Android Studio (no source attachment)</b>
+<b>Last release for Android Studio (no source attachment)</b><br/>
 https://github.com/akinaru/speed-test-lib/releases/tag/1.01
 
 * For download process, library will download file from given speed test server parameters and calculate transfer rate
