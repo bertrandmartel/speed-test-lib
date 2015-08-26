@@ -29,12 +29,12 @@ SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 
 Add a listener to monitor :
 
-* download process result with ``onDownloadPacketsReceived(int packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds)`` callback
-* upload process result with ``onUploadPacketsReceived(int packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds)`` callback
-* download progress with ``onDownloadProgress(int percent)`` callback
-* upload progress with ``onUploadProgress(int percent)`` callback
-* download error catch with ``onDownloadError(int errorCode, String message)``
-* upload error catch with ``onUploadError(int errorCode, String message)``
+* download process result with ``onDownloadPacketsReceived`` callback
+* upload process result with ``onUploadPacketsReceived`` callback
+* download progress with ``onDownloadProgress`` callback
+* upload progress with ``onUploadProgress`` callback
+* download error catch with ``onDownloadError``
+* upload error catch with ``onUploadError``
 
 ```
 speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
@@ -88,7 +88,6 @@ speedTestSocket.startDownload("ipv4.intuxication.testdebit.info", 80,"/fichiers/
 You can wait for test completion with ``closeSocketJoinRead()`` which is prefered to ``closeSocket()`` since it join reading thread before resuming application.
 
 ```
-// socket will be closed and reading thread will die if it exists
 speedTestSocket.closeSocketJoinRead();
 ```
 
@@ -105,7 +104,6 @@ void startUpload(String hostname, int port, String uri, int fileSizeOctet)
 
 Here is an example for a file of 10Moctet :
 ```
-/* start speed test upload on favorite server */
 speedTestSocket.startUpload("1.testdebit.info", 80, "/", 10000000);
 ```
 
