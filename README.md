@@ -119,9 +119,33 @@ in folder ./http-endec-java/release
 
 <hr/>
 
+<h3>Android integration</h3>
+
+To integrate with Android add Internet permission to manifest : 
+```
+<uses-permission android:name="android.permission.INTERNET" />
+```
+
+To include jar :
+```
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+```
+
+<hr/>
+
+<h3>Compatibility</h3>
+
 * Project is JRE 1.7 compliant
 * You can build it with ant => build.xml
 * Development on Eclipse 
+* tested on Android device 4.4+
 
 <b>Tested with</b>
 
