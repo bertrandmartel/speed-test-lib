@@ -18,14 +18,14 @@ Library is available in release folder, buildable with build.xml ant file.
 
 <hr/>
 
-<h4>How to use ?</h4>
+<h3>How to use ?</h3>
 
-Instanciate SpeedTest class :
+<b>Instanciate SpeedTest class</b>
 
 ```
 SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 ```
-Add a listener to monitor :
+<b>Add a listener to monitor</b>
 
 * download process result with ``onDownloadPacketsReceived`` callback
 * upload process result with ``onUploadPacketsReceived`` callback
@@ -103,13 +103,9 @@ Here is an example for a file of 10Moctet :
 ```
 speedTestSocket.startUpload("1.testdebit.info", 80, "/", 10000000);
 ```
-
 <hr/>
 
-<b>Build HTTP response</b>
-
-
-<b>Quick test command line syntax</b> 
+<h3>Quick test command line syntax</h3> 
 
 ``java -jar speed-test-lib-1.0.jar``
 
@@ -125,6 +121,6 @@ in folder ./http-endec-java/release
 
 * https://testdebit.info/
 
-<h4>TODO</h4>
+<h3>TODO</h3>
 
 manage unexpected socket disconnection for downloading and uploading
