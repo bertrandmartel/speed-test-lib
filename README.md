@@ -24,9 +24,7 @@ Instanciate SpeedTest class :
 
 ```
 SpeedTestSocket speedTestSocket = new SpeedTestSocket();
-
 ```
-
 Add a listener to monitor :
 
 * download process result with ``onDownloadPacketsReceived`` callback
@@ -83,7 +81,6 @@ speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
 ```
 speedTestSocket.startDownload("ipv4.intuxication.testdebit.info", 80,"/fichiers/10Mo.dat");
-
 ```
 You can wait for test completion with ``closeSocketJoinRead()`` which is prefered to ``closeSocket()`` since it join reading thread before resuming application.
 
