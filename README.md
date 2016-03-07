@@ -1,34 +1,40 @@
-# Speed Test library for Java / Android  #
+# Speed Test library
 
-http://akinaru.github.io/speed-test-lib/
+[![Build Status](https://travis-ci.org/akinaru/speed-test-lib.svg?branch=master)](https://travis-ci.org/akinaru/speed-test-lib)
+[![Download](https://api.bintray.com/packages/akinaru/maven/speedtest/images/download.svg) ](https://bintray.com/akinaru/maven/speedtest/_latestVersion)
+[![Coverage Status](https://coveralls.io/repos/github/akinaru/speed-test-lib/badge.svg?branch=master)](https://coveralls.io/github/akinaru/speed-test-lib?branch=master)
+[![License](http://img.shields.io/:license-mit-blue.svg)](LICENSE.md)
 
-<i>Last update 26/05/2015</i>
-
-Speed Test library featuring :
+Speed Test library for Java / Android :
 
 * speed test download with transfer rate output
 * speed test upload with transfer rate output
 * download and upload progress monitoring
 * speed test server / port / uri can be configured easily
 
-<b>Last release ></b>
-https://github.com/akinaru/speed-test-lib/releases
+<hr/>
 
 * For download process, library will download file from given speed test server parameters and calculate transfer rate
 * For upload process, library will generate a random file with a given size and will upload this file to a server calculating transfer rate
 
 No external file are required and no file are stored in Hard Disk.
 
-<hr/>
+## Include in your project
 
-<h3>How to use ?</h3>
+* with Gradle, from jcenter :
 
-<b>Instanciate SpeedTest class</b>
+```
+compile 'akinaru:speedtest:1.02'
+```
+
+## How to use ?
+
+#### Instanciate SpeedTest class
 
 ```
 SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 ```
-<b>Add a listener to monitor</b>
+#### Add a listener to monitor
 
 * download process result with ``onDownloadPacketsReceived`` callback
 * upload process result with ``onUploadPacketsReceived`` callback
@@ -74,7 +80,7 @@ speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
 ```
 
-<b>Start Download speed test</b>
+#### Start Download speed test
 
 ``void startDownload(String hostname, int port, String uri)``
 
@@ -91,7 +97,7 @@ You can wait for test completion with ``closeSocketJoinRead()`` which is prefere
 speedTestSocket.closeSocketJoinRead();
 ```
 
-<b>Start Upload speed test</b>
+#### Start Upload speed test
 
 ```
 void startUpload(String hostname, int port, String uri, int fileSizeOctet)
@@ -106,26 +112,31 @@ Here is an example for a file of 10Moctet :
 ```
 speedTestSocket.startUpload("1.testdebit.info", 80, "/", 10000000);
 ```
-<hr/>
 
-<h3>Quick test command line syntax</h3> 
+## JavaDoc
 
-``java -jar speed-test-lib-1.0.jar``
+http://akinaru.github.io/speed-test-lib
 
-in folder ./http-endec-java/release
+## Quick test
 
-<hr/>
+``./gradlew quickTest``
 
-* Project is JRE 1.7 compliant
-* You can build it with ant => build.xml
-* Development on Eclipse 
+## Compatibility
 
-<b>Tested with</b>
+JRE 1.7 compliant
+
+## Build
+
+Gradle using IntelliJ IDEA or Eclipse
+
+## External libraries
+
+* https://github.com/akinaru/http-endec
+
+## SpeedTest Server tested
 
 * https://testdebit.info/
 
-<h3>TODO</h3>
+## License
 
-manage unexpected socket disconnection for downloading and uploading
-
-![Speed Test output](https://raw.github.com/akinaru/speed-test-lib/master/speed-test.png)
+The MIT License (MIT) Copyright (c) 2016 Bertrand Martel

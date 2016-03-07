@@ -1,0 +1,38 @@
+apply plugin: 'bintray-release'
+
+group 'akinaru'
+version '1.02'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'akinaru:http-endec:1.01'
+}
+
+publish {
+    userOrg = 'akinaru'
+    groupId = 'akinaru'
+    artifactId = 'speedtest'
+    publishVersion = '1.02'
+    desc = 'Speed Test library for Java/Android'
+    website = 'https://github.com/akinaru/speed-test-lib'
+}
+
+task quickTest(type: JavaExec) {
+    classpath sourceSets.test.runtimeClasspath
+    main = "fr.bmartel.speedtest.test.SpeedTest"
+    args ""
+}
+
+task generateJavadoc(type: Javadoc) {
+    source = sourceSets.main.allJava
+    classpath = configurations.compile
+    destinationDir = file("./doc/")
+}
