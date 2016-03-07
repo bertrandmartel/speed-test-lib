@@ -113,6 +113,13 @@ Here is an example for a file of 10Moctet :
 speedTestSocket.startUpload("1.testdebit.info", 80, "/", 10000000);
 ```
 
+## Android Integration
+
+To integrate with Android add Internet permission to manifest : 
+```
+<uses-permission android:name="android.permission.INTERNET" />
+```
+
 ## JavaDoc
 
 http://akinaru.github.io/speed-test-lib
