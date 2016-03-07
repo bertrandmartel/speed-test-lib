@@ -115,10 +115,65 @@ speedTestSocket.startUpload("1.testdebit.info", 80, "/", 10000000);
 
 ## Android Integration
 
-To integrate with Android add Internet permission to manifest : 
+* add Internet permission to manifest : 
 ```
 <uses-permission android:name="android.permission.INTERNET" />
 ```
+
+* use an `AsyncTask` to run your speed test :
+
+```
+public class SpeedTestTask extends AsyncTask<Void, Void, String> {
+
+    @Override
+    protected String doInBackground(Void... params) {
+
+        SpeedTestSocket speedTestSocket = new SpeedTestSocket();
+        speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
+
+            @Override
+            public void onDownloadPacketsReceived(int packetSize, 
+            									float transferRateBitPerSeconds, 
+            									float transferRateOctetPerSeconds) {
+                Log.i("speed-test-app","download transfer rate  : " + transferRateOctetPerSeconds + "Bps");
+            }
+
+            @Override
+            public void onDownloadError(int errorCode, String message) {
+                Log.i("speed-test-app","Download error " + errorCode + " occured with message : " + message);
+            }
+
+            @Override
+            public void onUploadPacketsReceived(int packetSize, 
+            									float transferRateBitPerSeconds, 
+            									float transferRateOctetPerSeconds) {
+                Log.i("speed-test-app","download transfer rate  : " + transferRateOctetPerSeconds + "Bps");
+            }
+
+            @Override
+            public void onUploadError(int errorCode, String message) {
+                Log.i("speed-test-app","Upload error " + errorCode + " occured with message : " + message);
+            }
+
+            @Override
+            public void onDownloadProgress(int percent) {
+            }
+
+            @Override
+            public void onUploadProgress(int percent) {
+            }
+
+        });
+
+        speedTestSocket.startUpload("1.testdebit.info", 
+        							80, "/", 10000000); //will block until upload is finished
+
+        return null;
+    }
+}
+```
+
+Execute it with : `new SpeedTestTask().execute();`
 
 ## JavaDoc
 
