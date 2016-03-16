@@ -1,6 +1,7 @@
-apply plugin: 'bintray-release'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
 
-group 'akinaru'
+group 'com.github.akinaru'
 version '1.02'
 
 apply plugin: 'java'
@@ -16,19 +17,88 @@ dependencies {
     compile 'akinaru:http-endec:1.01'
 }
 
-publish {
-    userOrg = 'akinaru'
-    groupId = 'akinaru'
-    artifactId = 'speedtest'
-    publishVersion = '1.02'
-    desc = 'Speed Test library for Java/Android'
-    website = 'https://github.com/akinaru/speed-test-lib'
+def siteUrl = 'https://github.com/akinaru/speed-test-lib'
+def gitUrl = 'https://github.com/akinaru/speed-test-lib.git'
+
+bintray {
+    user = "$System.env.BINTRAY_USER"
+    key = "$System.env.BINTRAY_KEY"
+
+    configurations = ['archives'] //When uploading configuration files
+
+    dryRun = false //Whether to run this as dry-run, without deploying
+    publish = true //If version should be auto published after an upload
+
+    pkg {
+        repo = 'maven'
+        name = 'speed-test-lib'
+        desc = 'Speed test library for Java/Android'
+        websiteUrl = siteUrl
+        issueTrackerUrl = 'https://github.com/akinaru/speed-test-lib/issues'
+        vcsUrl = gitUrl
+        licenses = ['MIT']
+        labels = ['speed-test']
+        publicDownloadNumbers = true
+
+        version {
+            name = '1.02' //Bintray logical version name
+            vcsTag = '1.02'
+
+            gpg {
+                sign = true
+                passphrase = "$System.env.GPG_PASSPHRASE"
+            }
+
+            mavenCentralSync {
+                sync = false
+                //Optional (true by default). Determines whether to sync the version to Maven Central.
+                user = "$System.env.MAVEN_CENTRAL_USER_TOKEN" //OSS user token
+                password = "$System.env.MAVEN_CENTRAL_PASSWORD" //OSS user password
+                close = '1'
+                //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
+            }
+        }
+    }
 }
 
-task quickTest(type: JavaExec) {
-    classpath sourceSets.test.runtimeClasspath
-    main = "fr.bmartel.speedtest.test.SpeedTest"
-    args ""
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                description 'Speed test library for Java/Android'
+                packaging 'jar'
+                name 'speed-test-lib'
+                url siteUrl
+                licenses {
+                    license {
+                        name 'The MIT License'
+                        url 'https://github.com/akinaru/speed-test-lib/blob/master/LICENSE.md'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'akinaru'
+                        name 'Bertrand Martel'
+                        email 'bmartel.fr@gmail.com'
+                    }
+                }
+                scm {
+                    connection 'https://github.com/akinaru/speed-test-lib.git'
+                    developerConnection 'https://github.com/akinaru/speed-test-lib.git'
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
+def getDateTime() {
+    DateFormat df = new SimpleDateFormat("ddMMYYYY");
+
+    return df.format(new Date());
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -42,8 +112,18 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 artifacts {
-    archives sourcesJar
     archives javadocJar
+    archives sourcesJar
+}
+
+task findConventions << {
+    println project.getConvention()
+}
+
+task quickTest(type: JavaExec) {
+    classpath sourceSets.test.runtimeClasspath
+    main = "fr.bmartel.speedtest.test.SpeedTest"
+    args ""
 }
 
 task generateJavadoc(type: Javadoc) {
