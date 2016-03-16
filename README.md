@@ -24,7 +24,7 @@ No external file are required and no file are stored in Hard Disk.
 * with Gradle, from jcenter :
 
 ```
-compile 'akinaru:speedtest:1.02'
+compile 'com.github.akinaru:speedtest:1.02'
 ```
 
 ## How to use ?
