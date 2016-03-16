@@ -4,6 +4,7 @@
 [![Download](https://api.bintray.com/packages/akinaru/maven/speed-test-lib/images/download.svg) ](https://bintray.com/akinaru/maven/speed-test-lib/_latestVersion)
 [![Coverage Status](https://coveralls.io/repos/github/akinaru/speed-test-lib/badge.svg?branch=master)](https://coveralls.io/github/akinaru/speed-test-lib?branch=master)
 [![License](http://img.shields.io/:license-mit-blue.svg)](LICENSE.md)
+[![Javadoc](http://javadoc-badge.appspot.com/com.github.akinaru/speedtest.svg?label=javadoc)](http://javadoc-badge.appspot.com/com.github.akinaru/speedtest)
 
 Speed Test library for Java / Android :
 
