@@ -2,7 +2,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 group 'com.github.akinaru'
-version '1.02'
+version '1.03'
 
 apply plugin: 'java'
 
@@ -31,18 +31,18 @@ bintray {
 
     pkg {
         repo = 'maven'
-        name = 'speed-test-lib'
+        name = 'speedtest'
         desc = 'Speed test library for Java/Android'
         websiteUrl = siteUrl
         issueTrackerUrl = 'https://github.com/akinaru/speed-test-lib/issues'
         vcsUrl = gitUrl
         licenses = ['MIT']
-        labels = ['speed-test']
+        labels = ['speed-test','speedtest']
         publicDownloadNumbers = true
 
         version {
-            name = '1.02' //Bintray logical version name
-            vcsTag = '1.02'
+            name = '1.03' //Bintray logical version name
+            vcsTag = '1.03'
 
             gpg {
                 sign = true
@@ -67,7 +67,7 @@ install {
             project {
                 description 'Speed test library for Java/Android'
                 packaging 'jar'
-                name 'speed-test-lib'
+                name 'speedtest-lib'
                 url siteUrl
                 licenses {
                     license {
