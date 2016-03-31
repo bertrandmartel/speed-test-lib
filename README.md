@@ -25,7 +25,7 @@ No external file are required and no file are stored in Hard Disk.
 * with Gradle, from jcenter :
 
 ```
-compile 'com.github.akinaru:speedtest:1.02'
+compile 'com.github.akinaru:speedtest:1.03'
 ```
 
 ## How to use ?
@@ -112,6 +112,60 @@ void startUpload(String hostname, int port, String uri, int fileSizeOctet)
 Here is an example for a file of 10Moctet :
 ```
 speedTestSocket.startUpload("1.testdebit.info", 80, "/", 10000000);
+```
+
+### Get live download & upload
+
+* retrieve current download report : 
+```
+SpeedTestReport getLiveDownloadReport()
+```
+
+* retrieve current upload report : 
+```
+SpeedTestReport getLiveUploadReport()
+```
+
+Example requesting upload/download each second :
+
+```
+Timer timer = new Timer();
+
+TimerTask task = new TimerTask() {
+
+    @Override
+    public void run() {
+
+        if (speedTestSocket.getSpeedTestMode() == SpeedTestMode.UPLOAD) {
+
+            SpeedTestReport uploadReport = speedTestSocket.getLiveUploadReport();
+            System.out.println("---------------current upload report--------------------");
+            System.out.println("progress             : " + uploadReport.getProgressPercent() + "%");
+            System.out.println("transfer rate bit    : " + uploadReport.getTransferRateBit() + "b/s");
+            System.out.println("transfer rate octet  : " + uploadReport.getTransferRateOctet() + "B/s");
+            System.out.println("uploaded for now     : " + uploadReport.getTemporaryPacketSize() 
+                                    + "/" + uploadReport.getTotalPacketSize());
+            System.out.println("amount of time       : " + 
+                                ((uploadReport.getReportTime() - uploadReport.getStartTime()) / 1000) + "s");
+            System.out.println("--------------------------------------------------------");
+
+        } else if (speedTestSocket.getSpeedTestMode() == SpeedTestMode.DOWNLOAD) {
+
+            SpeedTestReport downloadReport = speedTestSocket.getLiveDownloadReport();
+            System.out.println("---------------current download report--------------------");
+            System.out.println("progress             : " + downloadReport.getProgressPercent() + "%");
+            System.out.println("transfer rate bit    : " + downloadReport.getTransferRateBit() + "b/s");
+            System.out.println("transfer rate octet  : " + downloadReport.getTransferRateOctet() + "B/s");
+            System.out.println("downloaded for now   : " + downloadReport.getTemporaryPacketSize() 
+                                    + "/" + downloadReport.getTotalPacketSize());
+            System.out.println("amount of time       : "
+                                    + ((downloadReport.getReportTime() - downloadReport.getStartTime()) / 1000) + "s");
+        }
+    }
+};
+
+// scheduling the task at interval
+timer.scheduleAtFixedRate(task, 0, 1000);
 ```
 
 ## Android Integration
