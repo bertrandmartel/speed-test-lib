@@ -70,7 +70,7 @@ public class SpeedTestReport {
     /**
      * speed test progress in percent (%)
      */
-    private int progressPercent;
+    private float progressPercent;
 
     /**
      * Build Upload report
@@ -85,7 +85,7 @@ public class SpeedTestReport {
      * @param transferRateBit     transfer rate in bit/s
      */
     public SpeedTestReport(SpeedTestMode speedTestMode,
-                           int progressPercent,
+                           float progressPercent,
                            long startTime,
                            long reportTime,
                            int temporaryPacketSize,
@@ -170,7 +170,7 @@ public class SpeedTestReport {
      *
      * @return progress in %
      */
-    public int getProgressPercent() {
+    public float getProgressPercent() {
         return progressPercent;
     }
 }

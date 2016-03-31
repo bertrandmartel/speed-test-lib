@@ -217,12 +217,12 @@ public class SpeedTestSocket {
 
                             downloadPacketSize = httpFrame.getContentLength();
 
-                            int step = 0;
+                            float step = 0;
                             while ((read = socket.getInputStream().read(buffer)) != -1) {
                                 downloadTemporaryPacketSize += read;
-                                step = downloadTemporaryPacketSize * 100 / downloadPacketSize;
+                                step = downloadTemporaryPacketSize * 100f / downloadPacketSize;
                                 for (int i = 0; i < speedTestListenerList.size(); i++) {
-                                    speedTestListenerList.get(i).onDownloadProgress(step);
+                                    speedTestListenerList.get(i).onDownloadProgress(step, getLiveDownloadReport());
                                 }
                                 if (downloadTemporaryPacketSize == downloadPacketSize) {
                                     break;
@@ -395,7 +395,7 @@ public class SpeedTestSocket {
                                 socket.getOutputStream().write(Arrays.copyOfRange(body, uploadTemporaryFileSize, uploadTemporaryFileSize + step));
                                 socket.getOutputStream().flush();
                                 for (int j = 0; j < speedTestListenerList.size(); j++) {
-                                    speedTestListenerList.get(j).onUploadProgress(i);
+                                    speedTestListenerList.get(j).onUploadProgress(i, getLiveUploadReport());
                                 }
                                 uploadTemporaryFileSize += step;
                             }
@@ -403,11 +403,11 @@ public class SpeedTestSocket {
                                 socket.getOutputStream().write(Arrays.copyOfRange(body, uploadTemporaryFileSize, uploadTemporaryFileSize + remain));
                                 socket.getOutputStream().flush();
                                 for (int j = 0; j < speedTestListenerList.size(); j++) {
-                                    speedTestListenerList.get(j).onUploadProgress(100);
+                                    speedTestListenerList.get(j).onUploadProgress(100, getLiveUploadReport());
                                 }
                             } else {
                                 for (int j = 0; j < speedTestListenerList.size(); j++) {
-                                    speedTestListenerList.get(j).onUploadProgress(100);
+                                    speedTestListenerList.get(j).onUploadProgress(100, getLiveUploadReport());
                                 }
                             }
                         }
@@ -437,6 +437,12 @@ public class SpeedTestSocket {
         return getReport(SpeedTestMode.UPLOAD);
     }
 
+    /**
+     * get a download/upload report
+     *
+     * @param mode speed test mode requested
+     * @return speed test report
+     */
     private SpeedTestReport getReport(SpeedTestMode mode) {
         int temporaryPacketSize = 0;
         int totalPacketSize = 0;
@@ -458,9 +464,9 @@ public class SpeedTestSocket {
         }
         float transferRate_bps = (temporaryPacketSize * 8) / ((currentTime - timeStart) / 1000f);
         float transferRate_Bps = temporaryPacketSize / ((currentTime - timeStart) / 1000f);
-        int percent = 0;
+        float percent = 0;
         if (totalPacketSize != 0) {
-            percent = (int) (temporaryPacketSize * 100L / totalPacketSize);
+            percent = temporaryPacketSize * 100f / totalPacketSize;
         }
 
         return new SpeedTestReport(mode, percent,

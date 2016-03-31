@@ -25,7 +25,7 @@ package fr.bmartel.speedtest;
 
 /**
  * Listener for speed test output results :
- *
+ * <p/>
  * <ul>
  * <li>monitor download process result with transfer rate in bit/s and octet/s</li>
  * <li>monitor download progress</li>
@@ -34,69 +34,57 @@ package fr.bmartel.speedtest;
  * </ul>
  *
  * @author Bertrand Martel
- *
  */
 public interface ISpeedTestListener {
 
     /**
-     *
      * monitor download process result with transfer rate in bit/s and octet/s
      *
-     * @param packetSize
-     *            packet size retrieved from server
-     * @param transferRateBitPerSeconds
-     *            transfer rate in bit/seconds
-     * @param transferRateOctetPerSeconds
-     *            transfer rate in octet/seconds
+     * @param packetSize                  packet size retrieved from server
+     * @param transferRateBitPerSeconds   transfer rate in bit/seconds
+     * @param transferRateOctetPerSeconds transfer rate in octet/seconds
      */
     public void onDownloadPacketsReceived(int packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds);
 
     /**
      * monitor download progress
      *
-     * @param percent
-     *            % of progress
+     * @param percent % of progress
+     * @param report  current speed test download report
      */
-    public void onDownloadProgress(int percent);
+    public void onDownloadProgress(float percent, SpeedTestReport report);
 
     /**
      * Error catch for download process
      *
-     * @param errorCode
-     *            error code defined in SpeedTestError.java
-     * @param message
-     *            error message
+     * @param errorCode error code defined in SpeedTestError.java
+     * @param message   error message
      */
     public void onDownloadError(int errorCode, String message);
 
     /**
      * monitor upload process result with transfer rate in bit/s and octet/s
      *
-     * @param packetSize
-     * 		packet size in octet
-     * @param transferRateBitPerSeconds
-     * 		transfer rate in bit/second
-     * @param transferRateOctetPerSeconds
-     * 		transfer rate in octet/second
+     * @param packetSize                  packet size in octet
+     * @param transferRateBitPerSeconds   transfer rate in bit/second
+     * @param transferRateOctetPerSeconds transfer rate in octet/second
      */
     public void onUploadPacketsReceived(int packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds);
 
     /**
      * Error catch for upload process
      *
-     * @param errorCode
-     *            error code defined in SpeedTestError.java
-     * @param message
-     *            error message
+     * @param errorCode error code defined in SpeedTestError.java
+     * @param message   error message
      */
     public void onUploadError(int errorCode, String message);
 
     /**
      * monitor upload progress
      *
-     * @param percent
-     *            % of progress
+     * @param percent % of progress
+     * @param report  current speed test upload report
      */
-    public void onUploadProgress(int percent);
+    public void onUploadProgress(float percent, SpeedTestReport report);
 
 }
