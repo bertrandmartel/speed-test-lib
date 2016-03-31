@@ -211,11 +211,11 @@ public class SpeedTestTask extends AsyncTask<Void, Void, String> {
             }
 
             @Override
-            public void onDownloadProgress(int percent,SpeedTestReport downloadReport) {
+            public void onDownloadProgress(float percent,SpeedTestReport downloadReport) {
             }
 
             @Override
-            public void onUploadProgress(int percent,SpeedTestReport uploadReport) {
+            public void onUploadProgress(float percent,SpeedTestReport uploadReport) {
             }
 
         });
