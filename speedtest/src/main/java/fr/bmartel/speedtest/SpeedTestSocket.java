@@ -100,6 +100,11 @@ public class SpeedTestSocket {
     private long timeEnd = 0;
 
     /**
+     * current speed test mode
+     */
+    private SpeedTestMode speedTestMode = SpeedTestMode.NONE;
+
+    /**
      * Build Client socket
      */
     public SpeedTestSocket() {
@@ -122,6 +127,21 @@ public class SpeedTestSocket {
     public void removeSpeedTestListener(ISpeedTestListener listener) {
         speedTestListenerList.remove(listener);
     }
+
+    /**
+     * this is the number of bit uploaded at this time
+     */
+    private int uploadTemporaryFileSize = 0;
+
+    /**
+     * this is the number of packet dowloaded at this time
+     */
+    private int downloadTemporaryPacketSize = 0;
+
+    /**
+     * this is the number of packet to download
+     */
+    private int downloadPacketSize = 0;
 
     /**
      * Create and connect socket
@@ -162,7 +182,7 @@ public class SpeedTestSocket {
                     if (isDownload) {
                         byte[] buffer = new byte[READ_BUFFER_SIZE];
                         int read = 0;
-                        int totalPackets = 0;
+                        downloadTemporaryPacketSize = 0;
 
                         try {
 
@@ -195,26 +215,26 @@ public class SpeedTestSocket {
                                 }
                             }
 
-                            int frameLength = httpFrame.getContentLength();
+                            downloadPacketSize = httpFrame.getContentLength();
 
                             int step = 0;
                             while ((read = socket.getInputStream().read(buffer)) != -1) {
-                                totalPackets += read;
-                                step = totalPackets * 100 / frameLength;
+                                downloadTemporaryPacketSize += read;
+                                step = downloadTemporaryPacketSize * 100 / downloadPacketSize;
                                 for (int i = 0; i < speedTestListenerList.size(); i++) {
                                     speedTestListenerList.get(i).onDownloadProgress(step);
                                 }
-                                if (totalPackets == frameLength) {
+                                if (downloadTemporaryPacketSize == downloadPacketSize) {
                                     break;
                                 }
                             }
                             timeEnd = System.currentTimeMillis();
 
-                            float transferRate_bps = (frameLength * 8) / ((timeEnd - timeStart) / 1000f);
-                            float transferRate_Bps = frameLength / ((timeEnd - timeStart) / 1000f);
+                            float transferRate_bps = (downloadPacketSize * 8) / ((timeEnd - timeStart) / 1000f);
+                            float transferRate_Bps = downloadPacketSize / ((timeEnd - timeStart) / 1000f);
 
                             for (int i = 0; i < speedTestListenerList.size(); i++) {
-                                speedTestListenerList.get(i).onDownloadPacketsReceived(frameLength, transferRate_bps, transferRate_Bps);
+                                speedTestListenerList.get(i).onDownloadPacketsReceived(downloadPacketSize, transferRate_bps, transferRate_Bps);
                             }
 
                         } catch (IOException e) {
@@ -251,6 +271,7 @@ public class SpeedTestSocket {
                                             speedTestListenerList.get(i).onUploadPacketsReceived(uploadFileSize, transferRate_bps, transferRate_Bps);
                                         }
                                     }
+                                    speedTestMode = SpeedTestMode.NONE;
                                     return;
                                 } else if (httpStates == HttpStates.HTTP_READING_ERROR) {
                                     isReading = false;
@@ -267,6 +288,7 @@ public class SpeedTestSocket {
                             }
                         }
                     }
+                    speedTestMode = SpeedTestMode.NONE;
                 }
             });
             readingThread.start();
@@ -302,6 +324,8 @@ public class SpeedTestSocket {
      */
     public void writeDownload(final byte[] data) {
 
+        speedTestMode = SpeedTestMode.DOWNLOAD;
+
         connectAndExecuteTask(new TimerTask() {
             @Override
             public void run() {
@@ -332,6 +356,7 @@ public class SpeedTestSocket {
         this.hostname = hostname;
         this.port = port;
         this.uploadFileSize = fileSizeOctet;
+        this.timeEnd = 0;
         /* generate a file with size of fileSizeOctet octet */
         RandomGen random = new RandomGen(fileSizeOctet);
         byte[] fileContent = random.nextArray();
@@ -347,13 +372,16 @@ public class SpeedTestSocket {
      * @param body file content to upload
      */
     public void writeUpload(final byte[] head, final byte[] body) {
+
+        speedTestMode = SpeedTestMode.UPLOAD;
+
         connectAndExecuteTask(new TimerTask() {
             @Override
             public void run() {
                 if (socket != null && !socket.isClosed()) {
                     try {
 
-                        int temp = 0;
+                        uploadTemporaryFileSize = 0;
                         int step = body.length / 100;
                         int remain = body.length % 100;
 
@@ -364,16 +392,20 @@ public class SpeedTestSocket {
                             timeStart = System.currentTimeMillis();
 
                             for (int i = 0; i < 100; i++) {
-                                socket.getOutputStream().write(Arrays.copyOfRange(body, temp, temp + step));
+                                socket.getOutputStream().write(Arrays.copyOfRange(body, uploadTemporaryFileSize, uploadTemporaryFileSize + step));
                                 socket.getOutputStream().flush();
                                 for (int j = 0; j < speedTestListenerList.size(); j++) {
                                     speedTestListenerList.get(j).onUploadProgress(i);
                                 }
-                                temp += step;
+                                uploadTemporaryFileSize += step;
                             }
                             if (remain != 0) {
-                                socket.getOutputStream().write(Arrays.copyOfRange(body, temp, temp + remain));
+                                socket.getOutputStream().write(Arrays.copyOfRange(body, uploadTemporaryFileSize, uploadTemporaryFileSize + remain));
                                 socket.getOutputStream().flush();
+                                for (int j = 0; j < speedTestListenerList.size(); j++) {
+                                    speedTestListenerList.get(j).onUploadProgress(100);
+                                }
+                            } else {
                                 for (int j = 0; j < speedTestListenerList.size(); j++) {
                                     speedTestListenerList.get(j).onUploadProgress(100);
                                 }
@@ -385,6 +417,54 @@ public class SpeedTestSocket {
                 }
             }
         }, false);
+    }
+
+    /**
+     * get a temporary download report at this moment
+     *
+     * @return speed test download report
+     */
+    public SpeedTestReport getLiveDownloadReport() {
+        return getReport(SpeedTestMode.DOWNLOAD);
+    }
+
+    /**
+     * get a temporary upload report at this moment
+     *
+     * @return speed test upload report
+     */
+    public SpeedTestReport getLiveUploadReport() {
+        return getReport(SpeedTestMode.UPLOAD);
+    }
+
+    private SpeedTestReport getReport(SpeedTestMode mode) {
+        int temporaryPacketSize = 0;
+        int totalPacketSize = 0;
+        switch (mode) {
+            case DOWNLOAD:
+                temporaryPacketSize = downloadTemporaryPacketSize;
+                totalPacketSize = downloadPacketSize;
+                break;
+            case UPLOAD:
+                temporaryPacketSize = uploadTemporaryFileSize;
+                totalPacketSize = uploadFileSize;
+                break;
+        }
+        long currentTime;
+        if (timeEnd == 0) {
+            currentTime = System.currentTimeMillis();
+        } else {
+            currentTime = timeEnd;
+        }
+        float transferRate_bps = (temporaryPacketSize * 8) / ((currentTime - timeStart) / 1000f);
+        float transferRate_Bps = temporaryPacketSize / ((currentTime - timeStart) / 1000f);
+        int percent = 0;
+        if (totalPacketSize != 0) {
+            percent = (int) (temporaryPacketSize * 100L / totalPacketSize);
+        }
+
+        return new SpeedTestReport(mode, percent,
+                timeStart, currentTime, temporaryPacketSize, totalPacketSize, transferRate_Bps, transferRate_bps);
     }
 
     /**
@@ -416,5 +496,14 @@ public class SpeedTestSocket {
             }
         }
         closeSocket();
+    }
+
+    /**
+     * retrieve current speed test mode
+     *
+     * @return speed test mode (UPLOAD/DOWNLOAD/NONE)
+     */
+    public SpeedTestMode getSpeedTestMode() {
+        return speedTestMode;
     }
 }
