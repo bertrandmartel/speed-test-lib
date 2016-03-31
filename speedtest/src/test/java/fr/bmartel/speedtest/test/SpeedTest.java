@@ -61,7 +61,7 @@ public class SpeedTest {
      */
     public static void main(String[] args) {
 
-        final Timer timer = new Timer();
+        //final Timer timer = new Timer();
 
 		/* instanciate speed test */
         final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
@@ -103,40 +103,57 @@ public class SpeedTest {
             }
 
             @Override
-            public void onDownloadProgress(int percent) {
-                /*
+            public void onDownloadProgress(float percent, SpeedTestReport downloadReport) {
+
+                System.out.println("---------------current download report--------------------");
+                System.out.println("progress             : " + downloadReport.getProgressPercent() + "%");
+                System.out.println("transfer rate bit    : " + downloadReport.getTransferRateBit() + "b/s");
+                System.out.println("transfer rate octet  : " + downloadReport.getTransferRateOctet() + "B/s");
+                System.out.println("downloaded for now   : " + downloadReport.getTemporaryPacketSize() + "/" + downloadReport.getTotalPacketSize());
+                System.out.println("amount of time       : " + ((downloadReport.getReportTime() - downloadReport.getStartTime()) / 1000) + "s");
+
                 if (!initDownloadBar)
                     System.out.print("download progress | < ");
                 initDownloadBar = true;
-                */
-                /*
+
                 if (percent % 4 == 0)
                     System.out.print("=");
-                 */
+
                 if (percent == 100)
                     System.out.println(" 100%");
 
             }
 
             @Override
-            public void onUploadProgress(int percent) {
-                /*
+            public void onUploadProgress(float percent, SpeedTestReport uploadReport) {
+
+                System.out.println("---------------current upload report--------------------");
+                System.out.println("progress             : " + uploadReport.getProgressPercent() + "%");
+                System.out.println("transfer rate bit    : " + uploadReport.getTransferRateBit() + "b/s");
+                System.out.println("transfer rate octet  : " + uploadReport.getTransferRateOctet() + "B/s");
+                System.out.println("uploaded for now     : " + uploadReport.getTemporaryPacketSize() + "/" + uploadReport.getTotalPacketSize());
+                System.out.println("amount of time       : " + ((uploadReport.getReportTime() - uploadReport.getStartTime()) / 1000) + "s");
+                System.out.println("--------------------------------------------------------");
+
                 if (!initUploadBar)
                     System.out.print("upload progress | < ");
                 initUploadBar = true;
                 if (percent % 5 == 0)
                     System.out.print("=");
-                */
+
                 if (percent == 100) {
                     System.out.println("upload 100%");
+                    /*
                     if (timer != null) {
                         timer.cancel();
                         timer.purge();
                     }
+                    */
                 }
             }
         });
 
+        /*
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
@@ -164,6 +181,7 @@ public class SpeedTest {
 
         // scheduling the task at interval
         timer.scheduleAtFixedRate(task, 0, 1000);
+        */
 
 		/* start speed test download on favorite server */
         // speedTestSocket.startDownload("ipv4.intuxication.testdebit.info", 80,

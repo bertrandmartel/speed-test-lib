@@ -25,7 +25,7 @@ No external file are required and no file are stored in Hard Disk.
 * with Gradle, from jcenter :
 
 ```
-compile 'com.github.akinaru:speedtest:1.03'
+compile 'com.github.akinaru:speedtest:1.04'
 ```
 
 ## How to use ?
@@ -70,11 +70,11 @@ speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 	}
 
 	@Override
-	public void onDownloadProgress(int percent) {
+	public void onDownloadProgress(float percent, SpeedTestReport downloadReport) {
 	}
 
 	@Override
-	public void onUploadProgress(int percent) {
+	public void onUploadProgress(float percent, SpeedTestReport uploadReport) {
 	}
 
 });
@@ -211,11 +211,11 @@ public class SpeedTestTask extends AsyncTask<Void, Void, String> {
             }
 
             @Override
-            public void onDownloadProgress(int percent) {
+            public void onDownloadProgress(int percent,SpeedTestReport downloadReport) {
             }
 
             @Override
-            public void onUploadProgress(int percent) {
+            public void onUploadProgress(int percent,SpeedTestReport uploadReport) {
             }
 
         });
