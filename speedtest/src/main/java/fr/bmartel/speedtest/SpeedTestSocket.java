@@ -52,7 +52,15 @@ import fr.bmartel.protocol.http.states.HttpStates;
  */
 public class SpeedTestSocket {
 
-    private int READ_BUFFER_SIZE = 65535;
+    /**
+     * size of the write read buffer for downloading
+     */
+    private final static int READ_BUFFER_SIZE = 65535;
+
+    /**
+     * default size of each packet sent to upload server
+     */
+    private final static int DEFAULT_UPLOAD_SIZE_CHUNK = 65535;
 
     /**
      * socket server hostname
@@ -103,6 +111,11 @@ public class SpeedTestSocket {
      * current speed test mode
      */
     private SpeedTestMode speedTestMode = SpeedTestMode.NONE;
+
+    /**
+     * this is the size of each data sent to upload server
+     */
+    private int uploadChunkSize = DEFAULT_UPLOAD_SIZE_CHUNK;
 
     /**
      * Build Client socket
@@ -217,12 +230,11 @@ public class SpeedTestSocket {
 
                             downloadPacketSize = httpFrame.getContentLength();
 
-                            float step = 0;
                             while ((read = socket.getInputStream().read(buffer)) != -1) {
                                 downloadTemporaryPacketSize += read;
-                                step = downloadTemporaryPacketSize * 100f / downloadPacketSize;
                                 for (int i = 0; i < speedTestListenerList.size(); i++) {
-                                    speedTestListenerList.get(i).onDownloadProgress(step, getLiveDownloadReport());
+                                    SpeedTestReport report = getLiveDownloadReport();
+                                    speedTestListenerList.get(i).onDownloadProgress(report.getProgressPercent(), getLiveDownloadReport());
                                 }
                                 if (downloadTemporaryPacketSize == downloadPacketSize) {
                                     break;
@@ -265,7 +277,7 @@ public class SpeedTestSocket {
 
                                         timeEnd = System.currentTimeMillis();
                                         float transferRate_bps = (uploadFileSize * 8) / ((timeEnd - timeStart) / 1000f);
-                                        float transferRate_Bps = uploadFileSize / ((timeEnd - timeStart) / 1000f);
+                                        float transferRate_Bps = (uploadFileSize) / ((timeEnd - timeStart) / 1000f);
 
                                         for (int i = 0; i < speedTestListenerList.size(); i++) {
                                             speedTestListenerList.get(i).onUploadPacketsReceived(uploadFileSize, transferRate_bps, transferRate_Bps);
@@ -380,10 +392,9 @@ public class SpeedTestSocket {
             public void run() {
                 if (socket != null && !socket.isClosed()) {
                     try {
-
                         uploadTemporaryFileSize = 0;
-                        int step = body.length / 100;
-                        int remain = body.length % 100;
+                        int step = body.length / uploadChunkSize;
+                        int remain = body.length % uploadChunkSize;
 
                         if (socket.getOutputStream() != null) {
 
@@ -391,24 +402,21 @@ public class SpeedTestSocket {
                             socket.getOutputStream().flush();
                             timeStart = System.currentTimeMillis();
 
-                            for (int i = 0; i < 100; i++) {
-                                socket.getOutputStream().write(Arrays.copyOfRange(body, uploadTemporaryFileSize, uploadTemporaryFileSize + step));
+                            for (int i = 0; i < step; i++) {
+                                socket.getOutputStream().write(Arrays.copyOfRange(body, uploadTemporaryFileSize, uploadTemporaryFileSize + uploadChunkSize));
                                 socket.getOutputStream().flush();
                                 for (int j = 0; j < speedTestListenerList.size(); j++) {
-                                    speedTestListenerList.get(j).onUploadProgress(i, getLiveUploadReport());
+                                    SpeedTestReport report = getLiveUploadReport();
+                                    speedTestListenerList.get(j).onUploadProgress(report.getProgressPercent(), report);
                                 }
-                                uploadTemporaryFileSize += step;
+                                uploadTemporaryFileSize += uploadChunkSize;
                             }
                             if (remain != 0) {
                                 socket.getOutputStream().write(Arrays.copyOfRange(body, uploadTemporaryFileSize, uploadTemporaryFileSize + remain));
                                 socket.getOutputStream().flush();
-                                for (int j = 0; j < speedTestListenerList.size(); j++) {
-                                    speedTestListenerList.get(j).onUploadProgress(100, getLiveUploadReport());
-                                }
-                            } else {
-                                for (int j = 0; j < speedTestListenerList.size(); j++) {
-                                    speedTestListenerList.get(j).onUploadProgress(100, getLiveUploadReport());
-                                }
+                            }
+                            for (int j = 0; j < speedTestListenerList.size(); j++) {
+                                speedTestListenerList.get(j).onUploadProgress(100, getLiveUploadReport());
                             }
                         }
                     } catch (IOException e) {
@@ -511,5 +519,23 @@ public class SpeedTestSocket {
      */
     public SpeedTestMode getSpeedTestMode() {
         return speedTestMode;
+    }
+
+    /**
+     * retrieve size of each packet sent to upload server
+     *
+     * @return size of each packet sent to upload server
+     */
+    public int getUploadChunkSize() {
+        return uploadChunkSize;
+    }
+
+    /**
+     * set size of each packet sent to upload server
+     *
+     * @param uploadChunkSize new size of each packet sent to upload server
+     */
+    public void setUploadChunkSize(int uploadChunkSize) {
+        this.uploadChunkSize = uploadChunkSize;
     }
 }
