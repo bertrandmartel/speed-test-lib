@@ -25,7 +25,7 @@ No external file are required and no file are stored in Hard Disk.
 * with Gradle, from jcenter :
 
 ```
-compile 'com.github.akinaru:speedtest:1.04'
+compile 'com.github.akinaru:speedtest:1.05'
 ```
 
 ## How to use ?
@@ -166,6 +166,12 @@ TimerTask task = new TimerTask() {
 
 // scheduling the task at interval
 timer.scheduleAtFixedRate(task, 0, 1000);
+```
+
+### Set size of each packet sent to upload server
+
+```
+speedTestSocket.setUploadChunkSize(65535);
 ```
 
 ## Android Integration
