@@ -186,13 +186,13 @@ public class SpeedTest {
 		/* start speed test download on favorite server */
         // speedTestSocket.startDownload("ipv4.intuxication.testdebit.info", 80,
         // "/fichiers/10Mo.dat");
-        speedTestSocket.startDownload("test-debit.free.fr", 80, "/65536.rnd");
+        speedTestSocket.startDownload("1.testdebit.info", 80, "/fichiers/10Mo.dat");
 
         // socket will be closed and reading thread will die if it exists
         speedTestSocket.closeSocketJoinRead();
 
         /* start speed test upload on favorite server */
-        speedTestSocket.startUpload("1.testdebit.info", 80, "/", 10000000);
+        speedTestSocket.startUpload("1.testdebit.info", 80, "/", 5000000);
 
         // socket will be closed and reading thread will die if it exists
         speedTestSocket.closeSocketJoinRead();
