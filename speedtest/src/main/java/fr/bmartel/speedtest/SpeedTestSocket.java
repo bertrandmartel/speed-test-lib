@@ -164,6 +164,8 @@ public class SpeedTestSocket {
      */
     public void connectAndExecuteTask(TimerTask task, final boolean isDownload) {
 
+        boolean socketError = false;
+
         // close socket before recreating it
         if (socket != null) {
             closeSocket();
@@ -207,8 +209,7 @@ public class SpeedTestSocket {
                             if (errorCode != HttpStates.HTTP_FRAME_OK) {
                                 System.err.println("Error while parsing http frame");
                                 for (int i = 0; i < speedTestListenerList.size(); i++) {
-                                    speedTestListenerList.get(i).onDownloadError(SpeedTestError.SPEED_TEST_ERROR_INVALID_HTTP_RESPONSE,
-                                            "Http frame is not valid");
+                                    speedTestListenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE);
                                 }
                             }
 
@@ -216,15 +217,13 @@ public class SpeedTestSocket {
                             if (headerError != HttpStates.HTTP_FRAME_OK) {
                                 System.err.println("Error while parsing http headers");
                                 for (int i = 0; i < speedTestListenerList.size(); i++) {
-                                    speedTestListenerList.get(i).onDownloadError(SpeedTestError.SPEED_TEST_ERROR_INVALID_HTTP_RESPONSE,
-                                            "Http headers are not valid");
+                                    speedTestListenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE);
                                 }
                             }
                             if (httpFrame.getContentLength() < 0) {
                                 System.err.println("Error content length is inconsistent");
                                 for (int i = 0; i < speedTestListenerList.size(); i++) {
-                                    speedTestListenerList.get(i).onDownloadError(SpeedTestError.SPEED_TEST_ERROR_INVALID_HTTP_RESPONSE,
-                                            "Http content length is inconsistent");
+                                    speedTestListenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE);
                                 }
                             }
 
@@ -259,7 +258,7 @@ public class SpeedTestSocket {
 
                         if (isSocketError) {
                             for (int i = 0; i < speedTestListenerList.size(); i++) {
-                                speedTestListenerList.get(i).onDownloadError(SpeedTestError.SPEED_TEST_ERROR_SOCKET_ERROR, "Socket error occured");
+                                speedTestListenerList.get(i).onDownloadError(SpeedTestError.SOCKET_ERROR);
                             }
                         }
 
@@ -290,7 +289,7 @@ public class SpeedTestSocket {
                                     closeSocket();
                                 }
                                 for (int i = 0; i < speedTestListenerList.size(); i++) {
-                                    speedTestListenerList.get(i).onUploadError(SpeedTestError.SPEED_TEST_ERROR_SOCKET_ERROR, "HTTP reading error");
+                                    speedTestListenerList.get(i).onUploadError(SpeedTestError.SOCKET_ERROR);
                                 }
 
                             } catch (SocketException e) {
@@ -310,8 +309,21 @@ public class SpeedTestSocket {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            socketError = true;
         } catch (InterruptedException e) {
             e.printStackTrace();
+            socketError = true;
+        }
+        if (socketError) {
+            if (isDownload) {
+                for (int i = 0; i < speedTestListenerList.size(); i++) {
+                    speedTestListenerList.get(i).onDownloadError(SpeedTestError.CONNECTION_ERROR);
+                }
+            } else {
+                for (int i = 0; i < speedTestListenerList.size(); i++) {
+                    speedTestListenerList.get(i).onUploadError(SpeedTestError.CONNECTION_ERROR);
+                }
+            }
         }
     }
 
