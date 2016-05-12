@@ -23,10 +23,7 @@
  */
 package fr.bmartel.speedtest.test;
 
-import fr.bmartel.speedtest.ISpeedTestListener;
-import fr.bmartel.speedtest.SpeedTestMode;
-import fr.bmartel.speedtest.SpeedTestReport;
-import fr.bmartel.speedtest.SpeedTestSocket;
+import fr.bmartel.speedtest.*;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -81,8 +78,8 @@ public class SpeedTest {
             }
 
             @Override
-            public void onDownloadError(int errorCode, String message) {
-                System.out.println("Download error " + errorCode + " occured with message : " + message);
+            public void onDownloadError(SpeedTestError speedTestError) {
+                System.out.println("Download error " + speedTestError);
             }
 
             @Override
@@ -95,11 +92,23 @@ public class SpeedTest {
                 System.out.println("upload transfer rate  : " + transferRateOctetPerSeconds + " octet/second | " + transferRateOctetPerSeconds / 1000
                         + " Koctet/second | " + +transferRateOctetPerSeconds / 1000000 + " Moctet/second");
                 System.out.println("##################################################################");
+                /*
+                if (timer != null) {
+                    timer.cancel();
+                    timer.purge();
+                }
+                */
             }
 
             @Override
-            public void onUploadError(int errorCode, String message) {
-                System.out.println("Upload error " + errorCode + " occured with message : " + message);
+            public void onUploadError(SpeedTestError speedTestError) {
+                System.out.println("Upload error " + speedTestError);
+                /*
+                if (timer != null) {
+                    timer.cancel();
+                    timer.purge();
+                }
+                */
             }
 
             @Override
@@ -143,12 +152,6 @@ public class SpeedTest {
 
                 if (percent == 100) {
                     System.out.println("upload 100%");
-                    /*
-                    if (timer != null) {
-                        timer.cancel();
-                        timer.purge();
-                    }
-                    */
                 }
             }
         });

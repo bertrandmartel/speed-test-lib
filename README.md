@@ -25,7 +25,7 @@ No external file are required and no file are stored in Hard Disk.
 * with Gradle, from jcenter :
 
 ```
-compile 'com.github.akinaru:speedtest:1.05'
+compile 'com.github.akinaru:speedtest:1.06'
 ```
 
 ## How to use ?
@@ -235,6 +235,89 @@ public class SpeedTestTask extends AsyncTask<Void, Void, String> {
 ```
 
 Execute it with : `new SpeedTestTask().execute();`
+
+## Set your download/upload steps
+
+Using timer with this library, you can define your own time interval between each download/upload report.
+
+The following will define a time interval of 400ms between download reports & will download a file of 10Mo :
+
+```
+final Timer timer = new Timer();
+
+/* instanciate speed test */
+final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
+
+/* add a listener to wait for speed test completion and progress */
+speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
+
+    @Override
+    public void onDownloadPacketsReceived(int packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
+        //download finished !
+        if (timer != null) {
+            timer.cancel();
+            timer.purge();
+        }
+    }
+
+    @Override
+    public void onDownloadError(SpeedTestError speedTestError) {
+        //download error
+        if (timer != null) {
+            timer.cancel();
+            timer.purge();
+        }
+    }
+
+    @Override
+    public void onUploadPacketsReceived(int packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
+    }
+
+    @Override
+    public void onUploadError(SpeedTestError speedTestError) {
+    }
+
+    @Override
+    public void onDownloadProgress(float percent, SpeedTestReport downloadReport) {
+    }
+
+    @Override
+    public void onUploadProgress(float percent, SpeedTestReport uploadReport) {
+    }
+});
+
+TimerTask task = new TimerTask() {
+    @Override
+    public void run() {
+
+        if (speedTestSocket.getSpeedTestMode() == SpeedTestMode.UPLOAD) {
+            SpeedTestReport uploadReport = speedTestSocket.getLiveUploadReport();
+            System.out.println("---------------current upload report--------------------");
+            System.out.println("progress             : " + uploadReport.getProgressPercent() + "%");
+            System.out.println("transfer rate bit    : " + uploadReport.getTransferRateBit() + "b/s");
+            System.out.println("transfer rate octet  : " + uploadReport.getTransferRateOctet() + "B/s");
+            System.out.println("uploaded for now     : " + uploadReport.getTemporaryPacketSize() + "/" + uploadReport.getTotalPacketSize());
+            System.out.println("amount of time       : " + ((uploadReport.getReportTime() - uploadReport.getStartTime()) / 1000) + "s");
+            System.out.println("--------------------------------------------------------");
+        } else if (speedTestSocket.getSpeedTestMode() == SpeedTestMode.DOWNLOAD) {
+            SpeedTestReport downloadReport = speedTestSocket.getLiveDownloadReport();
+            System.out.println("---------------current download report--------------------");
+            System.out.println("progress             : " + downloadReport.getProgressPercent() + "%");
+            System.out.println("transfer rate bit    : " + downloadReport.getTransferRateBit() + "b/s");
+            System.out.println("transfer rate octet  : " + downloadReport.getTransferRateOctet() + "B/s");
+            System.out.println("downloaded for now   : " + downloadReport.getTemporaryPacketSize() + "/" + downloadReport.getTotalPacketSize());
+            System.out.println("amount of time       : " + ((downloadReport.getReportTime() - downloadReport.getStartTime()) / 1000) + "s");
+        }
+    }
+};
+
+// scheduling the task at interval
+timer.scheduleAtFixedRate(task, 0, 400);
+
+/* start speed test download on favorite server */
+speedTestSocket.startDownload("1.testdebit.info", 80, "/fichiers/10Mo.dat");
+
+```
 
 ## JavaDoc
 
