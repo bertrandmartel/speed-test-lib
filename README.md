@@ -25,7 +25,7 @@ No external file are required and no file are stored in Hard Disk.
 * with Gradle, from jcenter :
 
 ```
-compile 'com.github.akinaru:speedtest:1.06'
+compile 'com.github.akinaru:speedtest:1.07'
 ```
 
 ## How to use ?
@@ -54,7 +54,7 @@ speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 	}
 
 	@Override
-	public void onDownloadError(int errorCode, String message) {
+	public void onDownloadError(SpeedTestError errorCode, String message) {
 		System.out.println("Download error " + errorCode + " occured with message : " + message);
 	}
 
@@ -65,7 +65,7 @@ speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 	}
 
 	@Override
-	public void onUploadError(int errorCode, String message) {
+	public void onUploadError(SpeedTestError errorCode, String message) {
 		System.out.println("Upload error " + errorCode + " occured with message : " + message);
 	}
 
@@ -200,7 +200,7 @@ public class SpeedTestTask extends AsyncTask<Void, Void, String> {
             }
 
             @Override
-            public void onDownloadError(int errorCode, String message) {
+            public void onDownloadError(SpeedTestError errorCode, String message) {
                 Log.i("speed-test-app","Download error " + errorCode + " occured with message : " + message);
             }
 
@@ -212,7 +212,7 @@ public class SpeedTestTask extends AsyncTask<Void, Void, String> {
             }
 
             @Override
-            public void onUploadError(int errorCode, String message) {
+            public void onUploadError(SpeedTestError errorCode, String message) {
                 Log.i("speed-test-app","Upload error " + errorCode + " occured with message : " + message);
             }
 
@@ -261,7 +261,7 @@ speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
     }
 
     @Override
-    public void onDownloadError(SpeedTestError speedTestError) {
+    public void onDownloadError(SpeedTestError speedTestError, String errorMessage) {
         //download error
         if (timer != null) {
             timer.cancel();
@@ -274,7 +274,7 @@ speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
     }
 
     @Override
-    public void onUploadError(SpeedTestError speedTestError) {
+    public void onUploadError(SpeedTestError speedTestError, String errorMessage) {
     }
 
     @Override
