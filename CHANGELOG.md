@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.07](https://github.com/akinaru/speed-test-lib/tree/1.07) (2016-05-12)
+[Full Changelog](https://github.com/akinaru/speed-test-lib/compare/1.06...1.07)
+
 ## [1.06](https://github.com/akinaru/speed-test-lib/tree/1.06) (2016-05-12)
 [Full Changelog](https://github.com/akinaru/speed-test-lib/compare/1.05...1.06)
 
