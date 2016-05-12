@@ -61,7 +61,7 @@ public class SpeedTest {
         //final Timer timer = new Timer();
 
 		/* instanciate speed test */
-        final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
+        final SpeedTestSocket speedTestSocket = new SpeedTestSocket(5000);
 
 		/* add a listener to wait for speed test completion and progress */
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
@@ -78,8 +78,8 @@ public class SpeedTest {
             }
 
             @Override
-            public void onDownloadError(SpeedTestError speedTestError) {
-                System.out.println("Download error " + speedTestError);
+            public void onDownloadError(SpeedTestError speedTestError, String errorMessage) {
+                System.out.println("Download error " + speedTestError + " : " + errorMessage);
             }
 
             @Override
@@ -101,8 +101,8 @@ public class SpeedTest {
             }
 
             @Override
-            public void onUploadError(SpeedTestError speedTestError) {
-                System.out.println("Upload error " + speedTestError);
+            public void onUploadError(SpeedTestError speedTestError, String errorMessage) {
+                System.out.println("Upload error " + speedTestError + " : " + errorMessage);
                 /*
                 if (timer != null) {
                     timer.cancel();
@@ -195,7 +195,7 @@ public class SpeedTest {
         speedTestSocket.closeSocketJoinRead();
 
         /* start speed test upload on favorite server */
-        speedTestSocket.startUpload("1.testdebit.info", 80, "/", 5000000);
+        speedTestSocket.startUpload("1.testdebit.info", 80, "/", 1000000);
 
         // socket will be closed and reading thread will die if it exists
         speedTestSocket.closeSocketJoinRead();
