@@ -58,8 +58,9 @@ public interface ISpeedTestListener {
      * Error catch for download process
      *
      * @param speedTestError error enum
+     * @param errorMessage   error message
      */
-    public void onDownloadError(SpeedTestError speedTestError);
+    public void onDownloadError(SpeedTestError speedTestError, String errorMessage);
 
     /**
      * monitor upload process result with transfer rate in bit/s and octet/s
@@ -74,8 +75,9 @@ public interface ISpeedTestListener {
      * Error catch for upload process
      *
      * @param speedTestError error enum
+     * @param errorMessage   error message
      */
-    public void onUploadError(SpeedTestError speedTestError);
+    public void onUploadError(SpeedTestError speedTestError, String errorMessage);
 
     /**
      * monitor upload progress

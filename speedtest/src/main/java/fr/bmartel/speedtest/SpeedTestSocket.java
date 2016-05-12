@@ -124,6 +124,15 @@ public class SpeedTestSocket {
     }
 
     /**
+     * Build Client socket
+     *
+     * @param socketTimeout socket timeout in milliseconds
+     */
+    public SpeedTestSocket(int socketTimeout) {
+        this.socketTimeout = socketTimeout;
+    }
+
+    /**
      * Add a speed test listener to list
      *
      * @param listener
@@ -157,14 +166,17 @@ public class SpeedTestSocket {
     private int downloadPacketSize = 0;
 
     /**
+     * socket timeout
+     */
+    private int socketTimeout = 0;
+
+    /**
      * Create and connect socket
      *
      * @param task       task to be executed when connected to socket
      * @param isDownload define if it is a download or upload test
      */
     public void connectAndExecuteTask(TimerTask task, final boolean isDownload) {
-
-        boolean socketError = false;
 
         // close socket before recreating it
         if (socket != null) {
@@ -173,6 +185,10 @@ public class SpeedTestSocket {
         try {
             /* create a basic socket connection */
             socket = new Socket();
+
+            if (socketTimeout != 0) {
+                socket.setSoTimeout(socketTimeout);
+            }
 
 			/* establish socket parameters */
             socket.setReuseAddress(true);
@@ -209,7 +225,7 @@ public class SpeedTestSocket {
                             if (errorCode != HttpStates.HTTP_FRAME_OK) {
                                 System.err.println("Error while parsing http frame");
                                 for (int i = 0; i < speedTestListenerList.size(); i++) {
-                                    speedTestListenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE);
+                                    speedTestListenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error while parsing http frame");
                                 }
                             }
 
@@ -217,13 +233,13 @@ public class SpeedTestSocket {
                             if (headerError != HttpStates.HTTP_FRAME_OK) {
                                 System.err.println("Error while parsing http headers");
                                 for (int i = 0; i < speedTestListenerList.size(); i++) {
-                                    speedTestListenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE);
+                                    speedTestListenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error while parsing http headers");
                                 }
                             }
                             if (httpFrame.getContentLength() < 0) {
                                 System.err.println("Error content length is inconsistent");
                                 for (int i = 0; i < speedTestListenerList.size(); i++) {
-                                    speedTestListenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE);
+                                    speedTestListenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error content length is inconsistent");
                                 }
                             }
 
@@ -249,17 +265,9 @@ public class SpeedTestSocket {
                             }
 
                         } catch (IOException e) {
-                            e.printStackTrace();
-                            isSocketError = true;
+                            dispatchError(isDownload, e.getMessage());
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
-                            isSocketError = true;
-                        }
-
-                        if (isSocketError) {
-                            for (int i = 0; i < speedTestListenerList.size(); i++) {
-                                speedTestListenerList.get(i).onDownloadError(SpeedTestError.SOCKET_ERROR);
-                            }
+                            dispatchError(isDownload, e.getMessage());
                         }
 
                         closeSocket();
@@ -284,18 +292,17 @@ public class SpeedTestSocket {
                                     }
                                     speedTestMode = SpeedTestMode.NONE;
                                     return;
-                                } else if (httpStates == HttpStates.HTTP_READING_ERROR) {
-                                    isReading = false;
-                                    closeSocket();
                                 }
+                                isReading = false;
+                                closeSocket();
                                 for (int i = 0; i < speedTestListenerList.size(); i++) {
-                                    speedTestListenerList.get(i).onUploadError(SpeedTestError.SOCKET_ERROR);
+                                    speedTestListenerList.get(i).onUploadError(SpeedTestError.SOCKET_ERROR, "socket error");
                                 }
 
                             } catch (SocketException e) {
-                                e.printStackTrace();
+                                dispatchError(isDownload, e.getMessage());
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                dispatchError(isDownload, e.getMessage());
                             }
                         }
                     }
@@ -308,21 +315,20 @@ public class SpeedTestSocket {
                 task.run();
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            socketError = true;
+            dispatchError(isDownload, e.getMessage());
         } catch (InterruptedException e) {
-            e.printStackTrace();
-            socketError = true;
+            dispatchError(isDownload, e.getMessage());
         }
-        if (socketError) {
-            if (isDownload) {
-                for (int i = 0; i < speedTestListenerList.size(); i++) {
-                    speedTestListenerList.get(i).onDownloadError(SpeedTestError.CONNECTION_ERROR);
-                }
-            } else {
-                for (int i = 0; i < speedTestListenerList.size(); i++) {
-                    speedTestListenerList.get(i).onUploadError(SpeedTestError.CONNECTION_ERROR);
-                }
+    }
+
+    private void dispatchError(boolean isDownload, String errorMessage) {
+        if (isDownload) {
+            for (int i = 0; i < speedTestListenerList.size(); i++) {
+                speedTestListenerList.get(i).onDownloadError(SpeedTestError.CONNECTION_ERROR, errorMessage);
+            }
+        } else {
+            for (int i = 0; i < speedTestListenerList.size(); i++) {
+                speedTestListenerList.get(i).onUploadError(SpeedTestError.CONNECTION_ERROR, errorMessage);
             }
         }
     }
@@ -361,7 +367,7 @@ public class SpeedTestSocket {
                             socket.getOutputStream().flush();
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        dispatchError(true, e.getMessage());
                     }
                 }
             }
@@ -432,7 +438,7 @@ public class SpeedTestSocket {
                             }
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        dispatchError(false, e.getMessage());
                     }
                 }
             }
