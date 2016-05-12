@@ -57,10 +57,9 @@ public interface ISpeedTestListener {
     /**
      * Error catch for download process
      *
-     * @param errorCode error code defined in SpeedTestError.java
-     * @param message   error message
+     * @param speedTestError error enum
      */
-    public void onDownloadError(int errorCode, String message);
+    public void onDownloadError(SpeedTestError speedTestError);
 
     /**
      * monitor upload process result with transfer rate in bit/s and octet/s
@@ -74,10 +73,9 @@ public interface ISpeedTestListener {
     /**
      * Error catch for upload process
      *
-     * @param errorCode error code defined in SpeedTestError.java
-     * @param message   error message
+     * @param speedTestError error enum
      */
-    public void onUploadError(int errorCode, String message);
+    public void onUploadError(SpeedTestError speedTestError);
 
     /**
      * monitor upload progress
