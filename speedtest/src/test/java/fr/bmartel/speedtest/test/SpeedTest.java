@@ -159,25 +159,13 @@ public class SpeedTest {
         TimerTask reportTask = new TimerTask() {
             @Override
             public void run() {
-
-                if (speedTestSocket.getSpeedTestMode() == SpeedTestMode.UPLOAD) {
-                    SpeedTestReport uploadReport = speedTestSocket.getLiveUploadReport();
-                    System.out.println("---------------current upload report--------------------");
-                    System.out.println("progress             : " + uploadReport.getProgressPercent() + "%");
-                    System.out.println("transfer rate bit    : " + uploadReport.getTransferRateBit() + "b/s");
-                    System.out.println("transfer rate octet  : " + uploadReport.getTransferRateOctet() + "B/s");
-                    System.out.println("uploaded for now     : " + uploadReport.getTemporaryPacketSize() + "/" + uploadReport.getTotalPacketSize());
-                    System.out.println("amount of time       : " + ((uploadReport.getReportTime() - uploadReport.getStartTime()) / 1000) + "s");
-                    System.out.println("--------------------------------------------------------");
-                } else if (speedTestSocket.getSpeedTestMode() == SpeedTestMode.DOWNLOAD) {
-                    SpeedTestReport downloadReport = speedTestSocket.getLiveDownloadReport();
-                    System.out.println("---------------current download report--------------------");
-                    System.out.println("progress             : " + downloadReport.getProgressPercent() + "%");
-                    System.out.println("transfer rate bit    : " + downloadReport.getTransferRateBit() + "b/s");
-                    System.out.println("transfer rate octet  : " + downloadReport.getTransferRateOctet() + "B/s");
-                    System.out.println("downloaded for now   : " + downloadReport.getTemporaryPacketSize() + "/" + downloadReport.getTotalPacketSize());
-                    System.out.println("amount of time       : " + ((downloadReport.getReportTime() - downloadReport.getStartTime()) / 1000) + "s");
-                }
+                SpeedTestReport downloadReport = speedTestSocket.getLiveDownloadReport();
+                System.out.println("---------------current download report--------------------");
+                System.out.println("progress             : " + downloadReport.getProgressPercent() + "%");
+                System.out.println("transfer rate bit    : " + downloadReport.getTransferRateBit() + "b/s");
+                System.out.println("transfer rate octet  : " + downloadReport.getTransferRateOctet() + "B/s");
+                System.out.println("downloaded for now   : " + downloadReport.getTemporaryPacketSize() + "/" + downloadReport.getTotalPacketSize());
+                System.out.println("amount of time       : " + ((downloadReport.getReportTime() - downloadReport.getStartTime()) / 1000) + "s");
             }
         };
 
@@ -188,45 +176,14 @@ public class SpeedTest {
             @Override
             public void run() {
                 System.out.println("--------------- FINISH REPORT -----------------------------");
-                if (speedTestSocket.getSpeedTestMode() == SpeedTestMode.UPLOAD) {
-                    SpeedTestReport uploadReport = speedTestSocket.getLiveUploadReport();
-                    System.out.println("---------------current upload report--------------------");
-                    System.out.println("progress             : " + uploadReport.getProgressPercent() + "%");
-                    System.out.println("transfer rate bit    : " + uploadReport.getTransferRateBit() + "b/s");
-                    System.out.println("transfer rate octet  : " + uploadReport.getTransferRateOctet() + "B/s");
-                    System.out.println("uploaded for now     : " + uploadReport.getTemporaryPacketSize() + "/" + uploadReport.getTotalPacketSize());
-                    System.out.println("amount of time       : " + ((uploadReport.getReportTime() - uploadReport.getStartTime()) / 1000) + "s");
-                    System.out.println("--------------------------------------------------------");
-                } else if (speedTestSocket.getSpeedTestMode() == SpeedTestMode.DOWNLOAD) {
-                    SpeedTestReport downloadReport = speedTestSocket.getLiveDownloadReport();
-                    System.out.println("---------------current download report--------------------");
-                    System.out.println("progress             : " + downloadReport.getProgressPercent() + "%");
-                    System.out.println("transfer rate bit    : " + downloadReport.getTransferRateBit() + "b/s");
-                    System.out.println("transfer rate octet  : " + downloadReport.getTransferRateOctet() + "B/s");
-                    System.out.println("downloaded for now   : " + downloadReport.getTemporaryPacketSize() + "/" + downloadReport.getTotalPacketSize());
-                    System.out.println("amount of time       : " + ((downloadReport.getReportTime() - downloadReport.getStartTime()) / 1000) + "s");
-                }
+                SpeedTestReport downloadReport = speedTestSocket.getLiveDownloadReport();
+                System.out.println("---------------current download report--------------------");
+                System.out.println("progress             : " + downloadReport.getProgressPercent() + "%");
+                System.out.println("transfer rate bit    : " + downloadReport.getTransferRateBit() + "b/s");
+                System.out.println("transfer rate octet  : " + downloadReport.getTransferRateOctet() + "B/s");
+                System.out.println("downloaded for now   : " + downloadReport.getTemporaryPacketSize() + "/" + downloadReport.getTotalPacketSize());
+                System.out.println("amount of time       : " + ((downloadReport.getReportTime() - downloadReport.getStartTime()) / 1000) + "s");
                 speedTestSocket.forceStopTask();
-
-                if (speedTestSocket.getSpeedTestMode() == SpeedTestMode.UPLOAD) {
-                    SpeedTestReport uploadReport = speedTestSocket.getLiveUploadReport();
-                    System.out.println("---------------current upload report--------------------");
-                    System.out.println("progress             : " + uploadReport.getProgressPercent() + "%");
-                    System.out.println("transfer rate bit    : " + uploadReport.getTransferRateBit() + "b/s");
-                    System.out.println("transfer rate octet  : " + uploadReport.getTransferRateOctet() + "B/s");
-                    System.out.println("uploaded for now     : " + uploadReport.getTemporaryPacketSize() + "/" + uploadReport.getTotalPacketSize());
-                    System.out.println("amount of time       : " + ((uploadReport.getReportTime() - uploadReport.getStartTime()) / 1000) + "s");
-                    System.out.println("--------------------------------------------------------");
-                } else if (speedTestSocket.getSpeedTestMode() == SpeedTestMode.DOWNLOAD) {
-                    SpeedTestReport downloadReport = speedTestSocket.getLiveDownloadReport();
-                    System.out.println("---------------current download report--------------------");
-                    System.out.println("progress             : " + downloadReport.getProgressPercent() + "%");
-                    System.out.println("transfer rate bit    : " + downloadReport.getTransferRateBit() + "b/s");
-                    System.out.println("transfer rate octet  : " + downloadReport.getTransferRateOctet() + "B/s");
-                    System.out.println("downloaded for now   : " + downloadReport.getTemporaryPacketSize() + "/" + downloadReport.getTotalPacketSize());
-                    System.out.println("amount of time       : " + ((downloadReport.getReportTime() - downloadReport.getStartTime()) / 1000) + "s");
-                }
-
                 if (timer != null) {
                     timer.cancel();
                     timer.purge();
