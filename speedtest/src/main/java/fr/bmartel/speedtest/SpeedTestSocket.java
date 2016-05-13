@@ -343,7 +343,9 @@ public class SpeedTestSocket {
                             for (int i = 0; i < speedTestListenerList.size(); i++) {
                                 speedTestListenerList.get(i).onDownloadPacketsReceived(downloadPacketSize, transferRate_bps, transferRate_Bps);
                             }
-
+                            if (!isRepeatDownload) {
+                                executorService.shutdown();
+                            }
                         } catch (IOException e) {
                             dispatchError(isDownload, e.getMessage());
                             timeEnd = System.currentTimeMillis();
@@ -375,6 +377,10 @@ public class SpeedTestSocket {
                                         }
                                     }
                                     speedTestMode = SpeedTestMode.NONE;
+                                    
+                                    isReading = false;
+                                    closeSocket();
+                                    executorService.shutdown();
                                     return;
                                 }
                                 isReading = false;
@@ -650,6 +656,7 @@ public class SpeedTestSocket {
                         }
                     } catch (IOException e) {
                         dispatchError(false, e.getMessage());
+                        executorService.shutdown();
                     }
                 }
             }
