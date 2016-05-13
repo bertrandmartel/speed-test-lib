@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
-    compile 'akinaru:http-endec:1.01'
+    compile 'akinaru:http-endec:1.02'
 }
 
 def siteUrl = 'https://github.com/akinaru/speed-test-lib'

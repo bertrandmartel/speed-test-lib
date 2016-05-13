@@ -35,12 +35,12 @@ public class SpeedTestReport {
     /**
      * current size of file to upload
      */
-    private int temporaryPacketSize = 0;
+    private long temporaryPacketSize = 0;
 
     /**
      * total file size
      */
-    private int totalPacketSize = 0;
+    private long totalPacketSize = 0;
 
     /**
      * transfer rate in octet/s
@@ -73,6 +73,11 @@ public class SpeedTestReport {
     private float progressPercent;
 
     /**
+     * number of request
+     */
+    private int requestNum;
+
+    /**
      * Build Upload report
      *
      * @param speedTestMode       speed test mode (DOWNLOAD/UPLOAD)
@@ -83,15 +88,17 @@ public class SpeedTestReport {
      * @param totalPacketSize     total file size
      * @param transferRateOctet   transfer rate in octet/s
      * @param transferRateBit     transfer rate in bit/s
+     * @param requestNum          number of request for this report
      */
     public SpeedTestReport(SpeedTestMode speedTestMode,
                            float progressPercent,
                            long startTime,
                            long reportTime,
-                           int temporaryPacketSize,
-                           int totalPacketSize,
+                           long temporaryPacketSize,
+                           long totalPacketSize,
                            float transferRateOctet,
-                           float transferRateBit) {
+                           float transferRateBit,
+                           int requestNum) {
         this.speedTestMode = speedTestMode;
         this.progressPercent = progressPercent;
         this.startTime = startTime;
@@ -100,6 +107,7 @@ public class SpeedTestReport {
         this.totalPacketSize = totalPacketSize;
         this.transferRateOctet = transferRateOctet;
         this.transferRateBit = transferRateBit;
+        this.requestNum = requestNum;
     }
 
     /**
@@ -107,7 +115,7 @@ public class SpeedTestReport {
      *
      * @return packet size in bit
      */
-    public int getTemporaryPacketSize() {
+    public float getTemporaryPacketSize() {
         return temporaryPacketSize;
     }
 
@@ -116,7 +124,7 @@ public class SpeedTestReport {
      *
      * @return total file size in bit
      */
-    public int getTotalPacketSize() {
+    public long getTotalPacketSize() {
         return totalPacketSize;
     }
 
@@ -172,5 +180,14 @@ public class SpeedTestReport {
      */
     public float getProgressPercent() {
         return progressPercent;
+    }
+
+    /**
+     * get request num
+     *
+     * @return
+     */
+    public int getRequestNum() {
+        return requestNum;
     }
 }
