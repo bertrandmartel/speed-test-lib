@@ -297,9 +297,11 @@ public class SpeedTestSocket {
 
                         } catch (IOException e) {
                             dispatchError(isDownload, e.getMessage());
+                            timeEnd = System.currentTimeMillis();
                             closeSocket();
                         } catch (InterruptedException e) {
                             dispatchError(isDownload, e.getMessage());
+                            timeEnd = System.currentTimeMillis();
                             closeSocket();
                         }
 
@@ -332,8 +334,10 @@ public class SpeedTestSocket {
 
                             } catch (SocketException e) {
                                 dispatchError(isDownload, e.getMessage());
+                                timeEnd = System.currentTimeMillis();
                             } catch (Exception e) {
                                 dispatchError(isDownload, e.getMessage());
+                                timeEnd = System.currentTimeMillis();
                             }
                         }
                     }
@@ -413,7 +417,6 @@ public class SpeedTestSocket {
             @Override
             public void onDownloadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
                 repeatTransferRateBps = ((repeatTransferRateBps + transferRateOctetPerSeconds) / 2f);
-                System.out.println("finished download " + repeatTransferRateBps);
                 startDownloadRepeat(hostname, port, uri);
                 repeatRequestNum++;
             }
@@ -424,7 +427,6 @@ public class SpeedTestSocket {
 
             @Override
             public void onDownloadError(SpeedTestError speedTestError, String errorMessage) {
-                System.out.println("onDownloadError");
                 forceStopTask();
                 timer.cancel();
                 timer.purge();
@@ -436,7 +438,6 @@ public class SpeedTestSocket {
 
             @Override
             public void onUploadError(SpeedTestError speedTestError, String errorMessage) {
-                System.out.println("onUploadError");
                 forceStopTask();
                 timer.cancel();
                 timer.purge();
@@ -455,7 +456,6 @@ public class SpeedTestSocket {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("end");
                 removeSpeedTestListener(speedTestListener);
                 forceStopTask();
                 timer.cancel();
@@ -478,7 +478,6 @@ public class SpeedTestSocket {
     }
 
     public void forceStopTask() {
-        System.out.println("stopping...");
         closeSocket();
         executorService.shutdownNow();
     }
