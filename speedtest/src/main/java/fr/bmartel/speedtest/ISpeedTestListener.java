@@ -44,7 +44,7 @@ public interface ISpeedTestListener {
      * @param transferRateBitPerSeconds   transfer rate in bit/seconds
      * @param transferRateOctetPerSeconds transfer rate in octet/seconds
      */
-    public void onDownloadPacketsReceived(int packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds);
+    public void onDownloadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds);
 
     /**
      * monitor download progress
@@ -69,7 +69,7 @@ public interface ISpeedTestListener {
      * @param transferRateBitPerSeconds   transfer rate in bit/second
      * @param transferRateOctetPerSeconds transfer rate in octet/second
      */
-    public void onUploadPacketsReceived(int packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds);
+    public void onUploadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds);
 
     /**
      * Error catch for upload process
