@@ -2,7 +2,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 group 'com.github.akinaru'
-version '1.08'
+version '1.09'
 
 apply plugin: 'java'
 
@@ -41,8 +41,8 @@ bintray {
         publicDownloadNumbers = true
 
         version {
-            name = '1.08' //Bintray logical version name
-            vcsTag = '1.08'
+            name = '1.09' //Bintray logical version name
+            vcsTag = '1.09'
 
             gpg {
                 sign = true
