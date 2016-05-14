@@ -65,13 +65,9 @@ public class SpeedTest {
 
             @Override
             public void onDownloadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
-                System.out.println("Download [ OK ]");
-                System.out.println("download packetSize     : " + packetSize + " octet(s)");
-                System.out.println("download transfer rate  : " + transferRateBitPerSeconds + " bit/second   | " + transferRateBitPerSeconds / 1000
-                        + " Kbit/second  | " + transferRateBitPerSeconds / 1000000 + " Mbit/second");
-                System.out.println("download transfer rate  : " + transferRateOctetPerSeconds + " octet/second | " + transferRateOctetPerSeconds / 1000
-                        + " Koctet/second | " + +transferRateOctetPerSeconds / 1000000 + " Moctet/second");
-                System.out.println("##################################################################");
+
+                logFinishedTask(SpeedTestMode.DOWNLOAD, packetSize, transferRateBitPerSeconds, transferRateOctetPerSeconds);
+
             }
 
             @Override
@@ -81,13 +77,9 @@ public class SpeedTest {
 
             @Override
             public void onUploadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
-                System.out.println("========= Upload [ OK ]   =============");
-                System.out.println("upload packetSize     : " + packetSize + " octet(s)");
-                System.out.println("upload transfer rate  : " + transferRateBitPerSeconds + " bit/second   | " + transferRateBitPerSeconds / 1000
-                        + " Kbit/second  | " + transferRateBitPerSeconds / 1000000 + " Mbit/second");
-                System.out.println("upload transfer rate  : " + transferRateOctetPerSeconds + " octet/second | " + transferRateOctetPerSeconds / 1000
-                        + " Koctet/second | " + +transferRateOctetPerSeconds / 1000000 + " Moctet/second");
-                System.out.println("##################################################################");
+
+                logFinishedTask(SpeedTestMode.UPLOAD, packetSize, transferRateBitPerSeconds, transferRateOctetPerSeconds);
+
             }
 
             @Override
@@ -98,52 +90,116 @@ public class SpeedTest {
             @Override
             public void onDownloadProgress(float percent, SpeedTestReport downloadReport) {
 
-                System.out.println("---------------current download report--------------------");
-                System.out.println("progress             : " + downloadReport.getProgressPercent() + "%");
-                System.out.println("transfer rate bit    : " + downloadReport.getTransferRateBit() + "b/s");
-                System.out.println("transfer rate octet  : " + downloadReport.getTransferRateOctet() + "B/s");
-                System.out.println("downloaded for now   : " + downloadReport.getTemporaryPacketSize() + "/" + downloadReport.getTotalPacketSize());
-                if (downloadReport.getStartTime() > 0) {
-                    System.out.println("amount of time       : " + ((downloadReport.getReportTime() - downloadReport.getStartTime()) / 1000) + "s");
-                }
-                System.out.println("request number       : " + downloadReport.getRequestNum());
+                logSpeedTestReport(downloadReport);
 
-                if (!initDownloadBar)
-                    System.out.print("download progress | < ");
-                initDownloadBar = true;
-
-                if (percent % 4 == 0)
-                    System.out.print("=");
-
-                if (percent == 100)
-                    System.out.println(" 100%");
-
+                updateDownloadProgressBar(percent);
             }
 
             @Override
             public void onUploadProgress(float percent, SpeedTestReport uploadReport) {
-                System.out.println("---------------current upload report--------------------");
-                System.out.println("progress             : " + uploadReport.getProgressPercent() + "%");
-                System.out.println("transfer rate bit    : " + uploadReport.getTransferRateBit() + "b/s");
-                System.out.println("transfer rate octet  : " + uploadReport.getTransferRateOctet() + "B/s");
-                System.out.println("uploaded for now     : " + uploadReport.getTemporaryPacketSize() + "/" + uploadReport.getTotalPacketSize());
-                if (uploadReport.getStartTime() > 0) {
-                    System.out.println("amount of time       : " + ((uploadReport.getReportTime() - uploadReport.getStartTime()) / 1000) + "s");
-                }
-                System.out.println("--------------------------------------------------------");
 
-                if (!initUploadBar)
-                    System.out.print("upload progress | < ");
-                initUploadBar = true;
-                if (percent % 5 == 0)
-                    System.out.print("=");
+                logSpeedTestReport(uploadReport);
 
-                if (percent == 100) {
-                    System.out.println("upload 100%");
-                }
+                updateUploadProgressBar(percent);
             }
         });
 
         speedTestSocket.startDownload("1.testdebit.info", 80, "/fichiers/10Mo.dat");
+    }
+
+    /**
+     * print speed test report object
+     *
+     * @param report
+     */
+    private static void logSpeedTestReport(SpeedTestReport report) {
+
+        switch (report.getSpeedTestMode()) {
+            case DOWNLOAD:
+                System.out.println("--------------current download report--------------------");
+                break;
+            case UPLOAD:
+                System.out.println("---------------current upload report--------------------");
+                break;
+            default:
+                break;
+        }
+
+        System.out.println("progress             : " + report.getProgressPercent() + "%");
+        System.out.println("transfer rate bit    : " + report.getTransferRateBit() + "b/s");
+        System.out.println("transfer rate octet  : " + report.getTransferRateOctet() + "B/s");
+        System.out.println("uploaded for now     : " + report.getTemporaryPacketSize() + "/" + report.getTotalPacketSize());
+
+        if (report.getStartTime() > 0) {
+            System.out.println("amount of time       : " + ((report.getReportTime() - report.getStartTime()) / 1000) + "s");
+        }
+        System.out.println("request number       : " + report.getRequestNum());
+
+        System.out.println("--------------------------------------------------------");
+    }
+
+    /**
+     * print upload/download result
+     *
+     * @param mode
+     * @param packetSize
+     * @param transferRateBitPerSeconds
+     * @param transferRateOctetPerSeconds
+     */
+    private static void logFinishedTask(SpeedTestMode mode, long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
+
+        switch (mode) {
+            case DOWNLOAD:
+                System.out.println("======== Download [ OK ] =============");
+                break;
+            case UPLOAD:
+                System.out.println("========= Upload [ OK ]  =============");
+                break;
+            default:
+                break;
+        }
+
+        System.out.println("upload packetSize     : " + packetSize + " octet(s)");
+        System.out.println("upload transfer rate  : " + transferRateBitPerSeconds + " bit/second   | " + transferRateBitPerSeconds / 1000
+                + " Kbit/second  | " + transferRateBitPerSeconds / 1000000 + " Mbit/second");
+        System.out.println("upload transfer rate  : " + transferRateOctetPerSeconds + " octet/second | " + transferRateOctetPerSeconds / 1000
+                + " Koctet/second | " + +transferRateOctetPerSeconds / 1000000 + " Moctet/second");
+        System.out.println("##################################################################");
+    }
+
+    /**
+     * update download progress bar
+     *
+     * @param percent
+     */
+    private static void updateDownloadProgressBar(float percent) {
+
+        if (!initDownloadBar)
+            System.out.print("download progress | < ");
+        initDownloadBar = true;
+
+        if (percent % 4 == 0)
+            System.out.print("=");
+
+        if (percent == 100)
+            System.out.println(" 100%");
+    }
+
+    /**
+     * update upload progress bar
+     *
+     * @param percent
+     */
+    private static void updateUploadProgressBar(float percent) {
+
+        if (!initUploadBar)
+            System.out.print("upload progress | < ");
+        initUploadBar = true;
+        if (percent % 5 == 0)
+            System.out.print("=");
+
+        if (percent == 100) {
+            System.out.println("upload 100%");
+        }
     }
 }
