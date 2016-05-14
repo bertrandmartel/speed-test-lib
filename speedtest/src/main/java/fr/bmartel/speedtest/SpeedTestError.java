@@ -30,14 +30,9 @@ package fr.bmartel.speedtest;
  */
 public enum SpeedTestError {
 
-    INVALID_HTTP_RESPONSE(1),
-    SOCKET_ERROR(2),
-    CONNECTION_ERROR(3),
-    FORCE_CLOSE_SOCKET(4);
+    INVALID_HTTP_RESPONSE,
+    SOCKET_ERROR,
+    CONNECTION_ERROR,
+    FORCE_CLOSE_SOCKET;
 
-    private int errorCode;
-
-    SpeedTestError(int errorCode) {
-        this.errorCode = errorCode;
-    }
 }
