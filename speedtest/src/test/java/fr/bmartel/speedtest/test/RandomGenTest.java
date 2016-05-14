@@ -21,18 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package fr.bmartel.speedtest;
+package fr.bmartel.speedtest.test;
+
+import fr.bmartel.speedtest.RandomGen;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
- * Feature Speed Test common Error code
+ * Random file generator test
  *
  * @author Bertrand Martel
  */
-public enum SpeedTestError {
+public class RandomGenTest {
 
-    INVALID_HTTP_RESPONSE,
-    SOCKET_ERROR,
-    CONNECTION_ERROR,
-    FORCE_CLOSE_SOCKET
+    private RandomGen random;
 
+    @Test
+    public void randomGenTest() {
+
+        int[] sizes = new int[]{1, 10, 10000, 10000000};
+
+        for (int i = 0; i < sizes.length; i++) {
+            random = new RandomGen(sizes[i]);
+            assertTrue(random.nextArray().length == sizes[i]);
+        }
+
+    }
 }
