@@ -947,16 +947,31 @@ public class SpeedTestSocket {
     }
 
     /**
+     * set socket timeout in millisecond
+     *
+     * @param socketTimeoutMillis socket timeout value in milliseconds
+     */
+    public void setSocketTimeout(int socketTimeoutMillis) {
+        if (socketTimeoutMillis >= 0)
+            socketTimeout = socketTimeoutMillis;
+    }
+
+    /**
+     * get socket timeout in milliseconds ( 0 if no timeout not defined)
+     *
+     * @return socket timeout value (0 if not defined)
+     */
+    public int getSocketTimeout() {
+        return socketTimeout;
+    }
+
+    /**
      * retrieve size of each packet sent to upload server
      *
      * @return size of each packet sent to upload server
      */
     public int getUploadChunkSize() {
         return uploadChunkSize;
-    }
-
-    public void setSocketTimeout(int socketTimeoutMillis) {
-        socketTimeout = socketTimeoutMillis;
     }
 
     /**
