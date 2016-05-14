@@ -44,7 +44,7 @@ public interface ISpeedTestListener {
      * @param transferRateBitPerSeconds   transfer rate in bit/seconds
      * @param transferRateOctetPerSeconds transfer rate in octet/seconds
      */
-    public void onDownloadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds);
+    void onDownloadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds);
 
     /**
      * monitor download progress
@@ -52,7 +52,7 @@ public interface ISpeedTestListener {
      * @param percent % of progress
      * @param report  current speed test download report
      */
-    public void onDownloadProgress(float percent, SpeedTestReport report);
+    void onDownloadProgress(float percent, SpeedTestReport report);
 
     /**
      * Error catch for download process
@@ -60,7 +60,7 @@ public interface ISpeedTestListener {
      * @param speedTestError error enum
      * @param errorMessage   error message
      */
-    public void onDownloadError(SpeedTestError speedTestError, String errorMessage);
+    void onDownloadError(SpeedTestError speedTestError, String errorMessage);
 
     /**
      * monitor upload process result with transfer rate in bit/s and octet/s
@@ -69,7 +69,7 @@ public interface ISpeedTestListener {
      * @param transferRateBitPerSeconds   transfer rate in bit/second
      * @param transferRateOctetPerSeconds transfer rate in octet/second
      */
-    public void onUploadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds);
+    void onUploadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds);
 
     /**
      * Error catch for upload process
@@ -77,7 +77,7 @@ public interface ISpeedTestListener {
      * @param speedTestError error enum
      * @param errorMessage   error message
      */
-    public void onUploadError(SpeedTestError speedTestError, String errorMessage);
+    void onUploadError(SpeedTestError speedTestError, String errorMessage);
 
     /**
      * monitor upload progress
@@ -85,6 +85,6 @@ public interface ISpeedTestListener {
      * @param percent % of progress
      * @param report  current speed test upload report
      */
-    public void onUploadProgress(float percent, SpeedTestReport report);
+    void onUploadProgress(float percent, SpeedTestReport report);
 
 }
