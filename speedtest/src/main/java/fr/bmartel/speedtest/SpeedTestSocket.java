@@ -164,7 +164,7 @@ public class SpeedTestSocket {
      * @param task       task to be executed when connected to socket
      * @param isDownload define if it is a download or upload test
      */
-    public void connectAndExecuteTask(TimerTask task, final boolean isDownload) {
+    private void connectAndExecuteTask(TimerTask task, final boolean isDownload) {
 
         // close socket before recreating it
         if (socket != null) {
@@ -214,8 +214,6 @@ public class SpeedTestSocket {
      */
     private void startSocketDownloadTask() {
 
-        byte[] buffer = new byte[READ_BUFFER_SIZE];
-        int read = 0;
         speedTestStats.setDownloadTemporaryPacketSize(0);
 
         try {
@@ -243,25 +241,12 @@ public class SpeedTestSocket {
                 downloadRepeatStats.setRepeatPacketSize(downloadRepeatStats.getRepeatPacketSize() + speedTestStats.getDownloadPacketSize());
             }
 
-            while ((read = socket.getInputStream().read(buffer)) != -1) {
+            downloadReadingLoop();
 
-                speedTestStats.setDownloadTemporaryPacketSize(speedTestStats.getDownloadTemporaryPacketSize() + read);
-
-                if (downloadRepeatStats.isRepeatDownload()) {
-                    downloadRepeatStats.setRepeatTemporaryPacketSize(downloadRepeatStats.getRepeatTemporaryPacketSize() + read);
-                }
-                for (int i = 0; i < speedTestListenerList.size(); i++) {
-                    SpeedTestReport report = getLiveDownloadReport();
-                    speedTestListenerList.get(i).onDownloadProgress(report.getProgressPercent(), getLiveDownloadReport());
-                }
-                if (speedTestStats.getDownloadTemporaryPacketSize() == speedTestStats.getDownloadPacketSize()) {
-                    break;
-                }
-            }
             speedTestStats.setTimeEnd(System.currentTimeMillis());
 
-            float transferRate_bps = (speedTestStats.getDownloadPacketSize() * 8) / ((speedTestStats.getTimeEnd() - speedTestStats.getTimeStart()) / 1000f);
             float transferRate_Bps = speedTestStats.getDownloadPacketSize() / ((speedTestStats.getTimeEnd() - speedTestStats.getTimeStart()) / 1000f);
+            float transferRate_bps = transferRate_Bps * 8;
 
             closeSocket();
 
@@ -275,6 +260,33 @@ public class SpeedTestSocket {
             catchError(true, e.getMessage());
         } catch (InterruptedException e) {
             catchError(true, e.getMessage());
+        }
+    }
+
+    /**
+     * start download reading loop + monitor progress
+     *
+     * @throws IOException
+     */
+    private void downloadReadingLoop() throws IOException {
+
+        byte[] buffer = new byte[READ_BUFFER_SIZE];
+        int read = 0;
+
+        while ((read = socket.getInputStream().read(buffer)) != -1) {
+
+            speedTestStats.setDownloadTemporaryPacketSize(speedTestStats.getDownloadTemporaryPacketSize() + read);
+
+            if (downloadRepeatStats.isRepeatDownload()) {
+                downloadRepeatStats.setRepeatTemporaryPacketSize(downloadRepeatStats.getRepeatTemporaryPacketSize() + read);
+            }
+            for (int i = 0; i < speedTestListenerList.size(); i++) {
+                SpeedTestReport report = getLiveDownloadReport();
+                speedTestListenerList.get(i).onDownloadProgress(report.getProgressPercent(), getLiveDownloadReport());
+            }
+            if (speedTestStats.getDownloadTemporaryPacketSize() == speedTestStats.getDownloadPacketSize()) {
+                break;
+            }
         }
     }
 
@@ -350,7 +362,7 @@ public class SpeedTestSocket {
                 HttpStates httpStates = frame.parseHttp(socket.getInputStream());
 
                 if (httpStates == HttpStates.HTTP_FRAME_OK) {
-                    if (frame.getStatusCode() == 200 && frame.getReasonPhrase().toLowerCase().equals("ok")) {
+                    if (frame.getStatusCode() == 200 && frame.getReasonPhrase().equalsIgnoreCase("ok")) {
 
                         speedTestStats.setTimeEnd(System.currentTimeMillis());
                         float transferRate_bps = (speedTestStats.getUploadFileSize() * 8) / ((speedTestStats.getTimeEnd() - speedTestStats.getTimeStart()) / 1000f);
@@ -479,14 +491,7 @@ public class SpeedTestSocket {
                                     int reportPeriodMillis,
                                     final IRepeatListener repeatListener) {
 
-        downloadRepeatStats.setRepeatDownload(true);
-        downloadRepeatStats.setRepeatRequestNum(0);
-        downloadRepeatStats.setRepeatPacketSize(0);
-        downloadRepeatStats.setRepeatTemporaryPacketSize(0);
-        downloadRepeatStats.setRepeatTransferRateBps(0);
-        downloadRepeatStats.setRepeatFinished(false);
-        downloadRepeatStats.setStartDateRepeat(0);
-        downloadRepeatStats.setFirstDownloadRepeat(true);
+        initDownloadRepeat();
 
         final Timer timer = new Timer();
 
@@ -500,6 +505,7 @@ public class SpeedTestSocket {
 
             @Override
             public void onDownloadProgress(float percent, SpeedTestReport report) {
+                //nothing to do here for download repeat task listener
             }
 
             @Override
@@ -509,6 +515,7 @@ public class SpeedTestSocket {
 
             @Override
             public void onUploadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
+                //nothing to do here for download repeat task listener
             }
 
             @Override
@@ -518,6 +525,7 @@ public class SpeedTestSocket {
 
             @Override
             public void onUploadProgress(float percent, SpeedTestReport report) {
+                //nothing to do here for download repeat task listener
             }
         };
 
@@ -551,12 +559,28 @@ public class SpeedTestSocket {
     }
 
     /**
+     * intialize download repeat task variables for report + state
+     */
+    private void initDownloadRepeat() {
+
+        downloadRepeatStats.setRepeatDownload(true);
+        downloadRepeatStats.setRepeatRequestNum(0);
+        downloadRepeatStats.setRepeatPacketSize(0);
+        downloadRepeatStats.setRepeatTemporaryPacketSize(0);
+        downloadRepeatStats.setRepeatTransferRateBps(0);
+        downloadRepeatStats.setRepeatFinished(false);
+        downloadRepeatStats.setStartDateRepeat(0);
+        downloadRepeatStats.setFirstDownloadRepeat(true);
+    }
+
+    /**
      * clear completly download repeat task
      *
      * @param listener speed test listener
      * @param timer    finished task timer
      */
     private void clearDownloadRepeat(ISpeedTestListener listener, Timer timer) {
+
         removeSpeedTestListener(listener);
         if (timer != null) {
             timer.cancel();
@@ -571,6 +595,7 @@ public class SpeedTestSocket {
      * close socket + shutdown thread pool
      */
     public void forceStopTask() {
+
         isForceCloseSocket = true;
         closeSocket();
         executorService.shutdownNow();
@@ -581,7 +606,7 @@ public class SpeedTestSocket {
      *
      * @param data HTTP request to send to initiate downwload process
      */
-    public void writeDownload(final byte[] data) {
+    private void writeDownload(final byte[] data) {
 
         speedTestStats.setSpeedTestMode(SpeedTestMode.DOWNLOAD);
 
@@ -612,6 +637,7 @@ public class SpeedTestSocket {
      * @param fileSizeOctet size of file to upload
      */
     public void startUpload(String hostname, int port, String uri, int fileSizeOctet) {
+
         this.hostname = hostname;
         this.port = port;
         speedTestStats.setUploadFileSize(fileSizeOctet);
@@ -725,14 +751,14 @@ public class SpeedTestSocket {
             currentTime = speedTestStats.getTimeEnd();
         }
 
-        float transferRate_bps = (temporaryPacketSize * 8) / ((currentTime - speedTestStats.getTimeStart()) / 1000f);
         float transferRate_Bps = temporaryPacketSize / ((currentTime - speedTestStats.getTimeStart()) / 1000f);
+        float transferRate_bps = transferRate_Bps * 8;
 
         float percent = 0;
 
         if (downloadRepeatStats.isRepeatDownload()) {
 
-            return getRepeatDownloadedTestReport(mode, currentTime, transferRate_Bps, transferRate_bps);
+            return getRepeatDownloadReport(mode, currentTime, transferRate_Bps);
 
         } else {
 
@@ -751,15 +777,16 @@ public class SpeedTestSocket {
      * @param speedTestMode     speed test mode
      * @param reportTime        time of current download
      * @param transferRateOctet transfer rate in octet/s
-     * @param transferRateBit   transfer rate in bit/s
      * @return speed test report object
      */
-    private SpeedTestReport getRepeatDownloadedTestReport(SpeedTestMode speedTestMode,
-                                                          long reportTime,
-                                                          float transferRateOctet,
-                                                          float transferRateBit) {
+    private SpeedTestReport getRepeatDownloadReport(SpeedTestMode speedTestMode,
+                                                    long reportTime,
+                                                    float transferRateOctet) {
         float progressPercent = 0;
         long temporaryPacketSize = 0;
+        float transferRateBit = 0;
+        float downloadRepeatRateOctet = transferRateOctet;
+        long downloadRepeatReportTime = reportTime;
 
         if (downloadRepeatStats.getStartDateRepeat() != 0) {
             if (!downloadRepeatStats.isRepeatFinished())
@@ -774,12 +801,12 @@ public class SpeedTestSocket {
         float repeatTransferRateBps = downloadRepeatStats.getRepeatTransferRateBps();
 
         if ((repeatTransferRateBps != 0) && !downloadRepeatStats.isRepeatFinished())
-            transferRateOctet = (repeatTransferRateBps + transferRateOctet) / 2f;
+            downloadRepeatRateOctet = (repeatTransferRateBps + downloadRepeatRateOctet) / 2f;
         else if (downloadRepeatStats.isRepeatFinished()) {
-            transferRateOctet = repeatTransferRateBps;
+            downloadRepeatRateOctet = repeatTransferRateBps;
         }
 
-        transferRateBit = transferRateBit * 8f;
+        transferRateBit = downloadRepeatRateOctet * 8f;
 
         if (!downloadRepeatStats.isRepeatFinished())
             temporaryPacketSize = downloadRepeatStats.getRepeatTemporaryPacketSize();
@@ -787,15 +814,15 @@ public class SpeedTestSocket {
             temporaryPacketSize = downloadRepeatStats.getRepeatPacketSize();
 
         if (downloadRepeatStats.isRepeatFinished())
-            reportTime = downloadRepeatStats.getStartDateRepeat() + downloadRepeatStats.getRepeatWindows();
+            downloadRepeatReportTime = downloadRepeatStats.getStartDateRepeat() + downloadRepeatStats.getRepeatWindows();
 
         return new SpeedTestReport(speedTestMode,
                 progressPercent,
                 downloadRepeatStats.getStartDateRepeat(),
-                reportTime,
+                downloadRepeatReportTime,
                 temporaryPacketSize,
                 downloadRepeatStats.getRepeatPacketSize(),
-                transferRateOctet,
+                downloadRepeatRateOctet,
                 transferRateBit,
                 downloadRepeatStats.getRepeatRequestNum());
     }
