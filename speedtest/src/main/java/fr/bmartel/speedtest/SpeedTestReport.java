@@ -35,47 +35,47 @@ public class SpeedTestReport {
     /**
      * current size of file to upload
      */
-    private long tempPacketSize = 0;
+    private final long tempPacketSize;
 
     /**
      * total file size
      */
-    private long totalPacketSize = 0;
+    private final long totalPacketSize;
 
     /**
      * transfer rate in octet/s
      */
-    private float transferRateOctet = 0;
+    private final float transferRateOctet;
 
     /**
      * transfer rate in bit/s
      */
-    private float transferRateBit = 0;
+    private final float transferRateBit;
 
     /**
      * upload start time in millis since 1970
      */
-    private long startTime = 0;
+    private final long startTime;
 
     /**
      * upload report time in millis since 1970
      */
-    private long reportTime = 0;
+    private final long reportTime;
 
     /**
      * speed test mode for this report
      */
-    private SpeedTestMode speedTestMode = SpeedTestMode.NONE;
+    private final SpeedTestMode speedTestMode;
 
     /**
      * speed test progress in percent (%)
      */
-    private float progressPercent;
+    private final float progressPercent;
 
     /**
      * number of request
      */
-    private int requestNum;
+    private final int requestNum;
 
     /**
      * Build Upload report
@@ -90,15 +90,15 @@ public class SpeedTestReport {
      * @param transferRateBit   transfer rate in bit/s
      * @param requestNum        number of request for this report
      */
-    public SpeedTestReport(SpeedTestMode speedTestMode,
-                           float progressPercent,
-                           long startTime,
-                           long reportTime,
-                           long tempPacketSize,
-                           long totalPacketSize,
-                           float transferRateOctet,
-                           float transferRateBit,
-                           int requestNum) {
+    public SpeedTestReport(final SpeedTestMode speedTestMode,
+                           final float progressPercent,
+                           final long startTime,
+                           final long reportTime,
+                           final long tempPacketSize,
+                           final long totalPacketSize,
+                           final float transferRateOctet,
+                           final float transferRateBit,
+                           final int requestNum) {
         this.speedTestMode = speedTestMode;
         this.progressPercent = progressPercent;
         this.startTime = startTime;
