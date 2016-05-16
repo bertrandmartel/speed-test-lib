@@ -39,6 +39,9 @@ public class SpeedTestSocketTest {
 
     private SpeedTestSocket socket = null;
 
+    public SpeedTestSocketTest() {
+    }
+
     @Test
     public void socketTimeoutDefaultTest() {
         socket = new SpeedTestSocket();
@@ -74,4 +77,5 @@ public class SpeedTestSocketTest {
         socket.setUploadChunkSize(chunkSize);
         assertTrue(socket.getUploadChunkSize() == chunkSize);
     }
+
 }
