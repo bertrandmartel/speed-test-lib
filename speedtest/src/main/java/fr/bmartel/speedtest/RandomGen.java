@@ -1,5 +1,6 @@
 package fr.bmartel.speedtest;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -10,12 +11,12 @@ import java.util.Random;
 public class RandomGen {
 
     private static final byte[] symbols;
-    private final static int SYMBOLS_TABLE_LENGTH = 255;
+    private final static int SYMBOLS_LENGTH = 255;
     private final static int MINIMUM_LENGTH = 1;
 
     static {
-        symbols = new byte[SYMBOLS_TABLE_LENGTH];
-        for (int i = 0; i < SYMBOLS_TABLE_LENGTH; i++) {
+        symbols = new byte[SYMBOLS_LENGTH];
+        for (int i = 0; i < SYMBOLS_LENGTH; i++) {
             symbols[i] = (byte) i;
         }
     }
@@ -24,7 +25,7 @@ public class RandomGen {
 
     private final byte[] buf;
 
-    public RandomGen(int length) {
+    public RandomGen(final int length) {
         if (length < MINIMUM_LENGTH) {
             throw new IllegalArgumentException("length < " + MINIMUM_LENGTH + ": " + length);
         }
@@ -33,8 +34,9 @@ public class RandomGen {
 
     public byte[] nextArray() {
         for (int idx = 0; idx < buf.length; ++idx) {
-            buf[idx] = symbols[random.nextInt(symbols.length)];
+            int val = random.nextInt(SYMBOLS_LENGTH);
+            buf[idx] = symbols[val];
         }
-        return buf;
+        return Arrays.copyOf(buf, buf.length);
     }
 }

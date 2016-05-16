@@ -26,7 +26,7 @@ package fr.bmartel.speedtest.test;
 import fr.bmartel.speedtest.SpeedTestMode;
 import fr.bmartel.speedtest.SpeedTestReport;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 
@@ -39,21 +39,20 @@ import java.util.Date;
  */
 public class SpeedTestReportTest {
 
-    public SpeedTestReportTest() {
-    }
+    private final static String HEADER = TestUtils.generateMessageHeader(SpeedTestReportTest.class);
 
     @Test
     public void speedTestReportTest() {
 
-        SpeedTestMode speedTestMode = SpeedTestMode.DOWNLOAD;
-        float progressPercent = 98;
-        long startTime = new Date().getTime();
-        long reportTime = new Date().getTime();
-        long temporaryPacketSize = 65535;
-        long totalPacketSize = 128000;
-        float transferRateOctet = 20000.54f;
-        float transferRateBit = 20000.54f / 8;
-        int requestNum = 2;
+        final SpeedTestMode speedTestMode = SpeedTestMode.DOWNLOAD;
+        final float progressPercent = 98;
+        final long startTime = new Date().getTime();
+        final long reportTime = new Date().getTime();
+        final long temporaryPacketSize = 65535;
+        final long totalPacketSize = 128000;
+        final float transferRateOctet = 20000.54f;
+        final float transferRateBit = 20000.54f / 8;
+        final int requestNum = 2;
 
         SpeedTestReport report = new SpeedTestReport(
                 speedTestMode,
@@ -66,14 +65,14 @@ public class SpeedTestReportTest {
                 transferRateBit,
                 requestNum);
 
-        assertTrue(report.getSpeedTestMode() == speedTestMode);
-        assertTrue(report.getProgressPercent() == progressPercent);
-        assertTrue(report.getStartTime() == startTime);
-        assertTrue(report.getReportTime() == reportTime);
-        assertTrue(report.getTemporaryPacketSize() == temporaryPacketSize);
-        assertTrue(report.getTotalPacketSize() == totalPacketSize);
-        assertTrue(report.getTransferRateOctet() == transferRateOctet);
-        assertTrue(report.getTransferRateBit() == transferRateBit);
-        assertTrue(report.getRequestNum() == requestNum);
+        assertSame(HEADER + "speed test mode are not equals", report.getSpeedTestMode(), speedTestMode);
+        assertSame(HEADER + "progress are not equals", report.getProgressPercent(), progressPercent);
+        assertSame(HEADER + "start time are not equals", report.getStartTime(), startTime);
+        assertSame(HEADER + "report time are not equals", report.getReportTime(), reportTime);
+        assertSame(HEADER + "temporary packet size are not equals", report.getTemporaryPacketSize(), temporaryPacketSize);
+        assertSame(HEADER + "total packet size are not equals", report.getTotalPacketSize(), totalPacketSize);
+        assertSame(HEADER + "transfer rate in octet are not equals", report.getTransferRateOctet(), transferRateOctet);
+        assertSame(HEADER + "transfer rate in bit are not equals", report.getTransferRateBit(), transferRateBit);
+        assertSame(HEADER + "request number are not equals", report.getRequestNum(), requestNum);
     }
 }

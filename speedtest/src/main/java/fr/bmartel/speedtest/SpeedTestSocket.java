@@ -24,6 +24,7 @@
 package fr.bmartel.speedtest;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -69,22 +70,27 @@ public class SpeedTestSocket {
     /**
      * socket server port
      */
-    private int port = 0;
+    private int port;
 
     /**
      * socket object
      */
-    private Socket socket = null;
+    private Socket socket;
+
+    /**
+     * socket inputstream
+     */
+    private InputStream socketIs;
 
     /**
      * define if reading thread is currently running
      */
-    private volatile boolean isReading = false;
+    private boolean isReading;
 
     /**
      * speed test listener list
      */
-    private List<ISpeedTestListener> listenerList = new ArrayList<ISpeedTestListener>();
+    private final List<ISpeedTestListener> listenerList = new ArrayList<ISpeedTestListener>();
 
     /**
      * this is the size of each data sent to upload server
@@ -94,12 +100,12 @@ public class SpeedTestSocket {
     /**
      * socket timeout
      */
-    private int socketTimeout = 0;
+    private int socketTimeout;
 
     /**
      * define if socket close error is to be expected
      */
-    private boolean forceCloseSocket = false;
+    private boolean forceCloseSocket;
 
     /**
      * max size for thread pool
@@ -109,7 +115,7 @@ public class SpeedTestSocket {
     /**
      * executor service
      */
-    private ScheduledExecutorService executorService = null;
+    private ScheduledExecutorService executorService;
 
     /**
      * force clause related error message
@@ -126,17 +132,17 @@ public class SpeedTestSocket {
     /**
      * size of file to upload
      */
-    private long uploadFileSize = 0;
+    private long uploadFileSize;
 
     /**
      * start time triggered in millis
      */
-    private long timeStart = 0;
+    private long timeStart;
 
     /**
      * end time triggered in millis
      */
-    private long timeEnd = 0;
+    private long timeEnd;
 
     /**
      * current speed test mode
@@ -146,17 +152,17 @@ public class SpeedTestSocket {
     /**
      * this is the number of bit uploaded at this time
      */
-    private int uploadTempFileSize = 0;
+    private int uploadTempFileSize;
 
     /**
      * this is the number of packet dowloaded at this time
      */
-    private int downloadTemporaryPacketSize = 0;
+    private int downloadTemporaryPacketSize;
 
     /**
      * this is the number of packet to download
      */
-    private long downloadPckSize = 0;
+    private long downloadPckSize;
 
     /***************************************************
      ********* SPEED TEST DOWNLOAD REPEAT VARIABLES ****
@@ -168,48 +174,48 @@ public class SpeedTestSocket {
     /**
      * define if download should be repeated
      */
-    private boolean isRepeatDownload = false;
+    private boolean isRepeatDownload;
 
     /**
      * start time for download repeat task
      */
-    private long startDateRepeat = 0;
+    private long startDateRepeat;
 
     /**
      * time window for download repeat task
      */
-    private int repeatWindows = 0;
+    private int repeatWindows;
 
     /**
      * current number of request for download repeat task
      */
-    private int repeatRequestNum = 0;
+    private int repeatRequestNum;
 
     /**
      * number of packet pending for download repeat task
      */
-    private long repeatPacketSize = 0;
+    private long repeatPacketSize;
 
     /**
      * number of packet downloaded for download repeat task
      */
-    private long repeatTempPckSize = 0;
+    private long repeatTempPckSize;
 
     /**
      * current transfer rate in octet/s for download repeat task
      */
-    private float repeatTransferRateBps = 0;
+    private float repeatTransferRateBps;
 
     /**
      * define if the first download repeat has been sent and waiting for connection.
      * It is reset to false when the client is connected to server the first time
      */
-    private boolean isFirstDownloadRepeat = false;
+    private boolean isFirstDownloadRepeat;
 
     /**
      * define if download repeat task is finished
      */
-    private boolean repeatFinished = false;
+    private boolean repeatFinished;
 
     /**
      * Build Client socket
@@ -270,6 +276,8 @@ public class SpeedTestSocket {
 
             socket.connect(new InetSocketAddress(hostname, port));
 
+            socketIs = socket.getInputStream();
+
             isReading = true;
 
             executorService.execute(new Runnable() {
@@ -302,7 +310,7 @@ public class SpeedTestSocket {
         downloadTemporaryPacketSize = 0;
 
         try {
-            HttpFrame httpFrame = new HttpFrame();
+            final HttpFrame httpFrame = new HttpFrame();
 
             timeStart = System.currentTimeMillis();
 
@@ -312,10 +320,10 @@ public class SpeedTestSocket {
             }
             timeEnd = 0;
 
-            HttpStates httFrameState = httpFrame.decodeFrame(socket.getInputStream());
+            final HttpStates httFrameState = httpFrame.decodeFrame(socketIs);
             checkHttpFrameError(httFrameState);
 
-            HttpStates httpHeaderState = httpFrame.parseHeader(socket.getInputStream());
+            final HttpStates httpHeaderState = httpFrame.parseHeader(socketIs);
             checkHttpHeaderError(httpHeaderState);
 
             checkHttpContentLengthError(httpFrame);
@@ -330,8 +338,8 @@ public class SpeedTestSocket {
 
             timeEnd = System.currentTimeMillis();
 
-            float transferRate_Bps = downloadPckSize / ((timeEnd - timeStart) / 1000f);
-            float transferRate_bps = transferRate_Bps * 8;
+            final float transferRate_Bps = downloadPckSize / ((timeEnd - timeStart) / 1000f);
+            final float transferRate_bps = transferRate_Bps * 8;
 
             closeSocket();
 
@@ -355,10 +363,10 @@ public class SpeedTestSocket {
      */
     private void downloadReadingLoop() throws IOException {
 
-        byte[] buffer = new byte[READ_BUFFER_SIZE];
+        final byte[] buffer = new byte[READ_BUFFER_SIZE];
         int read = 0;
 
-        while ((read = socket.getInputStream().read(buffer)) != -1) {
+        while ((read = socketIs.read(buffer)) != -1) {
 
             downloadTemporaryPacketSize += read;
 
@@ -444,7 +452,7 @@ public class SpeedTestSocket {
             try {
                 HttpFrame frame = new HttpFrame();
 
-                HttpStates httpStates = frame.parseHttp(socket.getInputStream());
+                HttpStates httpStates = frame.parseHttp(socketIs);
 
                 if (httpStates == HttpStates.HTTP_FRAME_OK) {
                     if (frame.getStatusCode() == 200 && frame.getReasonPhrase().equalsIgnoreCase("ok")) {
@@ -920,8 +928,10 @@ public class SpeedTestSocket {
 
         if (socket != null) {
             try {
-                socket.getOutputStream().close();
-                socket.getInputStream().close();
+                if (socketIs != null) {
+                    socketIs.close();
+                    socketIs.close();
+                }
                 socket.close();
             } catch (IOException e) {
             }
