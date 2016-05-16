@@ -40,33 +40,37 @@ public class SpeedTestSocketTest {
 
     private final static String HEADER = TestUtils.generateMessageHeader(SpeedTestReportTest.class);
 
+    private final int socketTimeoutValid = 10000;
+
+    private final int socketTimeoutInvalid = -1;
+
+    private final int uploadChunkSizeDefault = 65535;
+
     @Test
     public void socketTimeoutDefaultTest() {
         socket = new SpeedTestSocket();
-        assertSame(socket.getSocketTimeout(), 0);
+        assertEquals(HEADER + " socket timeout default value should be 0", socket.getSocketTimeout(), 0);
     }
 
     @Test
     public void socketTimeoutSetterValidTest() {
-        final int socketTimeout = 10000;
         socket = new SpeedTestSocket();
-        socket.setSocketTimeout(socketTimeout);
-        assertSame(HEADER + "socket timeout are not equals", socket.getSocketTimeout(), socketTimeout);
+        socket.setSocketTimeout(socketTimeoutValid);
+        assertEquals(HEADER + "socket timeout are not equals", socket.getSocketTimeout(), socketTimeoutValid);
     }
 
     @Test
     public void socketTimeoutSetterInvalidTest() {
-        final int socketTimeout = -1;
         socket = new SpeedTestSocket();
-        assertNotSame(HEADER + "socket timeout are equals, shouldnt be (-1)", socket.getSocketTimeout(), socketTimeout);
-        assertSame(HEADER + "socket timeout should be 0", socket.getSocketTimeout(), 0);
+        assertNotSame(HEADER + "socket timeout are equals, shouldnt be (-1)", socket.getSocketTimeout(), socketTimeoutInvalid);
+        assertEquals(HEADER + "socket timeout should be 0", socket.getSocketTimeout(), 0);
 
     }
 
     @Test
     public void uploadChunkSizeDefaultTest() {
         socket = new SpeedTestSocket();
-        assertSame(HEADER + "chunk size should be 65535 for default value", socket.getUploadChunkSize(), 65535);
+        assertEquals(HEADER + "chunk size should be 65535 for default value", socket.getUploadChunkSize(), uploadChunkSizeDefault);
     }
 
     @Test
@@ -74,7 +78,7 @@ public class SpeedTestSocketTest {
         final int chunkSize = 30000;
         socket = new SpeedTestSocket();
         socket.setUploadChunkSize(chunkSize);
-        assertSame(HEADER + "chunk size incorrect value after set", socket.getUploadChunkSize(), chunkSize);
+        assertEquals(HEADER + "chunk size incorrect value after set", socket.getUploadChunkSize(), chunkSize);
     }
 
 }

@@ -34,7 +34,7 @@ public class RandomGen {
 
     public byte[] nextArray() {
         for (int idx = 0; idx < buf.length; ++idx) {
-            int val = random.nextInt(SYMBOLS_LENGTH);
+            final int val = random.nextInt(SYMBOLS_LENGTH);
             buf[idx] = symbols[val];
         }
         return Arrays.copyOf(buf, buf.length);

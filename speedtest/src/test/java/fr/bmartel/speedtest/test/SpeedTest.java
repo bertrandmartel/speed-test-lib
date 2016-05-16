@@ -25,6 +25,7 @@ package fr.bmartel.speedtest.test;
 
 import fr.bmartel.speedtest.*;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -52,7 +53,7 @@ public class SpeedTest {
     /**
      * logger
      */
-    private static Logger log;
+    private final static Logger log = Logger.getLogger(SpeedTest.class.getName());
 
     /**
      * Instanciate Speed Test and start download and upload process with speed
@@ -60,9 +61,7 @@ public class SpeedTest {
      *
      * @param args
      */
-    public static void main(String[] args) {
-
-        log = Logger.getLogger(SpeedTest.class.getName());
+    public static void main(final String[] args) {
 
 		/* instanciate speed test */
         final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
@@ -80,8 +79,10 @@ public class SpeedTest {
             }
 
             @Override
-            public void onDownloadError(SpeedTestError speedTestError, String errorMessage) {
-                log.fine("Download error " + speedTestError + " : " + errorMessage);
+            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (log.isLoggable(Level.FINE)) {
+                    log.fine("Download error " + speedTestError + " : " + errorMessage);
+                }
             }
 
             @Override
@@ -92,15 +93,16 @@ public class SpeedTest {
             }
 
             @Override
-            public void onUploadError(SpeedTestError speedTestError, String errorMessage) {
-                log.fine("Upload error " + speedTestError + " : " + errorMessage);
+            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (log.isLoggable(Level.FINE)) {
+                    log.fine("Upload error " + speedTestError + " : " + errorMessage);
+                }
             }
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport downloadReport) {
 
                 logSpeedTestReport(downloadReport);
-
                 updateDownloadProgressBar(percent);
             }
 
@@ -108,7 +110,6 @@ public class SpeedTest {
             public void onUploadProgress(final float percent, final SpeedTestReport uploadReport) {
 
                 logSpeedTestReport(uploadReport);
-
                 updateUploadProgressBar(percent);
             }
         });
@@ -123,28 +124,31 @@ public class SpeedTest {
      */
     private static void logSpeedTestReport(final SpeedTestReport report) {
 
-        switch (report.getSpeedTestMode()) {
-            case DOWNLOAD:
-                log.fine("--------------current download report--------------------");
-                break;
-            case UPLOAD:
-                log.fine("---------------current upload report--------------------");
-                break;
-            default:
-                break;
+        if (log.isLoggable(Level.FINE)) {
+
+            switch (report.getSpeedTestMode()) {
+                case DOWNLOAD:
+                    log.fine("--------------current download report--------------------");
+                    break;
+                case UPLOAD:
+                    log.fine("---------------current upload report--------------------");
+                    break;
+                default:
+                    break;
+            }
+
+            log.fine("progress             : " + report.getProgressPercent() + "%");
+            log.fine("transfer rate bit    : " + report.getTransferRateBit() + "b/s");
+            log.fine("transfer rate octet  : " + report.getTransferRateOctet() + "B/s");
+            log.fine("uploaded for now     : " + report.getTemporaryPacketSize() + "/" + report.getTotalPacketSize());
+
+            if (report.getStartTime() > 0) {
+                log.fine("amount of time       : " + ((report.getReportTime() - report.getStartTime()) / 1000) + "s");
+            }
+            log.fine("request number       : " + report.getRequestNum());
+
+            log.fine("--------------------------------------------------------");
         }
-
-        log.fine("progress             : " + report.getProgressPercent() + "%");
-        log.fine("transfer rate bit    : " + report.getTransferRateBit() + "b/s");
-        log.fine("transfer rate octet  : " + report.getTransferRateOctet() + "B/s");
-        log.fine("uploaded for now     : " + report.getTemporaryPacketSize() + "/" + report.getTotalPacketSize());
-
-        if (report.getStartTime() > 0) {
-            log.fine("amount of time       : " + ((report.getReportTime() - report.getStartTime()) / 1000) + "s");
-        }
-        log.fine("request number       : " + report.getRequestNum());
-
-        log.fine("--------------------------------------------------------");
     }
 
     /**
@@ -157,23 +161,25 @@ public class SpeedTest {
      */
     private static void logFinishedTask(final SpeedTestMode mode, final long packetSize, final float transferRateBitPerSeconds, final float transferRateOctetPerSeconds) {
 
-        switch (mode) {
-            case DOWNLOAD:
-                log.fine("======== Download [ OK ] =============");
-                break;
-            case UPLOAD:
-                log.fine("========= Upload [ OK ]  =============");
-                break;
-            default:
-                break;
-        }
+        if (log.isLoggable(Level.FINE)) {
+            switch (mode) {
+                case DOWNLOAD:
+                    log.fine("======== Download [ OK ] =============");
+                    break;
+                case UPLOAD:
+                    log.fine("========= Upload [ OK ]  =============");
+                    break;
+                default:
+                    break;
+            }
 
-        log.fine("upload packetSize     : " + packetSize + " octet(s)");
-        log.fine("upload transfer rate  : " + transferRateBitPerSeconds + " bit/second   | " + transferRateBitPerSeconds / 1000
-                + " Kbit/second  | " + transferRateBitPerSeconds / 1000000 + " Mbit/second");
-        log.fine("upload transfer rate  : " + transferRateOctetPerSeconds + " octet/second | " + transferRateOctetPerSeconds / 1000
-                + " Koctet/second | " + +transferRateOctetPerSeconds / 1000000 + " Moctet/second");
-        log.fine("##################################################################");
+            log.fine("upload packetSize     : " + packetSize + " octet(s)");
+            log.fine("upload transfer rate  : " + transferRateBitPerSeconds + " bit/second   | " + transferRateBitPerSeconds / 1000
+                    + " Kbit/second  | " + transferRateBitPerSeconds / 1000000 + " Mbit/second");
+            log.fine("upload transfer rate  : " + transferRateOctetPerSeconds + " octet/second | " + transferRateOctetPerSeconds / 1000
+                    + " Koctet/second | " + +transferRateOctetPerSeconds / 1000000 + " Moctet/second");
+            log.fine("##################################################################");
+        }
     }
 
     /**
@@ -183,17 +189,19 @@ public class SpeedTest {
      */
     private static void updateDownloadProgressBar(final float percent) {
 
-        if (!initDownloadBar) {
-            System.out.print("download progress | < ");
-        }
-        initDownloadBar = true;
+        if (log.isLoggable(Level.FINE)) {
+            if (!initDownloadBar) {
+                log.fine("download progress | < ");
+            }
+            initDownloadBar = true;
 
-        if (percent % 4 == 0) {
-            System.out.print("=");
-        }
+            if (percent % 4 == 0) {
+                log.fine("=");
+            }
 
-        if (percent == 100) {
-            log.fine(" 100%");
+            if (percent == 100) {
+                log.fine(" 100%");
+            }
         }
     }
 
@@ -204,14 +212,16 @@ public class SpeedTest {
      */
     private static void updateUploadProgressBar(final float percent) {
 
-        if (!initUploadBar)
-            System.out.print("upload progress | < ");
-        initUploadBar = true;
-        if (percent % 5 == 0)
-            System.out.print("=");
+        if (log.isLoggable(Level.FINE)) {
+            if (!initUploadBar)
+                log.fine("upload progress | < ");
+            initUploadBar = true;
+            if (percent % 5 == 0)
+                log.fine("=");
 
-        if (percent == 100) {
-            log.fine("upload 100%");
+            if (percent == 100) {
+                log.fine("upload 100%");
+            }
         }
     }
 }
