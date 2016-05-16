@@ -80,16 +80,6 @@ public class SpeedTestSocket {
     private Socket socket;
 
     /**
-     * socket inputstream
-     */
-    private InputStream socketIs;
-
-    /**
-     * define if reading thread is currently running
-     */
-    private boolean isReading;
-
-    /**
      * speed test listener list
      */
     private final List<ISpeedTestListener> listenerList = new ArrayList<ISpeedTestListener>();
@@ -222,18 +212,13 @@ public class SpeedTestSocket {
     /**
      * logger
      */
-    private Logger log;
+    private final static Logger log = Logger.getLogger(SpeedTestSocket.class.getName());
 
     /**
      * Build Client socket
      */
     public SpeedTestSocket() {
         initThreadPool();
-        initLogger();
-    }
-
-    private void initLogger() {
-        log = Logger.getLogger(SpeedTestSocket.class.getName());
     }
 
     /**
@@ -288,10 +273,6 @@ public class SpeedTestSocket {
 
             socket.connect(new InetSocketAddress(hostname, port));
 
-            socketIs = socket.getInputStream();
-
-            isReading = true;
-
             executorService.execute(new Runnable() {
 
                 @Override
@@ -332,10 +313,10 @@ public class SpeedTestSocket {
             }
             timeEnd = 0;
 
-            final HttpStates httFrameState = httpFrame.decodeFrame(socketIs);
+            final HttpStates httFrameState = httpFrame.decodeFrame(socket.getInputStream());
             checkHttpFrameError(httFrameState);
 
-            final HttpStates httpHeaderState = httpFrame.parseHeader(socketIs);
+            final HttpStates httpHeaderState = httpFrame.parseHeader(socket.getInputStream());
             checkHttpHeaderError(httpHeaderState);
 
             checkHttpContentLengthError(httpFrame);
@@ -378,7 +359,7 @@ public class SpeedTestSocket {
         final byte[] buffer = new byte[READ_BUFFER_SIZE];
         int read = 0;
 
-        while ((read = socketIs.read(buffer)) != -1) {
+        while ((read = socket.getInputStream().read(buffer)) != -1) {
 
             downloadTemporaryPacketSize += read;
 
@@ -477,7 +458,7 @@ public class SpeedTestSocket {
         try {
             final HttpFrame frame = new HttpFrame();
 
-            final HttpStates httpStates = frame.parseHttp(socketIs);
+            final HttpStates httpStates = frame.parseHttp(socket.getInputStream());
 
             if (httpStates == HttpStates.HTTP_FRAME_OK) {
                 if (frame.getStatusCode() == 200 && frame.getReasonPhrase().equalsIgnoreCase("ok")) {
@@ -493,12 +474,10 @@ public class SpeedTestSocket {
                 }
                 speedTestMode = SpeedTestMode.NONE;
 
-                isReading = false;
                 closeSocket();
                 executorService.shutdown();
                 return;
             }
-            isReading = false;
             closeSocket();
             for (int i = 0; i < listenerList.size(); i++) {
                 listenerList.get(i).onUploadError(SpeedTestError.SOCKET_ERROR, "socket error");
@@ -517,7 +496,7 @@ public class SpeedTestSocket {
      * @param isDownload   downloading task or uploading task
      * @param errorMessage error message from Exception
      */
-    private void catchError(boolean isDownload, final String errorMessage) {
+    private void catchError(final boolean isDownload, final String errorMessage) {
         dispatchError(isDownload, errorMessage);
         timeEnd = System.currentTimeMillis();
         closeSocket();
@@ -530,7 +509,7 @@ public class SpeedTestSocket {
      * @param isDownload   downloading task or uploading task
      * @param errorMessage error message from Exception
      */
-    private void dispatchError(final boolean isDownload, String errorMessage) {
+    private void dispatchError(final boolean isDownload, final String errorMessage) {
 
         if (!forceCloseSocket) {
             if (isDownload) {
@@ -562,11 +541,11 @@ public class SpeedTestSocket {
      * @param port     server port
      * @param uri      uri to fetch to download file
      */
-    private void startDownloadRequest(String hostname, int port, String uri) {
+    private void startDownloadRequest(final String hostname, final int port, final String uri) {
         forceCloseSocket = false;
         this.hostname = hostname;
         this.port = port;
-        String downloadRequest = "GET " + uri + " HTTP/1.1\r\n" + "Host: " + hostname + "\r\n\r\n";
+        final String downloadRequest = "GET " + uri + " HTTP/1.1\r\n" + "Host: " + hostname + "\r\n\r\n";
         writeDownload(downloadRequest.getBytes());
     }
 
@@ -577,7 +556,7 @@ public class SpeedTestSocket {
      * @param port     server port
      * @param uri      uri to fetch to download file
      */
-    public void startDownload(String hostname, int port, String uri) {
+    public void startDownload(final String hostname, final int port, final String uri) {
         isRepeatDownload = false;
         startDownloadRequest(hostname, port, uri);
     }
@@ -589,7 +568,7 @@ public class SpeedTestSocket {
      * @param port     server port
      * @param uri      uri to fetch to download file
      */
-    private void startDownloadRepeat(String hostname, int port, String uri) {
+    private void startDownloadRepeat(final String hostname, final int port, final String uri) {
         startDownloadRequest(hostname, port, uri);
     }
 
@@ -606,8 +585,8 @@ public class SpeedTestSocket {
     public void startDownloadRepeat(final String hostname,
                                     final int port,
                                     final String uri,
-                                    int repeatWindow,
-                                    int reportPeriodMillis,
+                                    final int repeatWindow,
+                                    final int reportPeriodMillis,
                                     final IRepeatListener repeatListener) {
 
         initDownloadRepeat();
@@ -616,34 +595,34 @@ public class SpeedTestSocket {
 
         final ISpeedTestListener speedTestListener = new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
-                repeatTransferRateBps = ((repeatTransferRateBps + transferRateOctetPerSeconds) / 2f);
+            public void onDownloadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final float transferRateOctetPerSeconds) {
+                repeatTransferRateBps = (repeatTransferRateBps + transferRateOctetPerSeconds) / 2f;
                 startDownloadRepeat(hostname, port, uri);
                 repeatRequestNum++;
             }
 
             @Override
-            public void onDownloadProgress(float percent, SpeedTestReport report) {
+            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
                 //nothing to do here for download repeat task listener
             }
 
             @Override
-            public void onDownloadError(SpeedTestError speedTestError, String errorMessage) {
+            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
                 clearDownloadRepeat(this, timer);
             }
 
             @Override
-            public void onUploadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
+            public void onUploadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final float transferRateOctetPerSeconds) {
                 //nothing to do here for download repeat task listener
             }
 
             @Override
-            public void onUploadError(SpeedTestError speedTestError, String errorMessage) {
+            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
                 clearDownloadRepeat(this, timer);
             }
 
             @Override
-            public void onUploadProgress(float percent, SpeedTestReport report) {
+            public void onUploadProgress(final float percent, final SpeedTestReport report) {
                 //nothing to do here for download repeat task listener
             }
         };
@@ -698,7 +677,7 @@ public class SpeedTestSocket {
      * @param listener speed test listener
      * @param timer    finished task timer
      */
-    private void clearDownloadRepeat(ISpeedTestListener listener, Timer timer) {
+    private void clearDownloadRepeat(final ISpeedTestListener listener, final Timer timer) {
 
         removeSpeedTestListener(listener);
         if (timer != null) {
@@ -736,8 +715,7 @@ public class SpeedTestSocket {
                     try {
                         if (socket.getOutputStream() != null) {
                             timeStart = System.currentTimeMillis();
-                            socket.getOutputStream().write(data);
-                            socket.getOutputStream().flush();
+                            writeFlushSocket(data);
                         }
                     } catch (IOException e) {
                         dispatchError(true, e.getMessage());
@@ -755,7 +733,7 @@ public class SpeedTestSocket {
      * @param uri           uri to fetch
      * @param fileSizeOctet size of file to upload
      */
-    public void startUpload(String hostname, int port, String uri, int fileSizeOctet) {
+    public void startUpload(final String hostname, final int port, final String uri, final int fileSizeOctet) {
 
         this.hostname = hostname;
         this.port = port;
@@ -763,10 +741,9 @@ public class SpeedTestSocket {
         timeEnd = 0;
         forceCloseSocket = false;
         /* generate a file with size of fileSizeOctet octet */
-        RandomGen random = new RandomGen(fileSizeOctet);
-        byte[] fileContent = random.nextArray();
+        final byte[] fileContent = new RandomGen(fileSizeOctet).nextArray();
+        final String uploadRequest = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + hostname + "\r\nAccept: */*\r\nContent-Length: " + fileSizeOctet + "\r\n\r\n";
 
-        String uploadRequest = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + hostname + "\r\nAccept: */*\r\nContent-Length: " + fileSizeOctet + "\r\n\r\n";
         writeUpload(uploadRequest.getBytes(), fileContent);
     }
 
@@ -788,28 +765,27 @@ public class SpeedTestSocket {
 
                         uploadTempFileSize = 0;
 
-                        int step = body.length / uploadChunkSize;
-                        int remain = body.length % uploadChunkSize;
+                        final int step = body.length / uploadChunkSize;
+                        final int remain = body.length % uploadChunkSize;
 
                         if (socket.getOutputStream() != null) {
 
-                            socket.getOutputStream().write(head);
-                            socket.getOutputStream().flush();
+                            writeFlushSocket(head);
 
                             timeStart = System.currentTimeMillis();
 
                             for (int i = 0; i < step; i++) {
-                                socket.getOutputStream().write(Arrays.copyOfRange(body, uploadTempFileSize, uploadTempFileSize + uploadChunkSize));
-                                socket.getOutputStream().flush();
+
+                                writeFlushSocket(Arrays.copyOfRange(body, uploadTempFileSize, uploadTempFileSize + uploadChunkSize));
+
                                 for (int j = 0; j < listenerList.size(); j++) {
-                                    SpeedTestReport report = getLiveUploadReport();
+                                    final SpeedTestReport report = getLiveUploadReport();
                                     listenerList.get(j).onUploadProgress(report.getProgressPercent(), report);
                                 }
                                 uploadTempFileSize += uploadChunkSize;
                             }
                             if (remain != 0) {
-                                socket.getOutputStream().write(Arrays.copyOfRange(body, uploadTempFileSize, uploadTempFileSize + remain));
-                                socket.getOutputStream().flush();
+                                writeFlushSocket(Arrays.copyOfRange(body, uploadTempFileSize, uploadTempFileSize + remain));
                             }
                             for (int j = 0; j < listenerList.size(); j++) {
                                 listenerList.get(j).onUploadProgress(100, getLiveUploadReport());
@@ -822,6 +798,17 @@ public class SpeedTestSocket {
                 }
             }
         }, false);
+    }
+
+    /**
+     * write and flush socket
+     *
+     * @param data
+     * @throws IOException
+     */
+    private void writeFlushSocket(byte[] data) throws IOException {
+        socket.getOutputStream().write(data);
+        socket.getOutputStream().flush();
     }
 
     /**
@@ -848,7 +835,7 @@ public class SpeedTestSocket {
      * @param mode speed test mode requested
      * @return speed test report
      */
-    private SpeedTestReport getReport(SpeedTestMode mode) {
+    private SpeedTestReport getReport(final SpeedTestMode mode) {
 
         long temporaryPacketSize = 0;
         long totalPacketSize = 0;
@@ -901,9 +888,9 @@ public class SpeedTestSocket {
      * @param transferRateOctet transfer rate in octet/s
      * @return speed test report object
      */
-    private SpeedTestReport getRepeatDownloadReport(SpeedTestMode speedTestMode,
-                                                    long reportTime,
-                                                    float transferRateOctet) {
+    private SpeedTestReport getRepeatDownloadReport(final SpeedTestMode speedTestMode,
+                                                    final long reportTime,
+                                                    final float transferRateOctet) {
         float progressPercent = 0;
         long temporaryPacketSize = 0;
         float transferRateBit = 0;
@@ -954,10 +941,8 @@ public class SpeedTestSocket {
 
         if (socket != null) {
             try {
-                if (socketIs != null) {
-                    socketIs.close();
-                    socketIs.close();
-                }
+                socket.getInputStream().close();
+                socket.getOutputStream().close();
                 socket.close();
             } catch (IOException e) {
             }
@@ -969,7 +954,6 @@ public class SpeedTestSocket {
      * Join reading thread before closing socket
      */
     public void closeSocketJoinRead() {
-        isReading = false;
         executorService.shutdown();
         while (!executorService.isTerminated()) {
         }
@@ -990,7 +974,7 @@ public class SpeedTestSocket {
      *
      * @param socketTimeoutMillis socket timeout value in milliseconds
      */
-    public void setSocketTimeout(int socketTimeoutMillis) {
+    public void setSocketTimeout(final int socketTimeoutMillis) {
         if (socketTimeoutMillis >= 0)
             socketTimeout = socketTimeoutMillis;
     }
@@ -1018,7 +1002,7 @@ public class SpeedTestSocket {
      *
      * @param uploadChunkSize new size of each packet sent to upload server
      */
-    public void setUploadChunkSize(int uploadChunkSize) {
+    public void setUploadChunkSize(final int uploadChunkSize) {
         this.uploadChunkSize = uploadChunkSize;
     }
 }
