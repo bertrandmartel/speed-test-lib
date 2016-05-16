@@ -25,6 +25,8 @@ package fr.bmartel.speedtest.test;
 
 import fr.bmartel.speedtest.*;
 
+import java.util.logging.Logger;
+
 /**
  * Speed Test example
  * <p/>
@@ -40,12 +42,17 @@ public class SpeedTest {
     /**
      * check download bar initialization
      */
-    private static boolean initDownloadBar = false;
+    private static boolean initDownloadBar;
 
     /**
      * check upload bar initialization
      */
-    private static boolean initUploadBar = false;
+    private static boolean initUploadBar;
+
+    /**
+     * logger
+     */
+    private static Logger log;
 
     /**
      * Instanciate Speed Test and start download and upload process with speed
@@ -54,6 +61,8 @@ public class SpeedTest {
      * @param args
      */
     public static void main(String[] args) {
+
+        log = Logger.getLogger(SpeedTest.class.getName());
 
 		/* instanciate speed test */
         final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
@@ -64,7 +73,7 @@ public class SpeedTest {
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
-            public void onDownloadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
+            public void onDownloadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final float transferRateOctetPerSeconds) {
 
                 logFinishedTask(SpeedTestMode.DOWNLOAD, packetSize, transferRateBitPerSeconds, transferRateOctetPerSeconds);
 
@@ -72,11 +81,11 @@ public class SpeedTest {
 
             @Override
             public void onDownloadError(SpeedTestError speedTestError, String errorMessage) {
-                System.out.println("Download error " + speedTestError + " : " + errorMessage);
+                log.fine("Download error " + speedTestError + " : " + errorMessage);
             }
 
             @Override
-            public void onUploadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
+            public void onUploadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final float transferRateOctetPerSeconds) {
 
                 logFinishedTask(SpeedTestMode.UPLOAD, packetSize, transferRateBitPerSeconds, transferRateOctetPerSeconds);
 
@@ -84,11 +93,11 @@ public class SpeedTest {
 
             @Override
             public void onUploadError(SpeedTestError speedTestError, String errorMessage) {
-                System.out.println("Upload error " + speedTestError + " : " + errorMessage);
+                log.fine("Upload error " + speedTestError + " : " + errorMessage);
             }
 
             @Override
-            public void onDownloadProgress(float percent, SpeedTestReport downloadReport) {
+            public void onDownloadProgress(final float percent, final SpeedTestReport downloadReport) {
 
                 logSpeedTestReport(downloadReport);
 
@@ -96,7 +105,7 @@ public class SpeedTest {
             }
 
             @Override
-            public void onUploadProgress(float percent, SpeedTestReport uploadReport) {
+            public void onUploadProgress(final float percent, final SpeedTestReport uploadReport) {
 
                 logSpeedTestReport(uploadReport);
 
@@ -112,30 +121,30 @@ public class SpeedTest {
      *
      * @param report
      */
-    private static void logSpeedTestReport(SpeedTestReport report) {
+    private static void logSpeedTestReport(final SpeedTestReport report) {
 
         switch (report.getSpeedTestMode()) {
             case DOWNLOAD:
-                System.out.println("--------------current download report--------------------");
+                log.fine("--------------current download report--------------------");
                 break;
             case UPLOAD:
-                System.out.println("---------------current upload report--------------------");
+                log.fine("---------------current upload report--------------------");
                 break;
             default:
                 break;
         }
 
-        System.out.println("progress             : " + report.getProgressPercent() + "%");
-        System.out.println("transfer rate bit    : " + report.getTransferRateBit() + "b/s");
-        System.out.println("transfer rate octet  : " + report.getTransferRateOctet() + "B/s");
-        System.out.println("uploaded for now     : " + report.getTemporaryPacketSize() + "/" + report.getTotalPacketSize());
+        log.fine("progress             : " + report.getProgressPercent() + "%");
+        log.fine("transfer rate bit    : " + report.getTransferRateBit() + "b/s");
+        log.fine("transfer rate octet  : " + report.getTransferRateOctet() + "B/s");
+        log.fine("uploaded for now     : " + report.getTemporaryPacketSize() + "/" + report.getTotalPacketSize());
 
         if (report.getStartTime() > 0) {
-            System.out.println("amount of time       : " + ((report.getReportTime() - report.getStartTime()) / 1000) + "s");
+            log.fine("amount of time       : " + ((report.getReportTime() - report.getStartTime()) / 1000) + "s");
         }
-        System.out.println("request number       : " + report.getRequestNum());
+        log.fine("request number       : " + report.getRequestNum());
 
-        System.out.println("--------------------------------------------------------");
+        log.fine("--------------------------------------------------------");
     }
 
     /**
@@ -146,25 +155,25 @@ public class SpeedTest {
      * @param transferRateBitPerSeconds
      * @param transferRateOctetPerSeconds
      */
-    private static void logFinishedTask(SpeedTestMode mode, long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
+    private static void logFinishedTask(final SpeedTestMode mode, final long packetSize, final float transferRateBitPerSeconds, final float transferRateOctetPerSeconds) {
 
         switch (mode) {
             case DOWNLOAD:
-                System.out.println("======== Download [ OK ] =============");
+                log.fine("======== Download [ OK ] =============");
                 break;
             case UPLOAD:
-                System.out.println("========= Upload [ OK ]  =============");
+                log.fine("========= Upload [ OK ]  =============");
                 break;
             default:
                 break;
         }
 
-        System.out.println("upload packetSize     : " + packetSize + " octet(s)");
-        System.out.println("upload transfer rate  : " + transferRateBitPerSeconds + " bit/second   | " + transferRateBitPerSeconds / 1000
+        log.fine("upload packetSize     : " + packetSize + " octet(s)");
+        log.fine("upload transfer rate  : " + transferRateBitPerSeconds + " bit/second   | " + transferRateBitPerSeconds / 1000
                 + " Kbit/second  | " + transferRateBitPerSeconds / 1000000 + " Mbit/second");
-        System.out.println("upload transfer rate  : " + transferRateOctetPerSeconds + " octet/second | " + transferRateOctetPerSeconds / 1000
+        log.fine("upload transfer rate  : " + transferRateOctetPerSeconds + " octet/second | " + transferRateOctetPerSeconds / 1000
                 + " Koctet/second | " + +transferRateOctetPerSeconds / 1000000 + " Moctet/second");
-        System.out.println("##################################################################");
+        log.fine("##################################################################");
     }
 
     /**
@@ -172,7 +181,7 @@ public class SpeedTest {
      *
      * @param percent
      */
-    private static void updateDownloadProgressBar(float percent) {
+    private static void updateDownloadProgressBar(final float percent) {
 
         if (!initDownloadBar) {
             System.out.print("download progress | < ");
@@ -184,7 +193,7 @@ public class SpeedTest {
         }
 
         if (percent == 100) {
-            System.out.println(" 100%");
+            log.fine(" 100%");
         }
     }
 
@@ -193,7 +202,7 @@ public class SpeedTest {
      *
      * @param percent
      */
-    private static void updateUploadProgressBar(float percent) {
+    private static void updateUploadProgressBar(final float percent) {
 
         if (!initUploadBar)
             System.out.print("upload progress | < ");
@@ -202,7 +211,7 @@ public class SpeedTest {
             System.out.print("=");
 
         if (percent == 100) {
-            System.out.println("upload 100%");
+            log.fine("upload 100%");
         }
     }
 }
