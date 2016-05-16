@@ -55,7 +55,7 @@ public class SpeedTestReportTest {
     @Test
     public void speedTestReportTest() {
 
-        SpeedTestReport report = new SpeedTestReport(
+        final SpeedTestReport report = new SpeedTestReport(
                 speedTestMode,
                 progressPercent,
                 startTime,

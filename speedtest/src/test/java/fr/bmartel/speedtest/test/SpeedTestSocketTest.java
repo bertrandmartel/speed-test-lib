@@ -46,6 +46,8 @@ public class SpeedTestSocketTest {
 
     private final int uploadChunkSizeDefault = 65535;
 
+    private final int uploadChunkInvalid = 30000;
+
     @Test
     public void socketTimeoutDefaultTest() {
         socket = new SpeedTestSocket();
@@ -75,10 +77,9 @@ public class SpeedTestSocketTest {
 
     @Test
     public void uploadChunkSizeSetterTest() {
-        final int chunkSize = 30000;
         socket = new SpeedTestSocket();
-        socket.setUploadChunkSize(chunkSize);
-        assertEquals(HEADER + "chunk size incorrect value after set", socket.getUploadChunkSize(), chunkSize);
+        socket.setUploadChunkSize(uploadChunkInvalid);
+        assertEquals(HEADER + "chunk size incorrect value after set", socket.getUploadChunkSize(), uploadChunkInvalid);
     }
 
 }
