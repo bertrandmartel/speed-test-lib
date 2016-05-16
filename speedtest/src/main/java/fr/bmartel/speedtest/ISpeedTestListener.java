@@ -41,10 +41,10 @@ public interface ISpeedTestListener {
      * monitor download process result with transfer rate in bit/s and octet/s
      *
      * @param packetSize                  packet size retrieved from server
-     * @param transferRateBitPerSeconds   transfer rate in bit/seconds
-     * @param transferRateOctetPerSeconds transfer rate in octet/seconds
+     * @param transferRateBps   transfer rate in bit/seconds
+     * @param transferRateOps transfer rate in octet/seconds
      */
-    void onDownloadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds);
+    void onDownloadPacketsReceived(long packetSize, float transferRateBps, float transferRateOps);
 
     /**
      * monitor download progress
@@ -66,10 +66,10 @@ public interface ISpeedTestListener {
      * monitor upload process result with transfer rate in bit/s and octet/s
      *
      * @param packetSize                  packet size in octet
-     * @param transferRateBitPerSeconds   transfer rate in bit/second
-     * @param transferRateOctetPerSeconds transfer rate in octet/second
+     * @param transferRateBps   transfer rate in bit/second
+     * @param transferRateOps transfer rate in octet/second
      */
-    void onUploadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds);
+    void onUploadPacketsReceived(long packetSize, float transferRateBps, float transferRateOps);
 
     /**
      * Error catch for upload process

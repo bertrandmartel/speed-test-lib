@@ -174,15 +174,18 @@ public class SpeedTest {
      */
     private static void updateDownloadProgressBar(float percent) {
 
-        if (!initDownloadBar)
+        if (!initDownloadBar) {
             System.out.print("download progress | < ");
+        }
         initDownloadBar = true;
 
-        if (percent % 4 == 0)
+        if (percent % 4 == 0) {
             System.out.print("=");
+        }
 
-        if (percent == 100)
+        if (percent == 100) {
             System.out.println(" 100%");
+        }
     }
 
     /**
