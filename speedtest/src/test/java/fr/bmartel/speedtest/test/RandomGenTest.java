@@ -26,7 +26,7 @@ package fr.bmartel.speedtest.test;
 import fr.bmartel.speedtest.RandomGen;
 import org.junit.Test;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Random file generator test
@@ -37,15 +37,15 @@ public class RandomGenTest {
 
     private final static String HEADER = TestUtils.generateMessageHeader(RandomGenTest.class);
 
+    private final int[] sizes = new int[]{1, 10, 10000, 10000000};
+
     @Test
     public void randomGenTest() {
 
-        final int[] sizes = new int[]{1, 10, 10000, 10000000};
-
         for (int i = 0; i < sizes.length; i++) {
             final RandomGen random = new RandomGen(sizes[i]);
-            int length = random.nextArray().length;
-            assertSame(HEADER + "random generated array are not equals", length, sizes[i]);
+            final int length = random.nextArray().length;
+            assertEquals(HEADER + "random generated array are not equals", length, sizes[i]);
         }
 
     }
