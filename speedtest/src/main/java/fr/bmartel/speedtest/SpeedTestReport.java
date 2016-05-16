@@ -35,7 +35,7 @@ public class SpeedTestReport {
     /**
      * current size of file to upload
      */
-    private long temporaryPacketSize = 0;
+    private long tempPacketSize = 0;
 
     /**
      * total file size
@@ -80,21 +80,21 @@ public class SpeedTestReport {
     /**
      * Build Upload report
      *
-     * @param speedTestMode       speed test mode (DOWNLOAD/UPLOAD)
-     * @param progressPercent     speed test progress in percent (%)
-     * @param startTime           upload start time in millis since 1970
-     * @param reportTime          upload report time in millis since 1970
-     * @param temporaryPacketSize current size of file to upload
-     * @param totalPacketSize     total file size
-     * @param transferRateOctet   transfer rate in octet/s
-     * @param transferRateBit     transfer rate in bit/s
-     * @param requestNum          number of request for this report
+     * @param speedTestMode     speed test mode (DOWNLOAD/UPLOAD)
+     * @param progressPercent   speed test progress in percent (%)
+     * @param startTime         upload start time in millis since 1970
+     * @param reportTime        upload report time in millis since 1970
+     * @param tempPacketSize    current size of file to upload
+     * @param totalPacketSize   total file size
+     * @param transferRateOctet transfer rate in octet/s
+     * @param transferRateBit   transfer rate in bit/s
+     * @param requestNum        number of request for this report
      */
     public SpeedTestReport(SpeedTestMode speedTestMode,
                            float progressPercent,
                            long startTime,
                            long reportTime,
-                           long temporaryPacketSize,
+                           long tempPacketSize,
                            long totalPacketSize,
                            float transferRateOctet,
                            float transferRateBit,
@@ -103,7 +103,7 @@ public class SpeedTestReport {
         this.progressPercent = progressPercent;
         this.startTime = startTime;
         this.reportTime = reportTime;
-        this.temporaryPacketSize = temporaryPacketSize;
+        this.tempPacketSize = tempPacketSize;
         this.totalPacketSize = totalPacketSize;
         this.transferRateOctet = transferRateOctet;
         this.transferRateBit = transferRateBit;
@@ -116,7 +116,7 @@ public class SpeedTestReport {
      * @return packet size in bit
      */
     public float getTemporaryPacketSize() {
-        return temporaryPacketSize;
+        return tempPacketSize;
     }
 
     /**

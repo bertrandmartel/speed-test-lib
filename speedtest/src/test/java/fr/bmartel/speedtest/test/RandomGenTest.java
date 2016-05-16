@@ -35,7 +35,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class RandomGenTest {
 
-    private RandomGen random;
+    public RandomGenTest() {
+    }
 
     @Test
     public void randomGenTest() {
@@ -43,7 +44,7 @@ public class RandomGenTest {
         int[] sizes = new int[]{1, 10, 10000, 10000000};
 
         for (int i = 0; i < sizes.length; i++) {
-            random = new RandomGen(sizes[i]);
+            RandomGen random = new RandomGen(sizes[i]);
             assertTrue(random.nextArray().length == sizes[i]);
         }
 
