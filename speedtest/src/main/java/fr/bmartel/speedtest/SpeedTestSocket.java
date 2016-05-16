@@ -24,7 +24,6 @@
 package fr.bmartel.speedtest;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -485,8 +484,10 @@ public class SpeedTestSocket {
             executorService.shutdown();
         } catch (SocketException e) {
             catchError(false, e.getMessage());
-        } catch (Exception e) {
-            catchError(false, e.getMessage());
+        } catch (IOException e) {
+            catchError(true, e.getMessage());
+        } catch (InterruptedException e) {
+            catchError(true, e.getMessage());
         }
     }
 
@@ -806,7 +807,7 @@ public class SpeedTestSocket {
      * @param data
      * @throws IOException
      */
-    private void writeFlushSocket(byte[] data) throws IOException {
+    private void writeFlushSocket(final byte[] data) throws IOException {
         socket.getOutputStream().write(data);
         socket.getOutputStream().flush();
     }
@@ -865,9 +866,11 @@ public class SpeedTestSocket {
 
         float percent = 0;
 
+        SpeedTestReport report;
+
         if (isRepeatDownload) {
 
-            return getRepeatDownloadReport(mode, currentTime, transferRate_Bps);
+            report = getRepeatDownloadReport(mode, currentTime, transferRate_Bps);
 
         } else {
 
@@ -875,9 +878,10 @@ public class SpeedTestSocket {
                 percent = temporaryPacketSize * 100f / totalPacketSize;
             }
 
-            return new SpeedTestReport(mode, percent,
+            report = new SpeedTestReport(mode, percent,
                     timeStart, currentTime, temporaryPacketSize, totalPacketSize, transferRate_Bps, transferRate_bps, 1);
         }
+        return report;
     }
 
     /**
@@ -907,7 +911,7 @@ public class SpeedTestSocket {
             progressPercent = 0;
         }
 
-        if ((repeatTransferRateBps != 0) && !repeatFinished)
+        if (repeatTransferRateBps != 0 && !repeatFinished)
             downloadRepeatRateOctet = (repeatTransferRateBps + downloadRepeatRateOctet) / 2f;
         else if (repeatFinished) {
             downloadRepeatRateOctet = repeatTransferRateBps;
@@ -947,7 +951,6 @@ public class SpeedTestSocket {
             } catch (IOException e) {
             }
         }
-        socket = null;
     }
 
     /**
