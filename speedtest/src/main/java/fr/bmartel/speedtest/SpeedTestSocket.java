@@ -31,6 +31,8 @@ import java.net.SocketException;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import fr.bmartel.protocol.http.HttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;
@@ -218,10 +220,20 @@ public class SpeedTestSocket {
     private boolean repeatFinished;
 
     /**
+     * logger
+     */
+    private Logger log;
+
+    /**
      * Build Client socket
      */
     public SpeedTestSocket() {
         initThreadPool();
+        initLogger();
+    }
+
+    private void initLogger() {
+        log = Logger.getLogger(SpeedTestSocket.class.getName());
     }
 
     /**
@@ -255,7 +267,7 @@ public class SpeedTestSocket {
      * @param task       task to be executed when connected to socket
      * @param isDownload define if it is a download or upload test
      */
-    private void connectAndExecuteTask(TimerTask task, final boolean isDownload) {
+    private void connectAndExecuteTask(final TimerTask task, final boolean isDownload) {
 
         // close socket before recreating it
         if (socket != null) {
@@ -374,7 +386,7 @@ public class SpeedTestSocket {
                 repeatTempPckSize += read;
             }
             for (int i = 0; i < listenerList.size(); i++) {
-                SpeedTestReport report = getLiveDownloadReport();
+                final SpeedTestReport report = getLiveDownloadReport();
                 listenerList.get(i).onDownloadProgress(report.getProgressPercent(), getLiveDownloadReport());
             }
             if (downloadTemporaryPacketSize == downloadPckSize) {
@@ -388,9 +400,14 @@ public class SpeedTestSocket {
      *
      * @param httFrameState
      */
-    private void checkHttpFrameError(HttpStates httFrameState) {
+    private void checkHttpFrameError(final HttpStates httFrameState) {
+
         if (httFrameState != HttpStates.HTTP_FRAME_OK) {
-            System.err.println("Error while parsing http frame");
+
+            if (log.isLoggable(Level.SEVERE)) {
+                log.severe("Error while parsing http frame");
+            }
+
             if (!forceCloseSocket) {
                 for (int i = 0; i < listenerList.size(); i++) {
                     listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error while parsing http frame");
@@ -408,9 +425,14 @@ public class SpeedTestSocket {
      *
      * @param httpHeaderState
      */
-    private void checkHttpHeaderError(HttpStates httpHeaderState) {
+    private void checkHttpHeaderError(final HttpStates httpHeaderState) {
+
         if (httpHeaderState != HttpStates.HTTP_FRAME_OK) {
-            System.err.println("Error while parsing http headers");
+
+            if (log.isLoggable(Level.SEVERE)) {
+                log.severe("Error while parsing http headers");
+            }
+
             if (!forceCloseSocket) {
                 for (int i = 0; i < listenerList.size(); i++) {
                     listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error while parsing http headers");
@@ -428,9 +450,13 @@ public class SpeedTestSocket {
      *
      * @param httpFrame
      */
-    private void checkHttpContentLengthError(HttpFrame httpFrame) {
+    private void checkHttpContentLengthError(final HttpFrame httpFrame) {
         if (httpFrame.getContentLength() < 0) {
-            System.err.println("Error content length is inconsistent");
+
+            if (log.isLoggable(Level.SEVERE)) {
+                log.severe("Error content length is inconsistent");
+            }
+
             if (!forceCloseSocket) {
                 for (int i = 0; i < listenerList.size(); i++) {
                     listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error content length is inconsistent");
@@ -448,42 +474,40 @@ public class SpeedTestSocket {
      */
     private void startSocketUploadTask() {
 
-        while (isReading) {
-            try {
-                HttpFrame frame = new HttpFrame();
+        try {
+            final HttpFrame frame = new HttpFrame();
 
-                HttpStates httpStates = frame.parseHttp(socketIs);
+            final HttpStates httpStates = frame.parseHttp(socketIs);
 
-                if (httpStates == HttpStates.HTTP_FRAME_OK) {
-                    if (frame.getStatusCode() == 200 && frame.getReasonPhrase().equalsIgnoreCase("ok")) {
+            if (httpStates == HttpStates.HTTP_FRAME_OK) {
+                if (frame.getStatusCode() == 200 && frame.getReasonPhrase().equalsIgnoreCase("ok")) {
 
-                        timeEnd = System.currentTimeMillis();
+                    timeEnd = System.currentTimeMillis();
 
-                        float transferRate_Bps = (uploadFileSize) / ((timeEnd - timeStart) / 1000f);
-                        float transferRate_bps = transferRate_Bps * 8;
+                    final float transferRate_Bps = (uploadFileSize) / ((timeEnd - timeStart) / 1000f);
+                    final float transferRate_bps = transferRate_Bps * 8;
 
-                        for (int i = 0; i < listenerList.size(); i++) {
-                            listenerList.get(i).onUploadPacketsReceived(uploadFileSize, transferRate_bps, transferRate_Bps);
-                        }
+                    for (int i = 0; i < listenerList.size(); i++) {
+                        listenerList.get(i).onUploadPacketsReceived(uploadFileSize, transferRate_bps, transferRate_Bps);
                     }
-                    speedTestMode = SpeedTestMode.NONE;
-
-                    isReading = false;
-                    closeSocket();
-                    executorService.shutdown();
-                    return;
                 }
+                speedTestMode = SpeedTestMode.NONE;
+
                 isReading = false;
                 closeSocket();
-                for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onUploadError(SpeedTestError.SOCKET_ERROR, "socket error");
-                }
                 executorService.shutdown();
-            } catch (SocketException e) {
-                catchError(false, e.getMessage());
-            } catch (Exception e) {
-                catchError(false, e.getMessage());
+                return;
             }
+            isReading = false;
+            closeSocket();
+            for (int i = 0; i < listenerList.size(); i++) {
+                listenerList.get(i).onUploadError(SpeedTestError.SOCKET_ERROR, "socket error");
+            }
+            executorService.shutdown();
+        } catch (SocketException e) {
+            catchError(false, e.getMessage());
+        } catch (Exception e) {
+            catchError(false, e.getMessage());
         }
     }
 
@@ -493,7 +517,7 @@ public class SpeedTestSocket {
      * @param isDownload   downloading task or uploading task
      * @param errorMessage error message from Exception
      */
-    private void catchError(boolean isDownload, String errorMessage) {
+    private void catchError(boolean isDownload, final String errorMessage) {
         dispatchError(isDownload, errorMessage);
         timeEnd = System.currentTimeMillis();
         closeSocket();
@@ -506,7 +530,8 @@ public class SpeedTestSocket {
      * @param isDownload   downloading task or uploading task
      * @param errorMessage error message from Exception
      */
-    private void dispatchError(boolean isDownload, String errorMessage) {
+    private void dispatchError(final boolean isDownload, String errorMessage) {
+
         if (!forceCloseSocket) {
             if (isDownload) {
                 for (int i = 0; i < listenerList.size(); i++) {
@@ -827,6 +852,7 @@ public class SpeedTestSocket {
 
         long temporaryPacketSize = 0;
         long totalPacketSize = 0;
+
         switch (mode) {
             case DOWNLOAD:
                 temporaryPacketSize = downloadTemporaryPacketSize;
@@ -847,8 +873,8 @@ public class SpeedTestSocket {
             currentTime = timeEnd;
         }
 
-        float transferRate_Bps = temporaryPacketSize / ((currentTime - timeStart) / 1000f);
-        float transferRate_bps = transferRate_Bps * 8;
+        final float transferRate_Bps = temporaryPacketSize / ((currentTime - timeStart) / 1000f);
+        final float transferRate_bps = transferRate_Bps * 8;
 
         float percent = 0;
 
