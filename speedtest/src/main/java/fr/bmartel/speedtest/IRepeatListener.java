@@ -32,14 +32,14 @@ package fr.bmartel.speedtest;
 public interface IRepeatListener {
 
     /**
-     * called when repeat download task is finished
+     * called when repeat download task is finished.
      *
      * @param report speed test report
      */
     void onFinish(SpeedTestReport report);
 
     /**
-     * called when a speed test report is sent
+     * called when a speed test report is sent.
      *
      * @param report speed test report
      */

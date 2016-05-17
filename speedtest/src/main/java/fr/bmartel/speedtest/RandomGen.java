@@ -11,19 +11,19 @@ import java.util.Random;
 public class RandomGen {
 
     /**
-     * list of incremented byte
+     * list of incremented byte.
      */
     private static final byte[] symbols;
 
     /**
-     * number of incremented byte
+     * number of incremented byte.
      */
-    private final static int SYMBOLS_LENGTH = 255;
+    private static final int SYMBOLS_LENGTH = 255;
 
     /**
-     * minimum length required for random byte array
+     * minimum length required for random byte array.
      */
-    private final static int MINIMUM_LENGTH = 1;
+    private static final int MINIMUM_LENGTH = 1;
 
     static {
         symbols = new byte[SYMBOLS_LENGTH];
@@ -33,12 +33,12 @@ public class RandomGen {
     }
 
     /**
-     * random object
+     * random object.
      */
     private final Random random = new Random();
 
     /**
-     * buffer used to retrieve random values
+     * buffer used to retrieve random values.
      */
     private final byte[] buf;
 
@@ -49,6 +49,11 @@ public class RandomGen {
         buf = new byte[length];
     }
 
+    /**
+     * generate random byte array.
+     *
+     * @return byte array
+     */
     public byte[] nextArray() {
         for (int idx = 0; idx < buf.length; ++idx) {
             final int val = random.nextInt(SYMBOLS_LENGTH);
