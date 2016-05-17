@@ -112,7 +112,7 @@ public class SpeedTestSocket {
     /**
      * force clause related error message.
      */
-    private final static String FORCE_CLOSE_CAUSE_MESSAGE = " caused by socket force close";
+    private static final String FORCE_CLOSE_CAUSE_MESSAGE = " caused by socket force close";
 
     /**
      * these variables are not used through accessors due
@@ -331,13 +331,13 @@ public class SpeedTestSocket {
 
             timeEnd = System.currentTimeMillis();
 
-            final float transferRate_Bps = downloadPckSize / ((timeEnd - timeStart) / 1000f);
-            final float transferRate_bps = transferRate_Bps * 8;
+            final float transferRateOps = downloadPckSize / ((timeEnd - timeStart) / 1000f);
+            final float transferRateBps = transferRateOps * 8;
 
             closeSocket();
 
             for (int i = 0; i < listenerList.size(); i++) {
-                listenerList.get(i).onDownloadPacketsReceived(downloadPckSize, transferRate_bps, transferRate_Bps);
+                listenerList.get(i).onDownloadPacketsReceived(downloadPckSize, transferRateBps, transferRateOps);
             }
             if (!isRepeatDownload) {
                 executorService.shutdown();
@@ -471,11 +471,11 @@ public class SpeedTestSocket {
 
                     timeEnd = System.currentTimeMillis();
 
-                    final float transferRate_Bps = (uploadFileSize) / ((timeEnd - timeStart) / 1000f);
-                    final float transferRate_bps = transferRate_Bps * 8;
+                    final float transferRateOps = uploadFileSize / ((timeEnd - timeStart) / 1000f);
+                    final float transferRateBps = transferRateOps * 8;
 
                     for (int i = 0; i < listenerList.size(); i++) {
-                        listenerList.get(i).onUploadPacketsReceived(uploadFileSize, transferRate_bps, transferRate_Bps);
+                        listenerList.get(i).onUploadPacketsReceived(uploadFileSize, transferRateBps, transferRateOps);
                     }
                 }
                 speedTestMode = SpeedTestMode.NONE;
@@ -651,8 +651,9 @@ public class SpeedTestSocket {
                 timer.cancel();
                 timer.purge();
                 repeatFinished = true;
-                if (repeatListener != null)
+                if (repeatListener != null) {
                     repeatListener.onFinish(getLiveDownloadReport());
+                }
             }
         }, repeatWindow);
 
@@ -941,8 +942,9 @@ public class SpeedTestSocket {
             temporaryPacketSize = repeatPacketSize;
         }
 
-        if (repeatFinished)
+        if (repeatFinished) {
             downloadRepeatReportTime = startDateRepeat + repeatWindows;
+        }
 
         return new SpeedTestReport(speedTestMode,
                 progressPercent,
@@ -985,8 +987,9 @@ public class SpeedTestSocket {
      * @param socketTimeoutMillis socket timeout value in milliseconds
      */
     public void setSocketTimeout(final int socketTimeoutMillis) {
-        if (socketTimeoutMillis >= 0)
+        if (socketTimeoutMillis >= 0) {
             socketTimeout = socketTimeoutMillis;
+        }
     }
 
     /**

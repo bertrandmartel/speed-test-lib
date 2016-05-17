@@ -252,11 +252,13 @@ public class SpeedTest {
     private static void updateUploadProgressBar(final float percent) {
 
         if (log.isLoggable(Level.FINE)) {
-            if (!initUploadBar)
+            if (!initUploadBar) {
                 log.fine("upload progress | < ");
+            }
             initUploadBar = true;
-            if (percent % 5 == 0)
+            if (percent % 5 == 0) {
                 log.fine("=");
+            }
 
             if (percent == 100) {
                 log.fine("upload 100%");
