@@ -35,8 +35,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 import fr.bmartel.protocol.http.HttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;
@@ -1022,5 +1021,19 @@ public class SpeedTestSocket {
      */
     public void setUploadChunkSize(final int uploadChunkSize) {
         this.uploadChunkSize = uploadChunkSize;
+    }
+
+    /**
+     * configure log for speed test socket.
+     *
+     * @param logLevel     log level
+     * @param logHandler   log handler
+     * @param logFormatter log formatter
+     */
+    public void configureLog(Level logLevel, Handler logHandler, Formatter logFormatter) {
+        log.setLevel(logLevel);
+        logHandler.setLevel(logLevel);
+        logHandler.setFormatter(logFormatter);
+        log.addHandler(logHandler);
     }
 }
