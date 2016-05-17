@@ -41,54 +41,54 @@ import java.util.Date;
 public class SpeedTestReportTest {
 
     /**
-     * unit test message header
+     * unit test message header.
      */
-    private final static String HEADER = TestUtils.generateMessageHeader(SpeedTestReportTest.class);
+    private static final String HEADER = TestUtils.generateMessageHeader(SpeedTestReportTest.class);
 
     /**
-     * tested speed test mode
+     * tested speed test mode.
      */
-    private final SpeedTestMode speedTestMode = SpeedTestMode.DOWNLOAD;
+    private static final SpeedTestMode speedTestMode = SpeedTestMode.DOWNLOAD;
 
     /**
-     * tested progress
+     * tested progress.
      */
-    private final static float progressPercent = 98;
+    private static final float progressPercent = 98;
 
     /**
-     * tested start time
+     * tested start time.
      */
-    private final static long startTime = new Date().getTime();
+    private static final long startTime = new Date().getTime();
 
     /**
-     * tested report time
+     * tested report time.
      */
-    private final static long reportTime = new Date().getTime();
+    private static final long reportTime = new Date().getTime();
 
     /**
-     * tested temporary packet size
+     * tested temporary packet size.
      */
-    private final static long temporaryPacketSize = 65535;
+    private static final long temporaryPacketSize = 65535;
 
     /**
-     * tested total packet size
+     * tested total packet size.
      */
-    private final static long totalPacketSize = 128000;
+    private static final long totalPacketSize = 128000;
 
     /**
-     * tested transfer rate o/s
+     * tested transfer rate o/s.
      */
-    private final static float transferRateOctet = 20000.54f;
+    private static final float transferRateOctet = 20000.54f;
 
     /**
-     * tested transfer rate b/s
+     * tested transfer rate b/s.
      */
-    private final static float transferRateBit = 20000.54f / 8;
+    private static final float transferRateBit = 20000.54f / 8;
 
     /**
-     * tested request number
+     * tested request number.
      */
-    private final static int requestNum = 2;
+    private static final int requestNum = 2;
 
     @Test
     public void speedTestReportTest() {

@@ -34,52 +34,52 @@ package fr.bmartel.speedtest;
 public class SpeedTestReport {
 
     /**
-     * current size of file to upload
+     * current size of file to upload.
      */
     private final long tempPacketSize;
 
     /**
-     * total file size
+     * total file size.
      */
     private final long totalPacketSize;
 
     /**
-     * transfer rate in octet/s
+     * transfer rate in octet/s.
      */
     private final float transferRateOctet;
 
     /**
-     * transfer rate in bit/s
+     * transfer rate in bit/s.
      */
     private final float transferRateBit;
 
     /**
-     * upload start time in millis since 1970
+     * upload start time in millis since 1970.
      */
     private final long startTime;
 
     /**
-     * upload report time in millis since 1970
+     * upload report time in millis since 1970.
      */
     private final long reportTime;
 
     /**
-     * speed test mode for this report
+     * speed test mode for this report.
      */
     private final SpeedTestMode speedTestMode;
 
     /**
-     * speed test progress in percent (%)
+     * speed test progress in percent (%).
      */
     private final float progressPercent;
 
     /**
-     * number of request
+     * number of request.
      */
     private final int requestNum;
 
     /**
-     * Build Upload report
+     * Build Upload report.
      *
      * @param speedTestMode     speed test mode (DOWNLOAD/UPLOAD)
      * @param progressPercent   speed test progress in percent (%)
@@ -112,7 +112,7 @@ public class SpeedTestReport {
     }
 
     /**
-     * get current file size
+     * get current file size.
      *
      * @return packet size in bit
      */
@@ -121,7 +121,7 @@ public class SpeedTestReport {
     }
 
     /**
-     * get total file size
+     * get total file size.
      *
      * @return total file size in bit
      */
@@ -130,7 +130,7 @@ public class SpeedTestReport {
     }
 
     /**
-     * get transfer rate in octet/s
+     * get transfer rate in octet/s.
      *
      * @return transfer rate in octet/s
      */
@@ -139,7 +139,7 @@ public class SpeedTestReport {
     }
 
     /**
-     * get transfer rate in bit/s
+     * get transfer rate in bit/s.
      *
      * @return transfer rate in bit/s
      */
@@ -148,7 +148,7 @@ public class SpeedTestReport {
     }
 
     /**
-     * get speed test start time
+     * get speed test start time.
      *
      * @return start time timestamp (millis since 1970)
      */
@@ -157,7 +157,7 @@ public class SpeedTestReport {
     }
 
     /**
-     * get current timestamp
+     * get current timestamp.
      *
      * @return current timestamp for this report measurement (millis since 1970)
      */
@@ -166,7 +166,7 @@ public class SpeedTestReport {
     }
 
     /**
-     * get speed test mode (DOWNLOAD/UPLOAD)
+     * get speed test mode (DOWNLOAD/UPLOAD).
      *
      * @return speed test mode
      */
@@ -175,7 +175,7 @@ public class SpeedTestReport {
     }
 
     /**
-     * get speed test progress
+     * get speed test progress.
      *
      * @return progress in %
      */
@@ -184,7 +184,7 @@ public class SpeedTestReport {
     }
 
     /**
-     * get request num
+     * get request num.
      *
      * @return http request number
      */

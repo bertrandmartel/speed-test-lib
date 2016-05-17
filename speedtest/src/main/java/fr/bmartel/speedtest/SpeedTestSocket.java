@@ -55,104 +55,103 @@ import fr.bmartel.protocol.http.states.HttpStates;
 public class SpeedTestSocket {
 
     /**
-     * size of the write read buffer for downloading
+     * size of the write read buffer for downloading.
      */
-    private final static int READ_BUFFER_SIZE = 65535;
+    private static final int READ_BUFFER_SIZE = 65535;
 
     /**
-     * default size of each packet sent to upload server
+     * default size of each packet sent to upload server.
      */
-    private final static int DEFAULT_UPLOAD_SIZE = 65535;
+    private static final int DEFAULT_UPLOAD_SIZE = 65535;
 
     /**
-     * socket server hostname
+     * socket server hostname.
      */
     private String hostname = "";
 
     /**
-     * socket server port
+     * socket server port.
      */
     private int port;
 
     /**
-     * socket object
+     * socket object.
      */
     private Socket socket;
 
     /**
-     * speed test listener list
+     * speed test listener list.
      */
     private final List<ISpeedTestListener> listenerList = new ArrayList<ISpeedTestListener>();
 
     /**
-     * this is the size of each data sent to upload server
+     * this is the size of each data sent to upload server.
      */
     private int uploadChunkSize = DEFAULT_UPLOAD_SIZE;
 
     /**
-     * socket timeout
+     * socket timeout.
      */
     private int socketTimeout;
 
     /**
-     * define if socket close error is to be expected
+     * define if socket close error is to be expected.
      */
     private boolean forceCloseSocket;
 
     /**
-     * max size for thread pool
+     * max size for thread pool.
      */
-    private final static int THREAD_POOL_SIZE = 1;
+    private static final int THREAD_POOL_SIZE = 1;
 
     /**
-     * executor service
+     * executor service.
      */
     private ScheduledExecutorService executorService;
 
     /**
-     * force clause related error message
+     * force clause related error message.
      */
     private final static String FORCE_CLOSE_CAUSE_MESSAGE = " caused by socket force close";
 
-    /**********************************************
-     ****** SPEED TEST STATS VARIABLES ************
-     **********************************************
+    /**
      * these variables are not used through accessors due
      * to lack of performance of virtual accessors in Android
      * see http://developer.android.com/training/articles/perf-tips.html#GettersSetters
      */
+
     /**
-     * size of file to upload
+     * size of file to upload.
      */
     private long uploadFileSize;
 
     /**
-     * start time triggered in millis
+     * start time triggered in millis.
      */
     private long timeStart;
 
     /**
-     * end time triggered in millis
+     * end time triggered in millis.
      */
     private long timeEnd;
 
     /**
-     * current speed test mode
+     * current speed test mode.
      */
     private SpeedTestMode speedTestMode = SpeedTestMode.NONE;
 
     /**
-     * this is the number of bit uploaded at this time
+     * this is the number of bit uploaded at this time.
      */
     private int uploadTempFileSize;
 
     /**
-     * this is the number of packet dowloaded at this time
+     * this is the number of packet dowloaded at this time.
      */
     private int downloadTemporaryPacketSize;
 
     /**
-     * this is the number of packet to download
+     * this is the number of packet to download.
      */
     private long downloadPckSize;
 
@@ -161,68 +160,69 @@ public class SpeedTestSocket {
      ***************************************************
      * these variables are not used through accessors due
      * to lack of performance of virtual accessors in Android
-     * see http://developer.android.com/training/articles/perf-tips.html#GettersSetters
+     * see http://developer.android.com/training/articles/perf-tips.html#GettersSetters.
      */
+
     /**
-     * define if download should be repeated
+     * define if download should be repeated.
      */
     private boolean isRepeatDownload;
 
     /**
-     * start time for download repeat task
+     * start time for download repeat task.
      */
     private long startDateRepeat;
 
     /**
-     * time window for download repeat task
+     * time window for download repeat task.
      */
     private int repeatWindows;
 
     /**
-     * current number of request for download repeat task
+     * current number of request for download repeat task.
      */
     private int repeatRequestNum;
 
     /**
-     * number of packet pending for download repeat task
+     * number of packet pending for download repeat task.
      */
     private long repeatPacketSize;
 
     /**
-     * number of packet downloaded for download repeat task
+     * number of packet downloaded for download repeat task.
      */
     private long repeatTempPckSize;
 
     /**
-     * current transfer rate in octet/s for download repeat task
+     * current transfer rate in octet/s for download repeat task.
      */
     private float repeatTransferRateBps;
 
     /**
-     * define if the first download repeat has been sent and waiting for connection.
-     * It is reset to false when the client is connected to server the first time
+     * define if the first download repeat has been sent and waiting for connection
+     * It is reset to false when the client is connected to server the first time.
      */
     private boolean isFirstDownloadRepeat;
 
     /**
-     * define if download repeat task is finished
+     * define if download repeat task is finished.
      */
     private boolean repeatFinished;
 
     /**
-     * logger
+     * logger.
      */
-    private final static Logger log = Logger.getLogger(SpeedTestSocket.class.getName());
+    private static final Logger log = Logger.getLogger(SpeedTestSocket.class.getName());
 
     /**
-     * Build Client socket
+     * Build Client socket.
      */
     public SpeedTestSocket() {
         initThreadPool();
     }
 
     /**
-     * Add a speed test listener to list
+     * Add a speed test listener to list.
      *
      * @param listener speed test listener to be added
      */
@@ -231,7 +231,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * Relive a speed listener from list
+     * Relive a speed listener from list.
      *
      * @param listener speed test listener to be removed
      */
@@ -240,14 +240,14 @@ public class SpeedTestSocket {
     }
 
     /**
-     * initialize thread pool
+     * initialize thread pool.
      */
     private void initThreadPool() {
         executorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE);
     }
 
     /**
-     * Create and connect socket
+     * Create and connect socket.
      *
      * @param task       task to be executed when connected to socket
      * @param isDownload define if it is a download or upload test
@@ -296,7 +296,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * start download reading task
+     * start download reading task.
      */
     private void startSocketDownloadTask() {
 
@@ -350,7 +350,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * start download reading loop + monitor progress
+     * start download reading loop + monitor progress.
      *
      * @throws IOException
      */
@@ -377,9 +377,9 @@ public class SpeedTestSocket {
     }
 
     /**
-     * checl for http uri error
+     * check for http uri error.
      *
-     * @param httFrameState
+     * @param httFrameState http frame state to check
      */
     private void checkHttpFrameError(final HttpStates httFrameState) {
 
@@ -404,9 +404,9 @@ public class SpeedTestSocket {
     }
 
     /**
-     * check for http header error
+     * check for http header error.
      *
-     * @param httpHeaderState
+     * @param httpHeaderState http frame state to check
      */
     private void checkHttpHeaderError(final HttpStates httpHeaderState) {
 
@@ -431,9 +431,9 @@ public class SpeedTestSocket {
     }
 
     /**
-     * check for http content length error
+     * check for http content length error.
      *
-     * @param httpFrame
+     * @param httpFrame http frame state to check
      */
     private void checkHttpContentLengthError(final HttpFrame httpFrame) {
         if (httpFrame.getContentLength() < 0) {
@@ -457,7 +457,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * start upload writing task
+     * start upload writing task.
      */
     private void startSocketUploadTask() {
 
@@ -499,7 +499,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * catch an error
+     * catch an error.
      *
      * @param isDownload   downloading task or uploading task
      * @param errorMessage error message from Exception
@@ -512,7 +512,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * dispatch error listener according to errors
+     * dispatch error listener according to errors.
      *
      * @param isDownload   downloading task or uploading task
      * @param errorMessage error message from Exception
@@ -545,7 +545,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * start download task
+     * start download task.
      *
      * @param hostname server hostname
      * @param port     server port
@@ -560,7 +560,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * Start download process
+     * Start download process.
      *
      * @param hostname server hostname
      * @param port     server port
@@ -572,7 +572,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * start download for download repeat
+     * start download for download repeat.
      *
      * @param hostname server hostname
      * @param port     server port
@@ -583,7 +583,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * Start repeat download task
+     * Start repeat download task.
      *
      * @param hostname           server hostname
      * @param port               server port
@@ -669,7 +669,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * intialize download repeat task variables for report + state
+     * intialize download repeat task variables for report + state.
      */
     private void initDownloadRepeat() {
 
@@ -684,7 +684,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * clear completly download repeat task
+     * clear completly download repeat task.
      *
      * @param listener speed test listener
      * @param timer    finished task timer
@@ -702,7 +702,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * close socket + shutdown thread pool
+     * close socket + shutdown thread pool.
      */
     public void forceStopTask() {
 
@@ -712,7 +712,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * Write download request to server host
+     * Write download request to server host.
      *
      * @param data HTTP request to send to initiate downwload process
      */
@@ -738,7 +738,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * Start upload process
+     * Start upload process.
      *
      * @param hostname      server hostname
      * @param port          server port
@@ -761,7 +761,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * Write upload POST request with file generated randomly
+     * Write upload POST request with file generated randomly.
      *
      * @param head http headers
      * @param body file content to upload
@@ -816,9 +816,9 @@ public class SpeedTestSocket {
     }
 
     /**
-     * write and flush socket
+     * write and flush socket.
      *
-     * @param data
+     * @param data data to write
      * @throws IOException
      */
     private void writeFlushSocket(final byte[] data) throws IOException {
@@ -827,7 +827,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * get a temporary download report at this moment
+     * get a temporary download report at this moment.
      *
      * @return speed test download report
      */
@@ -836,7 +836,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * get a temporary upload report at this moment
+     * get a temporary upload report at this moment.
      *
      * @return speed test upload report
      */
@@ -845,7 +845,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * get a download/upload report
+     * get a download/upload report.
      *
      * @param mode speed test mode requested
      * @return speed test report
@@ -900,7 +900,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * Build repeat download report based on stats on all packets downlaoded until now
+     * Build repeat download report based on stats on all packets downlaoded until now.
      *
      * @param speedTestMode     speed test mode
      * @param reportTime        time of current download
@@ -956,7 +956,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * Close socket streams and socket object
+     * Close socket streams and socket object.
      */
     public void closeSocket() {
 
@@ -971,7 +971,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * retrieve current speed test mode
+     * retrieve current speed test mode.
      *
      * @return speed test mode (UPLOAD/DOWNLOAD/NONE)
      */
@@ -980,7 +980,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * set socket timeout in millisecond
+     * set socket timeout in millisecond.
      *
      * @param socketTimeoutMillis socket timeout value in milliseconds
      */
@@ -990,7 +990,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * get socket timeout in milliseconds ( 0 if no timeout not defined)
+     * get socket timeout in milliseconds ( 0 if no timeout not defined).
      *
      * @return socket timeout value (0 if not defined)
      */
@@ -999,7 +999,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * retrieve size of each packet sent to upload server
+     * retrieve size of each packet sent to upload server.
      *
      * @return size of each packet sent to upload server
      */
@@ -1008,7 +1008,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * set size of each packet sent to upload server
+     * set size of each packet sent to upload server.
      *
      * @param uploadChunkSize new size of each packet sent to upload server
      */

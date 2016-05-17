@@ -39,7 +39,7 @@ package fr.bmartel.speedtest;
 public interface ISpeedTestListener {
 
     /**
-     * monitor download process result with transfer rate in bit/s and octet/s
+     * monitor download process result with transfer rate in bit/s and octet/s.
      *
      * @param packetSize      packet size retrieved from server
      * @param transferRateBps transfer rate in bit/seconds
@@ -48,7 +48,7 @@ public interface ISpeedTestListener {
     void onDownloadPacketsReceived(long packetSize, float transferRateBps, float transferRateOps);
 
     /**
-     * monitor download progress
+     * monitor download progress.
      *
      * @param percent % of progress
      * @param report  current speed test download report
@@ -56,7 +56,7 @@ public interface ISpeedTestListener {
     void onDownloadProgress(float percent, SpeedTestReport report);
 
     /**
-     * Error catch for download process
+     * Error catch for download process.
      *
      * @param speedTestError error enum
      * @param errorMessage   error message
@@ -64,7 +64,7 @@ public interface ISpeedTestListener {
     void onDownloadError(SpeedTestError speedTestError, String errorMessage);
 
     /**
-     * monitor upload process result with transfer rate in bit/s and octet/s
+     * monitor upload process result with transfer rate in bit/s and octet/s.
      *
      * @param packetSize      packet size in octet
      * @param transferRateBps transfer rate in bit/second
@@ -73,7 +73,7 @@ public interface ISpeedTestListener {
     void onUploadPacketsReceived(long packetSize, float transferRateBps, float transferRateOps);
 
     /**
-     * Error catch for upload process
+     * Error catch for upload process.
      *
      * @param speedTestError error enum
      * @param errorMessage   error message
@@ -81,7 +81,7 @@ public interface ISpeedTestListener {
     void onUploadError(SpeedTestError speedTestError, String errorMessage);
 
     /**
-     * monitor upload progress
+     * monitor upload progress.
      *
      * @param percent % of progress
      * @param report  current speed test upload report

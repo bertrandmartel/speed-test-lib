@@ -31,15 +31,15 @@ package fr.bmartel.speedtest;
  */
 public enum SpeedTestMode {
     /**
-     * no test
+     * no test.
      */
     NONE,
     /**
-     * download test
+     * download test.
      */
     DOWNLOAD,
     /**
-     * upload test
+     * upload test.
      */
     UPLOAD
 }

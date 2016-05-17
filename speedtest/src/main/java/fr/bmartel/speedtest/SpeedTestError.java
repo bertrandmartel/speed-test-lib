@@ -32,19 +32,19 @@ package fr.bmartel.speedtest;
 public enum SpeedTestError {
 
     /**
-     * invalid http response was returned
+     * invalid http response was returned.
      */
     INVALID_HTTP_RESPONSE,
     /**
-     * socket error occured
+     * socket error occured.
      */
     SOCKET_ERROR,
     /**
-     * connection error occured
+     * connection error occured.
      */
     CONNECTION_ERROR,
     /**
-     * error due to call to force close method
+     * error due to call to force close method.
      */
     FORCE_CLOSE_SOCKET
 
