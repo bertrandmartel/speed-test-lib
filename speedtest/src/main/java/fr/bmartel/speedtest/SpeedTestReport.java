@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest;
 
 /**
- * Speed test report
+ * Speed test report.
  * <p/>
  * feature current report measurement for DOWNLOAD/UPLOAD
  *
@@ -185,7 +186,7 @@ public class SpeedTestReport {
     /**
      * get request num
      *
-     * @return
+     * @return http request number
      */
     public int getRequestNum() {
         return requestNum;

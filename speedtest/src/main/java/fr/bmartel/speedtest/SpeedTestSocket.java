@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ import fr.bmartel.protocol.http.HttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;
 
 /**
- * Client socket main implementation
+ * Client socket main implementation.
  * <p/>
  * Two modes upload and download
  * <p/>
@@ -223,7 +224,7 @@ public class SpeedTestSocket {
     /**
      * Add a speed test listener to list
      *
-     * @param listener
+     * @param listener speed test listener to be added
      */
     public void addSpeedTestListener(final ISpeedTestListener listener) {
         listenerList.add(listener);
@@ -232,7 +233,7 @@ public class SpeedTestSocket {
     /**
      * Relive a speed listener from list
      *
-     * @param listener
+     * @param listener speed test listener to be removed
      */
     public void removeSpeedTestListener(final ISpeedTestListener listener) {
         listenerList.remove(listener);
@@ -390,11 +391,13 @@ public class SpeedTestSocket {
 
             if (!forceCloseSocket) {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error while parsing http frame");
+                    listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error while parsing " +
+                            "http frame");
                 }
             } else {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.FORCE_CLOSE_SOCKET, "Error while parsing http frame" + FORCE_CLOSE_CAUSE_MESSAGE);
+                    listenerList.get(i).onDownloadError(SpeedTestError.FORCE_CLOSE_SOCKET, "Error while parsing http " +
+                            "frame" + FORCE_CLOSE_CAUSE_MESSAGE);
                 }
             }
         }
@@ -415,11 +418,13 @@ public class SpeedTestSocket {
 
             if (!forceCloseSocket) {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error while parsing http headers");
+                    listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error while parsing " +
+                            "http headers");
                 }
             } else {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.FORCE_CLOSE_SOCKET, "Error while parsing http headers" + FORCE_CLOSE_CAUSE_MESSAGE);
+                    listenerList.get(i).onDownloadError(SpeedTestError.FORCE_CLOSE_SOCKET, "Error while parsing http " +
+                            "headers" + FORCE_CLOSE_CAUSE_MESSAGE);
                 }
             }
         }
@@ -439,11 +444,13 @@ public class SpeedTestSocket {
 
             if (!forceCloseSocket) {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error content length is inconsistent");
+                    listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error content length " +
+                            "is inconsistent");
                 }
             } else {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.FORCE_CLOSE_SOCKET, "Error content length is inconsistent" + FORCE_CLOSE_CAUSE_MESSAGE);
+                    listenerList.get(i).onDownloadError(SpeedTestError.FORCE_CLOSE_SOCKET, "Error content length is " +
+                            "inconsistent" + FORCE_CLOSE_CAUSE_MESSAGE);
                 }
             }
         }
@@ -525,11 +532,13 @@ public class SpeedTestSocket {
         } else {
             if (isDownload) {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.FORCE_CLOSE_SOCKET, errorMessage + FORCE_CLOSE_CAUSE_MESSAGE);
+                    listenerList.get(i).onDownloadError(SpeedTestError.FORCE_CLOSE_SOCKET, errorMessage +
+                            FORCE_CLOSE_CAUSE_MESSAGE);
                 }
             } else {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onUploadError(SpeedTestError.FORCE_CLOSE_SOCKET, errorMessage + FORCE_CLOSE_CAUSE_MESSAGE);
+                    listenerList.get(i).onUploadError(SpeedTestError.FORCE_CLOSE_SOCKET, errorMessage +
+                            FORCE_CLOSE_CAUSE_MESSAGE);
                 }
             }
         }
@@ -596,7 +605,8 @@ public class SpeedTestSocket {
 
         final ISpeedTestListener speedTestListener = new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final float transferRateOctetPerSeconds) {
+            public void onDownloadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
+            float transferRateOctetPerSeconds) {
                 repeatTransferRateBps = (repeatTransferRateBps + transferRateOctetPerSeconds) / 2f;
                 startDownloadRepeat(hostname, port, uri);
                 repeatRequestNum++;
@@ -613,7 +623,8 @@ public class SpeedTestSocket {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final float transferRateOctetPerSeconds) {
+            public void onUploadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
+            float transferRateOctetPerSeconds) {
                 //nothing to do here for download repeat task listener
             }
 
@@ -743,7 +754,8 @@ public class SpeedTestSocket {
         forceCloseSocket = false;
         /* generate a file with size of fileSizeOctet octet */
         final byte[] fileContent = new RandomGen(fileSizeOctet).nextArray();
-        final String uploadRequest = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + hostname + "\r\nAccept: */*\r\nContent-Length: " + fileSizeOctet + "\r\n\r\n";
+        final String uploadRequest = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + hostname + "\r\nAccept: " +
+                "*/*\r\nContent-Length: " + fileSizeOctet + "\r\n\r\n";
 
         writeUpload(uploadRequest.getBytes(), fileContent);
     }
@@ -777,7 +789,8 @@ public class SpeedTestSocket {
 
                             for (int i = 0; i < step; i++) {
 
-                                writeFlushSocket(Arrays.copyOfRange(body, uploadTempFileSize, uploadTempFileSize + uploadChunkSize));
+                                writeFlushSocket(Arrays.copyOfRange(body, uploadTempFileSize, uploadTempFileSize +
+                                        uploadChunkSize));
 
                                 for (int j = 0; j < listenerList.size(); j++) {
                                     final SpeedTestReport report = getLiveUploadReport();
@@ -786,7 +799,8 @@ public class SpeedTestSocket {
                                 uploadTempFileSize += uploadChunkSize;
                             }
                             if (remain != 0) {
-                                writeFlushSocket(Arrays.copyOfRange(body, uploadTempFileSize, uploadTempFileSize + remain));
+                                writeFlushSocket(Arrays.copyOfRange(body, uploadTempFileSize, uploadTempFileSize +
+                                        remain));
                             }
                             for (int j = 0; j < listenerList.size(); j++) {
                                 listenerList.get(j).onUploadProgress(100, getLiveUploadReport());
@@ -879,7 +893,8 @@ public class SpeedTestSocket {
             }
 
             report = new SpeedTestReport(mode, percent,
-                    timeStart, currentTime, temporaryPacketSize, totalPacketSize, transferRate_Bps, transferRate_bps, 1);
+                    timeStart, currentTime, temporaryPacketSize, totalPacketSize, transferRate_Bps, transferRate_bps,
+                    1);
         }
         return report;
     }
@@ -902,27 +917,29 @@ public class SpeedTestSocket {
         long downloadRepeatReportTime = reportTime;
 
         if (startDateRepeat != 0) {
-            if (!repeatFinished)
+            if (!repeatFinished) {
                 progressPercent = (System.currentTimeMillis() - startDateRepeat) * 100f / repeatWindows;
-            else
+            } else {
                 progressPercent = 100;
+            }
         } else {
             //download has not started yet
             progressPercent = 0;
         }
 
-        if (repeatTransferRateBps != 0 && !repeatFinished)
+        if (repeatTransferRateBps != 0 && !repeatFinished) {
             downloadRepeatRateOctet = (repeatTransferRateBps + downloadRepeatRateOctet) / 2f;
-        else if (repeatFinished) {
+        } else if (repeatFinished) {
             downloadRepeatRateOctet = repeatTransferRateBps;
         }
 
         transferRateBit = downloadRepeatRateOctet * 8f;
 
-        if (!repeatFinished)
+        if (!repeatFinished) {
             temporaryPacketSize = repeatTempPckSize;
-        else
+        } else {
             temporaryPacketSize = repeatPacketSize;
+        }
 
         if (repeatFinished)
             downloadRepeatReportTime = startDateRepeat + repeatWindows;
@@ -951,16 +968,6 @@ public class SpeedTestSocket {
             } catch (IOException e) {
             }
         }
-    }
-
-    /**
-     * Join reading thread before closing socket
-     */
-    public void closeSocketJoinRead() {
-        executorService.shutdown();
-        while (!executorService.isTerminated()) {
-        }
-        closeSocket();
     }
 
     /**

@@ -21,15 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest;
 
 /**
- * Speed test mode
+ * Speed test mode.
  *
  * @author Bertrand Martel
  */
 public enum SpeedTestMode {
+    /**
+     * no test
+     */
     NONE,
+    /**
+     * download test
+     */
     DOWNLOAD,
+    /**
+     * upload test
+     */
     UPLOAD
 }
