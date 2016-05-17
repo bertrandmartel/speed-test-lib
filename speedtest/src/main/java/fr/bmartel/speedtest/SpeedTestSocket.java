@@ -28,7 +28,11 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
@@ -790,8 +794,9 @@ public class SpeedTestSocket {
 
                             for (int i = 0; i < step; i++) {
 
-                                writeFlushSocket(Arrays.copyOfRange(body, uploadTempFileSize, uploadTempFileSize +
-                                        uploadChunkSize));
+                                writeFlushSocket(Arrays.copyOfRange(body, uploadTempFileSize,
+                                        uploadTempFileSize +
+                                                uploadChunkSize));
 
                                 for (int j = 0; j < listenerList.size(); j++) {
                                     final SpeedTestReport report = getLiveUploadReport();
