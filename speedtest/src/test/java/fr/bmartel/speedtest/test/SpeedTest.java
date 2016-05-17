@@ -27,6 +27,7 @@ package fr.bmartel.speedtest.test;
 import fr.bmartel.speedtest.*;
 
 import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -88,6 +89,16 @@ public class SpeedTest {
     private final static Logger log = Logger.getLogger(SpeedTest.class.getName());
 
     /**
+     * log handler.
+     */
+    private final static ConsoleHandler handler = new ConsoleHandler();
+
+    /**
+     * log formatter.
+     */
+    private final static Formatter logFormatter = new SingleLineFormatter();
+
+    /**
      * Instanciate Speed Test and start download and upload process with speed
      * test server of your choice.
      *
@@ -95,14 +106,19 @@ public class SpeedTest {
      */
     public static void main(final String[] args) {
 
+        //configure logger for quickTest
         setupLogger();
 
-		/* instanciate speed test */
+        // instantiate speed test
         final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 
+        //configure log
+        speedTestSocket.configureLog(Level.SEVERE, handler, logFormatter);
+
+        //set timeout for download
         speedTestSocket.setSocketTimeout(SOCKET_TIMEOUT);
 
-		/* add a listener to wait for speed test completion and progress */
+        // add a listener to wait for speed test completion and progress
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
@@ -160,9 +176,8 @@ public class SpeedTest {
      */
     private static void setupLogger() {
         log.setLevel(Level.ALL);
-        ConsoleHandler handler = new ConsoleHandler();
         handler.setLevel(Level.ALL);
-        handler.setFormatter(new SingleLineFormatter());
+        handler.setFormatter(logFormatter);
         log.addHandler(handler);
     }
 
