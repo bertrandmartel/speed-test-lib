@@ -117,7 +117,7 @@ public class SpeedTest {
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (log.isLoggable(Level.FINE)) {
-                    log.fine("Download error " + speedTestError + " : " + errorMessage);
+                    log.severe("Download error " + speedTestError + " : " + errorMessage);
                 }
             }
 
@@ -133,7 +133,7 @@ public class SpeedTest {
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (log.isLoggable(Level.FINE)) {
-                    log.fine("Upload error " + speedTestError + " : " + errorMessage);
+                    log.severe("Upload error " + speedTestError + " : " + errorMessage);
                 }
             }
 
