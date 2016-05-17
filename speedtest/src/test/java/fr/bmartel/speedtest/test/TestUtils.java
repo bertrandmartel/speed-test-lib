@@ -21,15 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest.test;
 
 /**
- * Test utils class for unit test
+ * Test utils class for unit test.
  *
  * @author Bertrand Martel
  */
 public class TestUtils {
 
+    /**
+     * generate a header for unit test message
+     *
+     * @param className
+     * @return
+     */
     public static String generateMessageHeader(final Class className) {
         return "[" + className.getSimpleName() + "] ";
     }

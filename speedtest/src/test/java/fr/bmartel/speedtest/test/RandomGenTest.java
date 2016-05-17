@@ -21,22 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest.test;
 
 import fr.bmartel.speedtest.RandomGen;
+import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
 /**
- * Random file generator test
+ * Random file generator test.
  *
  * @author Bertrand Martel
  */
 public class RandomGenTest {
 
+    /**
+     * unit test message header
+     */
     private final static String HEADER = TestUtils.generateMessageHeader(RandomGenTest.class);
 
+    /**
+     * file size tested
+     */
     private final int[] sizes = new int[]{1, 10, 10000, 10000000};
 
     @Test
@@ -45,7 +51,7 @@ public class RandomGenTest {
         for (int i = 0; i < sizes.length; i++) {
             final RandomGen random = new RandomGen(sizes[i]);
             final int length = random.nextArray().length;
-            assertEquals(HEADER + "random generated array are not equals", length, sizes[i]);
+            Assert.assertEquals(HEADER + "random generated array are not equals", length, sizes[i]);
         }
 
     }
