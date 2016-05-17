@@ -32,10 +32,10 @@ package fr.bmartel.speedtest.test;
 public class TestUtils {
 
     /**
-     * generate a header for unit test message
+     * generate a header for unit test message.
      *
-     * @param className
-     * @return
+     * @param className class name to print
+     * @return message prefix
      */
     public static String generateMessageHeader(final Class className) {
         return "[" + className.getSimpleName() + "] ";

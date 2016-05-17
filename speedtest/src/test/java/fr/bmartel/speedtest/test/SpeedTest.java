@@ -42,53 +42,53 @@ import java.util.logging.Logger;
 public class SpeedTest {
 
     /**
-     * check download bar initialization
+     * check download bar initialization.
      */
     private static boolean initDownloadBar;
 
     /**
-     * check upload bar initialization
+     * check upload bar initialization.
      */
     private static boolean initUploadBar;
 
     /**
-     * socket timeout used in ms
+     * socket timeout used in ms.
      */
     private final static int SOCKET_TIMEOUT = 5000;
 
     /**
-     * speed test server host name
+     * speed test server host name.
      */
     private final static String SPEED_TEST_SERVER_HOST = "1.testdebit.info";
 
     /**
-     * spedd test server uri
+     * spedd test server uri.
      */
     private final static String SPEED_TEST_SERVER_URI = "/fichiers/10Mo.dat";
 
     /**
-     * speed test server port
+     * speed test server port.
      */
     private final static int SPEED_TEST_SERVER_PORT = 80;
 
     /**
-     * conversion const for per second value
+     * conversion const for per second value.
      */
     private final static int VALUE_PER_SECONDS = 1000;
 
     /**
-     * conversion const for M per second value
+     * conversion const for M per second value.
      */
     private final static int MEGA_VALUE_PER_SECONDS = 1000000;
 
     /**
-     * logger
+     * logger.
      */
     private final static Logger log = Logger.getLogger(SpeedTest.class.getName());
 
     /**
      * Instanciate Speed Test and start download and upload process with speed
-     * test server of your choice
+     * test server of your choice.
      *
      * @param args no args required
      */
@@ -153,7 +153,7 @@ public class SpeedTest {
     }
 
     /**
-     * print speed test report object
+     * print speed test report object.
      *
      * @param report speed test report to log
      */
@@ -188,7 +188,7 @@ public class SpeedTest {
     }
 
     /**
-     * print upload/download result
+     * print upload/download result.
      *
      * @param mode                        speed test mode
      * @param packetSize                  packet size received
@@ -222,7 +222,7 @@ public class SpeedTest {
     }
 
     /**
-     * update download progress bar
+     * update download progress bar.
      *
      * @param percent progress in percent
      */
@@ -245,7 +245,7 @@ public class SpeedTest {
     }
 
     /**
-     * update upload progress bar
+     * update upload progress bar.
      *
      * @param percent progress in percent
      */

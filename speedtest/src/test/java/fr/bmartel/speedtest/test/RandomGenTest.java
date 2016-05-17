@@ -36,12 +36,12 @@ import org.junit.Test;
 public class RandomGenTest {
 
     /**
-     * unit test message header
+     * unit test message header.
      */
-    private final static String HEADER = TestUtils.generateMessageHeader(RandomGenTest.class);
+    private static final String HEADER = TestUtils.generateMessageHeader(RandomGenTest.class);
 
     /**
-     * file size tested
+     * file size tested.
      */
     private final int[] sizes = new int[]{1, 10, 10000, 10000000};
 

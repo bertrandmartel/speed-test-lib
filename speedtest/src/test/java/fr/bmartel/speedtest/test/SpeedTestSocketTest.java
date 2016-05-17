@@ -39,29 +39,29 @@ public class SpeedTestSocketTest {
     private SpeedTestSocket socket;
 
     /**
-     * unit test message header
+     * unit test message header.
      */
-    private final static String HEADER = TestUtils.generateMessageHeader(SpeedTestReportTest.class);
+    private static final  String HEADER = TestUtils.generateMessageHeader(SpeedTestReportTest.class);
 
     /**
-     * value for valid socket timeout
+     * value for valid socket timeout.
      */
-    private final static int socketTimeoutValid = 10000;
+    private static final  int socketTimeoutValid = 10000;
 
     /**
-     * value for invalid socket timeout
+     * value for invalid socket timeout.
      */
-    private final static int socketTimeoutInvalid = -1;
+    private static final  int socketTimeoutInvalid = -1;
 
     /**
-     * default value of upload chunk size
+     * default value of upload chunk size.
      */
-    private final static int uploadChunkSizeDefault = 65535;
+    private static final  int uploadChunkSizeDefault = 65535;
 
     /**
-     * invalid value for upload chunk packet size
+     * invalid value for upload chunk packet size.
      */
-    private final static int uploadChunkInvalid = 30000;
+    private static final  int uploadChunkInvalid = 30000;
 
     @Test
     public void socketTimeoutDefaultTest() {
