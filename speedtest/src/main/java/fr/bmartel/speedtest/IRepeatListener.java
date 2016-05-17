@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest;
 
 /**
- * Listener for download repeat completion task + reports :
+ * Listener for download repeat completion task + reports.
  *
  * @author Bertrand Martel
  */

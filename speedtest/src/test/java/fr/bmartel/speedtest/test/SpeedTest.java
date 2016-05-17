@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest.test;
 
 import fr.bmartel.speedtest.*;
@@ -29,7 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Speed Test example
+ * Speed Test example.
  * <p/>
  * <ul>
  * <li>Download test with progress bar and output</li>
@@ -51,6 +52,36 @@ public class SpeedTest {
     private static boolean initUploadBar;
 
     /**
+     * socket timeout used in ms
+     */
+    private final static int SOCKET_TIMEOUT = 5000;
+
+    /**
+     * speed test server host name
+     */
+    private final static String SPEED_TEST_SERVER_HOST = "1.testdebit.info";
+
+    /**
+     * spedd test server uri
+     */
+    private final static String SPEED_TEST_SERVER_URI = "/fichiers/10Mo.dat";
+
+    /**
+     * speed test server port
+     */
+    private final static int SPEED_TEST_SERVER_PORT = 80;
+
+    /**
+     * conversion const for per second value
+     */
+    private final static int VALUE_PER_SECONDS = 1000;
+
+    /**
+     * conversion const for M per second value
+     */
+    private final static int MEGA_VALUE_PER_SECONDS = 1000000;
+
+    /**
      * logger
      */
     private final static Logger log = Logger.getLogger(SpeedTest.class.getName());
@@ -59,22 +90,24 @@ public class SpeedTest {
      * Instanciate Speed Test and start download and upload process with speed
      * test server of your choice
      *
-     * @param args
+     * @param args no args required
      */
     public static void main(final String[] args) {
 
 		/* instanciate speed test */
         final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 
-        speedTestSocket.setSocketTimeout(5000);
+        speedTestSocket.setSocketTimeout(SOCKET_TIMEOUT);
 
 		/* add a listener to wait for speed test completion and progress */
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final float transferRateOctetPerSeconds) {
+            public void onDownloadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
+            float transferRateOctetPerSeconds) {
 
-                logFinishedTask(SpeedTestMode.DOWNLOAD, packetSize, transferRateBitPerSeconds, transferRateOctetPerSeconds);
+                logFinishedTask(SpeedTestMode.DOWNLOAD, packetSize, transferRateBitPerSeconds,
+                        transferRateOctetPerSeconds);
 
             }
 
@@ -86,9 +119,11 @@ public class SpeedTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final float transferRateOctetPerSeconds) {
+            public void onUploadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
+            float transferRateOctetPerSeconds) {
 
-                logFinishedTask(SpeedTestMode.UPLOAD, packetSize, transferRateBitPerSeconds, transferRateOctetPerSeconds);
+                logFinishedTask(SpeedTestMode.UPLOAD, packetSize, transferRateBitPerSeconds,
+                        transferRateOctetPerSeconds);
 
             }
 
@@ -114,13 +149,13 @@ public class SpeedTest {
             }
         });
 
-        speedTestSocket.startDownload("1.testdebit.info", 80, "/fichiers/10Mo.dat");
+        speedTestSocket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI);
     }
 
     /**
      * print speed test report object
      *
-     * @param report
+     * @param report speed test report to log
      */
     private static void logSpeedTestReport(final SpeedTestReport report) {
 
@@ -143,7 +178,8 @@ public class SpeedTest {
             log.fine("uploaded for now     : " + report.getTemporaryPacketSize() + "/" + report.getTotalPacketSize());
 
             if (report.getStartTime() > 0) {
-                log.fine("amount of time       : " + ((report.getReportTime() - report.getStartTime()) / 1000) + "s");
+                log.fine("amount of time       : " + ((report.getReportTime() - report.getStartTime()) /
+                        VALUE_PER_SECONDS) + "s");
             }
             log.fine("request number       : " + report.getRequestNum());
 
@@ -154,12 +190,13 @@ public class SpeedTest {
     /**
      * print upload/download result
      *
-     * @param mode
-     * @param packetSize
-     * @param transferRateBitPerSeconds
-     * @param transferRateOctetPerSeconds
+     * @param mode                        speed test mode
+     * @param packetSize                  packet size received
+     * @param transferRateBitPerSeconds   transfer rate in bps
+     * @param transferRateOctetPerSeconds transfer rate in Bps
      */
-    private static void logFinishedTask(final SpeedTestMode mode, final long packetSize, final float transferRateBitPerSeconds, final float transferRateOctetPerSeconds) {
+    private static void logFinishedTask(final SpeedTestMode mode, final long packetSize, final float
+            transferRateBitPerSeconds, final float transferRateOctetPerSeconds) {
 
         if (log.isLoggable(Level.FINE)) {
             switch (mode) {
@@ -174,10 +211,12 @@ public class SpeedTest {
             }
 
             log.fine("upload packetSize     : " + packetSize + " octet(s)");
-            log.fine("upload transfer rate  : " + transferRateBitPerSeconds + " bit/second   | " + transferRateBitPerSeconds / 1000
-                    + " Kbit/second  | " + transferRateBitPerSeconds / 1000000 + " Mbit/second");
-            log.fine("upload transfer rate  : " + transferRateOctetPerSeconds + " octet/second | " + transferRateOctetPerSeconds / 1000
-                    + " Koctet/second | " + +transferRateOctetPerSeconds / 1000000 + " Moctet/second");
+            log.fine("upload transfer rate  : " + transferRateBitPerSeconds + " bit/second   | " +
+                    transferRateBitPerSeconds / VALUE_PER_SECONDS
+                    + " Kbit/second  | " + transferRateBitPerSeconds / MEGA_VALUE_PER_SECONDS + " Mbit/second");
+            log.fine("upload transfer rate  : " + transferRateOctetPerSeconds + " octet/second | " +
+                    transferRateOctetPerSeconds / VALUE_PER_SECONDS
+                    + " Koctet/second | " + +transferRateOctetPerSeconds / MEGA_VALUE_PER_SECONDS + " Moctet/second");
             log.fine("##################################################################");
         }
     }
@@ -185,7 +224,7 @@ public class SpeedTest {
     /**
      * update download progress bar
      *
-     * @param percent
+     * @param percent progress in percent
      */
     private static void updateDownloadProgressBar(final float percent) {
 
@@ -208,7 +247,7 @@ public class SpeedTest {
     /**
      * update upload progress bar
      *
-     * @param percent
+     * @param percent progress in percent
      */
     private static void updateUploadProgressBar(final float percent) {
 

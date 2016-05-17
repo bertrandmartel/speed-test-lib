@@ -21,36 +21,74 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest.test;
 
 import fr.bmartel.speedtest.SpeedTestMode;
 import fr.bmartel.speedtest.SpeedTestReport;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import org.junit.Assert;
 
 import org.junit.Test;
 
 import java.util.Date;
 
 /**
- * Speed test report object test
+ * Speed test report object test.
  *
  * @author Bertrand Martel
  */
 public class SpeedTestReportTest {
 
+    /**
+     * unit test message header
+     */
     private final static String HEADER = TestUtils.generateMessageHeader(SpeedTestReportTest.class);
 
+    /**
+     * tested speed test mode
+     */
     private final SpeedTestMode speedTestMode = SpeedTestMode.DOWNLOAD;
-    private final float progressPercent = 98;
-    private final long startTime = new Date().getTime();
-    private final long reportTime = new Date().getTime();
-    private final long temporaryPacketSize = 65535;
-    private final long totalPacketSize = 128000;
-    private final float transferRateOctet = 20000.54f;
-    private final float transferRateBit = 20000.54f / 8;
-    private final int requestNum = 2;
+
+    /**
+     * tested progress
+     */
+    private final static float progressPercent = 98;
+
+    /**
+     * tested start time
+     */
+    private final static long startTime = new Date().getTime();
+
+    /**
+     * tested report time
+     */
+    private final static long reportTime = new Date().getTime();
+
+    /**
+     * tested temporary packet size
+     */
+    private final static long temporaryPacketSize = 65535;
+
+    /**
+     * tested total packet size
+     */
+    private final static long totalPacketSize = 128000;
+
+    /**
+     * tested transfer rate o/s
+     */
+    private final static float transferRateOctet = 20000.54f;
+
+    /**
+     * tested transfer rate b/s
+     */
+    private final static float transferRateBit = 20000.54f / 8;
+
+    /**
+     * tested request number
+     */
+    private final static int requestNum = 2;
 
     @Test
     public void speedTestReportTest() {
@@ -66,14 +104,17 @@ public class SpeedTestReportTest {
                 transferRateBit,
                 requestNum);
 
-        assertSame(HEADER + "speed test mode are not equals", report.getSpeedTestMode(), speedTestMode);
-        assertEquals(HEADER + "progress are not equals", report.getProgressPercent(), progressPercent, 0);
-        assertEquals(HEADER + "start time are not equals", report.getStartTime(), startTime);
-        assertEquals(HEADER + "report time are not equals", report.getReportTime(), reportTime);
-        assertEquals(HEADER + "temporary packet size are not equals", report.getTemporaryPacketSize(), temporaryPacketSize, 0);
-        assertEquals(HEADER + "total packet size are not equals", report.getTotalPacketSize(), totalPacketSize);
-        assertEquals(HEADER + "transfer rate in octet are not equals", report.getTransferRateOctet(), transferRateOctet, 0);
-        assertEquals(HEADER + "transfer rate in bit are not equals", report.getTransferRateBit(), transferRateBit, 0);
-        assertEquals(HEADER + "request number are not equals", report.getRequestNum(), requestNum);
+        Assert.assertSame(HEADER + "speed test mode are not equals", report.getSpeedTestMode(), speedTestMode);
+        Assert.assertEquals(HEADER + "progress are not equals", report.getProgressPercent(), progressPercent, 0);
+        Assert.assertEquals(HEADER + "start time are not equals", report.getStartTime(), startTime);
+        Assert.assertEquals(HEADER + "report time are not equals", report.getReportTime(), reportTime);
+        Assert.assertEquals(HEADER + "temporary packet size are not equals", report.getTemporaryPacketSize(),
+                temporaryPacketSize, 0);
+        Assert.assertEquals(HEADER + "total packet size are not equals", report.getTotalPacketSize(), totalPacketSize);
+        Assert.assertEquals(HEADER + "transfer rate in octet are not equals", report.getTransferRateOctet(),
+                transferRateOctet, 0);
+        Assert.assertEquals(HEADER + "transfer rate in bit are not equals", report.getTransferRateBit(),
+                transferRateBit, 0);
+        Assert.assertEquals(HEADER + "request number are not equals", report.getRequestNum(), requestNum);
     }
 }

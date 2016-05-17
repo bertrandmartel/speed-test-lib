@@ -21,16 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest.test;
 
 import fr.bmartel.speedtest.SpeedTestSocket;
 
+import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
- * Speed test socket test
+ * Speed test socket test.
  *
  * @author Bertrand Martel
  */
@@ -38,48 +38,66 @@ public class SpeedTestSocketTest {
 
     private SpeedTestSocket socket;
 
+    /**
+     * unit test message header
+     */
     private final static String HEADER = TestUtils.generateMessageHeader(SpeedTestReportTest.class);
 
-    private final int socketTimeoutValid = 10000;
+    /**
+     * value for valid socket timeout
+     */
+    private final static int socketTimeoutValid = 10000;
 
-    private final int socketTimeoutInvalid = -1;
+    /**
+     * value for invalid socket timeout
+     */
+    private final static int socketTimeoutInvalid = -1;
 
-    private final int uploadChunkSizeDefault = 65535;
+    /**
+     * default value of upload chunk size
+     */
+    private final static int uploadChunkSizeDefault = 65535;
 
-    private final int uploadChunkInvalid = 30000;
+    /**
+     * invalid value for upload chunk packet size
+     */
+    private final static int uploadChunkInvalid = 30000;
 
     @Test
     public void socketTimeoutDefaultTest() {
         socket = new SpeedTestSocket();
-        assertEquals(HEADER + " socket timeout default value should be 0", socket.getSocketTimeout(), 0);
+        Assert.assertEquals(HEADER + " socket timeout default value should be 0", socket.getSocketTimeout(), 0);
     }
 
     @Test
     public void socketTimeoutSetterValidTest() {
         socket = new SpeedTestSocket();
         socket.setSocketTimeout(socketTimeoutValid);
-        assertEquals(HEADER + "socket timeout are not equals", socket.getSocketTimeout(), socketTimeoutValid);
+        Assert.assertEquals(HEADER + "socket timeout are not equals", socket.getSocketTimeout(), socketTimeoutValid);
     }
 
     @Test
     public void socketTimeoutSetterInvalidTest() {
         socket = new SpeedTestSocket();
-        assertNotSame(HEADER + "socket timeout are equals, shouldnt be (-1)", socket.getSocketTimeout(), socketTimeoutInvalid);
-        assertEquals(HEADER + "socket timeout should be 0", socket.getSocketTimeout(), 0);
+        Assert.assertNotSame(HEADER + "socket timeout are equals, shouldnt be (-1)", socket.getSocketTimeout(),
+                socketTimeoutInvalid);
+        Assert.assertEquals(HEADER + "socket timeout should be 0", socket.getSocketTimeout(), 0);
 
     }
 
     @Test
     public void uploadChunkSizeDefaultTest() {
         socket = new SpeedTestSocket();
-        assertEquals(HEADER + "chunk size should be 65535 for default value", socket.getUploadChunkSize(), uploadChunkSizeDefault);
+        Assert.assertEquals(HEADER + "chunk size should be 65535 for default value", socket.getUploadChunkSize(),
+                uploadChunkSizeDefault);
     }
 
     @Test
     public void uploadChunkSizeSetterTest() {
         socket = new SpeedTestSocket();
         socket.setUploadChunkSize(uploadChunkInvalid);
-        assertEquals(HEADER + "chunk size incorrect value after set", socket.getUploadChunkSize(), uploadChunkInvalid);
+        Assert.assertEquals(HEADER + "chunk size incorrect value after set", socket.getUploadChunkSize(),
+                uploadChunkInvalid);
     }
 
 }

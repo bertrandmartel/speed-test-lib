@@ -21,18 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest;
 
 /**
- * Feature Speed Test common Error code
+ * Feature Speed Test common Error code.
  *
  * @author Bertrand Martel
  */
 public enum SpeedTestError {
 
+    /**
+     * invalid http response was returned
+     */
     INVALID_HTTP_RESPONSE,
+    /**
+     * socket error occured
+     */
     SOCKET_ERROR,
+    /**
+     * connection error occured
+     */
     CONNECTION_ERROR,
+    /**
+     * error due to call to force close method
+     */
     FORCE_CLOSE_SOCKET
 
 }

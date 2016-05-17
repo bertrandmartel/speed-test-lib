@@ -24,7 +24,7 @@
 package fr.bmartel.speedtest;
 
 /**
- * Listener for speed test output results :
+ * Listener for speed test output results.
  * <p/>
  * <ul>
  * <li>monitor download process result with transfer rate in bit/s and octet/s</li>
@@ -35,13 +35,14 @@ package fr.bmartel.speedtest;
  *
  * @author Bertrand Martel
  */
+
 public interface ISpeedTestListener {
 
     /**
      * monitor download process result with transfer rate in bit/s and octet/s
      *
-     * @param packetSize                  packet size retrieved from server
-     * @param transferRateBps   transfer rate in bit/seconds
+     * @param packetSize      packet size retrieved from server
+     * @param transferRateBps transfer rate in bit/seconds
      * @param transferRateOps transfer rate in octet/seconds
      */
     void onDownloadPacketsReceived(long packetSize, float transferRateBps, float transferRateOps);
@@ -65,8 +66,8 @@ public interface ISpeedTestListener {
     /**
      * monitor upload process result with transfer rate in bit/s and octet/s
      *
-     * @param packetSize                  packet size in octet
-     * @param transferRateBps   transfer rate in bit/second
+     * @param packetSize      packet size in octet
+     * @param transferRateBps transfer rate in bit/second
      * @param transferRateOps transfer rate in octet/second
      */
     void onUploadPacketsReceived(long packetSize, float transferRateBps, float transferRateOps);

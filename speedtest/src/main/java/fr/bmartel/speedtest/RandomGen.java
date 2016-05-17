@@ -4,14 +4,25 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * Generate Random byte array for randomly generated uploaded file
+ * Generate Random byte array for randomly generated uploaded file.
  *
  * @author Bertrand Martel
  */
 public class RandomGen {
 
+    /**
+     * list of incremented byte
+     */
     private static final byte[] symbols;
+
+    /**
+     * number of incremented byte
+     */
     private final static int SYMBOLS_LENGTH = 255;
+
+    /**
+     * minimum length required for random byte array
+     */
     private final static int MINIMUM_LENGTH = 1;
 
     static {
@@ -21,8 +32,14 @@ public class RandomGen {
         }
     }
 
+    /**
+     * random object
+     */
     private final Random random = new Random();
 
+    /**
+     * buffer used to retrieve random values
+     */
     private final byte[] buf;
 
     public RandomGen(final int length) {
