@@ -26,6 +26,7 @@ package fr.bmartel.speedtest.test;
 
 import fr.bmartel.speedtest.*;
 
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -94,6 +95,8 @@ public class SpeedTest {
      */
     public static void main(final String[] args) {
 
+        setupLogger();
+
 		/* instanciate speed test */
         final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 
@@ -150,6 +153,17 @@ public class SpeedTest {
         });
 
         speedTestSocket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI);
+    }
+
+    /**
+     * setup logger.
+     */
+    private static void setupLogger() {
+        log.setLevel(Level.ALL);
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setLevel(Level.ALL);
+        handler.setFormatter(new SingleLineFormatter());
+        log.addHandler(handler);
     }
 
     /**
@@ -227,21 +241,7 @@ public class SpeedTest {
      * @param percent progress in percent
      */
     private static void updateDownloadProgressBar(final float percent) {
-
-        if (log.isLoggable(Level.FINE)) {
-            if (!initDownloadBar) {
-                log.fine("download progress | < ");
-            }
-            initDownloadBar = true;
-
-            if (percent % 4 == 0) {
-                log.fine("=");
-            }
-
-            if (percent == 100) {
-                log.fine(" 100%");
-            }
-        }
+        initDownloadBar = true;
     }
 
     /**
@@ -250,19 +250,6 @@ public class SpeedTest {
      * @param percent progress in percent
      */
     private static void updateUploadProgressBar(final float percent) {
-
-        if (log.isLoggable(Level.FINE)) {
-            if (!initUploadBar) {
-                log.fine("upload progress | < ");
-            }
-            initUploadBar = true;
-            if (percent % 5 == 0) {
-                log.fine("=");
-            }
-
-            if (percent == 100) {
-                log.fine("upload 100%");
-            }
-        }
+        initUploadBar = true;
     }
 }
