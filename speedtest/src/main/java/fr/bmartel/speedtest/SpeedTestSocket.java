@@ -213,11 +213,6 @@ public class SpeedTestSocket {
     private boolean repeatFinished;
 
     /**
-     * logger.
-     */
-    private static final Logger log = Logger.getLogger(SpeedTestSocket.class.getName());
-
-    /**
      * Build Client socket.
      */
     public SpeedTestSocket() {
@@ -388,10 +383,6 @@ public class SpeedTestSocket {
 
         if (httFrameState != HttpStates.HTTP_FRAME_OK) {
 
-            if (log.isLoggable(Level.SEVERE)) {
-                log.severe("Error while parsing http frame");
-            }
-
             if (!forceCloseSocket) {
                 for (int i = 0; i < listenerList.size(); i++) {
                     listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error while parsing " +
@@ -415,10 +406,6 @@ public class SpeedTestSocket {
 
         if (httpHeaderState != HttpStates.HTTP_FRAME_OK) {
 
-            if (log.isLoggable(Level.SEVERE)) {
-                log.severe("Error while parsing http headers");
-            }
-
             if (!forceCloseSocket) {
                 for (int i = 0; i < listenerList.size(); i++) {
                     listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error while parsing " +
@@ -440,10 +427,6 @@ public class SpeedTestSocket {
      */
     private void checkHttpContentLengthError(final HttpFrame httpFrame) {
         if (httpFrame.getContentLength() < 0) {
-
-            if (log.isLoggable(Level.SEVERE)) {
-                log.severe("Error content length is inconsistent");
-            }
 
             if (!forceCloseSocket) {
                 for (int i = 0; i < listenerList.size(); i++) {
@@ -1023,17 +1006,4 @@ public class SpeedTestSocket {
         this.uploadChunkSize = uploadChunkSize;
     }
 
-    /**
-     * configure log for speed test socket.
-     *
-     * @param logLevel     log level
-     * @param logHandler   log handler
-     * @param logFormatter log formatter
-     */
-    public void configureLog(Level logLevel, Handler logHandler, Formatter logFormatter) {
-        log.setLevel(logLevel);
-        logHandler.setLevel(logLevel);
-        logHandler.setFormatter(logFormatter);
-        log.addHandler(logHandler);
-    }
 }
