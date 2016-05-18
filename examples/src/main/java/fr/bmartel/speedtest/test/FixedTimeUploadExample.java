@@ -43,7 +43,7 @@ import org.apache.logging.log4j.LogManager;
  *
  * @author Bertrand Martel
  */
-public class FixTimeUploadExample {
+public class FixedTimeUploadExample {
 
     /**
      * speed test server host name.

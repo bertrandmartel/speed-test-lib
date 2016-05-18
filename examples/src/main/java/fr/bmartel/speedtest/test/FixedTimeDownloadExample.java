@@ -43,7 +43,7 @@ import org.apache.logging.log4j.LogManager;
  *
  * @author Bertrand Martel
  */
-public class FixTimeDownloadExample {
+public class FixedTimeDownloadExample {
 
     /**
      * speed test server host name.
@@ -53,7 +53,7 @@ public class FixTimeDownloadExample {
     /**
      * spedd test server uri.
      */
-    private final static String SPEED_TEST_SERVER_URI_DL = "/fichiers/100Mo.dat";
+    private final static String SPEED_TEST_SERVER_URI_DL = "/fichiers/10Mo.dat";
 
     /**
      * speed test server port.
