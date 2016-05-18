@@ -67,7 +67,7 @@ public class SpeedTestSocketTest {
     private static final int uploadChunkInvalid = 30000;
 
     /**
-     * test socket timeout default value
+     * test socket timeout default value.
      */
     @Test
     public void socketTimeoutDefaultTest() {
@@ -76,7 +76,7 @@ public class SpeedTestSocketTest {
     }
 
     /**
-     * test socket timeout setter valid test
+     * test socket timeout setter valid test.
      */
     @Test
     public void socketTimeoutSetterValidTest() {
@@ -86,7 +86,7 @@ public class SpeedTestSocketTest {
     }
 
     /**
-     * test socket timeout invalid value is detected
+     * test socket timeout invalid value is detected.
      */
     @Test
     public void socketTimeoutSetterInvalidTest() {
@@ -98,7 +98,7 @@ public class SpeedTestSocketTest {
     }
 
     /**
-     * test upload chunk size default value
+     * test upload chunk size default value.
      */
     @Test
     public void uploadChunkSizeDefaultTest() {
@@ -108,7 +108,7 @@ public class SpeedTestSocketTest {
     }
 
     /**
-     * test upload chunk size setter valid value
+     * test upload chunk size setter valid value.
      */
     @Test
     public void uploadChunkSizeSetterTest() {
