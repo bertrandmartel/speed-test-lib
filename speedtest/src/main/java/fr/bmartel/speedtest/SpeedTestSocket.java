@@ -36,8 +36,8 @@ import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import fr.bmartel.protocol.http.HttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;
+import fr.bmartel.protocol.http.HttpFrame;
 
 /**
  * Client socket main implementation.
@@ -86,11 +86,16 @@ public class SpeedTestSocket {
      */
     private static final byte BIT_MULTIPLIER = 8;
 
+    /**
+     * parsing error message.
+     */
     private static final String PARSING_ERROR = "Error while parsing ";
 
+    /**
+     * parsing http error message.
+     */
     private static final String PARSING_HTTP_ERROR = "Error while parsing http ";
 
-    private static final String TEST = "";
     /**
      * socket server hostname.
      */

@@ -36,6 +36,9 @@ import org.junit.Test;
  */
 public class SpeedTestSocketTest {
 
+    /**
+     * speed test socket object
+     */
     private SpeedTestSocket socket;
 
     /**
@@ -63,12 +66,18 @@ public class SpeedTestSocketTest {
      */
     private static final int uploadChunkInvalid = 30000;
 
+    /**
+     * test socket timeout default value
+     */
     @Test
     public void socketTimeoutDefaultTest() {
         socket = new SpeedTestSocket();
         Assert.assertEquals(HEADER + " socket timeout default value should be 0", socket.getSocketTimeout(), 0);
     }
 
+    /**
+     * test socket timeout setter valid test
+     */
     @Test
     public void socketTimeoutSetterValidTest() {
         socket = new SpeedTestSocket();
@@ -76,6 +85,9 @@ public class SpeedTestSocketTest {
         Assert.assertEquals(HEADER + "socket timeout are not equals", socket.getSocketTimeout(), socketTimeoutValid);
     }
 
+    /**
+     * test socket timeout invalid value is detected
+     */
     @Test
     public void socketTimeoutSetterInvalidTest() {
         socket = new SpeedTestSocket();
@@ -85,6 +97,9 @@ public class SpeedTestSocketTest {
 
     }
 
+    /**
+     * test upload chunk size default value
+     */
     @Test
     public void uploadChunkSizeDefaultTest() {
         socket = new SpeedTestSocket();
@@ -92,6 +107,9 @@ public class SpeedTestSocketTest {
                 uploadChunkSizeDefault);
     }
 
+    /**
+     * test upload chunk size setter valid value
+     */
     @Test
     public void uploadChunkSizeSetterTest() {
         socket = new SpeedTestSocket();

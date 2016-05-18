@@ -24,13 +24,16 @@
 
 package fr.bmartel.speedtest.examples;
 
-import fr.bmartel.speedtest.*;
+import fr.bmartel.speedtest.ISpeedTestListener;
+import fr.bmartel.speedtest.SpeedTestError;
+import fr.bmartel.speedtest.SpeedTestSocket;
+import fr.bmartel.speedtest.SpeedTestReport;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Begin to upload a file from server & stop uploading when test duration is elapsed.
@@ -60,12 +63,12 @@ public class FixedTimeUploadExample {
     private static final int FILE_SIZE = 10000000;
 
     /**
-     * amount of time between each speed test reports set to 1s
+     * amount of time between each speed test reports set to 1s.
      */
     private static final int REPORT_INTERVAL = 1000;
 
     /**
-     * speed test duration set to 15s
+     * speed test duration set to 15s.
      */
     private static final int SPEED_TEST_DURATION = 15000;
 
@@ -75,8 +78,7 @@ public class FixedTimeUploadExample {
     private final static Logger log = LogManager.getLogger(DownloadFileExample.class.getName());
 
     /**
-     * Instanciate Speed Test and start download and upload process with speed
-     * examples server of your choice.
+     * Fixed time upload example main.
      *
      * @param args no args required
      */
@@ -100,11 +102,9 @@ public class FixedTimeUploadExample {
                 if (log.isErrorEnabled()) {
                     log.error(errorMessage);
                 }
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    if (timer != null) {
-                        timer.purge();
-                        timer.cancel();
-                    }
+                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET && timer != null) {
+                    timer.purge();
+                    timer.cancel();
                 }
             }
 
@@ -114,17 +114,15 @@ public class FixedTimeUploadExample {
             }
 
             @Override
-            public void onUploadError(SpeedTestError speedTestError, String errorMessage) {
+            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
 
                 if (log.isErrorEnabled()) {
                     log.error(errorMessage);
                 }
 
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    if (timer != null) {
-                        timer.purge();
-                        timer.cancel();
-                    }
+                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET && timer != null) {
+                    timer.purge();
+                    timer.cancel();
                 }
             }
 
