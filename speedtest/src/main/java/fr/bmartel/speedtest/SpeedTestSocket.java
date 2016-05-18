@@ -872,7 +872,6 @@ public class SpeedTestSocket {
         SpeedTestReport report;
 
         if (isRepeatDownload) {
-
             report = getRepeatDownloadReport(mode, currentTime, transferRate_Bps);
 
         } else {
@@ -919,7 +918,7 @@ public class SpeedTestSocket {
         if (repeatTransferRateBps != 0 && !repeatFinished) {
             downloadRepeatRateOctet = (repeatTransferRateBps + downloadRepeatRateOctet) / 2f;
         } else if (repeatFinished) {
-            downloadRepeatRateOctet = repeatTransferRateBps;
+            downloadRepeatRateOctet = transferRateOctet;
         }
 
         transferRateBit = downloadRepeatRateOctet * 8f;
