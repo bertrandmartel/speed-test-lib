@@ -26,8 +26,8 @@ package fr.bmartel.speedtest.examples;
 
 import fr.bmartel.speedtest.ISpeedTestListener;
 import fr.bmartel.speedtest.SpeedTestError;
-import fr.bmartel.speedtest.SpeedTestSocket;
 import fr.bmartel.speedtest.SpeedTestReport;
+import fr.bmartel.speedtest.SpeedTestSocket;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -94,6 +94,7 @@ public class FixedTimeUploadExample {
             public void onDownloadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
             float
                     transferRateOctetPerSeconds) {
+                //called when download is finished
             }
 
             @Override
@@ -111,6 +112,7 @@ public class FixedTimeUploadExample {
             @Override
             public void onUploadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
             float transferRateOctetPerSeconds) {
+                //called when upload is finished
             }
 
             @Override
@@ -128,10 +130,12 @@ public class FixedTimeUploadExample {
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport downloadReport) {
+                //notify download progress
             }
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport uploadReport) {
+                //notify upload progress
             }
         });
 

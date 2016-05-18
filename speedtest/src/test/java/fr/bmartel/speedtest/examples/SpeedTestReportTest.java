@@ -90,7 +90,7 @@ public class SpeedTestReportTest {
     private static final int requestNum = 2;
 
     /**
-     * test speed test report object
+     * test speed test report object.
      */
     @Test
     public void speedTestReportTest() {

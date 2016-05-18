@@ -25,8 +25,8 @@
 package fr.bmartel.speedtest.examples;
 
 import fr.bmartel.speedtest.IRepeatListener;
-import fr.bmartel.speedtest.SpeedTestSocket;
 import fr.bmartel.speedtest.SpeedTestReport;
+import fr.bmartel.speedtest.SpeedTestSocket;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
