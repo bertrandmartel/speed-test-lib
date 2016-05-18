@@ -50,7 +50,7 @@ public class FixedTimeDownloadExample {
     /**
      * spedd examples server uri.
      */
-    private final static String SPEED_TEST_SERVER_URI_DL = "/fichiers/10Mo.dat";
+    private final static String SPEED_TEST_SERVER_URI_DL = "/fichiers/100Mo.dat";
 
     /**
      * speed examples server port.
