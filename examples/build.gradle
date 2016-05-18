@@ -43,17 +43,24 @@ task uploadFile(type: JavaExec) {
     args ""
 }
 
-task fixDownload(type: JavaExec) {
+task fixedDownload(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     classpath += sourceSets.main.resources
-    main = "fr.bmartel.speedtest.test.FixTimeDownloadExample"
+    main = "fr.bmartel.speedtest.test.FixedTimeDownloadExample"
     args ""
 }
 
-task fixUpload(type: JavaExec) {
+task fixedUpload(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     classpath += sourceSets.main.resources
-    main = "fr.bmartel.speedtest.test.FixTimeUploadExample"
+    main = "fr.bmartel.speedtest.test.FixedTimeUploadExample"
+    args ""
+}
+
+task repeatDownload(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    classpath += sourceSets.main.resources
+    main = "fr.bmartel.speedtest.test.RepeatDownloadExample"
     args ""
 }
 
