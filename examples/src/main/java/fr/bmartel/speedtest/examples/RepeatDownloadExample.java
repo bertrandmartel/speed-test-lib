@@ -26,7 +26,6 @@ package fr.bmartel.speedtest.examples;
 
 import fr.bmartel.speedtest.*;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -68,7 +67,7 @@ public class RepeatDownloadExample {
     private static final int REPORT_INTERVAL = 1000;
 
     /**
-     * Instanciate Speed Test and start download and upload process with speed
+     * Instantiate Speed Test and start download and upload process with speed
      * examples server of your choice.
      *
      * @param args no args required
@@ -81,9 +80,9 @@ public class RepeatDownloadExample {
                 SPEED_TEST_DURATION, REPORT_INTERVAL, new
                         IRepeatListener() {
                             @Override
-                            public void onFinish(SpeedTestReport report) {
+                            public void onFinish(final SpeedTestReport report) {
 
-                                if (log.isEnabled(Level.DEBUG)) {
+                                if (log.isDebugEnabled()) {
                                     log.debug("--------------------------------------------------------");
                                     log.debug("---------------------DOWNLOAD FINISHED------------------");
                                     log.debug("--------------------------------------------------------");
@@ -92,8 +91,8 @@ public class RepeatDownloadExample {
                             }
 
                             @Override
-                            public void onReport(SpeedTestReport report) {
-                                if (log.isEnabled(Level.DEBUG)) {
+                            public void onReport(final SpeedTestReport report) {
+                                if (log.isDebugEnabled()) {
                                     log.debug("---------------current download report------------------");
                                 }
                                 LogUtils.logReport(report, log);

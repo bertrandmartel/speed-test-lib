@@ -26,7 +26,6 @@ package fr.bmartel.speedtest.examples;
 import fr.bmartel.speedtest.SpeedTestMode;
 import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.SpeedTestSocket;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 /**
@@ -52,9 +51,9 @@ public class LogUtils {
      * @param report speed examples report to log
      * @param logger log4j logger
      */
-    public static void logSpeedTestReport(final SpeedTestReport report, Logger logger) {
+    public static void logSpeedTestReport(final SpeedTestReport report, final Logger logger) {
 
-        if (logger.isEnabled(Level.DEBUG)) {
+        if (logger.isDebugEnabled()) {
 
             switch (report.getSpeedTestMode()) {
                 case DOWNLOAD:
@@ -93,9 +92,9 @@ public class LogUtils {
      * @param logger                      log4j logger
      */
     public static void logFinishedTask(final SpeedTestMode mode, final long packetSize, final float
-            transferRateBitPerSeconds, final float transferRateOctetPerSeconds, Logger logger) {
+            transferRateBitPerSeconds, final float transferRateOctetPerSeconds, final Logger logger) {
 
-        if (logger.isEnabled(Level.ERROR)) {
+        if (logger.isDebugEnabled()) {
             switch (mode) {
                 case DOWNLOAD:
                     logger.debug("======== Download [ OK ] =============");
@@ -124,9 +123,9 @@ public class LogUtils {
      * @param speedTestSocket speed test socket instance
      * @param logger          log4j logger
      */
-    public static void logReport(SpeedTestSocket speedTestSocket, Logger logger) {
+    public static void logReport(final SpeedTestSocket speedTestSocket, final Logger logger) {
 
-        if (logger.isEnabled(Level.DEBUG)) {
+        if (logger.isDebugEnabled()) {
 
             SpeedTestReport report = null;
 
@@ -150,17 +149,21 @@ public class LogUtils {
      * @param report speed test report instance
      * @param logger log4j logger
      */
-    public static void logReport(SpeedTestReport report, Logger logger) {
-        logger.debug("progress             : " + report.getProgressPercent() + "%");
-        logger.debug("transfer rate bit    : " + report.getTransferRateBit() + "b/s");
-        logger.debug("transfer rate octet  : " + report.getTransferRateOctet() + "B/s");
-        logger.debug("uploaded for now     : " + report.getTemporaryPacketSize()
-                + "/" + report.getTotalPacketSize());
+    public static void logReport(final SpeedTestReport report, final Logger logger) {
 
-        if (report.getStartTime() > 0) {
-            logger.debug("amount of time       : " +
-                    ((report.getReportTime() - report.getStartTime()) / 1000) + "s");
+        if (logger.isDebugEnabled()) {
+
+            logger.debug("progress             : " + report.getProgressPercent() + "%");
+            logger.debug("transfer rate bit    : " + report.getTransferRateBit() + "b/s");
+            logger.debug("transfer rate octet  : " + report.getTransferRateOctet() + "B/s");
+            logger.debug("uploaded for now     : " + report.getTemporaryPacketSize()
+                    + "/" + report.getTotalPacketSize());
+
+            if (report.getStartTime() > 0) {
+                logger.debug("amount of time       : " +
+                        ((report.getReportTime() - report.getStartTime()) / 1000) + "s");
+            }
+            logger.debug("--------------------------------------------------------");
         }
-        logger.debug("--------------------------------------------------------");
     }
 }
