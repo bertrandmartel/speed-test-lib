@@ -67,6 +67,26 @@ public class SpeedTestSocket {
     private static final int DEFAULT_UPLOAD_SIZE = 65535;
 
     /**
+     * http ok status code.
+     */
+    private static final int HTTP_OK = 200;
+
+    /**
+     * max value for percent.
+     */
+    private static final float PERCENT_MAX = 100;
+
+    /**
+     * millisecond divider.
+     */
+    private static final float MILLIS_DIVIDER = 1000f;
+
+    /**
+     * bit multiplier value.
+     */
+    private static final byte BIT_MULTIPLIER = 8;
+
+    /**
      * socket server hostname.
      */
     private String hostname = "";
@@ -328,8 +348,8 @@ public class SpeedTestSocket {
 
             timeEnd = System.currentTimeMillis();
 
-            final float transferRateOps = downloadPckSize / ((timeEnd - timeStart) / 1000f);
-            final float transferRateBps = transferRateOps * 8;
+            final float transferRateOps = downloadPckSize / ((timeEnd - timeStart) / MILLIS_DIVIDER);
+            final float transferRateBps = transferRateOps * BIT_MULTIPLIER;
 
             closeSocket();
 
@@ -452,12 +472,12 @@ public class SpeedTestSocket {
             final HttpStates httpStates = frame.parseHttp(socket.getInputStream());
 
             if (httpStates == HttpStates.HTTP_FRAME_OK) {
-                if (frame.getStatusCode() == 200 && frame.getReasonPhrase().equalsIgnoreCase("ok")) {
+                if (frame.getStatusCode() == HTTP_OK && frame.getReasonPhrase().equalsIgnoreCase("ok")) {
 
                     timeEnd = System.currentTimeMillis();
 
-                    final float transferRateOps = uploadFileSize / ((timeEnd - timeStart) / 1000f);
-                    final float transferRateBps = transferRateOps * 8;
+                    final float transferRateOps = uploadFileSize / ((timeEnd - timeStart) / MILLIS_DIVIDER);
+                    final float transferRateBps = transferRateOps * BIT_MULTIPLIER;
 
                     for (int i = 0; i < listenerList.size(); i++) {
                         listenerList.get(i).onUploadPacketsReceived(uploadFileSize, transferRateBps, transferRateOps);
@@ -792,7 +812,7 @@ public class SpeedTestSocket {
                                         remain));
                             }
                             for (int j = 0; j < listenerList.size(); j++) {
-                                listenerList.get(j).onUploadProgress(100, getLiveUploadReport());
+                                listenerList.get(j).onUploadProgress(PERCENT_MAX, getLiveUploadReport());
                             }
                         }
                     } catch (IOException e) {
@@ -864,8 +884,8 @@ public class SpeedTestSocket {
             currentTime = timeEnd;
         }
 
-        final float transferRate_Bps = temporaryPacketSize / ((currentTime - timeStart) / 1000f);
-        final float transferRate_bps = transferRate_Bps * 8;
+        final float transferRate_Bps = temporaryPacketSize / ((currentTime - timeStart) / MILLIS_DIVIDER);
+        final float transferRate_bps = transferRate_Bps * BIT_MULTIPLIER;
 
         float percent = 0;
 
@@ -877,7 +897,7 @@ public class SpeedTestSocket {
         } else {
 
             if (totalPacketSize != 0) {
-                percent = temporaryPacketSize * 100f / totalPacketSize;
+                percent = temporaryPacketSize * PERCENT_MAX / totalPacketSize;
             }
 
             report = new SpeedTestReport(mode, percent,
@@ -906,9 +926,9 @@ public class SpeedTestSocket {
 
         if (startDateRepeat != 0) {
             if (!repeatFinished) {
-                progressPercent = (System.currentTimeMillis() - startDateRepeat) * 100f / repeatWindows;
+                progressPercent = (System.currentTimeMillis() - startDateRepeat) * PERCENT_MAX / repeatWindows;
             } else {
-                progressPercent = 100;
+                progressPercent = PERCENT_MAX;
             }
         } else {
             //download has not started yet
@@ -921,7 +941,7 @@ public class SpeedTestSocket {
             downloadRepeatRateOctet = transferRateOctet;
         }
 
-        transferRateBit = downloadRepeatRateOctet * 8f;
+        transferRateBit = downloadRepeatRateOctet * BIT_MULTIPLIER;
 
         if (!repeatFinished) {
             temporaryPacketSize = repeatTempPckSize;
