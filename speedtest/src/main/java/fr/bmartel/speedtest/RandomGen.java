@@ -42,6 +42,11 @@ public class RandomGen {
      */
     private final byte[] buf;
 
+    /**
+     * Build Random generator object with specify file length.
+     *
+     * @param length file length to generate
+     */
     public RandomGen(final int length) {
         if (length < MINIMUM_LENGTH) {
             throw new IllegalArgumentException("length < " + MINIMUM_LENGTH + ": " + length);
