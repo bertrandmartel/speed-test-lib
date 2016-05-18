@@ -109,19 +109,26 @@ public class LogUtils {
             }
 
             if (report != null) {
-
-                log.debug("progress             : " + report.getProgressPercent() + "%");
-                log.debug("transfer rate bit    : " + report.getTransferRateBit() + "b/s");
-                log.debug("transfer rate octet  : " + report.getTransferRateOctet() + "B/s");
-                log.debug("uploaded for now     : " + report.getTemporaryPacketSize()
-                        + "/" + report.getTotalPacketSize());
-
-                if (report.getStartTime() > 0) {
-                    log.debug("amount of time       : " +
-                            ((report.getReportTime() - report.getStartTime()) / 1000) + "s");
-                }
-                log.debug("--------------------------------------------------------");
+                logReport(report, log);
             }
         }
+    }
+
+    /**
+     * @param report
+     * @param log
+     */
+    public static void logReport(SpeedTestReport report, Logger log) {
+        log.debug("progress             : " + report.getProgressPercent() + "%");
+        log.debug("transfer rate bit    : " + report.getTransferRateBit() + "b/s");
+        log.debug("transfer rate octet  : " + report.getTransferRateOctet() + "B/s");
+        log.debug("uploaded for now     : " + report.getTemporaryPacketSize()
+                + "/" + report.getTotalPacketSize());
+
+        if (report.getStartTime() > 0) {
+            log.debug("amount of time       : " +
+                    ((report.getReportTime() - report.getStartTime()) / 1000) + "s");
+        }
+        log.debug("--------------------------------------------------------");
     }
 }
