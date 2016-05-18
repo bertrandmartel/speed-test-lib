@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package fr.bmartel.speedtest.test;
+package fr.bmartel.speedtest.examples;
 
 import fr.bmartel.speedtest.SpeedTestMode;
 import fr.bmartel.speedtest.SpeedTestReport;
@@ -34,19 +34,19 @@ import org.junit.Test;
 import java.util.Date;
 
 /**
- * Speed test report object test.
+ * Speed examples report object examples.
  *
  * @author Bertrand Martel
  */
 public class SpeedTestReportTest {
 
     /**
-     * unit test message header.
+     * unit examples message header.
      */
     private static final String HEADER = TestUtils.generateMessageHeader(SpeedTestReportTest.class);
 
     /**
-     * tested speed test mode.
+     * tested speed examples mode.
      */
     private static final SpeedTestMode speedTestMode = SpeedTestMode.DOWNLOAD;
 
@@ -104,7 +104,7 @@ public class SpeedTestReportTest {
                 transferRateBit,
                 requestNum);
 
-        Assert.assertSame(HEADER + "speed test mode are not equals", report.getSpeedTestMode(), speedTestMode);
+        Assert.assertSame(HEADER + "speed examples mode are not equals", report.getSpeedTestMode(), speedTestMode);
         Assert.assertEquals(HEADER + "progress are not equals", report.getProgressPercent(), progressPercent, 0);
         Assert.assertEquals(HEADER + "start time are not equals", report.getStartTime(), startTime);
         Assert.assertEquals(HEADER + "report time are not equals", report.getReportTime(), reportTime);

@@ -25,7 +25,7 @@
 package fr.bmartel.speedtest;
 
 /**
- * Speed test report.
+ * Speed examples report.
  * <p/>
  * feature current report measurement for DOWNLOAD/UPLOAD
  *
@@ -64,12 +64,12 @@ public class SpeedTestReport {
     private final long reportTime;
 
     /**
-     * speed test mode for this report.
+     * speed examples mode for this report.
      */
     private final SpeedTestMode speedTestMode;
 
     /**
-     * speed test progress in percent (%).
+     * speed examples progress in percent (%).
      */
     private final float progressPercent;
 
@@ -81,8 +81,8 @@ public class SpeedTestReport {
     /**
      * Build Upload report.
      *
-     * @param speedTestMode     speed test mode (DOWNLOAD/UPLOAD)
-     * @param progressPercent   speed test progress in percent (%)
+     * @param speedTestMode     speed examples mode (DOWNLOAD/UPLOAD)
+     * @param progressPercent   speed examples progress in percent (%)
      * @param startTime         upload start time in millis since 1970
      * @param reportTime        upload report time in millis since 1970
      * @param tempPacketSize    current size of file to upload
@@ -148,7 +148,7 @@ public class SpeedTestReport {
     }
 
     /**
-     * get speed test start time.
+     * get speed examples start time.
      *
      * @return start time timestamp (millis since 1970)
      */
@@ -166,16 +166,16 @@ public class SpeedTestReport {
     }
 
     /**
-     * get speed test mode (DOWNLOAD/UPLOAD).
+     * get speed examples mode (DOWNLOAD/UPLOAD).
      *
-     * @return speed test mode
+     * @return speed examples mode
      */
     public SpeedTestMode getSpeedTestMode() {
         return speedTestMode;
     }
 
     /**
-     * get speed test progress.
+     * get speed examples progress.
      *
      * @return progress in %
      */

@@ -17,8 +17,8 @@ dependencies {
     compile 'akinaru:http-endec:1.02'
 }
 
-def siteUrl = 'https://github.com/akinaru/speed-test-lib'
-def gitUrl = 'https://github.com/akinaru/speed-test-lib.git'
+def siteUrl = 'https://github.com/akinaru/speed-examples-lib'
+def gitUrl = 'https://github.com/akinaru/speed-examples-lib.git'
 
 bintray {
     user = "$System.env.BINTRAY_USER"
@@ -32,12 +32,12 @@ bintray {
     pkg {
         repo = 'maven'
         name = 'speedtest'
-        desc = 'Speed test library for Java/Android'
+        desc = 'Speed examples library for Java/Android'
         websiteUrl = siteUrl
-        issueTrackerUrl = 'https://github.com/akinaru/speed-test-lib/issues'
+        issueTrackerUrl = 'https://github.com/akinaru/speed-examples-lib/issues'
         vcsUrl = gitUrl
         licenses = ['MIT']
-        labels = ['speed-test','speedtest']
+        labels = ['speed-examples','speedtest']
         publicDownloadNumbers = true
 
         version {
@@ -65,14 +65,14 @@ install {
     repositories.mavenInstaller {
         pom {
             project {
-                description 'Speed test library for Java/Android'
+                description 'Speed examples library for Java/Android'
                 packaging 'jar'
                 name 'speedtest-lib'
                 url siteUrl
                 licenses {
                     license {
                         name 'The MIT License'
-                        url 'https://github.com/akinaru/speed-test-lib/blob/master/LICENSE.md'
+                        url 'https://github.com/akinaru/speed-examples-lib/blob/master/LICENSE.md'
                     }
                 }
                 developers {
@@ -83,8 +83,8 @@ install {
                     }
                 }
                 scm {
-                    connection 'https://github.com/akinaru/speed-test-lib.git'
-                    developerConnection 'https://github.com/akinaru/speed-test-lib.git'
+                    connection 'https://github.com/akinaru/speed-examples-lib.git'
+                    developerConnection 'https://github.com/akinaru/speed-examples-lib.git'
                     url siteUrl
                 }
             }
