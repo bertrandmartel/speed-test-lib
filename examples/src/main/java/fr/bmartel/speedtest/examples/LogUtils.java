@@ -47,6 +47,11 @@ public class LogUtils {
     private static final int MEGA_VALUE_PER_SECONDS = 1000000;
 
     /**
+     * log report separator.
+     */
+    public static final String LOG_REPORT_SEPARATOR = "--------------------------------------------------------";
+
+    /**
      * print speed examples report object.
      *
      * @param report speed examples report to log
@@ -66,20 +71,7 @@ public class LogUtils {
                 default:
                     break;
             }
-
-            logger.debug("progress             : " + report.getProgressPercent() + "%");
-            logger.debug("transfer rate bit    : " + report.getTransferRateBit() + "b/s");
-            logger.debug("transfer rate octet  : " + report.getTransferRateOctet() + "B/s");
-            logger.debug("uploaded for now     : " + report.getTemporaryPacketSize() + "/" + report
-                    .getTotalPacketSize());
-
-            if (report.getStartTime() > 0) {
-                logger.debug("amount of time       : " + ((report.getReportTime() - report.getStartTime()) /
-                        VALUE_PER_SECONDS) + "s");
-            }
-            logger.debug("request number       : " + report.getRequestNum());
-
-            logger.debug("--------------------------------------------------------");
+            logReport(report, logger);
         }
     }
 
@@ -164,7 +156,7 @@ public class LogUtils {
                 logger.debug("amount of time       : " +
                         ((report.getReportTime() - report.getStartTime()) / 1000) + "s");
             }
-            logger.debug("--------------------------------------------------------");
+            logger.debug(LOG_REPORT_SEPARATOR);
         }
     }
 }
