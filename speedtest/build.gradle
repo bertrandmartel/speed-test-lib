@@ -2,7 +2,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 group 'com.github.akinaru'
-version '1.09'
+version '1.10'
 
 apply plugin: 'java'
 
@@ -32,7 +32,7 @@ bintray {
     pkg {
         repo = 'maven'
         name = 'speedtest'
-        desc = 'Speed examples library for Java/Android'
+        desc = 'Speed Test library for Java/Android'
         websiteUrl = siteUrl
         issueTrackerUrl = 'https://github.com/akinaru/speed-examples-lib/issues'
         vcsUrl = gitUrl
@@ -41,8 +41,8 @@ bintray {
         publicDownloadNumbers = true
 
         version {
-            name = '1.09' //Bintray logical version name
-            vcsTag = '1.09'
+            name = project.version //Bintray logical version name
+            vcsTag = project.version
 
             gpg {
                 sign = true
@@ -65,7 +65,7 @@ install {
     repositories.mavenInstaller {
         pom {
             project {
-                description 'Speed examples library for Java/Android'
+                description 'Speed Test library for Java/Android'
                 packaging 'jar'
                 name 'speedtest-lib'
                 url siteUrl
@@ -90,15 +90,6 @@ install {
             }
         }
     }
-}
-
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-
-def getDateTime() {
-    DateFormat df = new SimpleDateFormat("ddMMYYYY");
-
-    return df.format(new Date());
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
