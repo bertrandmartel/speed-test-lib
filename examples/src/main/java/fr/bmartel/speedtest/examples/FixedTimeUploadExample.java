@@ -60,7 +60,7 @@ public class FixedTimeUploadExample {
     /**
      * upload 10Mo file size.
      */
-    private static final int FILE_SIZE = 10000000;
+    private static final int FILE_SIZE = 100000000;
 
     /**
      * amount of time between each speed test reports set to 1s.
