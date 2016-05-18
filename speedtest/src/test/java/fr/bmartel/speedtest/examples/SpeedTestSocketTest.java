@@ -37,7 +37,7 @@ import org.junit.Test;
 public class SpeedTestSocketTest {
 
     /**
-     * speed test socket object
+     * speed test socket object.
      */
     private SpeedTestSocket socket;
 
