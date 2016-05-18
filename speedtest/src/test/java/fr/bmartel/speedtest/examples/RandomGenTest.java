@@ -45,6 +45,9 @@ public class RandomGenTest {
      */
     private final int[] sizes = new int[]{1, 10, 10000, 10000000};
 
+    /**
+     * test generated file for upload
+     */
     @Test
     public void randomGenTest() {
 

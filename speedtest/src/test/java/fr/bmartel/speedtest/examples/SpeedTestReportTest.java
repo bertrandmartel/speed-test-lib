@@ -27,11 +27,10 @@ package fr.bmartel.speedtest.examples;
 import fr.bmartel.speedtest.SpeedTestMode;
 import fr.bmartel.speedtest.SpeedTestReport;
 
-import org.junit.Assert;
-
-import org.junit.Test;
-
 import java.util.Date;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Speed examples report object examples.
@@ -90,6 +89,9 @@ public class SpeedTestReportTest {
      */
     private static final int requestNum = 2;
 
+    /**
+     * test speed test report object
+     */
     @Test
     public void speedTestReportTest() {
 

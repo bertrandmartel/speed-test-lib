@@ -24,9 +24,14 @@
 
 package fr.bmartel.speedtest.examples;
 
-import fr.bmartel.speedtest.*;
-import org.apache.logging.log4j.Logger;
+import fr.bmartel.speedtest.ISpeedTestListener;
+import fr.bmartel.speedtest.SpeedTestError;
+import fr.bmartel.speedtest.SpeedTestMode;
+import fr.bmartel.speedtest.SpeedTestSocket;
+import fr.bmartel.speedtest.SpeedTestReport;
+
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Upload File Speed test example.
@@ -66,8 +71,7 @@ public class UploadFileExample {
     private static final Logger log = LogManager.getLogger(DownloadFileExample.class.getName());
 
     /**
-     * Instantiate Speed Test and start download and upload process with speed
-     * examples server of your choice.
+     * upload file example main.
      *
      * @param args no args required
      */

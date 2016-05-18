@@ -24,13 +24,16 @@
 
 package fr.bmartel.speedtest.examples;
 
-import fr.bmartel.speedtest.*;
+import fr.bmartel.speedtest.ISpeedTestListener;
+import fr.bmartel.speedtest.SpeedTestError;
+import fr.bmartel.speedtest.SpeedTestSocket;
+import fr.bmartel.speedtest.SpeedTestReport;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Begin to download a file from server & stop downloading when test duration is elapsed.
@@ -55,13 +58,22 @@ public class FixedTimeDownloadExample {
     private final static int SPEED_TEST_SERVER_PORT = 80;
 
     /**
+     * amount of time between each speed test reports set to 1s
+     */
+    private static final int REPORT_INTERVAL = 1000;
+
+    /**
+     * speed test duration set to 15s
+     */
+    private static final int SPEED_TEST_DURATION = 15000;
+
+    /**
      * logger.
      */
     private final static Logger log = LogManager.getLogger(DownloadFileExample.class.getName());
 
     /**
-     * Instanciate Speed Test and start download and upload process with speed
-     * examples server of your choice.
+     * Fixed time download main.
      *
      * @param args no args required
      */
@@ -85,11 +97,9 @@ public class FixedTimeDownloadExample {
                 if (log.isErrorEnabled()) {
                     log.error(errorMessage);
                 }
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    if (timer != null) {
-                        timer.purge();
-                        timer.cancel();
-                    }
+                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET && timer != null) {
+                    timer.purge();
+                    timer.cancel();
                 }
             }
 
@@ -106,11 +116,9 @@ public class FixedTimeDownloadExample {
                     log.error(errorMessage);
                 }
 
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    if (timer != null) {
-                        timer.purge();
-                        timer.cancel();
-                    }
+                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET && timer != null) {
+                    timer.purge();
+                    timer.cancel();
                 }
             }
 
@@ -132,7 +140,7 @@ public class FixedTimeDownloadExample {
             }
         };
 
-        timer.scheduleAtFixedRate(task, 0, 1000);
+        timer.scheduleAtFixedRate(task, 0, REPORT_INTERVAL);
 
         final TimerTask stopTask = new TimerTask() {
 
@@ -150,7 +158,7 @@ public class FixedTimeDownloadExample {
             }
         };
 
-        timer.schedule(stopTask, 15000);
+        timer.schedule(stopTask, SPEED_TEST_DURATION);
         speedTestSocket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL);
     }
 }

@@ -24,10 +24,12 @@
 
 package fr.bmartel.speedtest.examples;
 
-import fr.bmartel.speedtest.*;
+import fr.bmartel.speedtest.IRepeatListener;
+import fr.bmartel.speedtest.SpeedTestSocket;
+import fr.bmartel.speedtest.SpeedTestReport;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Download a file repeatedly from speed test server during a fixed amount of time.
@@ -67,8 +69,7 @@ public class RepeatDownloadExample {
     private static final int REPORT_INTERVAL = 1000;
 
     /**
-     * Instantiate Speed Test and start download and upload process with speed
-     * examples server of your choice.
+     * Repeat download example main.
      *
      * @param args no args required
      */
