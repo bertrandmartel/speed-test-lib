@@ -36,8 +36,8 @@ import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import fr.bmartel.protocol.http.states.HttpStates;
 import fr.bmartel.protocol.http.HttpFrame;
+import fr.bmartel.protocol.http.states.HttpStates;
 
 /**
  * Client socket main implementation.

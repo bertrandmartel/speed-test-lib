@@ -27,8 +27,8 @@ package fr.bmartel.speedtest.examples;
 import fr.bmartel.speedtest.ISpeedTestListener;
 import fr.bmartel.speedtest.SpeedTestError;
 import fr.bmartel.speedtest.SpeedTestMode;
-import fr.bmartel.speedtest.SpeedTestSocket;
 import fr.bmartel.speedtest.SpeedTestReport;
+import fr.bmartel.speedtest.SpeedTestSocket;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,7 +66,7 @@ public class DownloadFileExample {
     private final static Logger log = LogManager.getLogger(DownloadFileExample.class.getName());
 
     /**
-     * Download file example main
+     * Download file example main.
      *
      * @param args no args required
      */
