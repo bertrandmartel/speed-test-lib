@@ -115,8 +115,11 @@ public class LogUtils {
                 log.debug("transfer rate octet  : " + report.getTransferRateOctet() + "B/s");
                 log.debug("uploaded for now     : " + report.getTemporaryPacketSize()
                         + "/" + report.getTotalPacketSize());
-                log.debug("amount of time       : " +
-                        ((report.getReportTime() - report.getStartTime()) / 1000) + "s");
+
+                if (report.getStartTime() > 0) {
+                    log.debug("amount of time       : " +
+                            ((report.getReportTime() - report.getStartTime()) / 1000) + "s");
+                }
                 log.debug("--------------------------------------------------------");
             }
         }
