@@ -26,7 +26,7 @@ No external file are required and no file are stored in Hard Disk.
 * with Gradle, from jcenter :
 
 ```
-compile 'com.github.akinaru:speedtest:1.09'
+compile 'com.github.akinaru:speedtest:1.10'
 ```
 
 ## How to use ?
@@ -394,9 +394,39 @@ Execute it with : `new SpeedTestTask().execute();`
 
 http://akinaru.github.io/speed-test-lib
 
-## Quick test
+## Features examples
 
-``./gradlew quickTest``
+All following examples use speed test server `1.testdebit.info`
+
+* download (10Mo)
+
+```
+./gradlew download
+```
+
+* upload (10Mo)
+
+```
+./gradlew upload
+```
+
+* download during a fixed duration (size: 100Mo, duration: 15s, report interval: 1s)
+
+```
+./gradlew fixedDownload
+```
+
+* upload during a fixed duration (size: 100Mo, duration: 15s, report interval: 1s)
+
+```
+./gradlew fixedUpload
+```
+
+* download repeatedly a file during a fixed duration (size:10Mo, duration 11s, report interval: 1s)
+
+```
+./gradlew repeatDownload
+```
 
 ## Compatibility
 
