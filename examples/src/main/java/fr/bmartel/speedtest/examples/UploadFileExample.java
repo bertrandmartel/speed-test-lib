@@ -25,7 +25,6 @@
 package fr.bmartel.speedtest.examples;
 
 import fr.bmartel.speedtest.*;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -94,7 +93,7 @@ public class UploadFileExample {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (log.isEnabled(Level.ERROR)) {
+                if (log.isErrorEnabled()) {
                     log.error("Download error " + speedTestError + " : " + errorMessage);
                 }
             }
@@ -110,7 +109,7 @@ public class UploadFileExample {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (log.isEnabled(Level.ERROR)) {
+                if (log.isErrorEnabled()) {
                     log.error("Upload error " + speedTestError + " : " + errorMessage);
                 }
             }
