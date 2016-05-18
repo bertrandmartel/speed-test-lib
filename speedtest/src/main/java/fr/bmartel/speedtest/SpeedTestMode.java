@@ -25,21 +25,21 @@
 package fr.bmartel.speedtest;
 
 /**
- * Speed test mode.
+ * Speed examples mode.
  *
  * @author Bertrand Martel
  */
 public enum SpeedTestMode {
     /**
-     * no test.
+     * no examples.
      */
     NONE,
     /**
-     * download test.
+     * download examples.
      */
     DOWNLOAD,
     /**
-     * upload test.
+     * upload examples.
      */
     UPLOAD
 }

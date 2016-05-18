@@ -33,34 +33,34 @@ task findConventions << {
 task downloadFile(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     classpath += sourceSets.main.resources
-    main = "fr.bmartel.speedtest.test.DownloadFileExample"
+    main = "fr.bmartel.speedtest.examples.DownloadFileExample"
     args ""
 }
 
 task uploadFile(type: JavaExec) {
     classpath sourceSets.test.runtimeClasspath
-    main = "fr.bmartel.speedtest.test.UploadFileExample"
+    main = "fr.bmartel.speedtest.examples.UploadFileExample"
     args ""
 }
 
 task fixedDownload(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     classpath += sourceSets.main.resources
-    main = "fr.bmartel.speedtest.test.FixedTimeDownloadExample"
+    main = "fr.bmartel.speedtest.examples.FixedTimeDownloadExample"
     args ""
 }
 
 task fixedUpload(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     classpath += sourceSets.main.resources
-    main = "fr.bmartel.speedtest.test.FixedTimeUploadExample"
+    main = "fr.bmartel.speedtest.examples.FixedTimeUploadExample"
     args ""
 }
 
 task repeatDownload(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     classpath += sourceSets.main.resources
-    main = "fr.bmartel.speedtest.test.RepeatDownloadExample"
+    main = "fr.bmartel.speedtest.examples.RepeatDownloadExample"
     args ""
 }
 

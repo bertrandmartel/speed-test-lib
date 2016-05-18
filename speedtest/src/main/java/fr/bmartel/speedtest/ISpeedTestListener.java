@@ -24,7 +24,7 @@
 package fr.bmartel.speedtest;
 
 /**
- * Listener for speed test output results.
+ * Listener for speed examples output results.
  * <p/>
  * <ul>
  * <li>monitor download process result with transfer rate in bit/s and octet/s</li>
@@ -51,7 +51,7 @@ public interface ISpeedTestListener {
      * monitor download progress.
      *
      * @param percent % of progress
-     * @param report  current speed test download report
+     * @param report  current speed examples download report
      */
     void onDownloadProgress(float percent, SpeedTestReport report);
 
@@ -84,7 +84,7 @@ public interface ISpeedTestListener {
      * monitor upload progress.
      *
      * @param percent % of progress
-     * @param report  current speed test upload report
+     * @param report  current speed examples upload report
      */
     void onUploadProgress(float percent, SpeedTestReport report);
 
