@@ -84,9 +84,9 @@ public class RepeatDownloadExample {
                             public void onFinish(final SpeedTestReport report) {
 
                                 if (log.isDebugEnabled()) {
-                                    log.debug("--------------------------------------------------------");
+                                    log.debug(LogUtils.LOG_REPORT_SEPARATOR);
                                     log.debug("---------------------DOWNLOAD FINISHED------------------");
-                                    log.debug("--------------------------------------------------------");
+                                    log.debug(LogUtils.LOG_REPORT_SEPARATOR);
                                 }
                                 LogUtils.logReport(report, log);
                             }
