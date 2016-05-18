@@ -35,7 +35,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.logging.*;
 
 import fr.bmartel.protocol.http.HttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;
@@ -471,8 +470,10 @@ public class SpeedTestSocket {
                 return;
             }
             closeSocket();
-            for (int i = 0; i < listenerList.size(); i++) {
-                listenerList.get(i).onUploadError(SpeedTestError.SOCKET_ERROR, "socket error");
+            if (!forceCloseSocket) {
+                for (int i = 0; i < listenerList.size(); i++) {
+                    listenerList.get(i).onUploadError(SpeedTestError.SOCKET_ERROR, "socket error");
+                }
             }
             executorService.shutdown();
         } catch (SocketException e) {
