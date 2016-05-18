@@ -29,7 +29,6 @@ import fr.bmartel.speedtest.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -90,14 +89,15 @@ public class FixedTimeUploadExample {
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
-            public void onDownloadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float
+            public void onDownloadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
+            float
                     transferRateOctetPerSeconds) {
             }
 
             @Override
-            public void onDownloadError(SpeedTestError speedTestError, String errorMessage) {
+            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
 
-                if (log.isEnabled(Level.ERROR)) {
+                if (log.isErrorEnabled()) {
                     log.error(errorMessage);
                 }
                 if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
@@ -109,14 +109,14 @@ public class FixedTimeUploadExample {
             }
 
             @Override
-            public void onUploadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float
-                    transferRateOctetPerSeconds) {
+            public void onUploadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
+            float transferRateOctetPerSeconds) {
             }
 
             @Override
             public void onUploadError(SpeedTestError speedTestError, String errorMessage) {
 
-                if (log.isEnabled(Level.ERROR)) {
+                if (log.isErrorEnabled()) {
                     log.error(errorMessage);
                 }
 
@@ -129,15 +129,15 @@ public class FixedTimeUploadExample {
             }
 
             @Override
-            public void onDownloadProgress(float percent, SpeedTestReport downloadReport) {
+            public void onDownloadProgress(final float percent, final SpeedTestReport downloadReport) {
             }
 
             @Override
-            public void onUploadProgress(float percent, SpeedTestReport uploadReport) {
+            public void onUploadProgress(final float percent, final SpeedTestReport uploadReport) {
             }
         });
 
-        TimerTask task = new TimerTask() {
+        final TimerTask task = new TimerTask() {
 
             @Override
             public void run() {
@@ -148,7 +148,7 @@ public class FixedTimeUploadExample {
 
         timer.scheduleAtFixedRate(task, 0, REPORT_INTERVAL);
 
-        TimerTask stopTask = new TimerTask() {
+        final TimerTask stopTask = new TimerTask() {
 
             @Override
             public void run() {
