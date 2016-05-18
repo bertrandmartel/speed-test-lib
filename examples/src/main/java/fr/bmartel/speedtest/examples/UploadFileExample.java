@@ -22,21 +22,15 @@
  * THE SOFTWARE.
  */
 
-package fr.bmartel.speedtest.test;
+package fr.bmartel.speedtest.examples;
 
 import fr.bmartel.speedtest.*;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 /**
- * Speed Test example.
- * <p/>
- * <ul>
- * <li>Download test with progress bar and output</li>
- * <li>Upload test with progress bar and output</li>
- * </ul>
+ * Upload File Speed test example.
  *
  * @author Bertrand Martel
  */
@@ -48,17 +42,17 @@ public class UploadFileExample {
     private static final int SOCKET_TIMEOUT = 5000;
 
     /**
-     * speed test server host name.
+     * speed examples server host name.
      */
     private static final String SPEED_TEST_SERVER_HOST = "1.testdebit.info";
 
     /**
-     * spedd test server uri.
+     * spedd examples server uri.
      */
     private static final String SPEED_TEST_SERVER_URI_UL = "/";
 
     /**
-     * speed test server port.
+     * speed examples server port.
      */
     private static final int SPEED_TEST_SERVER_PORT = 80;
 
@@ -73,20 +67,20 @@ public class UploadFileExample {
     private static final Logger log = LogManager.getLogger(DownloadFileExample.class.getName());
 
     /**
-     * Instanciate Speed Test and start download and upload process with speed
-     * test server of your choice.
+     * Instantiate Speed Test and start download and upload process with speed
+     * examples server of your choice.
      *
      * @param args no args required
      */
     public static void main(final String[] args) {
 
-        // instantiate speed test
+        // instantiate speed examples
         final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 
         //set timeout for download
         speedTestSocket.setSocketTimeout(SOCKET_TIMEOUT);
 
-        // add a listener to wait for speed test completion and progress
+        // add a listener to wait for speed examples completion and progress
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override

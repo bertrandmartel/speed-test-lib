@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package fr.bmartel.speedtest.test;
+package fr.bmartel.speedtest.examples;
 
 import fr.bmartel.speedtest.*;
 
@@ -34,31 +34,41 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 /**
- * Speed Test example.
- * <p/>
- * <ul>
- * <li>Download test with progress bar and output</li>
- * <li>Upload test with progress bar and output</li>
- * </ul>
+ * Begin to upload a file from server & stop uploading when test duration is elapsed.
  *
  * @author Bertrand Martel
  */
-public class FixedTimeDownloadExample {
+public class FixedTimeUploadExample {
 
     /**
-     * speed test server host name.
+     * speed examples server host name.
      */
     private final static String SPEED_TEST_SERVER_HOST = "1.testdebit.info";
 
     /**
-     * spedd test server uri.
+     * spedd examples server uri.
      */
-    private final static String SPEED_TEST_SERVER_URI_DL = "/fichiers/10Mo.dat";
+    private static final String SPEED_TEST_SERVER_URI_UL = "/";
 
     /**
-     * speed test server port.
+     * speed examples server port.
      */
     private final static int SPEED_TEST_SERVER_PORT = 80;
+
+    /**
+     * upload 10Mo file size.
+     */
+    private static final int FILE_SIZE = 10000000;
+
+    /**
+     * amount of time between each speed test reports set to 1s
+     */
+    private static final int REPORT_INTERVAL = 1000;
+
+    /**
+     * speed test duration set to 15s
+     */
+    private static final int SPEED_TEST_DURATION = 15000;
 
     /**
      * logger.
@@ -67,7 +77,7 @@ public class FixedTimeDownloadExample {
 
     /**
      * Instanciate Speed Test and start download and upload process with speed
-     * test server of your choice.
+     * examples server of your choice.
      *
      * @param args no args required
      */
@@ -136,7 +146,7 @@ public class FixedTimeDownloadExample {
             }
         };
 
-        timer.scheduleAtFixedRate(task, 0, 1000);
+        timer.scheduleAtFixedRate(task, 0, REPORT_INTERVAL);
 
         TimerTask stopTask = new TimerTask() {
 
@@ -154,7 +164,8 @@ public class FixedTimeDownloadExample {
             }
         };
 
-        timer.schedule(stopTask, 15000);
-        speedTestSocket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL);
+        timer.schedule(stopTask, SPEED_TEST_DURATION);
+        speedTestSocket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
+                FILE_SIZE);
     }
 }

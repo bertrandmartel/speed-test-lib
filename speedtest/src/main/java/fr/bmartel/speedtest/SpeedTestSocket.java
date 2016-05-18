@@ -82,7 +82,7 @@ public class SpeedTestSocket {
     private Socket socket;
 
     /**
-     * speed test listener list.
+     * speed examples listener list.
      */
     private final List<ISpeedTestListener> listenerList = new ArrayList<ISpeedTestListener>();
 
@@ -138,7 +138,7 @@ public class SpeedTestSocket {
     private long timeEnd;
 
     /**
-     * current speed test mode.
+     * current speed examples mode.
      */
     private SpeedTestMode speedTestMode = SpeedTestMode.NONE;
 
@@ -219,9 +219,9 @@ public class SpeedTestSocket {
     }
 
     /**
-     * Add a speed test listener to list.
+     * Add a speed examples listener to list.
      *
-     * @param listener speed test listener to be added
+     * @param listener speed examples listener to be added
      */
     public void addSpeedTestListener(final ISpeedTestListener listener) {
         listenerList.add(listener);
@@ -230,7 +230,7 @@ public class SpeedTestSocket {
     /**
      * Relive a speed listener from list.
      *
-     * @param listener speed test listener to be removed
+     * @param listener speed examples listener to be removed
      */
     public void removeSpeedTestListener(final ISpeedTestListener listener) {
         listenerList.remove(listener);
@@ -247,7 +247,7 @@ public class SpeedTestSocket {
      * Create and connect socket.
      *
      * @param task       task to be executed when connected to socket
-     * @param isDownload define if it is a download or upload test
+     * @param isDownload define if it is a download or upload examples
      */
     private void connectAndExecuteTask(final TimerTask task, final boolean isDownload) {
 
@@ -674,7 +674,7 @@ public class SpeedTestSocket {
     /**
      * clear completly download repeat task.
      *
-     * @param listener speed test listener
+     * @param listener speed examples listener
      * @param timer    finished task timer
      */
     private void clearDownloadRepeat(final ISpeedTestListener listener, final Timer timer) {
@@ -818,7 +818,7 @@ public class SpeedTestSocket {
     /**
      * get a temporary download report at this moment.
      *
-     * @return speed test download report
+     * @return speed examples download report
      */
     public SpeedTestReport getLiveDownloadReport() {
         return getReport(SpeedTestMode.DOWNLOAD);
@@ -827,7 +827,7 @@ public class SpeedTestSocket {
     /**
      * get a temporary upload report at this moment.
      *
-     * @return speed test upload report
+     * @return speed examples upload report
      */
     public SpeedTestReport getLiveUploadReport() {
         return getReport(SpeedTestMode.UPLOAD);
@@ -836,8 +836,8 @@ public class SpeedTestSocket {
     /**
      * get a download/upload report.
      *
-     * @param mode speed test mode requested
-     * @return speed test report
+     * @param mode speed examples mode requested
+     * @return speed examples report
      */
     private SpeedTestReport getReport(final SpeedTestMode mode) {
 
@@ -890,10 +890,10 @@ public class SpeedTestSocket {
     /**
      * Build repeat download report based on stats on all packets downlaoded until now.
      *
-     * @param speedTestMode     speed test mode
+     * @param speedTestMode     speed examples mode
      * @param reportTime        time of current download
      * @param transferRateOctet transfer rate in octet/s
-     * @return speed test report object
+     * @return speed examples report object
      */
     private SpeedTestReport getRepeatDownloadReport(final SpeedTestMode speedTestMode,
                                                     final long reportTime,
@@ -960,9 +960,9 @@ public class SpeedTestSocket {
     }
 
     /**
-     * retrieve current speed test mode.
+     * retrieve current speed examples mode.
      *
-     * @return speed test mode (UPLOAD/DOWNLOAD/NONE)
+     * @return speed examples mode (UPLOAD/DOWNLOAD/NONE)
      */
     public SpeedTestMode getSpeedTestMode() {
         return speedTestMode;

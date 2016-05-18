@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package fr.bmartel.speedtest.test;
+package fr.bmartel.speedtest.examples;
 
 import fr.bmartel.speedtest.SpeedTestSocket;
 
@@ -30,7 +30,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Speed test socket test.
+ * Speed examples socket examples.
  *
  * @author Bertrand Martel
  */
@@ -39,7 +39,7 @@ public class SpeedTestSocketTest {
     private SpeedTestSocket socket;
 
     /**
-     * unit test message header.
+     * unit examples message header.
      */
     private static final String HEADER = TestUtils.generateMessageHeader(SpeedTestReportTest.class);
 
