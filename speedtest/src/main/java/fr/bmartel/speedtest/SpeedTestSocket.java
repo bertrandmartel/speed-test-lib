@@ -86,6 +86,11 @@ public class SpeedTestSocket {
      */
     private static final byte BIT_MULTIPLIER = 8;
 
+    private static final String PARSING_ERROR = "Error while parsing ";
+
+    private static final String PARSING_HTTP_ERROR = "Error while parsing http ";
+
+    private static final String TEST = "";
     /**
      * socket server hostname.
      */
@@ -369,7 +374,7 @@ public class SpeedTestSocket {
     /**
      * start download reading loop + monitor progress.
      *
-     * @throws IOException
+     * @throws IOException socket io exception
      */
     private void downloadReadingLoop() throws IOException {
 
@@ -404,12 +409,12 @@ public class SpeedTestSocket {
 
             if (!forceCloseSocket) {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error while parsing " +
+                    listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, PARSING_ERROR +
                             "http frame");
                 }
             } else {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.FORCE_CLOSE_SOCKET, "Error while parsing http " +
+                    listenerList.get(i).onDownloadError(SpeedTestError.FORCE_CLOSE_SOCKET, PARSING_HTTP_ERROR +
                             "frame" + FORCE_CLOSE_CAUSE_MESSAGE);
                 }
             }
@@ -427,12 +432,12 @@ public class SpeedTestSocket {
 
             if (!forceCloseSocket) {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error while parsing " +
+                    listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, PARSING_ERROR +
                             "http headers");
                 }
             } else {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.FORCE_CLOSE_SOCKET, "Error while parsing http " +
+                    listenerList.get(i).onDownloadError(SpeedTestError.FORCE_CLOSE_SOCKET, PARSING_HTTP_ERROR +
                             "headers" + FORCE_CLOSE_CAUSE_MESSAGE);
                 }
             }
@@ -827,8 +832,8 @@ public class SpeedTestSocket {
     /**
      * write and flush socket.
      *
-     * @param data data to write
-     * @throws IOException
+     * @param data payload to write
+     * @throws IOException socket io exception
      */
     private void writeFlushSocket(final byte[] data) throws IOException {
         socket.getOutputStream().write(data);
@@ -884,15 +889,15 @@ public class SpeedTestSocket {
             currentTime = timeEnd;
         }
 
-        final float transferRate_Bps = temporaryPacketSize / ((currentTime - timeStart) / MILLIS_DIVIDER);
-        final float transferRate_bps = transferRate_Bps * BIT_MULTIPLIER;
+        final float transferRateOps = temporaryPacketSize / ((currentTime - timeStart) / MILLIS_DIVIDER);
+        final float transferRateBitps = transferRateOps * BIT_MULTIPLIER;
 
         float percent = 0;
 
         SpeedTestReport report;
 
         if (isRepeatDownload) {
-            report = getRepeatDownloadReport(mode, currentTime, transferRate_Bps);
+            report = getRepeatDownloadReport(mode, currentTime, transferRateOps);
 
         } else {
 
@@ -901,7 +906,7 @@ public class SpeedTestSocket {
             }
 
             report = new SpeedTestReport(mode, percent,
-                    timeStart, currentTime, temporaryPacketSize, totalPacketSize, transferRate_Bps, transferRate_bps,
+                    timeStart, currentTime, temporaryPacketSize, totalPacketSize, transferRateOps, transferRateBitps,
                     1);
         }
         return report;
