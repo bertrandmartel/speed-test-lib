@@ -928,7 +928,7 @@ public class SpeedTestSocket {
         final Future<Integer> future = executor.submit(new Callable() {
 
             /**
-             * execute sequential write/flush task
+             * execute sequential write/flush task.
              *
              * @return status
              */

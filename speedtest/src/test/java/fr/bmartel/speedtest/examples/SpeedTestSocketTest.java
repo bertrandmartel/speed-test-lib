@@ -52,7 +52,7 @@ public class SpeedTestSocketTest {
     private static final int SOCKET_TO_VALID = 10000;
 
     /**
-     * default value for socket timeout
+     * default value for socket timeout.
      */
     private static final int SOCKET_TO_DEFAULT = 10000;
 
