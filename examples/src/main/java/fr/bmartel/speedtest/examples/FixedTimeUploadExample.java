@@ -75,7 +75,7 @@ public class FixedTimeUploadExample {
     /**
      * logger.
      */
-    private final static Logger log = LogManager.getLogger(DownloadFileExample.class.getName());
+    private final static Logger log = LogManager.getLogger(FixedTimeUploadExample.class.getName());
 
     /**
      * Fixed time upload example main.
