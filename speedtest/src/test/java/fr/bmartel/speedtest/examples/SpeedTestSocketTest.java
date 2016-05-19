@@ -52,6 +52,11 @@ public class SpeedTestSocketTest {
     private static final int socketTimeoutValid = 10000;
 
     /**
+     * default value for socket timeout
+     */
+    private static final int socketTimeoutDefaultValue = 10000;
+
+    /**
      * value for invalid socket timeout.
      */
     private static final int socketTimeoutInvalid = -1;
@@ -72,7 +77,8 @@ public class SpeedTestSocketTest {
     @Test
     public void socketTimeoutDefaultTest() {
         socket = new SpeedTestSocket();
-        Assert.assertEquals(HEADER + " socket timeout default value should be 0", socket.getSocketTimeout(), 0);
+        Assert.assertEquals(HEADER + " socket timeout default value should be " + socketTimeoutDefaultValue, socket
+                .getSocketTimeout(), socketTimeoutDefaultValue);
     }
 
     /**
@@ -93,7 +99,8 @@ public class SpeedTestSocketTest {
         socket = new SpeedTestSocket();
         Assert.assertNotSame(HEADER + "socket timeout are equals, shouldnt be (-1)", socket.getSocketTimeout(),
                 socketTimeoutInvalid);
-        Assert.assertEquals(HEADER + "socket timeout should be 0", socket.getSocketTimeout(), 0);
+        Assert.assertEquals(HEADER + "socket timeout should be " + socketTimeoutDefaultValue, socket.getSocketTimeout
+                (), socketTimeoutDefaultValue);
 
     }
 
