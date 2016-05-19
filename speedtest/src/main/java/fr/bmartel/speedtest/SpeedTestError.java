@@ -40,6 +40,10 @@ public enum SpeedTestError {
      */
     SOCKET_ERROR,
     /**
+     * socket timeout occured.
+     */
+    SOCKET_TIMEOUT,
+    /**
      * connection error occured.
      */
     CONNECTION_ERROR,
