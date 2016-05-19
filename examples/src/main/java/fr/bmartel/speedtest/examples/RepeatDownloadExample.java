@@ -24,9 +24,7 @@
 
 package fr.bmartel.speedtest.examples;
 
-import fr.bmartel.speedtest.IRepeatListener;
-import fr.bmartel.speedtest.SpeedTestReport;
-import fr.bmartel.speedtest.SpeedTestSocket;
+import fr.bmartel.speedtest.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -76,6 +74,51 @@ public class RepeatDownloadExample {
     public static void main(final String[] args) {
 
         final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
+
+        //set socket timeout to 3s
+        speedTestSocket.setSocketTimeout(3000);
+
+        speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
+
+            @Override
+            public void onDownloadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
+            float
+                    transferRateOctetPerSeconds) {
+                //called when download is finished
+            }
+
+            @Override
+            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error(errorMessage);
+                }
+            }
+
+            @Override
+            public void onUploadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
+            float transferRateOctetPerSeconds) {
+                //called when upload is finished
+            }
+
+            @Override
+            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
+
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error(errorMessage);
+                }
+            }
+
+            @Override
+            public void onDownloadProgress(final float percent, final SpeedTestReport downloadReport) {
+                //notify download progress
+            }
+
+            @Override
+            public void onUploadProgress(final float percent, final SpeedTestReport uploadReport) {
+                //notify upload progress
+            }
+        });
 
         speedTestSocket.startDownloadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL,
                 SPEED_TEST_DURATION, REPORT_INTERVAL, new
