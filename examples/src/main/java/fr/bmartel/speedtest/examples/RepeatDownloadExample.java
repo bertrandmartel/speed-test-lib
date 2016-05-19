@@ -67,6 +67,11 @@ public class RepeatDownloadExample {
     private static final int REPORT_INTERVAL = 1000;
 
     /**
+     * set socket timeout to 3s.
+     */
+    private static final int SOCKET_TIMEOUT = 3000;
+
+    /**
      * Repeat download example main.
      *
      * @param args no args required
@@ -75,8 +80,7 @@ public class RepeatDownloadExample {
 
         final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 
-        //set socket timeout to 3s
-        speedTestSocket.setSocketTimeout(3000);
+        speedTestSocket.setSocketTimeout(SOCKET_TIMEOUT);
 
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
