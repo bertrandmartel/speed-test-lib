@@ -5,8 +5,15 @@ group 'com.github.akinaru'
 version '1.10'
 
 apply plugin: 'java'
+apply plugin: 'pmd'
 
 sourceCompatibility = 1.7
+
+pmd {
+    toolVersion = '5.3.2'
+    ruleSets = []
+    ruleSetFiles = files('config/pmd/rulesets.xml')
+}
 
 repositories {
     mavenCentral()
@@ -37,7 +44,7 @@ bintray {
         issueTrackerUrl = 'https://github.com/akinaru/speed-examples-lib/issues'
         vcsUrl = gitUrl
         licenses = ['MIT']
-        labels = ['speed-examples','speedtest']
+        labels = ['speed-examples', 'speedtest']
         publicDownloadNumbers = true
 
         version {
@@ -115,4 +122,14 @@ task generateJavadoc(type: Javadoc) {
     source = sourceSets.main.allJava
     classpath = configurations.compile
     destinationDir = file("./doc/")
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+compileTestJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }

@@ -525,11 +525,9 @@ public class SpeedTestSocket {
                 return;
             }
             closeSocket();
-            if (!errorDispatched) {
-                if (!forceCloseSocket) {
-                    for (int i = 0; i < listenerList.size(); i++) {
-                        listenerList.get(i).onUploadError(SpeedTestError.SOCKET_ERROR, "socket error");
-                    }
+            if (!errorDispatched && !forceCloseSocket) {
+                for (int i = 0; i < listenerList.size(); i++) {
+                    listenerList.get(i).onUploadError(SpeedTestError.SOCKET_ERROR, "socket error");
                 }
             }
             executorService.shutdownNow();
@@ -891,12 +889,10 @@ public class SpeedTestSocket {
                                 }
                                 uploadTempFileSize += uploadChunkSize;
                             }
-                            if (remain != 0) {
-
-                                if (writeFlushSocket(Arrays.copyOfRange(body, uploadTempFileSize, uploadTempFileSize +
-                                        remain)) != 0) {
-                                    throw new SocketTimeoutException();
-                                }
+                            if (remain != 0 && writeFlushSocket(Arrays.copyOfRange(body, uploadTempFileSize,
+                                    uploadTempFileSize +
+                                            remain)) != 0) {
+                                throw new SocketTimeoutException();
                             }
                             for (int j = 0; j < listenerList.size(); j++) {
                                 listenerList.get(j).onUploadProgress(PERCENT_MAX, getLiveUploadReport());
@@ -926,13 +922,23 @@ public class SpeedTestSocket {
      */
     private int writeFlushSocket(final byte[] data) throws IOException {
 
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+        final ExecutorService executor = Executors.newSingleThreadExecutor();
 
+        @SuppressWarnings("unchecked")
         final Future<Integer> future = executor.submit(new Callable() {
 
-            public Integer call() throws Exception {
-                socket.getOutputStream().write(data);
-                socket.getOutputStream().flush();
+            /**
+             * execute sequential write/flush task
+             *
+             * @return status
+             */
+            public Integer call() {
+                try {
+                    socket.getOutputStream().write(data);
+                    socket.getOutputStream().flush();
+                } catch (IOException e) {
+                    return -1;
+                }
                 return 0;
             }
         });

@@ -56,7 +56,7 @@ public class RepeatDownloadExample {
     /**
      * logger.
      */
-    private final static Logger log = LogManager.getLogger(RepeatDownloadExample.class.getName());
+    private final static Logger LOGGER = LogManager.getLogger(RepeatDownloadExample.class.getName());
 
     /**
      * speed test duration set to 11s.
@@ -83,20 +83,20 @@ public class RepeatDownloadExample {
                             @Override
                             public void onFinish(final SpeedTestReport report) {
 
-                                if (log.isDebugEnabled()) {
-                                    log.debug(LogUtils.LOG_REPORT_SEPARATOR);
-                                    log.debug("---------------------DOWNLOAD FINISHED------------------");
-                                    log.debug(LogUtils.LOG_REPORT_SEPARATOR);
+                                if (LOGGER.isDebugEnabled()) {
+                                    LOGGER.debug(LogUtils.LOG_REPORT_SEPARATOR);
+                                    LOGGER.debug("---------------------DOWNLOAD FINISHED------------------");
+                                    LOGGER.debug(LogUtils.LOG_REPORT_SEPARATOR);
                                 }
-                                LogUtils.logReport(report, log);
+                                LogUtils.logReport(report, LOGGER);
                             }
 
                             @Override
                             public void onReport(final SpeedTestReport report) {
-                                if (log.isDebugEnabled()) {
-                                    log.debug("---------------current download report------------------");
+                                if (LOGGER.isDebugEnabled()) {
+                                    LOGGER.debug("---------------current download report------------------");
                                 }
-                                LogUtils.logReport(report, log);
+                                LogUtils.logReport(report, LOGGER);
                             }
                         });
     }

@@ -70,7 +70,7 @@ public class FixedTimeDownloadExample {
     /**
      * logger.
      */
-    private final static Logger log = LogManager.getLogger(FixedTimeDownloadExample.class.getName());
+    private final static Logger LOGGER = LogManager.getLogger(FixedTimeDownloadExample.class.getName());
 
     /**
      * Fixed time download main.
@@ -95,8 +95,8 @@ public class FixedTimeDownloadExample {
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
 
-                if (log.isErrorEnabled()) {
-                    log.error(errorMessage);
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error(errorMessage);
                 }
                 if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET && timer != null) {
                     timer.purge();
@@ -114,8 +114,8 @@ public class FixedTimeDownloadExample {
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
 
-                if (log.isErrorEnabled()) {
-                    log.error(errorMessage);
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error(errorMessage);
                 }
 
                 if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET && timer != null) {
@@ -140,7 +140,7 @@ public class FixedTimeDownloadExample {
             @Override
             public void run() {
 
-                LogUtils.logReport(speedTestSocket, log);
+                LogUtils.logReport(speedTestSocket, LOGGER);
             }
         };
 
@@ -151,7 +151,7 @@ public class FixedTimeDownloadExample {
             @Override
             public void run() {
 
-                LogUtils.logReport(speedTestSocket, log);
+                LogUtils.logReport(speedTestSocket, LOGGER);
 
                 speedTestSocket.forceStopTask();
 

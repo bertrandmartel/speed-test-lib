@@ -1,7 +1,14 @@
 apply plugin: 'java'
+apply plugin: 'pmd'
 
 repositories {
     mavenCentral()
+}
+
+pmd {
+    toolVersion = '5.3.2'
+    ruleSets = []
+    ruleSetFiles = files('config/pmd/rulesets.xml')
 }
 
 dependencies {

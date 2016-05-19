@@ -37,7 +37,7 @@ public class RandomGen {
     /**
      * list of incremented byte.
      */
-    private static final byte[] symbols;
+    private static final byte[] SYMBOLS;
 
     /**
      * number of incremented byte.
@@ -50,9 +50,9 @@ public class RandomGen {
     private static final int MINIMUM_LENGTH = 1;
 
     static {
-        symbols = new byte[SYMBOLS_LENGTH];
+        SYMBOLS = new byte[SYMBOLS_LENGTH];
         for (int i = 0; i < SYMBOLS_LENGTH; i++) {
-            symbols[i] = (byte) i;
+            SYMBOLS[i] = (byte) i;
         }
     }
 
@@ -86,7 +86,7 @@ public class RandomGen {
     public byte[] nextArray() {
         for (int idx = 0; idx < buf.length; ++idx) {
             final int val = random.nextInt(SYMBOLS_LENGTH);
-            buf[idx] = symbols[val];
+            buf[idx] = SYMBOLS[val];
         }
         return Arrays.copyOf(buf, buf.length);
     }
