@@ -70,7 +70,7 @@ public class FixedTimeDownloadExample {
     /**
      * logger.
      */
-    private final static Logger log = LogManager.getLogger(DownloadFileExample.class.getName());
+    private final static Logger log = LogManager.getLogger(FixedTimeDownloadExample.class.getName());
 
     /**
      * Fixed time download main.

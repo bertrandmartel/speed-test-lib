@@ -56,7 +56,7 @@ public class RepeatDownloadExample {
     /**
      * logger.
      */
-    private final static Logger log = LogManager.getLogger(DownloadFileExample.class.getName());
+    private final static Logger log = LogManager.getLogger(RepeatDownloadExample.class.getName());
 
     /**
      * speed test duration set to 11s.

@@ -68,7 +68,7 @@ public class UploadFileExample {
     /**
      * logger.
      */
-    private static final Logger log = LogManager.getLogger(DownloadFileExample.class.getName());
+    private static final Logger log = LogManager.getLogger(UploadFileExample.class.getName());
 
     /**
      * upload file example main.
