@@ -43,7 +43,7 @@ public class RandomGenTest {
     /**
      * file size tested.
      */
-    private final int[] sizes = new int[]{1, 10, 10000, 10000000};
+    private final int[] SIZES = new int[]{1, 10, 10000, 10000000};
 
     /**
      * test generated file for upload.
@@ -51,10 +51,10 @@ public class RandomGenTest {
     @Test
     public void randomGenTest() {
 
-        for (int i = 0; i < sizes.length; i++) {
-            final RandomGen random = new RandomGen(sizes[i]);
+        for (int i = 0; i < SIZES.length; i++) {
+            final RandomGen random = new RandomGen(SIZES[i]);
             final int length = random.nextArray().length;
-            Assert.assertEquals(HEADER + "random generated array are not equals", length, sizes[i]);
+            Assert.assertEquals(HEADER + "random generated array are not equals", length, SIZES[i]);
         }
 
     }

@@ -63,7 +63,7 @@ public class DownloadFileExample {
     /**
      * logger.
      */
-    private final static Logger log = LogManager.getLogger(DownloadFileExample.class.getName());
+    private final static Logger LOGGER = LogManager.getLogger(DownloadFileExample.class.getName());
 
     /**
      * Download file example main.
@@ -86,14 +86,14 @@ public class DownloadFileExample {
             float transferRateOctetPerSeconds) {
 
                 LogUtils.logFinishedTask(SpeedTestMode.DOWNLOAD, packetSize, transferRateBitPerSeconds,
-                        transferRateOctetPerSeconds, log);
+                        transferRateOctetPerSeconds, LOGGER);
 
             }
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (log.isErrorEnabled()) {
-                    log.error("Download error " + speedTestError + " : " + errorMessage);
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error("Download error " + speedTestError + " : " + errorMessage);
                 }
             }
 
@@ -102,27 +102,27 @@ public class DownloadFileExample {
             float transferRateOctetPerSeconds) {
 
                 LogUtils.logFinishedTask(SpeedTestMode.UPLOAD, packetSize, transferRateBitPerSeconds,
-                        transferRateOctetPerSeconds, log);
+                        transferRateOctetPerSeconds, LOGGER);
 
             }
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (log.isErrorEnabled()) {
-                    log.error("Upload error " + speedTestError + " : " + errorMessage);
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error("Upload error " + speedTestError + " : " + errorMessage);
                 }
             }
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport downloadReport) {
 
-                LogUtils.logSpeedTestReport(downloadReport, log);
+                LogUtils.logSpeedTestReport(downloadReport, LOGGER);
             }
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport uploadReport) {
 
-                LogUtils.logSpeedTestReport(uploadReport, log);
+                LogUtils.logSpeedTestReport(uploadReport, LOGGER);
             }
         });
 
