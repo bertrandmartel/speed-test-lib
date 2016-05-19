@@ -26,7 +26,7 @@ No external file are required and no file are stored in Hard Disk.
 * with Gradle, from jcenter :
 
 ```
-compile 'com.github.akinaru:speedtest:1.10'
+compile 'com.github.akinaru:speedtest:1.11'
 ```
 
 ## How to use ?
@@ -322,7 +322,7 @@ speedTestSocket.setUploadChunkSize(65535);
 
 ### Set socket timeout value
 
-You can set download socket timeout in milliseconds :
+You can set download/upload socket timeout in milliseconds :
 
 ```
 speedTestSocket.setSocketTimeout(5000);
