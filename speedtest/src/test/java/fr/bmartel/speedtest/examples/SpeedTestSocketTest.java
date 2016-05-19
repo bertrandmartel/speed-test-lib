@@ -49,27 +49,27 @@ public class SpeedTestSocketTest {
     /**
      * value for valid socket timeout.
      */
-    private static final int socketTimeoutValid = 10000;
+    private static final int SOCKET_TO_VALID = 10000;
 
     /**
      * default value for socket timeout
      */
-    private static final int socketTimeoutDefaultValue = 10000;
+    private static final int SOCKET_TO_DEFAULT = 10000;
 
     /**
      * value for invalid socket timeout.
      */
-    private static final int socketTimeoutInvalid = -1;
+    private static final int SOCKET_TO_INVALID = -1;
 
     /**
      * default value of upload chunk size.
      */
-    private static final int uploadChunkSizeDefault = 65535;
+    private static final int UPLOAD_CHUNK_SIZE_DEFAULT = 65535;
 
     /**
      * invalid value for upload chunk packet size.
      */
-    private static final int uploadChunkInvalid = 30000;
+    private static final int UPLOAD_CHUNK_INVALID = 30000;
 
     /**
      * test socket timeout default value.
@@ -77,8 +77,8 @@ public class SpeedTestSocketTest {
     @Test
     public void socketTimeoutDefaultTest() {
         socket = new SpeedTestSocket();
-        Assert.assertEquals(HEADER + " socket timeout default value should be " + socketTimeoutDefaultValue, socket
-                .getSocketTimeout(), socketTimeoutDefaultValue);
+        Assert.assertEquals(HEADER + " socket timeout default value should be " + SOCKET_TO_DEFAULT, socket
+                .getSocketTimeout(), SOCKET_TO_DEFAULT);
     }
 
     /**
@@ -87,8 +87,8 @@ public class SpeedTestSocketTest {
     @Test
     public void socketTimeoutSetterValidTest() {
         socket = new SpeedTestSocket();
-        socket.setSocketTimeout(socketTimeoutValid);
-        Assert.assertEquals(HEADER + "socket timeout are not equals", socket.getSocketTimeout(), socketTimeoutValid);
+        socket.setSocketTimeout(SOCKET_TO_VALID);
+        Assert.assertEquals(HEADER + "socket timeout are not equals", socket.getSocketTimeout(), SOCKET_TO_VALID);
     }
 
     /**
@@ -98,9 +98,9 @@ public class SpeedTestSocketTest {
     public void socketTimeoutSetterInvalidTest() {
         socket = new SpeedTestSocket();
         Assert.assertNotSame(HEADER + "socket timeout are equals, shouldnt be (-1)", socket.getSocketTimeout(),
-                socketTimeoutInvalid);
-        Assert.assertEquals(HEADER + "socket timeout should be " + socketTimeoutDefaultValue, socket.getSocketTimeout
-                (), socketTimeoutDefaultValue);
+                SOCKET_TO_INVALID);
+        Assert.assertEquals(HEADER + "socket timeout should be " + SOCKET_TO_DEFAULT, socket.getSocketTimeout
+                (), SOCKET_TO_DEFAULT);
 
     }
 
@@ -111,7 +111,7 @@ public class SpeedTestSocketTest {
     public void uploadChunkSizeDefaultTest() {
         socket = new SpeedTestSocket();
         Assert.assertEquals(HEADER + "chunk size should be 65535 for default value", socket.getUploadChunkSize(),
-                uploadChunkSizeDefault);
+                UPLOAD_CHUNK_SIZE_DEFAULT);
     }
 
     /**
@@ -120,9 +120,9 @@ public class SpeedTestSocketTest {
     @Test
     public void uploadChunkSizeSetterTest() {
         socket = new SpeedTestSocket();
-        socket.setUploadChunkSize(uploadChunkInvalid);
+        socket.setUploadChunkSize(UPLOAD_CHUNK_INVALID);
         Assert.assertEquals(HEADER + "chunk size incorrect value after set", socket.getUploadChunkSize(),
-                uploadChunkInvalid);
+                UPLOAD_CHUNK_INVALID);
     }
 
 }
