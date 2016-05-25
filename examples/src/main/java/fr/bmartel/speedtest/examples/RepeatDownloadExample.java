@@ -39,7 +39,7 @@ public class RepeatDownloadExample {
     /**
      * speed examples server host name.
      */
-    private final static String SPEED_TEST_SERVER_HOST = "1.testdebit.info";
+    private final static String SPEED_TEST_SERVER_HOST = "2.testdebit.info";
 
     /**
      * spedd examples server uri.

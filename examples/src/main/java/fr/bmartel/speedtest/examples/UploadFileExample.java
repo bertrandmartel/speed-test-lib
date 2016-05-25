@@ -48,7 +48,7 @@ public class UploadFileExample {
     /**
      * speed examples server host name.
      */
-    private static final String SPEED_TEST_SERVER_HOST = "1.testdebit.info";
+    private static final String SPEED_TEST_SERVER_HOST = "2.testdebit.info";
 
     /**
      * spedd examples server uri.
