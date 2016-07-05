@@ -394,7 +394,7 @@ Execute it with : `new SpeedTestTask().execute();`
 
 ## JavaDoc
 
-http://akinaru.github.io/speed-test-lib
+<a href="https://oss.sonatype.org/service/local/repositories/releases/archive/com/github/akinaru/speedtest/1.11/speedtest-1.11-javadoc.jar/!/index.html">javadoc can be found here</a>
 
 ## Features examples
 
