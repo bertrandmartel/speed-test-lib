@@ -304,6 +304,53 @@ timer.scheduleAtFixedRate(task, 0, 400);
 speedTestSocket.startUpload("1.testdebit.info", 80, "/", 10000000);
 ```
 
+### Chain download/upload requests
+
+It is possible to chain download/upload requests with `startDownloadRepeat` & `startUploadRepeat` API during a fixed time called `repeatWindow` with a report interval named `reportPeriodMillis`
+
+*  chain download requests
+
+```
+/**
+ * Start repeat download task.
+ *
+ * @param hostname           server hostname
+ * @param port               server port
+ * @param uri                uri to fetch to download file
+ * @param repeatWindow       time window for the repeated download in milliseconds
+ * @param reportPeriodMillis time interval between each report in milliseconds
+ * @param repeatListener     listener for download repeat task completion & reports
+ */
+public void startDownloadRepeat(final String hostname,
+                                final int port,
+                                final String uri,
+                                final int repeatWindow,
+                                final int reportPeriodMillis,
+                                final IRepeatListener repeatListener)
+```
+
+* chain upload requests
+
+```
+/**
+ * Start repeat upload task.
+ *
+ * @param hostname           server hostname
+ * @param port               server port
+ * @param uri                uri to fetch to download file
+ * @param repeatWindow       time window for the repeated upload in milliseconds
+ * @param reportPeriodMillis time interval between each report in milliseconds
+ * @param repeatListener     listener for upload repeat task completion & reports
+ */
+public void startUploadRepeat(final String hostname,
+                              final int port,
+                              final String uri,
+                              final int repeatWindow,
+                              final int reportPeriodMillis,
+                              final int fileSizeOctet,
+                              final IRepeatListener repeatListener)
+```
+
 ### Get live download & upload
 
 * retrieve current download report : 
@@ -428,6 +475,12 @@ All following examples use speed test server `1.testdebit.info`
 
 ```
 ./gradlew repeatDownload
+```
+
+* upload repeatedly a file during a fixed duration (size:1Mo, duration 11s, report interval: 1s)
+
+```
+./gradlew repeatUpload
 ```
 
 ## Compatibility
