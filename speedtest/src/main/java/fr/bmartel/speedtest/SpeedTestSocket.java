@@ -211,6 +211,11 @@ public class SpeedTestSocket {
     private boolean isRepeatDownload;
 
     /**
+     * define if upload should be repeated.
+     */
+    private boolean isRepeatUpload;
+
+    /**
      * start time for download repeat task.
      */
     private long startDateRepeat;
@@ -231,12 +236,12 @@ public class SpeedTestSocket {
     private long repeatPacketSize;
 
     /**
-     * number of packet downloaded for download repeat task.
+     * number of packet downloaded for download/upload repeat task.
      */
     private long repeatTempPckSize;
 
     /**
-     * current transfer rate in octet/s for download repeat task.
+     * current transfer rate in octet/s for download/upload repeat task.
      */
     private float repeatTransferRateBps;
 
@@ -245,6 +250,12 @@ public class SpeedTestSocket {
      * It is reset to false when the client is connected to server the first time.
      */
     private boolean isFirstDownloadRepeat;
+
+    /**
+     * define if the first upload repeat has been sent and waiting for connection
+     * It is reset to false when the client is connected to server the first time.
+     */
+    private boolean isFirstUploadRepeat;
 
     /**
      * define if download repeat task is finished.
@@ -514,14 +525,19 @@ public class SpeedTestSocket {
                     final float transferRateOps = uploadFileSize / ((timeEnd - timeStart) / MILLIS_DIVIDER);
                     final float transferRateBps = transferRateOps * BIT_MULTIPLIER;
 
+                    closeSocket();
+
                     for (int i = 0; i < listenerList.size(); i++) {
                         listenerList.get(i).onUploadPacketsReceived(uploadFileSize, transferRateBps, transferRateOps);
                     }
+                } else {
+                    closeSocket();
                 }
-                speedTestMode = SpeedTestMode.NONE;
 
-                closeSocket();
-                executorService.shutdownNow();
+                if (!isRepeatUpload) {
+                    executorService.shutdownNow();
+                }
+
                 return;
             }
             closeSocket();
@@ -655,6 +671,18 @@ public class SpeedTestSocket {
     }
 
     /**
+     * start upload for download repeat.
+     *
+     * @param hostname server hostname
+     * @param port     server port
+     * @param uri      uri to fetch to upload file
+     */
+    private void startUploadRepeat(final String hostname, final int port, final String uri, final int fileSizeOctet) {
+        errorDispatched = false;
+        startUpload(hostname, port, uri, fileSizeOctet);
+    }
+
+    /**
      * Start repeat download task.
      *
      * @param hostname           server hostname
@@ -691,7 +719,7 @@ public class SpeedTestSocket {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                clearDownloadRepeat(this, timer);
+                clearRepeatTask(this, timer);
             }
 
             @Override
@@ -702,7 +730,7 @@ public class SpeedTestSocket {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                clearDownloadRepeat(this, timer);
+                clearRepeatTask(this, timer);
             }
 
             @Override
@@ -742,27 +770,130 @@ public class SpeedTestSocket {
     }
 
     /**
+     * Start repeat upload task.
+     *
+     * @param hostname           server hostname
+     * @param port               server port
+     * @param uri                uri to fetch to download file
+     * @param repeatWindow       time window for the repeated upload in milliseconds
+     * @param reportPeriodMillis time interval between each report in milliseconds
+     * @param repeatListener     listener for upload repeat task completion & reports
+     */
+    public void startUploadRepeat(final String hostname,
+                                  final int port,
+                                  final String uri,
+                                  final int repeatWindow,
+                                  final int reportPeriodMillis,
+                                  final int fileSizeOctet,
+                                  final IRepeatListener repeatListener) {
+
+        initUploadRepeat();
+
+        final Timer timer = new Timer();
+
+        final ISpeedTestListener speedTestListener = new ISpeedTestListener() {
+            @Override
+            public void onDownloadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
+            float transferRateOctetPerSeconds) {
+                //nothing to do here for upload repeat task listener
+            }
+
+            @Override
+            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+                //nothing to do here for upload repeat task listener
+            }
+
+            @Override
+            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+                clearRepeatTask(this, timer);
+            }
+
+            @Override
+            public void onUploadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
+            float transferRateOctetPerSeconds) {
+                repeatTransferRateBps = (repeatTransferRateBps + transferRateOctetPerSeconds) / 2f;
+                startUploadRepeat(hostname, port, uri, fileSizeOctet);
+                repeatRequestNum++;
+            }
+
+            @Override
+            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
+                clearRepeatTask(this, timer);
+            }
+
+            @Override
+            public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                //nothing to do here for upload repeat task listener
+            }
+        };
+
+        addSpeedTestListener(speedTestListener);
+
+        repeatWindows = repeatWindow;
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                removeSpeedTestListener(speedTestListener);
+                forceStopTask();
+                timer.cancel();
+                timer.purge();
+                repeatFinished = true;
+                if (repeatListener != null) {
+                    repeatListener.onFinish(getLiveUploadReport());
+                }
+            }
+        }, repeatWindow);
+
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (repeatListener != null) {
+                    repeatListener.onReport(getLiveUploadReport());
+                }
+            }
+        }, reportPeriodMillis, reportPeriodMillis);
+
+        startUploadRepeat(hostname, port, uri, fileSizeOctet);
+    }
+
+    /**
      * intialize download repeat task variables for report + state.
      */
     private void initDownloadRepeat() {
-
         isRepeatDownload = true;
+        isFirstDownloadRepeat = true;
+        initRepeatVars();
+    }
+
+    /**
+     * intialize upload repeat task variables for report + state.
+     */
+    private void initUploadRepeat() {
+        isRepeatUpload = true;
+        isFirstUploadRepeat = true;
+        initRepeatVars();
+    }
+
+    /**
+     * intialize upload/download repeat task variables for report + state.
+     */
+    private void initRepeatVars() {
         repeatRequestNum = 0;
         repeatPacketSize = 0;
         repeatTempPckSize = 0;
         repeatTransferRateBps = 0;
         repeatFinished = false;
         startDateRepeat = 0;
-        isFirstDownloadRepeat = true;
     }
 
     /**
-     * clear completly download repeat task.
+     * clear completly download/upload repeat task.
      *
      * @param listener speed examples listener
      * @param timer    finished task timer
      */
-    private void clearDownloadRepeat(final ISpeedTestListener listener, final Timer timer) {
+    private void clearRepeatTask(final ISpeedTestListener listener, final Timer timer) {
 
         removeSpeedTestListener(listener);
         if (timer != null) {
@@ -875,6 +1006,15 @@ public class SpeedTestSocket {
 
                             timeStart = System.currentTimeMillis();
 
+                            if (isFirstUploadRepeat && isRepeatUpload) {
+                                isFirstUploadRepeat = false;
+                                startDateRepeat = timeStart;
+                            }
+
+                            if (isRepeatUpload) {
+                                repeatPacketSize += uploadFileSize;
+                            }
+
                             for (int i = 0; i < step; i++) {
 
                                 if (writeFlushSocket(Arrays.copyOfRange(body, uploadTempFileSize,
@@ -887,7 +1027,12 @@ public class SpeedTestSocket {
                                     final SpeedTestReport report = getLiveUploadReport();
                                     listenerList.get(j).onUploadProgress(report.getProgressPercent(), report);
                                 }
+
                                 uploadTempFileSize += uploadChunkSize;
+
+                                if (isRepeatUpload) {
+                                    repeatTempPckSize += uploadChunkSize;
+                                }
                             }
                             if (remain != 0 && writeFlushSocket(Arrays.copyOfRange(body, uploadTempFileSize,
                                     uploadTempFileSize +
@@ -1015,8 +1160,9 @@ public class SpeedTestSocket {
 
         SpeedTestReport report;
 
-        if (isRepeatDownload) {
-            report = getRepeatDownloadReport(mode, currentTime, transferRateOps);
+        if (isRepeatDownload || isRepeatUpload) {
+
+            report = getRepeatReport(mode, currentTime, transferRateOps);
 
         } else {
 
@@ -1032,16 +1178,16 @@ public class SpeedTestSocket {
     }
 
     /**
-     * Build repeat download report based on stats on all packets downlaoded until now.
+     * Build repeat download/upload report based on stats on all packets downlaoded until now.
      *
      * @param speedTestMode     speed examples mode
      * @param reportTime        time of current download
      * @param transferRateOctet transfer rate in octet/s
      * @return speed examples report object
      */
-    private SpeedTestReport getRepeatDownloadReport(final SpeedTestMode speedTestMode,
-                                                    final long reportTime,
-                                                    final float transferRateOctet) {
+    private SpeedTestReport getRepeatReport(final SpeedTestMode speedTestMode,
+                                            final long reportTime,
+                                            final float transferRateOctet) {
         float progressPercent = 0;
         long temporaryPacketSize = 0;
         float transferRateBit = 0;
