@@ -290,12 +290,14 @@
 
     <!-- codesize -->
 
+    <!--
     <rule ref="rulesets/java/codesize.xml/NPathComplexity">
         <priority>1</priority>
         <properties>
             <property name="minimum" value="175"/>
         </properties>
     </rule>
+    -->
     <rule ref="rulesets/java/codesize.xml/ExcessiveMethodLength">
         <priority>2</priority>
     </rule>
