@@ -71,6 +71,13 @@ task repeatDownload(type: JavaExec) {
     args ""
 }
 
+task repeatUpload(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    classpath += sourceSets.main.resources
+    main = "fr.bmartel.speedtest.examples.RepeatUploadExample"
+    args ""
+}
+
 task generateJavadoc(type: Javadoc) {
     source = sourceSets.main.allJava
     classpath = configurations.compile
