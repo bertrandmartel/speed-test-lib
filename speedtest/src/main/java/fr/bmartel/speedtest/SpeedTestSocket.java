@@ -72,6 +72,11 @@ public class SpeedTestSocket {
     private static final int DEFAULT_SOCKET_TIMEOUT = 10000;
 
     /**
+     * time to wait for task to complete when threadpool is shutdown
+     */
+    private static final int THREADPOOL_WAIT_COMPLETION_MS = 500;
+
+    /**
      * http ok status code.
      */
     private static final int HTTP_OK = 200;
@@ -412,14 +417,16 @@ public class SpeedTestSocket {
         errorDispatched = false;
     }
 
+    /**
+     * Shutdown threadpool and wait for task completion.
+     */
     private void shutdownAndWait() {
         executorService.shutdownNow();
         try {
-            if (!executorService.awaitTermination(500, TimeUnit.MILLISECONDS)) {
-                System.out.println("waiting...");
+            if (!executorService.awaitTermination(THREADPOOL_WAIT_COMPLETION_MS, TimeUnit.MILLISECONDS)) {
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
