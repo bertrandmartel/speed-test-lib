@@ -483,7 +483,7 @@ All following examples use speed test server `1.testdebit.info`
 ./gradlew repeatUpload
 ```
 
-* successive download + upload repeatedly a file during a fixed duration (1 download size:1Mo, duration 11s, report interval: 1s following by 1 upload size:1Mo, duration 11s, report interval: 1s)
+* successive 2 x (download + upload) repeatedly a file during a fixed duration (1 download size:1Mo, duration 3s, report interval: 1s following by 1 upload size:1Mo, duration 3s, report interval: 1s)
 
 ```
 ./gradlew repeatChain

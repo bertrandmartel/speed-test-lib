@@ -29,8 +29,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Chaining Download & Upload file repeatedly from speed test server during a fixed amount of time.
- * Download during 11 seconds then Upload during 11 seconds.
+ * Chaining 2x (Download + Upload) file repeatedly from speed test server during a fixed amount of time.
+ * Download during 3 seconds then Upload during 3 seconds.
  *
  * @author Bertrand Martel
  */
@@ -44,7 +44,7 @@ public class ChainingRepeatExample {
     /**
      * spedd examples server uri.
      */
-    private final static String SPEED_TEST_SERVER_URI_DL = "/fichiers/10Mo.dat";
+    private final static String SPEED_TEST_SERVER_URI_DL = "/fichiers/1Mo.dat";
 
     /**
      * speed examples server port.
@@ -57,9 +57,9 @@ public class ChainingRepeatExample {
     private final static Logger LOGGER = LogManager.getLogger(RepeatDownloadExample.class.getName());
 
     /**
-     * speed test duration set to 11s.
+     * speed test duration set to 3s.
      */
-    private static final int SPEED_TEST_DURATION = 11000;
+    private static final int SPEED_TEST_DURATION = 3000;
 
     /**
      * amount of time between each speed test report set to 1s.
@@ -138,6 +138,13 @@ public class ChainingRepeatExample {
             }
         });
 
+        startDownload();
+    }
+
+    private static int chainCount = 2;
+
+    private static void startDownload() {
+
         speedTestSocket.startDownloadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL,
                 SPEED_TEST_DURATION, REPORT_INTERVAL, new
                         IRepeatListener() {
@@ -151,38 +158,48 @@ public class ChainingRepeatExample {
                                 }
                                 LogUtils.logReport(report, LOGGER);
 
-
-                                speedTestSocket.startUploadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT,
-                                        SPEED_TEST_SERVER_URI_UL,
-                                        SPEED_TEST_DURATION, REPORT_INTERVAL, FILE_SIZE, new
-                                                IRepeatListener() {
-                                                    @Override
-                                                    public void onFinish(final SpeedTestReport report) {
-
-                                                        if (LOGGER.isDebugEnabled()) {
-                                                            LOGGER.debug(LogUtils.LOG_REPORT_SEPARATOR);
-                                                            LOGGER.debug("---------------------UPLOAD " +
-                                                                    "FINISHED------------------");
-                                                            LOGGER.debug(LogUtils.LOG_REPORT_SEPARATOR);
-                                                        }
-                                                        LogUtils.logReport(report, LOGGER);
-                                                    }
-
-                                                    @Override
-                                                    public void onReport(final SpeedTestReport report) {
-                                                        if (LOGGER.isDebugEnabled()) {
-                                                            LOGGER.debug("---------------current upload " +
-                                                                    "report------------------");
-                                                        }
-                                                        LogUtils.logReport(report, LOGGER);
-                                                    }
-                                                });
+                                startUpload();
                             }
 
                             @Override
                             public void onReport(final SpeedTestReport report) {
                                 if (LOGGER.isDebugEnabled()) {
                                     LOGGER.debug("---------------current download report------------------");
+                                }
+                                LogUtils.logReport(report, LOGGER);
+                            }
+                        });
+    }
+
+    private static void startUpload() {
+
+        speedTestSocket.startUploadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT,
+                SPEED_TEST_SERVER_URI_UL,
+                SPEED_TEST_DURATION, REPORT_INTERVAL, FILE_SIZE, new
+                        IRepeatListener() {
+                            @Override
+                            public void onFinish(final SpeedTestReport report) {
+
+                                if (LOGGER.isDebugEnabled()) {
+                                    LOGGER.debug(LogUtils.LOG_REPORT_SEPARATOR);
+                                    LOGGER.debug("---------------------UPLOAD " +
+                                            "FINISHED------------------");
+                                    LOGGER.debug(LogUtils.LOG_REPORT_SEPARATOR);
+                                }
+                                LogUtils.logReport(report, LOGGER);
+
+                                chainCount--;
+
+                                if (chainCount > 0) {
+                                    startDownload();
+                                }
+                            }
+
+                            @Override
+                            public void onReport(final SpeedTestReport report) {
+                                if (LOGGER.isDebugEnabled()) {
+                                    LOGGER.debug("---------------current upload " +
+                                            "report------------------");
                                 }
                                 LogUtils.logReport(report, LOGGER);
                             }
