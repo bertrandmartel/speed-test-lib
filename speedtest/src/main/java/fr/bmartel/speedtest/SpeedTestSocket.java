@@ -423,8 +423,7 @@ public class SpeedTestSocket {
     private void shutdownAndWait() {
         executorService.shutdownNow();
         try {
-            if (!executorService.awaitTermination(THREADPOOL_WAIT_COMPLETION_MS, TimeUnit.MILLISECONDS)) {
-            }
+            executorService.awaitTermination(THREADPOOL_WAIT_COMPLETION_MS, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             //e.printStackTrace();
         }
