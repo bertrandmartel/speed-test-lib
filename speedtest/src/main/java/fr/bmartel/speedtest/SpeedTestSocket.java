@@ -412,6 +412,17 @@ public class SpeedTestSocket {
         errorDispatched = false;
     }
 
+    private void shutdownAndWait() {
+        executorService.shutdownNow();
+        try {
+            if (!executorService.awaitTermination(500, TimeUnit.MILLISECONDS)) {
+                System.out.println("waiting...");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * start download reading loop + monitor progress.
      *
@@ -913,7 +924,7 @@ public class SpeedTestSocket {
 
         forceCloseSocket = true;
         closeSocket();
-        executorService.shutdownNow();
+        shutdownAndWait();
     }
 
     /**
