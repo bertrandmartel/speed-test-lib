@@ -84,6 +84,11 @@ public class ChainingRepeatExample {
     private static final int FILE_SIZE = 1000000;
 
     /**
+     * chain request counter.
+     */
+    private static int chainCount = 2;
+
+    /**
      * Repeat download example main.
      *
      * @param args no args required
@@ -104,10 +109,8 @@ public class ChainingRepeatExample {
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
 
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    if (LOGGER.isErrorEnabled()) {
-                        LOGGER.error(errorMessage);
-                    }
+                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET && LOGGER.isErrorEnabled()) {
+                    LOGGER.error(errorMessage);
                 }
             }
 
@@ -120,10 +123,8 @@ public class ChainingRepeatExample {
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
 
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    if (LOGGER.isErrorEnabled()) {
-                        LOGGER.error(errorMessage);
-                    }
+                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET && LOGGER.isErrorEnabled()) {
+                    LOGGER.error(errorMessage);
                 }
             }
 
@@ -140,8 +141,6 @@ public class ChainingRepeatExample {
 
         startDownload();
     }
-
-    private static int chainCount = 2;
 
     private static void startDownload() {
 
