@@ -1207,14 +1207,14 @@ public class SpeedTestSocket {
         }
 
         float rates = 0;
-        for (float rate :
+        for (final float rate :
                 repeatTransferRateList) {
             rates += rate;
         }
 
-        if (repeatTransferRateList.size() != 0 && !repeatFinished) {
+        if (!repeatTransferRateList.isEmpty() && !repeatFinished) {
             downloadRepeatRateOctet = (rates + downloadRepeatRateOctet) / (repeatTransferRateList.size() + 1f);
-        } else if (repeatFinished && (repeatTransferRateList.size() > 0)) {
+        } else if (repeatFinished && (!repeatTransferRateList.isEmpty())) {
             downloadRepeatRateOctet = rates / ((float) repeatTransferRateList.size());
             //if size is zero then only one unfinished request has been sent
         }
