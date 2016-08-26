@@ -925,6 +925,10 @@ public class SpeedTestSocket {
 
         speedTestMode = SpeedTestMode.DOWNLOAD;
 
+        if (executorService == null || executorService.isShutdown()) {
+            initThreadPool();
+        }
+
         connectAndExecuteTask(new TimerTask() {
             @Override
             public void run() {
@@ -987,6 +991,10 @@ public class SpeedTestSocket {
     private void writeUpload(final byte[] head, final byte[] body) {
 
         speedTestMode = SpeedTestMode.UPLOAD;
+
+        if (executorService == null || executorService.isShutdown()) {
+            initThreadPool();
+        }
 
         connectAndExecuteTask(new TimerTask() {
             @Override
