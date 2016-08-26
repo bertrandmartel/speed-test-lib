@@ -78,6 +78,13 @@ task repeatUpload(type: JavaExec) {
     args ""
 }
 
+task repeatChain(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    classpath += sourceSets.main.resources
+    main = "fr.bmartel.speedtest.examples.ChainingRepeatExample"
+    args ""
+}
+
 task generateJavadoc(type: Javadoc) {
     source = sourceSets.main.allJava
     classpath = configurations.compile
