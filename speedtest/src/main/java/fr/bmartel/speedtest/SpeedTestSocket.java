@@ -241,11 +241,6 @@ public class SpeedTestSocket {
     private long repeatTempPckSize;
 
     /**
-     * current transfer rate in octet/s for download/upload repeat task.
-     */
-    private float repeatTransferRateBps;
-
-    /**
      * define if the first download repeat has been sent and waiting for connection
      * It is reset to false when the client is connected to server the first time.
      */
@@ -256,6 +251,11 @@ public class SpeedTestSocket {
      * It is reset to false when the client is connected to server the first time.
      */
     private boolean isFirstUploadRepeat;
+
+    /**
+     * transfer rate list.
+     */
+    private List<Float> repeatTransferRateList;
 
     /**
      * define if download repeat task is finished.
@@ -367,6 +367,7 @@ public class SpeedTestSocket {
                 isFirstDownloadRepeat = false;
                 startDateRepeat = timeStart;
             }
+
             timeEnd = 0;
 
             final HttpStates httFrameState = httpFrame.decodeFrame(socket.getInputStream());
@@ -707,7 +708,7 @@ public class SpeedTestSocket {
             @Override
             public void onDownloadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
             float transferRateOctetPerSeconds) {
-                repeatTransferRateBps = (repeatTransferRateBps + transferRateOctetPerSeconds) / 2f;
+                repeatTransferRateList.add(transferRateOctetPerSeconds);
                 startDownloadRepeat(hostname, port, uri);
                 repeatRequestNum++;
             }
@@ -811,7 +812,7 @@ public class SpeedTestSocket {
             @Override
             public void onUploadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
             float transferRateOctetPerSeconds) {
-                repeatTransferRateBps = (repeatTransferRateBps + transferRateOctetPerSeconds) / 2f;
+                repeatTransferRateList.add(transferRateOctetPerSeconds);
                 startUploadRepeat(hostname, port, uri, fileSizeOctet);
                 repeatRequestNum++;
             }
@@ -882,9 +883,9 @@ public class SpeedTestSocket {
         repeatRequestNum = 0;
         repeatPacketSize = 0;
         repeatTempPckSize = 0;
-        repeatTransferRateBps = 0;
         repeatFinished = false;
         startDateRepeat = 0;
+        repeatTransferRateList = new ArrayList<Float>();
     }
 
     /**
@@ -1205,10 +1206,17 @@ public class SpeedTestSocket {
             progressPercent = 0;
         }
 
-        if (repeatTransferRateBps != 0 && !repeatFinished) {
-            downloadRepeatRateOctet = (repeatTransferRateBps + downloadRepeatRateOctet) / 2f;
-        } else if (repeatFinished) {
-            downloadRepeatRateOctet = transferRateOctet;
+        float rates = 0;
+        for (float rate :
+                repeatTransferRateList) {
+            rates += rate;
+        }
+
+        if (repeatTransferRateList.size() != 0 && !repeatFinished) {
+            downloadRepeatRateOctet = (rates + downloadRepeatRateOctet) / (repeatTransferRateList.size() + 1f);
+        } else if (repeatFinished && (repeatTransferRateList.size() > 0)) {
+            downloadRepeatRateOctet = rates / ((float) repeatTransferRateList.size());
+            //if size is zero then only one unfinished request has been sent
         }
 
         transferRateBit = downloadRepeatRateOctet * BIT_MULTIPLIER;
@@ -1217,9 +1225,6 @@ public class SpeedTestSocket {
             temporaryPacketSize = repeatTempPckSize;
         } else {
             temporaryPacketSize = repeatPacketSize;
-        }
-
-        if (repeatFinished) {
             downloadRepeatReportTime = startDateRepeat + repeatWindows;
         }
 
