@@ -71,10 +71,13 @@ public class ChainingRepeatExample {
      */
     private static final int SOCKET_TIMEOUT = 3000;
 
+    /**
+     * speed test socket.
+     */
     private static SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 
     /**
-     * spedd examples server uri.
+     * speed examples server uri.
      */
     private final static String SPEED_TEST_SERVER_URI_UL = "/";
 
