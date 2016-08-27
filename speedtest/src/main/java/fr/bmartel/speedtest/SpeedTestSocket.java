@@ -1237,19 +1237,17 @@ public class SpeedTestSocket {
             rates += rate;
         }
 
-        if (!repeatTransferRateList.isEmpty() && !repeatFinished) {
-            downloadRepeatRateOctet = (rates + downloadRepeatRateOctet) / (repeatTransferRateList.size() + 1f);
-        } else if (repeatFinished && (!repeatTransferRateList.isEmpty())) {
-            downloadRepeatRateOctet = rates / ((float) repeatTransferRateList.size());
-            //if size is zero then only one unfinished request has been sent
+        if (!repeatTransferRateList.isEmpty()) {
+            downloadRepeatRateOctet = (rates + downloadRepeatRateOctet) / (repeatTransferRateList.size() +
+                    ((float) repeatTempPckSize / repeatPacketSize));
         }
-
+        
         transferRateBit = downloadRepeatRateOctet * BIT_MULTIPLIER;
 
         if (!repeatFinished) {
             temporaryPacketSize = repeatTempPckSize;
         } else {
-            temporaryPacketSize = repeatPacketSize;
+            temporaryPacketSize = repeatTempPckSize;
             downloadRepeatReportTime = startDateRepeat + repeatWindows;
         }
 
