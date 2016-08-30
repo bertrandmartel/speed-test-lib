@@ -952,11 +952,8 @@ public class SpeedTestSocket {
                 if (socket != null && !socket.isClosed()) {
 
                     try {
-                        if (socket.getOutputStream() != null) {
-                            
-                            if (writeFlushSocket(data) != 0) {
-                                throw new SocketTimeoutException();
-                            }
+                        if ((socket.getOutputStream() != null) && (writeFlushSocket(data) != 0)) {
+                            throw new SocketTimeoutException();
                         }
                     } catch (SocketTimeoutException e) {
                         dispatchSocketTimeout(true, SOCKET_WRITE_ERROR);
