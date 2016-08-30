@@ -367,13 +367,12 @@ public class SpeedTestSocket {
             final HttpFrame httpFrame = new HttpFrame();
 
             timeStart = System.currentTimeMillis();
+            timeEnd = 0;
 
             if (isFirstDownloadRepeat && isRepeatDownload) {
                 isFirstDownloadRepeat = false;
                 startDateRepeat = timeStart;
             }
-
-            timeEnd = 0;
 
             final HttpStates httFrameState = httpFrame.decodeFrame(socket.getInputStream());
             checkHttpFrameError(httFrameState);
@@ -954,9 +953,7 @@ public class SpeedTestSocket {
 
                     try {
                         if (socket.getOutputStream() != null) {
-
-                            timeStart = System.currentTimeMillis();
-
+                            
                             if (writeFlushSocket(data) != 0) {
                                 throw new SocketTimeoutException();
                             }
@@ -987,7 +984,6 @@ public class SpeedTestSocket {
         this.hostname = hostname;
         this.port = port;
         uploadFileSize = fileSizeOctet;
-        timeEnd = 0;
         forceCloseSocket = false;
         errorDispatched = false;
 
@@ -1031,6 +1027,7 @@ public class SpeedTestSocket {
                             }
 
                             timeStart = System.currentTimeMillis();
+                            timeEnd = 0;
 
                             if (isFirstUploadRepeat && isRepeatUpload) {
                                 isFirstUploadRepeat = false;
@@ -1241,7 +1238,7 @@ public class SpeedTestSocket {
             downloadRepeatRateOctet = (rates + downloadRepeatRateOctet) / (repeatTransferRateList.size() +
                     ((float) repeatTempPckSize / repeatPacketSize));
         }
-        
+
         transferRateBit = downloadRepeatRateOctet * BIT_MULTIPLIER;
 
         if (!repeatFinished) {
