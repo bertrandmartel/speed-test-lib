@@ -505,6 +505,10 @@ Gradle using IntelliJ IDEA or Eclipse
 
 * https://testdebit.info/
 
+## Tutorial 
+
+* [Tutorial on how to integrate Speed Test library into your project](http://www.hirunawijesinghe.com/integrating-akinarus-speed-test-lib-into-android/) by Hiruna Wijesinghe
+
 ## License
 
 The MIT License (MIT) Copyright (c) 2016 Bertrand Martel
