@@ -30,10 +30,10 @@ import fr.bmartel.speedtest.SpeedTestMode;
 import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.SpeedTestSocket;
 
+import java.math.BigDecimal;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.math.BigDecimal;
 
 /**
  * Upload File Speed test example.

@@ -26,10 +26,10 @@ package fr.bmartel.speedtest.examples;
 
 import fr.bmartel.speedtest.*;
 
+import java.math.BigDecimal;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.math.BigDecimal;
 
 /**
  * Download a file repeatedly from speed test server during a fixed amount of time.

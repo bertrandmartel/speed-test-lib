@@ -27,10 +27,11 @@ package fr.bmartel.speedtest.examples;
 import fr.bmartel.speedtest.SpeedTestMode;
 import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.SpeedTestSocket;
-import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
+import org.apache.logging.log4j.Logger;
 
 /**
  * Log utilities method for examples.
