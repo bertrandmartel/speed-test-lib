@@ -1208,7 +1208,7 @@ public class SpeedTestSocket {
             currentTime = timeEnd;
         }
 
-        final BigDecimal transferRateOps = temporaryPacketSize.divide(new BigDecimal((currentTime - timeStart))
+        final BigDecimal transferRateOps = temporaryPacketSize.divide(new BigDecimal(currentTime - timeStart)
                 .divide(MILLIS_DIVIDER, scale, roundingMode), scale, roundingMode);
 
         final BigDecimal transferRateBitps = transferRateOps.multiply(BIT_MULTIPLIER);
@@ -1251,7 +1251,6 @@ public class SpeedTestSocket {
 
         BigDecimal progressPercent = BigDecimal.ZERO;
         long temporaryPacketSize = 0;
-        BigDecimal transferRateBit = BigDecimal.ZERO;
         BigDecimal downloadRepeatRateOctet = transferRateOctet;
         long downloadRepeatReportTime = reportTime;
 
@@ -1280,7 +1279,7 @@ public class SpeedTestSocket {
                     ), scale, roundingMode);
         }
 
-        transferRateBit = downloadRepeatRateOctet.multiply(BIT_MULTIPLIER);
+        BigDecimal transferRateBit = downloadRepeatRateOctet.multiply(BIT_MULTIPLIER);
 
         if (!repeatFinished) {
             temporaryPacketSize = repeatTempPckSize;
@@ -1367,7 +1366,7 @@ public class SpeedTestSocket {
      *
      * @param roundingMode rounding mode.
      */
-    public void setDefaultRoundingMode(RoundingMode roundingMode) {
+    public void setDefaultRoundingMode(final RoundingMode roundingMode) {
         this.roundingMode = roundingMode;
     }
 
@@ -1376,7 +1375,7 @@ public class SpeedTestSocket {
      *
      * @param scale scale value
      */
-    public void setDefaultScale(int scale) {
+    public void setDefaultScale(final int scale) {
         this.scale = scale;
     }
 }
