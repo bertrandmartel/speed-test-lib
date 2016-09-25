@@ -24,6 +24,8 @@
 
 package fr.bmartel.speedtest;
 
+import java.math.BigDecimal;
+
 /**
  * Speed examples report.
  * <p/>
@@ -46,12 +48,12 @@ public class SpeedTestReport {
     /**
      * transfer rate in octet/s.
      */
-    private final float transferRateOctet;
+    private final BigDecimal transferRateOctet;
 
     /**
      * transfer rate in bit/s.
      */
-    private final float transferRateBit;
+    private final BigDecimal transferRateBit;
 
     /**
      * upload start time in millis since 1970.
@@ -97,8 +99,8 @@ public class SpeedTestReport {
                            final long reportTime,
                            final long tempPacketSize,
                            final long totalPacketSize,
-                           final float transferRateOctet,
-                           final float transferRateBit,
+                           final BigDecimal transferRateOctet,
+                           final BigDecimal transferRateBit,
                            final int requestNum) {
         this.speedTestMode = speedTestMode;
         this.progressPercent = progressPercent;
@@ -134,7 +136,7 @@ public class SpeedTestReport {
      *
      * @return transfer rate in octet/s
      */
-    public float getTransferRateOctet() {
+    public BigDecimal getTransferRateOctet() {
         return transferRateOctet;
     }
 
@@ -143,7 +145,7 @@ public class SpeedTestReport {
      *
      * @return transfer rate in bit/s
      */
-    public float getTransferRateBit() {
+    public BigDecimal getTransferRateBit() {
         return transferRateBit;
     }
 

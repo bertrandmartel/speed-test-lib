@@ -29,6 +29,9 @@ import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.SpeedTestSocket;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
  * Log utilities method for examples.
  *
@@ -37,14 +40,24 @@ import org.apache.logging.log4j.Logger;
 public class LogUtils {
 
     /**
+     * default scale for BigDecimal.
+     */
+    private static final int DEFAULT_SCALE = 4;
+
+    /**
+     * default rounding mode for BigDecimal.
+     */
+    private static final RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_EVEN;
+
+    /**
      * conversion const for per second value.
      */
-    private static final int VALUE_PER_SECONDS = 1000;
+    private static final BigDecimal VALUE_PER_SECONDS = new BigDecimal(1000);
 
     /**
      * conversion const for M per second value.
      */
-    private static final int MEGA_VALUE_PER_SECONDS = 1000000;
+    private static final BigDecimal MEGA_VALUE_PER_SECONDS = new BigDecimal(1000000);
 
     /**
      * log report separator.
@@ -84,8 +97,8 @@ public class LogUtils {
      * @param transferRateOctetPerSeconds transfer rate in Bps
      * @param logger                      log4j logger
      */
-    public static void logFinishedTask(final SpeedTestMode mode, final long packetSize, final float
-            transferRateBitPerSeconds, final float transferRateOctetPerSeconds, final Logger logger) {
+    public static void logFinishedTask(final SpeedTestMode mode, final long packetSize, final BigDecimal
+            transferRateBitPerSeconds, final BigDecimal transferRateOctetPerSeconds, final Logger logger) {
 
         if (logger.isDebugEnabled()) {
             switch (mode) {
@@ -101,11 +114,13 @@ public class LogUtils {
 
             logger.debug("upload packetSize     : " + packetSize + " octet(s)");
             logger.debug("upload transfer rate  : " + transferRateBitPerSeconds + " bit/second   | " +
-                    transferRateBitPerSeconds / VALUE_PER_SECONDS
-                    + " Kbit/second  | " + transferRateBitPerSeconds / MEGA_VALUE_PER_SECONDS + " Mbit/second");
+                    transferRateBitPerSeconds.divide(VALUE_PER_SECONDS, DEFAULT_SCALE, DEFAULT_ROUNDING_MODE)
+                    + " Kbit/second  | " + transferRateBitPerSeconds.divide(MEGA_VALUE_PER_SECONDS) + " Mbit/second");
             logger.debug("upload transfer rate  : " + transferRateOctetPerSeconds + " octet/second | " +
-                    transferRateOctetPerSeconds / VALUE_PER_SECONDS
-                    + " Koctet/second | " + +transferRateOctetPerSeconds / MEGA_VALUE_PER_SECONDS + " Moctet/second");
+                    transferRateOctetPerSeconds.divide(VALUE_PER_SECONDS, DEFAULT_SCALE, DEFAULT_ROUNDING_MODE)
+                    + " Koctet/second | " + transferRateOctetPerSeconds.divide(MEGA_VALUE_PER_SECONDS, DEFAULT_SCALE,
+                    DEFAULT_ROUNDING_MODE) + " " +
+                    "Moctet/second");
             logger.debug("##################################################################");
         }
     }

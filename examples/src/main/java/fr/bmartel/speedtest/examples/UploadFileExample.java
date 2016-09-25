@@ -33,6 +33,8 @@ import fr.bmartel.speedtest.SpeedTestSocket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
+
 /**
  * Upload File Speed test example.
  *
@@ -87,8 +89,8 @@ public class UploadFileExample {
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
-            float transferRateOctetPerSeconds) {
+            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds,
+                                                  final BigDecimal transferRateOctetPerSeconds) {
 
                 LogUtils.logFinishedTask(SpeedTestMode.DOWNLOAD, packetSize, transferRateBitPerSeconds,
                         transferRateOctetPerSeconds, LOGGER);
@@ -103,8 +105,8 @@ public class UploadFileExample {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
-            float transferRateOctetPerSeconds) {
+            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds,
+                                                final BigDecimal transferRateOctetPerSeconds) {
 
                 LogUtils.logFinishedTask(SpeedTestMode.UPLOAD, packetSize, transferRateBitPerSeconds,
                         transferRateOctetPerSeconds, LOGGER);

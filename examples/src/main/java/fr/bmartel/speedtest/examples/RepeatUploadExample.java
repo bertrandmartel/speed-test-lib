@@ -28,6 +28,8 @@ import fr.bmartel.speedtest.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
+
 /**
  * Upload a file repeatedly from speed test server during a fixed amount of time.
  *
@@ -89,9 +91,8 @@ public class RepeatUploadExample {
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
-            float
-                    transferRateOctetPerSeconds) {
+            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds,
+                                                  final BigDecimal transferRateOctetPerSeconds) {
                 //called when download is finished
             }
 
@@ -104,8 +105,8 @@ public class RepeatUploadExample {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
-            float transferRateOctetPerSeconds) {
+            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds,
+                                                final BigDecimal transferRateOctetPerSeconds) {
                 //called when upload is finished
             }
 

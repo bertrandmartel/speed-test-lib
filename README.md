@@ -51,7 +51,8 @@ SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
 	@Override
-	public void onDownloadPacketsReceived(int packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
+	public void onDownloadPacketsReceived(long packetSize, BigDecimal transferRateBitPerSeconds,
+                                          BigDecimal transferRateOctetPerSeconds) {
 		System.out.println("download transfer rate  : " + transferRateBitPerSeconds + " bps");
 		System.out.println("download transfer rate  : " + transferRateOctetPerSeconds + "Bps");
 	}
@@ -62,7 +63,8 @@ speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 	}
 
 	@Override
-	public void onUploadPacketsReceived(int packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
+	public void onUploadPacketsReceived(int packetSize, BigDecimal transferRateBitPerSeconds, 
+                                        BigDecimal transferRateOctetPerSeconds) {
 		System.out.println("download transfer rate  : " + transferRateBitPerSeconds + " bps");
 		System.out.println("download transfer rate  : " + transferRateOctetPerSeconds + "Bps");
 	}
@@ -144,7 +146,7 @@ final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
     @Override
-    public void onDownloadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
+    public void onDownloadPacketsReceived(long packetSize, BigDecimal transferRateBitPerSeconds, BigDecimal transferRateOctetPerSeconds) {
     }
 
     @Override
@@ -158,7 +160,8 @@ speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
     }
 
     @Override
-    public void onUploadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
+    public void onUploadPacketsReceived(long packetSize, BigDecimal transferRateBitPerSeconds, 
+                                        BigDecimal transferRateOctetPerSeconds) {
     }
 
     @Override
@@ -191,7 +194,8 @@ TimerTask stopTask = new TimerTask() {
         System.out.println("transfer rate octet  : " + downloadReport.getTransferRateOctet() + "B/s");
         System.out.println("downloaded for now   : " + downloadReport.getTemporaryPacketSize() + "/" + downloadReport.getTotalPacketSize());
         if (downloadReport.getStartTime() > 0) {
-            System.out.println("amount of time       : " + ((downloadReport.getReportTime() - downloadReport.getStartTime()) / 1000) + "s");
+            System.out.println("amount of time   : " + 
+                ((downloadReport.getReportTime() - downloadReport.getStartTime()) / 1000) + "s");
         }
         speedTestSocket.forceStopTask();
         if (timer != null) {
@@ -229,7 +233,8 @@ final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
     @Override
-    public void onDownloadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
+    public void onDownloadPacketsReceived(long packetSize, BigDecimal transferRateBitPerSeconds, 
+                                          BigDecimal transferRateOctetPerSeconds) {
     }
 
     @Override
@@ -243,7 +248,8 @@ speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
     }
 
     @Override
-    public void onUploadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
+    public void onUploadPacketsReceived(long packetSize, BigDecimal transferRateBitPerSeconds, 
+                                        BigDecimal transferRateOctetPerSeconds) {
     }
 
     @Override
@@ -278,9 +284,9 @@ TimerTask task = new TimerTask() {
             System.out.println("transfer rate bit    : " + uploadReport.getTransferRateBit() + "b/s");
             System.out.println("transfer rate octet  : " + uploadReport.getTransferRateOctet() + "B/s");
             System.out.println("uploaded for now     : " + uploadReport.getTemporaryPacketSize() 
-                                    + "/" + uploadReport.getTotalPacketSize());
-            System.out.println("amount of time       : " + 
-                                ((uploadReport.getReportTime() - uploadReport.getStartTime()) / 1000) + "s");
+                + "/" + uploadReport.getTotalPacketSize());
+            System.out.println("amount of time       : "  
+                + ((uploadReport.getReportTime() - uploadReport.getStartTime()) / 1000) + "s");
             System.out.println("--------------------------------------------------------");
 
         } else if (speedTestSocket.getSpeedTestMode() == SpeedTestMode.DOWNLOAD) {
@@ -291,9 +297,9 @@ TimerTask task = new TimerTask() {
             System.out.println("transfer rate bit    : " + downloadReport.getTransferRateBit() + "b/s");
             System.out.println("transfer rate octet  : " + downloadReport.getTransferRateOctet() + "B/s");
             System.out.println("downloaded for now   : " + downloadReport.getTemporaryPacketSize() 
-                                    + "/" + downloadReport.getTotalPacketSize());
+                + "/" + downloadReport.getTotalPacketSize());
             System.out.println("amount of time       : "
-                                    + ((downloadReport.getReportTime() - downloadReport.getStartTime()) / 1000) + "s");
+                + ((downloadReport.getReportTime() - downloadReport.getStartTime()) / 1000) + "s");
         }
     }
 };
@@ -377,6 +383,24 @@ You can set download/upload socket timeout in milliseconds :
 speedTestSocket.setSocketTimeout(5000);
 ```
 
+### Set transfer rate precision
+
+These settings are used to alter transfer rate BigDecimal rounding / scale :
+
+* set RoundingMode :
+
+```
+speedTestSocket.setDefaultRoundingMode(RoundingMode.HALF_EVEN);
+```
+Default `RoundingMode` used for transfer rate calculation is `HALF_EVEN`. It can be override with : 
+
+* set Scale :
+
+```
+speedTestSocket.setDefaultScale(4);
+```
+Default scale used for transfer rate calculation is 4
+
 ## Android Integration
 
 * add Internet permission to manifest : 
@@ -397,8 +421,8 @@ public class SpeedTestTask extends AsyncTask<Void, Void, String> {
 
             @Override
             public void onDownloadPacketsReceived(int packetSize, 
-            									float transferRateBitPerSeconds, 
-            									float transferRateOctetPerSeconds) {
+            									BigDecimal transferRateBitPerSeconds, 
+            									BigDecimal transferRateOctetPerSeconds) {
                 Log.i("speed-test-app","download transfer rate  : " + transferRateOctetPerSeconds + "Bps");
             }
 
@@ -409,8 +433,8 @@ public class SpeedTestTask extends AsyncTask<Void, Void, String> {
 
             @Override
             public void onUploadPacketsReceived(int packetSize, 
-            									float transferRateBitPerSeconds, 
-            									float transferRateOctetPerSeconds) {
+            									BigDecimal transferRateBitPerSeconds, 
+            									BigDecimal transferRateOctetPerSeconds) {
                 Log.i("speed-test-app","download transfer rate  : " + transferRateOctetPerSeconds + "Bps");
             }
 

@@ -27,6 +27,7 @@ package fr.bmartel.speedtest.examples;
 import fr.bmartel.speedtest.SpeedTestMode;
 import fr.bmartel.speedtest.SpeedTestReport;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.junit.Assert;
@@ -77,12 +78,12 @@ public class SpeedTestReportTest {
     /**
      * tested transfer rate o/s.
      */
-    private static final float TRANSFER_RATE_OCT = 20000.54f;
+    private static final BigDecimal TRANSFER_RATE_OCT = new BigDecimal("20000.54");
 
     /**
      * tested transfer rate b/s.
      */
-    private static final float TRANSFER_RATE_BIT = 20000.54f / 8;
+    private static final BigDecimal TRANSFER_RATE_BIT = TRANSFER_RATE_OCT.divide(new BigDecimal("8"));
 
     /**
      * tested request number.
@@ -115,9 +116,9 @@ public class SpeedTestReportTest {
         Assert.assertEquals(HEADER + "total packet size are not equals", report.getTotalPacketSize(),
                 TOTAL_PACKET_SIZE);
         Assert.assertEquals(HEADER + "transfer rate in octet are not equals", report.getTransferRateOctet(),
-                TRANSFER_RATE_OCT, 0);
+                TRANSFER_RATE_OCT);
         Assert.assertEquals(HEADER + "transfer rate in bit are not equals", report.getTransferRateBit(),
-                TRANSFER_RATE_BIT, 0);
+                TRANSFER_RATE_BIT);
         Assert.assertEquals(HEADER + "request number are not equals", report.getRequestNum(), REQUEST_NUM);
     }
 }
