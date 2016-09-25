@@ -28,6 +28,8 @@ import fr.bmartel.speedtest.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
+
 /**
  * Chaining 2x (Download + Upload) file repeatedly from speed test server during a fixed amount of time.
  * Download during 3 seconds then Upload during 3 seconds.
@@ -103,9 +105,8 @@ public class ChainingRepeatExample {
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
-            float
-                    transferRateOctetPerSeconds) {
+            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds,
+                                                  final BigDecimal transferRateOctetPerSeconds) {
                 //called when download is finished
             }
 
@@ -118,8 +119,8 @@ public class ChainingRepeatExample {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
-            float transferRateOctetPerSeconds) {
+            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds, final
+            BigDecimal transferRateOctetPerSeconds) {
                 //called when upload is finished
             }
 

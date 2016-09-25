@@ -29,6 +29,7 @@ import fr.bmartel.speedtest.SpeedTestError;
 import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.SpeedTestSocket;
 
+import java.math.BigDecimal;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -91,9 +92,8 @@ public class FixedTimeUploadExample {
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
-            float
-                    transferRateOctetPerSeconds) {
+            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds,
+                                                  final BigDecimal transferRateOctetPerSeconds) {
                 //called when download is finished
             }
 
@@ -110,8 +110,8 @@ public class FixedTimeUploadExample {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final float transferRateBitPerSeconds, final
-            float transferRateOctetPerSeconds) {
+            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds,
+                                                final BigDecimal transferRateOctetPerSeconds) {
                 //called when upload is finished
             }
 
