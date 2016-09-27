@@ -1019,6 +1019,8 @@ public class SpeedTestSocket {
         forceCloseSocket = false;
         errorDispatched = false;
 
+        speedTestMode = SpeedTestMode.UPLOAD;
+
         /* generate a file with size of fileSizeOctet octet */
         final byte[] fileContent = new RandomGen(fileSizeOctet).nextArray();
 
@@ -1035,8 +1037,6 @@ public class SpeedTestSocket {
      * @param body file content to upload
      */
     private void writeUpload(final byte[] head, final byte[] body) {
-
-        speedTestMode = SpeedTestMode.UPLOAD;
 
         if (executorService == null || executorService.isShutdown()) {
             initThreadPool();
