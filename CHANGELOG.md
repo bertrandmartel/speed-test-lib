@@ -1,5 +1,46 @@
 # Change Log
 
+## [Unreleased](https://github.com/akinaru/speed-test-lib/tree/HEAD)
+
+[Full Changelog](https://github.com/akinaru/speed-test-lib/compare/1.16...HEAD)
+
+**Closed issues:**
+
+- Setting TextView text inside onDownloadPacketsReceived\(\) [\#7](https://github.com/akinaru/speed-test-lib/issues/7)
+
+## [1.16](https://github.com/akinaru/speed-test-lib/tree/1.16) (2016-08-30)
+[Full Changelog](https://github.com/akinaru/speed-test-lib/compare/1.15...1.16)
+
+## [1.15](https://github.com/akinaru/speed-test-lib/tree/1.15) (2016-08-27)
+[Full Changelog](https://github.com/akinaru/speed-test-lib/compare/1.14...1.15)
+
+## [1.14](https://github.com/akinaru/speed-test-lib/tree/1.14) (2016-08-26)
+[Full Changelog](https://github.com/akinaru/speed-test-lib/compare/1.13...1.14)
+
+## [1.13](https://github.com/akinaru/speed-test-lib/tree/1.13) (2016-08-26)
+[Full Changelog](https://github.com/akinaru/speed-test-lib/compare/1.12...1.13)
+
+## [1.12](https://github.com/akinaru/speed-test-lib/tree/1.12) (2016-08-26)
+[Full Changelog](https://github.com/akinaru/speed-test-lib/compare/1.11...1.12)
+
+**Implemented enhancements:**
+
+- Send the download/upload updates with a number of milliseconds apart [\#3](https://github.com/akinaru/speed-test-lib/issues/3)
+- Setting timeout [\#2](https://github.com/akinaru/speed-test-lib/issues/2)
+
+**Closed issues:**
+
+- Upload timeout Android [\#4](https://github.com/akinaru/speed-test-lib/issues/4)
+
+## [1.11](https://github.com/akinaru/speed-test-lib/tree/1.11) (2016-05-19)
+[Full Changelog](https://github.com/akinaru/speed-test-lib/compare/1.10...1.11)
+
+## [1.10](https://github.com/akinaru/speed-test-lib/tree/1.10) (2016-05-18)
+[Full Changelog](https://github.com/akinaru/speed-test-lib/compare/1.09...1.10)
+
+## [1.09](https://github.com/akinaru/speed-test-lib/tree/1.09) (2016-05-13)
+[Full Changelog](https://github.com/akinaru/speed-test-lib/compare/1.08...1.09)
+
 ## [1.08](https://github.com/akinaru/speed-test-lib/tree/1.08) (2016-05-13)
 [Full Changelog](https://github.com/akinaru/speed-test-lib/compare/1.07...1.08)
 
