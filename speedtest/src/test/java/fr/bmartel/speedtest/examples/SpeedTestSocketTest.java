@@ -100,7 +100,7 @@ public class SpeedTestSocketTest {
     /**
      * upload 10Mo file size.
      */
-    private static final int FILE_SIZE = 100000000;
+    private static final int FILE_SIZE = 10000000;
 
     /**
      * test socket timeout default value.
@@ -208,6 +208,11 @@ public class SpeedTestSocketTest {
         Assert.assertEquals(HEADER + "speed test mode value after startUpload", socket.getSpeedTestMode(),
                 SpeedTestMode.UPLOAD);
         socket.forceStopTask();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Assert.assertEquals(HEADER + "speed test mode value after forceStopTask", socket.getSpeedTestMode(),
                 SpeedTestMode.NONE);
     }
