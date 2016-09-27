@@ -1279,7 +1279,7 @@ public class SpeedTestSocket {
                     ), scale, roundingMode);
         }
 
-        BigDecimal transferRateBit = downloadRepeatRateOctet.multiply(BIT_MULTIPLIER);
+        final BigDecimal transferRateBit = downloadRepeatRateOctet.multiply(BIT_MULTIPLIER);
 
         if (!repeatFinished) {
             temporaryPacketSize = repeatTempPckSize;
