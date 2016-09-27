@@ -1021,6 +1021,7 @@ public class SpeedTestSocket {
 
         /* generate a file with size of fileSizeOctet octet */
         final byte[] fileContent = new RandomGen(fileSizeOctet).nextArray();
+
         final String uploadRequest = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + hostname + "\r\nAccept: " +
                 "*/*\r\nContent-Length: " + fileSizeOctet + "\r\n\r\n";
 
@@ -1377,5 +1378,23 @@ public class SpeedTestSocket {
      */
     public void setDefaultScale(final int scale) {
         this.scale = scale;
+    }
+
+    /**
+     * retrieve rounding mode used for BigDecimal.
+     *
+     * @return rounding mode
+     */
+    public RoundingMode getDefaultRoundingMode() {
+        return roundingMode;
+    }
+
+    /**
+     * retrieve scale used for BigDecimal.
+     *
+     * @return scale value
+     */
+    public int getDefaultScale() {
+        return scale;
     }
 }
