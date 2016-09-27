@@ -354,19 +354,21 @@ public class SpeedTestSocket {
 
             socket.connect(new InetSocketAddress(hostname, port));
 
-            executorService.execute(new Runnable() {
+            if (!executorService.isShutdown()) {
+                executorService.execute(new Runnable() {
 
-                @Override
-                public void run() {
+                    @Override
+                    public void run() {
 
-                    if (isDownload) {
-                        startSocketDownloadTask();
-                    } else {
-                        startSocketUploadTask();
+                        if (isDownload) {
+                            startSocketDownloadTask();
+                        } else {
+                            startSocketUploadTask();
+                        }
+                        speedTestMode = SpeedTestMode.NONE;
                     }
-                    speedTestMode = SpeedTestMode.NONE;
-                }
-            });
+                });
+            }
 
             if (task != null) {
                 task.run();
@@ -1028,7 +1030,12 @@ public class SpeedTestSocket {
         final String uploadRequest = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + hostname + "\r\nAccept: " +
                 "*/*\r\nContent-Length: " + fileSizeOctet + "\r\n\r\n";
 
-        writeUpload(uploadRequest.getBytes(), fileContent);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                writeUpload(uploadRequest.getBytes(), fileContent);
+            }
+        }).start();
     }
 
     /**
