@@ -192,13 +192,9 @@ public class SpeedTestSocketTest {
         socket.forceStopTask();
         Assert.assertEquals(HEADER + "speed test mode value after forceStopTask", socket.getSpeedTestMode(),
                 SpeedTestMode.NONE);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                socket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
-                        FILE_SIZE);
-            }
-        }).start();
+
+        socket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
+                FILE_SIZE);
 
         try {
             Thread.sleep(100);
@@ -304,13 +300,8 @@ public class SpeedTestSocketTest {
             Thread.sleep(500);
             Assert.assertTrue(HEADER + "socket closed after stop download", ((Socket) field.get(socket)).isClosed());
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    socket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
-                            FILE_SIZE);
-                }
-            }).start();
+            socket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
+                    FILE_SIZE);
 
             Thread.sleep(500);
             Assert.assertNotNull(HEADER + "socket value after upload", field.get(socket));
