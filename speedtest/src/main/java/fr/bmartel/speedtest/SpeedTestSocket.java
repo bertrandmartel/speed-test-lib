@@ -1315,8 +1315,6 @@ public class SpeedTestSocket {
 
         if (socket != null) {
             try {
-                socket.getInputStream().close();
-                socket.getOutputStream().close();
                 socket.close();
             } catch (IOException e) {
             }
