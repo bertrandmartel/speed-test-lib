@@ -963,6 +963,7 @@ public class SpeedTestSocket {
     public void forceStopTask() {
 
         forceCloseSocket = true;
+        speedTestMode = SpeedTestMode.NONE;
         closeSocket();
         shutdownAndWait();
     }
