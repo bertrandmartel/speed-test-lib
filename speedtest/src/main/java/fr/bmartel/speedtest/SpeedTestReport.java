@@ -118,7 +118,7 @@ public class SpeedTestReport {
      *
      * @return packet size in bit
      */
-    public float getTemporaryPacketSize() {
+    public long getTemporaryPacketSize() {
         return tempPacketSize;
     }
 
