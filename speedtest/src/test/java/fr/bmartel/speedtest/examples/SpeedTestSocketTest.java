@@ -763,18 +763,18 @@ public class SpeedTestSocketTest {
         final Waiter waiter = new Waiter();
         final Waiter waiter2 = new Waiter();
 
-        final int packetSize = FILE_SIZE_REGULAR;
+        final int packetSizeExpected = FILE_SIZE_REGULAR;
 
         socket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
                                                   final BigDecimal transferRateOps) {
-                checkSpeedTestResult(waiter2, packetSize, transferRateBps, transferRateOps, true);
+                checkSpeedTestResult(waiter2, packetSize, packetSizeExpected, transferRateBps, transferRateOps, true);
             }
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
-                testReportNotEmpty(waiter, report, packetSize);
+                testReportNotEmpty(waiter, report, packetSizeExpected);
                 waiter.assertTrue(percent >= 0 && percent <= 100);
                 waiter.resume();
             }
@@ -831,7 +831,7 @@ public class SpeedTestSocketTest {
         final Waiter waiter = new Waiter();
         final Waiter waiter2 = new Waiter();
 
-        final int packetSize = FILE_SIZE_REGULAR;
+        final int packetSizeExpected = FILE_SIZE_REGULAR;
 
         socket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
@@ -857,7 +857,7 @@ public class SpeedTestSocketTest {
             @Override
             public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
                                                 final BigDecimal transferRateOps) {
-                checkSpeedTestResult(waiter2, packetSize, transferRateBps, transferRateOps, false);
+                checkSpeedTestResult(waiter2, packetSize, packetSizeExpected, transferRateBps, transferRateOps, false);
             }
 
             @Override
@@ -870,14 +870,14 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                testReportNotEmpty(waiter, report, packetSize);
+                testReportNotEmpty(waiter, report, packetSizeExpected);
                 waiter.assertTrue(percent >= 0 && percent <= 100);
                 waiter.resume();
             }
         });
 
         socket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
-                packetSize);
+                packetSizeExpected);
 
         try {
             waiter.await(WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
@@ -899,7 +899,8 @@ public class SpeedTestSocketTest {
      * @param transferRateBps transfer rate in b/s from result callback
      * @param transferRateOps transfer rate in octet/ps from result callback
      */
-    private void checkSpeedTestResult(final Waiter waiter, final long packetSize, final BigDecimal transferRateBps,
+    private void checkSpeedTestResult(final Waiter waiter, final long packetSize, final long packetSizeExpected,
+                                      final BigDecimal transferRateBps,
                                       final BigDecimal transferRateOps, final boolean isDownload) {
 
         SpeedTestReport report;
@@ -913,7 +914,7 @@ public class SpeedTestSocketTest {
 
         waiter.assertTrue(report.getProgressPercent() ==
                 100);
-        waiter.assertEquals(packetSize, packetSize);
+        waiter.assertEquals(packetSize, packetSizeExpected);
         waiter.assertNotNull(transferRateBps);
         waiter.assertNotNull(transferRateOps);
         waiter.assertTrue(transferRateBps.intValue()
@@ -925,6 +926,12 @@ public class SpeedTestSocketTest {
 
         waiter.assertTrue(((transferRateBps.floatValue() + 0.1) >= check) &&
                 ((transferRateBps.floatValue() - 0.1) <= check));
+
+        waiter.assertEquals(report.getTransferRateBit(), transferRateBps);
+        waiter.assertEquals(report.getTransferRateOctet(), transferRateOps);
+        waiter.assertEquals(report.getTotalPacketSize(), packetSize);
+        waiter.assertEquals(report.getTemporaryPacketSize(), packetSize);
+
         waiter.resume();
     }
 
