@@ -24,16 +24,25 @@
 
 package fr.bmartel.speedtest.examples;
 
+import fr.bmartel.protocol.http.HttpFrame;
+import fr.bmartel.protocol.http.constants.HttpHeader;
+import fr.bmartel.protocol.http.states.HttpStates;
 import fr.bmartel.speedtest.*;
+import net.jodah.concurrentunit.Waiter;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Speed examples socket examples.
@@ -88,6 +97,11 @@ public class SpeedTestSocketTest {
     private final static String SPEED_TEST_SERVER_URI_DL = "/fichiers/100Mo.dat";
 
     /**
+     * spedd examples 1Mo server uri.
+     */
+    private final static String SPEED_TEST_SERVER_URI_DL_1MO = "/fichiers/1Mo.dat";
+
+    /**
      * speed examples server port.
      */
     private final static int SPEED_TEST_SERVER_PORT = 80;
@@ -101,6 +115,56 @@ public class SpeedTestSocketTest {
      * upload 10Mo file size.
      */
     private static final int FILE_SIZE = 10000000;
+
+    /**
+     * Waiter for speed test listener callback.
+     */
+    private static Waiter waiter;
+
+    /**
+     * Waiter for speed test listener callback error.
+     */
+    private static Waiter waiterError;
+
+    /**
+     * message for unexpected error.
+     */
+    private final static String UNEXPECTED_ERROR_STR = "unexpected error : ";
+
+    /**
+     * message for download error.
+     */
+    private final static String DOWNLOAD_ERROR_STR = "download error : ";
+
+    /**
+     * message for upload error.
+     */
+    private final static String UPLOAD_ERROR_STR = "upload error : ";
+
+    /**
+     * error message for testing error callback.
+     */
+    private static String errorMessage = "this is an error message";
+
+    /**
+     * error suffix message for force close.
+     */
+    private static String errorMessageSuffix = " caused by socket force close";
+
+    /**
+     * download/upload mode for testing error callback.
+     */
+    private static boolean isDownload = true;
+
+    /**
+     * define if force stop is to be expected in error callback.
+     */
+    private static boolean isForceStop;
+
+    /**
+     * define if error message value should be checked.
+     */
+    private static boolean noCheckMessage;
 
     /**
      * test socket timeout default value.
@@ -183,6 +247,7 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void speedTestModeTest() {
+
         socket = new SpeedTestSocket();
         Assert.assertEquals(HEADER + "speed test mode value after init", socket.getSpeedTestMode(),
                 SpeedTestMode.NONE);
@@ -193,22 +258,64 @@ public class SpeedTestSocketTest {
         Assert.assertEquals(HEADER + "speed test mode value after forceStopTask", socket.getSpeedTestMode(),
                 SpeedTestMode.NONE);
 
+        final Waiter waiter = new Waiter();
+
+        socket.addSpeedTestListener(new ISpeedTestListener() {
+            @Override
+            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
+                                                  final BigDecimal transferRateOps) {
+            }
+
+            @Override
+            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+                waiter.fail("onDownloadError : shoudlnt be in onDownloadError");
+                waiter.resume();
+            }
+
+            @Override
+            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
+                                                final BigDecimal transferRateOps) {
+            }
+
+            @Override
+            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    waiter.resume();
+                } else {
+                    waiter.fail("onUploadError : " + UNEXPECTED_ERROR_STR + speedTestError);
+                    waiter.resume();
+                }
+            }
+
+            @Override
+            public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                waiter.resume();
+            }
+        });
+
+        initCountDown();
+
         socket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
                 FILE_SIZE);
 
         try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            waiter.await(2, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
         }
+
         Assert.assertEquals(HEADER + "speed test mode value after startUpload", socket.getSpeedTestMode(),
                 SpeedTestMode.UPLOAD);
         socket.forceStopTask();
+
         try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            waiter.await(2, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
         }
+
         Assert.assertEquals(HEADER + "speed test mode value after forceStopTask", socket.getSpeedTestMode(),
                 SpeedTestMode.NONE);
     }
@@ -262,7 +369,6 @@ public class SpeedTestSocketTest {
             field.setAccessible(true);
             field.set(socket, listenerList);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -283,6 +389,60 @@ public class SpeedTestSocketTest {
     public void socketTest() {
         socket = new SpeedTestSocket();
 
+        socket.addSpeedTestListener(new ISpeedTestListener() {
+            @Override
+            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
+                                                  final BigDecimal transferRateOps) {
+            }
+
+            @Override
+            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+                waiter.resume();
+            }
+
+            @Override
+            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    waiterError.resume();
+                } else {
+                    waiterError.fail(UNEXPECTED_ERROR_STR + speedTestError);
+                    waiterError.resume();
+                }
+            }
+
+            @Override
+            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
+                                                final BigDecimal transferRateOps) {
+            }
+
+            @Override
+            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    waiterError.resume();
+                } else {
+                    waiterError.fail(UNEXPECTED_ERROR_STR + speedTestError);
+                    waiterError.resume();
+                }
+            }
+
+            @Override
+            public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                waiter.resume();
+            }
+        });
+
+        initCountDown();
+
+        testSocket(socket);
+    }
+
+    /**
+     * Test the socket object.
+     *
+     * @param socket socket object
+     */
+    private void testSocket(final SpeedTestSocket socket) {
+
         try {
             final Field field = socket.getClass().getDeclaredField("socket");
             Assert.assertNotNull(HEADER + "socket is null", field);
@@ -291,32 +451,54 @@ public class SpeedTestSocketTest {
             Assert.assertNull(HEADER + "socket value at init", field.get(socket));
 
             socket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL);
-            Thread.sleep(500);
-            Assert.assertNotNull(HEADER + "socket value after download", field.get(socket));
-            Assert.assertTrue(HEADER + "socket connected after download", ((Socket) field.get(socket)).isConnected());
-            Assert.assertFalse(HEADER + "socket closed after download", ((Socket) field.get(socket)).isClosed());
+
+            try {
+                waiter.await(2, TimeUnit.SECONDS);
+            } catch (TimeoutException e) {
+            }
+
+            testSocketConnected((Socket) field.get(socket));
 
             socket.forceStopTask();
-            Thread.sleep(500);
+
+            try {
+                waiterError.await(2, TimeUnit.SECONDS);
+            } catch (TimeoutException e) {
+            }
+
             Assert.assertTrue(HEADER + "socket closed after stop download", ((Socket) field.get(socket)).isClosed());
+
+            initCountDown();
 
             socket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
                     FILE_SIZE);
 
-            Thread.sleep(500);
-            Assert.assertNotNull(HEADER + "socket value after upload", field.get(socket));
-            Assert.assertTrue(HEADER + "socket connected after upload", ((Socket) field.get(socket)).isConnected());
-            Assert.assertFalse(HEADER + "socket closed after upload", ((Socket) field.get(socket)).isClosed());
+            try {
+                waiter.await(2, TimeUnit.SECONDS);
+            } catch (TimeoutException e) {
+            }
+
+            testSocketConnected((Socket) field.get(socket));
 
             socket.forceStopTask();
-            Thread.sleep(500);
+
+            try {
+                waiterError.await(2, TimeUnit.SECONDS);
+            } catch (TimeoutException e) {
+            }
+
             Assert.assertTrue(HEADER + "socket closed after stop upload", ((Socket) field.get(socket)).isClosed());
 
+            initCountDown();
+
             socket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL);
-            Thread.sleep(500);
-            Assert.assertNotNull(HEADER + "socket value after download", field.get(socket));
-            Assert.assertTrue(HEADER + "socket connected after download", ((Socket) field.get(socket)).isConnected());
-            Assert.assertFalse(HEADER + "socket closed after download", ((Socket) field.get(socket)).isClosed());
+
+            try {
+                waiterError.await(2, TimeUnit.SECONDS);
+            } catch (TimeoutException e) {
+            }
+
+            testSocketConnected((Socket) field.get(socket));
             socket.closeSocket();
             Assert.assertTrue(HEADER + "socket closed after stop download", ((Socket) field.get(socket)).isClosed());
 
@@ -324,8 +506,708 @@ public class SpeedTestSocketTest {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
+    }
+
+    /**
+     * test socket closed.
+     */
+    private void testSocketConnected(final Socket socket) {
+        Assert.assertNotNull(HEADER + "socket value after download", socket);
+        Assert.assertTrue(HEADER + "socket connected after download", socket.isConnected());
+        Assert.assertFalse(HEADER + "socket closed after download", socket.isClosed());
+    }
+
+    /**
+     * initialize both lock & lock error CountDown.
+     */
+    private void initCountDown() {
+        waiter = new Waiter();
+        waiterError = new Waiter();
+    }
+
+    /**
+     * test download report empty.
+     */
+    @Test
+    public void downloadReportEmptyTest() {
+        socket = new SpeedTestSocket();
+        final SpeedTestReport report = socket.getLiveDownloadReport();
+
+        Assert.assertEquals(HEADER + "download report empty - mode incorrect", report.getSpeedTestMode(),
+                SpeedTestMode.DOWNLOAD);
+        testReportEmpty("download report empty - ", report);
+    }
+
+    /**
+     * test upload report empty.
+     */
+    @Test
+    public void uploadReportEmptyTest() {
+        socket = new SpeedTestSocket();
+        final SpeedTestReport report = socket.getLiveUploadReport();
+
+        Assert.assertEquals(HEADER + "upload report empty - mode incorrect", report.getSpeedTestMode(),
+                SpeedTestMode.UPLOAD);
+
+        testReportEmpty("upload report empty - ", report);
+    }
+
+    /**
+     * test download report not empty.
+     */
+    @Test
+    public void downloadReportNotEmptyTest() {
+        socket = new SpeedTestSocket();
+
+        socket.addSpeedTestListener(new ISpeedTestListener() {
+            @Override
+            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
+                                                  final BigDecimal transferRateOps) {
+            }
+
+            @Override
+            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+                waiter.resume();
+            }
+
+            @Override
+            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    waiter.fail(UNEXPECTED_ERROR_STR + speedTestError);
+                    waiter.resume();
+                }
+            }
+
+            @Override
+            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
+                                                final BigDecimal transferRateOps) {
+            }
+
+            @Override
+            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    waiter.fail(UNEXPECTED_ERROR_STR + speedTestError);
+                    waiter.resume();
+                }
+            }
+
+            @Override
+            public void onUploadProgress(final float percent, final SpeedTestReport report) {
+            }
+        });
+
+        waiter = new Waiter();
+
+        socket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL);
+
+        try {
+            waiter.await(2, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+        }
+
+        final SpeedTestReport report = socket.getLiveDownloadReport();
+
+        Assert.assertEquals(HEADER + "download report not empty - mode incorrect", report.getSpeedTestMode(),
+                SpeedTestMode.DOWNLOAD);
+
+        testReportNotEmpty(waiter, report, 100000000);
+
+        socket.forceStopTask();
+    }
+
+    /**
+     * test upload report empty.
+     */
+    @Test
+    public void uploadReportNotEmptyTest() {
+        socket = new SpeedTestSocket();
+
+        socket.addSpeedTestListener(new ISpeedTestListener() {
+            @Override
+            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
+                                                  final BigDecimal transferRateOps) {
+            }
+
+            @Override
+            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    waiter.fail(UNEXPECTED_ERROR_STR + speedTestError);
+                    waiter.resume();
+                }
+            }
+
+            @Override
+            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
+                                                final BigDecimal transferRateOps) {
+            }
+
+            @Override
+            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    waiter.fail(UNEXPECTED_ERROR_STR + speedTestError);
+                    waiter.resume();
+                }
+            }
+
+            @Override
+            public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                waiter.resume();
+            }
+        });
+
+        waiter = new Waiter();
+
+        socket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
+                1000000);
+        try {
+            waiter.await(2, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+        }
+
+        final SpeedTestReport report = socket.getLiveUploadReport();
+
+        Assert.assertEquals(HEADER + "upload report not empty - mode incorrect", report.getSpeedTestMode(),
+                SpeedTestMode.UPLOAD);
+
+        testReportNotEmpty(waiter, report, 1000000);
+
+        socket.forceStopTask();
+    }
+
+    /**
+     * Test report empty.
+     *
+     * @param headerMessage test header Message
+     * @param report        speed test report object
+     */
+    private void testReportEmpty(final String headerMessage, final SpeedTestReport report) {
+
+        Assert.assertEquals(HEADER + headerMessage + "progress incorrect", report.getProgressPercent(),
+                0, 0);
+        Assert.assertNotEquals(HEADER + headerMessage + "time incorrect", report.getReportTime(),
+                0);
+        Assert.assertEquals(HEADER + headerMessage + "request num incorrect", report.getRequestNum(),
+                1);
+        Assert.assertEquals(HEADER + headerMessage + "start time incorrect", report.getStartTime(),
+                0);
+        Assert.assertEquals(HEADER + headerMessage + "temporary packet size incorrect", report
+                        .getTemporaryPacketSize(),
+                0);
+        Assert.assertEquals(HEADER + headerMessage + "total packet size incorrect", report
+                        .getTotalPacketSize(),
+                0);
+        Assert.assertEquals(HEADER + headerMessage + "transfer rate bps incorrect", report
+                        .getTransferRateBit
+                                ().intValue(),
+                0);
+        Assert.assertEquals(HEADER + headerMessage + "transfer rate ops incorrect", report
+                        .getTransferRateOctet().intValue(),
+                0);
+    }
+
+    /**
+     * Test report not empty.
+     *
+     * @param report speed test report object
+     */
+    private void testReportNotEmpty(final Waiter waiter, final SpeedTestReport report, final long
+            totalPacketSize) {
+
+        waiter.assertTrue(report.getProgressPercent() > 0);
+        waiter.assertTrue(report.getReportTime() != 0);
+        waiter.assertTrue(report.getRequestNum() >= 1);
+        waiter.assertTrue(report.getStartTime() != 0);
+        waiter.assertTrue(report.getTemporaryPacketSize() > 0);
+        waiter.assertEquals(report.getTotalPacketSize(), totalPacketSize);
+        waiter.assertTrue(report.getTransferRateBit().intValue() > 0);
+        waiter.assertTrue(report.getTransferRateOctet().intValue() > 0);
+
+        //check transfer rate O = 8xB
+        final float check = report.getTransferRateOctet().multiply(new BigDecimal("8")).floatValue();
+        waiter.assertTrue(((report.getTransferRateBit().floatValue() + 0.1) >= check) &&
+                ((report.getTransferRateBit().floatValue() - 0.1) <= check));
+    }
+
+    /**
+     * Test listener callback for progress & result.
+     */
+    @Test
+    public void progressResultCallbackDownloadTest() {
+        socket = new SpeedTestSocket();
+
+        final Waiter waiter = new Waiter();
+        final Waiter waiter2 = new Waiter();
+
+        final int packetSize = 1000000;
+
+        socket.addSpeedTestListener(new ISpeedTestListener() {
+            @Override
+            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
+                                                  final BigDecimal transferRateOps) {
+                checkSpeedTestResult(waiter2, packetSize, transferRateBps, transferRateOps, true);
+            }
+
+            @Override
+            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+                testReportNotEmpty(waiter, report, packetSize);
+                waiter.assertTrue(percent >= 0 && percent <= 100);
+                waiter.resume();
+            }
+
+            @Override
+            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    waiter.fail(DOWNLOAD_ERROR_STR + speedTestError);
+                    waiter2.fail(DOWNLOAD_ERROR_STR + speedTestError);
+                }
+            }
+
+            @Override
+            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
+                                                final BigDecimal transferRateOps) {
+                waiter.fail(UPLOAD_ERROR_STR + " : shouldnt be in onUploadPacketsReceived");
+                waiter2.fail(UPLOAD_ERROR_STR + " : shouldnt be in onUploadPacketsReceived");
+            }
+
+            @Override
+            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
+                waiter.fail(UPLOAD_ERROR_STR + " : shouldnt be in onUploadError");
+                waiter2.fail(UPLOAD_ERROR_STR + " : shouldnt be in onUploadError");
+            }
+
+            @Override
+            public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                waiter.fail(UPLOAD_ERROR_STR + " : shouldnt be in onUploadProgress");
+                waiter2.fail(UPLOAD_ERROR_STR + " : shouldnt be in onUploadProgress");
+            }
+        });
+
+        socket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL_1MO);
+
+        try {
+            waiter.await(2000);
+        } catch (TimeoutException e) {
+        }
+        try {
+            waiter2.await(10000);
+        } catch (TimeoutException e) {
+        }
+
+        socket.forceStopTask();
+    }
+
+    /**
+     * Test listener callback for progress & result for upload.
+     */
+    @Test
+    public void progressResultCallbackUploadTest() {
+        socket = new SpeedTestSocket();
+
+        final Waiter waiter = new Waiter();
+        final Waiter waiter2 = new Waiter();
+
+        final int packetSize = 1000000;
+
+        socket.addSpeedTestListener(new ISpeedTestListener() {
+            @Override
+            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
+                                                  final BigDecimal transferRateOps) {
+                waiter.fail(UPLOAD_ERROR_STR + " : shouldnt be in onDownloadPacketsReceived");
+                waiter2.fail(UPLOAD_ERROR_STR + " : shouldnt be in onDownloadPacketsReceived");
+
+            }
+
+            @Override
+            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+                waiter.fail(DOWNLOAD_ERROR_STR + " : shouldnt be in onDownloadProgress");
+                waiter2.fail(DOWNLOAD_ERROR_STR + " : shouldnt be in onDownloadProgress");
+            }
+
+            @Override
+            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+                waiter.fail(DOWNLOAD_ERROR_STR + " : shouldnt be in onDownloadError");
+                waiter2.fail(DOWNLOAD_ERROR_STR + " : shouldnt be in onDownloadError");
+            }
+
+            @Override
+            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
+                                                final BigDecimal transferRateOps) {
+                checkSpeedTestResult(waiter2, packetSize, transferRateBps, transferRateOps, false);
+            }
+
+            @Override
+            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    waiter.fail(UPLOAD_ERROR_STR + speedTestError);
+                    waiter2.fail(UPLOAD_ERROR_STR + speedTestError);
+                }
+            }
+
+            @Override
+            public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                testReportNotEmpty(waiter, report, packetSize);
+                waiter.assertTrue(percent >= 0 && percent <= 100);
+                waiter.resume();
+            }
+        });
+
+        socket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
+                packetSize);
+
+        try {
+            waiter.await(2000);
+        } catch (TimeoutException e) {
+        }
+        try {
+            waiter2.await(10000);
+        } catch (TimeoutException e) {
+        }
+
+        socket.forceStopTask();
+    }
+
+    /**
+     * Check speed test result callback.
+     *
+     * @param waiter          Waiter object
+     * @param packetSize      packet size received in result callback
+     * @param transferRateBps transfer rate in b/s from result callback
+     * @param transferRateOps transfer rate in octet/ps from result callback
+     */
+    private void checkSpeedTestResult(final Waiter waiter, final long packetSize, final BigDecimal transferRateBps,
+                                      final BigDecimal transferRateOps, final boolean isDownload) {
+
+        SpeedTestReport report;
+
+        if (isDownload) {
+            report = socket.getLiveDownloadReport();
+        } else {
+            report = socket.getLiveUploadReport();
+        }
+        testReportNotEmpty(waiter, report, packetSize);
+        
+        waiter.assertTrue(report.getProgressPercent() ==
+                100);
+        waiter.assertEquals(packetSize, packetSize);
+        waiter.assertNotNull(transferRateBps);
+        waiter.assertNotNull(transferRateOps);
+        waiter.assertTrue(transferRateBps.intValue()
+                > 0);
+        waiter.assertTrue(transferRateBps.intValue()
+                > 0);
+
+        final float check = transferRateOps.multiply(new BigDecimal("8")).floatValue();
+
+        waiter.assertTrue(((transferRateBps.floatValue() + 0.1) >= check) &&
+                ((transferRateBps.floatValue() - 0.1) <= check));
+        waiter.resume();
+    }
+
+    /**
+     * Test socket connection error.
+     */
+    @Test
+    public void socketConnectionErrorTest() {
+        socket = new SpeedTestSocket();
+        noCheckMessage = true;
+        initErrorListener(SpeedTestError.CONNECTION_ERROR);
+
+        testErrorHandler("dispatchError");
+    }
+
+    /**
+     * An initialization for all error callback test suite.
+     *
+     * @param error type of error to catch
+     */
+    private void initErrorListener(final SpeedTestError error) {
+
+        waiter = new Waiter();
+
+        socket.addSpeedTestListener(new ISpeedTestListener() {
+            @Override
+            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
+                                                  final BigDecimal transferRateOps) {
+            }
+
+            @Override
+            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (speedTestError.equals(error) && isDownload) {
+                    if (noCheckMessage) {
+                        waiter.assertEquals(errorMessage, SpeedTestSocketTest.this.errorMessage);
+                    }
+                    waiter.resume();
+                } else if (isForceStop && isDownload && speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    if (noCheckMessage) {
+                        waiter.assertEquals(errorMessage, SpeedTestSocketTest.this.errorMessage + errorMessageSuffix);
+                    }
+                    waiter.resume();
+                } else {
+                    waiter.fail("error connection error expected");
+                }
+            }
+
+            @Override
+            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
+                                                final BigDecimal transferRateOps) {
+            }
+
+            @Override
+            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (speedTestError.equals(error) && !isDownload && !isForceStop) {
+                    if (noCheckMessage) {
+                        waiter.assertEquals(errorMessage, SpeedTestSocketTest.this.errorMessage);
+                    }
+                    waiter.resume();
+                } else if (isForceStop && !isDownload && speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    if (noCheckMessage) {
+                        waiter.assertEquals(errorMessage, SpeedTestSocketTest.this.errorMessage + errorMessageSuffix);
+                    }
+                    waiter.resume();
+                } else {
+                    waiter.fail("error connection error expected");
+                }
+            }
+
+            @Override
+            public void onUploadProgress(final float percent, final SpeedTestReport report) {
+            }
+        });
+    }
+
+    /**
+     * Test http frame error for forceClose or not.
+     *
+     * @param methodName method to reflect
+     */
+    private void testHttpFrameErrorHandler(final String methodName) {
+
+        Class[] cArg = new Class[1];
+        cArg[0] = HttpFrame.class;
+
+        try {
+            final Method method = socket.getClass().getDeclaredMethod(methodName, cArg);
+            method.setAccessible(true);
+            Assert.assertNotNull(method);
+
+            isForceStop = false;
+            isDownload = true;
+
+            final HttpFrame frame = new HttpFrame();
+            final HashMap<String, String> headers = new HashMap<String, String>();
+            headers.put(HttpHeader.CONTENT_LENGTH, String.valueOf(10));
+            frame.setHeaders(headers);
+
+            method.invoke(socket, frame);
+
+            try {
+                waiter.await(2000);
+            } catch (TimeoutException e) {
+            }
+
+            socket.forceStopTask();
+            isForceStop = true;
+
+            try {
+                waiter.await(2000);
+            } catch (TimeoutException e) {
+            }
+
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            Assert.fail();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            Assert.fail();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    /**
+     * Test http error for forceClose or not.
+     *
+     * @param methodName method to reflect
+     */
+    private void testHttpErrorHandler(final String methodName) {
+
+        Class[] cArg = new Class[1];
+        cArg[0] = HttpStates.class;
+
+        testErrorForceClose(methodName, cArg);
+    }
+
+    /**
+     * Test an error handler + force close event.
+     */
+    private void testErrorForceClose(final String methodName, final Class... cArg) {
+
+        try {
+            final Method method = socket.getClass().getDeclaredMethod(methodName, cArg);
+            method.setAccessible(true);
+            Assert.assertNotNull(method);
+
+            isForceStop = false;
+            isDownload = true;
+
+            iterateIncorrectHeaders(method);
+
+            socket.forceStopTask();
+            isForceStop = true;
+
+            iterateIncorrectHeaders(method);
+
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            Assert.fail();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            Assert.fail();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    /**
+     * Iterate over http header enum to test all values except OK.
+     *
+     * @param method method to use to test error
+     */
+    private void iterateIncorrectHeaders(final Method method) throws InvocationTargetException, IllegalAccessException {
+
+        for (final HttpStates state : HttpStates.values()) {
+            if (state != HttpStates.HTTP_FRAME_OK) {
+                method.invoke(socket, state);
+
+                try {
+                    waiter.await(2000);
+                } catch (TimeoutException e) {
+                }
+            }
+        }
+    }
+
+    /**
+     * Test connection error for download/upload/forceStopTask.
+     *
+     * @param methodName method name to reflect
+     */
+    private void testErrorHandler(final String methodName) {
+
+        Class[] cArg = new Class[2];
+        cArg[0] = boolean.class;
+        cArg[1] = String.class;
+
+        try {
+            final Method method = socket.getClass().getDeclaredMethod(methodName, cArg);
+            method.setAccessible(true);
+            Assert.assertNotNull(method);
+
+            isForceStop = false;
+            isDownload = true;
+            method.invoke(socket, isDownload, errorMessage);
+
+            try {
+                waiter.await(2000);
+            } catch (TimeoutException e) {
+            }
+            isDownload = false;
+            method.invoke(socket, isDownload, errorMessage);
+
+            try {
+                waiter.await(2000);
+            } catch (TimeoutException e) {
+            }
+
+            socket.forceStopTask();
+            isForceStop = true;
+            isDownload = false;
+            method.invoke(socket, isDownload, errorMessage);
+
+            try {
+                waiter.await(2000);
+            } catch (TimeoutException e) {
+            }
+
+            isDownload = true;
+            method.invoke(socket, isDownload, errorMessage);
+
+            try {
+                waiter.await(2000);
+            } catch (TimeoutException e) {
+            }
+
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            Assert.fail();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            Assert.fail();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    /**
+     * Test socket timeout error.
+     */
+    @Test
+    public void socketTimeoutErrorTest() {
+
+        socket = new SpeedTestSocket();
+        noCheckMessage = true;
+        initErrorListener(SpeedTestError.SOCKET_TIMEOUT);
+
+        testErrorHandler("dispatchSocketTimeout");
+    }
+
+    /**
+     * Test http frame error.
+     */
+    @Test
+    public void httpFrameErrorTest() {
+
+        socket = new SpeedTestSocket();
+        noCheckMessage = false;
+        initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
+
+        testHttpErrorHandler("checkHttpFrameError");
+    }
+
+    /**
+     * Test http header error.
+     */
+    @Test
+    public void httpHeaderErrorTest() {
+
+        socket = new SpeedTestSocket();
+        noCheckMessage = false;
+        initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
+
+        testHttpErrorHandler("checkHttpHeaderError");
+    }
+
+    /**
+     * Test http content length error.
+     */
+    @Test
+    public void httpContentLengthErrorTest() {
+        socket = new SpeedTestSocket();
+        noCheckMessage = false;
+        initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
+
+        testHttpFrameErrorHandler("checkHttpContentLengthError");
     }
 }
