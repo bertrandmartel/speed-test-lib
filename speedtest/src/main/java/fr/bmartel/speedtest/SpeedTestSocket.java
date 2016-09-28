@@ -1104,6 +1104,12 @@ public class SpeedTestSocket {
                                     uploadTempFileSize +
                                             remain)) != 0) {
                                 throw new SocketTimeoutException();
+                            } else {
+                                uploadTempFileSize += remain;
+
+                                if (isRepeatUpload) {
+                                    repeatTempPckSize += remain;
+                                }
                             }
                             for (int j = 0; j < listenerList.size(); j++) {
                                 listenerList.get(j).onUploadProgress(PERCENT_MAX.floatValue(), getLiveUploadReport());
