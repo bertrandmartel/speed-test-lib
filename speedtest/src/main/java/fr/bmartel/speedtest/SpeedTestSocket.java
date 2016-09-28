@@ -463,7 +463,7 @@ public class SpeedTestSocket {
     private void downloadReadingLoop() throws IOException {
 
         final byte[] buffer = new byte[READ_BUFFER_SIZE];
-        int read = 0;
+        int read;
 
         while ((read = socket.getInputStream().read(buffer)) != -1) {
 
@@ -472,10 +472,10 @@ public class SpeedTestSocket {
             if (isRepeatDownload) {
                 repeatTempPckSize += read;
             }
+
             for (int i = 0; i < listenerList.size(); i++) {
 
                 final SpeedTestReport report = getLiveDownloadReport();
-
                 listenerList.get(i).onDownloadProgress(report.getProgressPercent(), getLiveDownloadReport());
             }
 
@@ -1087,15 +1087,17 @@ public class SpeedTestSocket {
                                     throw new SocketTimeoutException();
                                 }
 
-                                for (int j = 0; j < listenerList.size(); j++) {
-                                    final SpeedTestReport report = getLiveUploadReport();
-                                    listenerList.get(j).onUploadProgress(report.getProgressPercent(), report);
-                                }
-
                                 uploadTempFileSize += uploadChunkSize;
 
                                 if (isRepeatUpload) {
                                     repeatTempPckSize += uploadChunkSize;
+                                }
+
+                                final SpeedTestReport report = getLiveUploadReport();
+
+                                for (int j = 0; j < listenerList.size(); j++) {
+
+                                    listenerList.get(j).onUploadProgress(report.getProgressPercent(), report);
                                 }
                             }
                             if (remain != 0 && writeFlushSocket(Arrays.copyOfRange(body, uploadTempFileSize,
@@ -1109,7 +1111,11 @@ public class SpeedTestSocket {
                         }
                     } catch (SocketTimeoutException e) {
                         errorDispatched = true;
-                        dispatchSocketTimeout(false, SOCKET_WRITE_ERROR);
+                        if (!forceCloseSocket) {
+                            dispatchSocketTimeout(false, SOCKET_WRITE_ERROR);
+                        } else {
+                            dispatchError(false, e.getMessage());
+                        }
                         closeSocket();
                         executorService.shutdownNow();
                     } catch (IOException e) {
@@ -1151,8 +1157,9 @@ public class SpeedTestSocket {
                 return 0;
             }
         });
+        int status;
         try {
-            future.get(socketTimeout, TimeUnit.MILLISECONDS);
+            status = future.get(socketTimeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
             future.cancel(true);
             executor.shutdownNow();
@@ -1165,7 +1172,7 @@ public class SpeedTestSocket {
             return -1;
         }
         executor.shutdownNow();
-        return 0;
+        return status;
     }
 
     /**
