@@ -24,22 +24,17 @@
 
 package fr.bmartel.speedtest;
 
+import fr.bmartel.protocol.http.HttpFrame;
+import fr.bmartel.protocol.http.states.HttpStates;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.*;
-
-import fr.bmartel.protocol.http.HttpFrame;
-import fr.bmartel.protocol.http.states.HttpStates;
 
 /**
  * Client socket main implementation.
