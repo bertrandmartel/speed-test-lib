@@ -298,9 +298,9 @@
         </properties>
     </rule>
     -->
-    <rule ref="rulesets/java/codesize.xml/ExcessiveMethodLength">
+    <!--<rule ref="rulesets/java/codesize.xml/ExcessiveMethodLength">
         <priority>2</priority>
-    </rule>
+    </rule>-->
     <!--
     <rule ref="rulesets/java/codesize.xml/ExcessiveParameterList">
         <priority>2</priority>
