@@ -255,7 +255,7 @@ public class SpeedTestSocket {
     /**
      * number of packet pending for download repeat task.
      */
-    private BigDecimal repeatPacketSize;
+    private BigDecimal repeatPacketSize = BigDecimal.ZERO;
 
     /**
      * number of packet downloaded for download/upload repeat task.
@@ -277,7 +277,7 @@ public class SpeedTestSocket {
     /**
      * transfer rate list.
      */
-    private List<BigDecimal> repeatTransferRateList;
+    private List<BigDecimal> repeatTransferRateList = new ArrayList<>();
 
     /**
      * define if download repeat task is finished.
@@ -737,7 +737,7 @@ public class SpeedTestSocket {
                                     final int reportPeriodMillis,
                                     final IRepeatListener repeatListener) {
 
-        initDownloadRepeat();
+        initRepeat(true);
 
         final Timer timer = new Timer();
 
@@ -826,7 +826,7 @@ public class SpeedTestSocket {
                                   final int fileSizeOctet,
                                   final IRepeatListener repeatListener) {
 
-        initUploadRepeat();
+        initRepeat(false);
 
         final Timer timer = new Timer();
 
@@ -898,20 +898,13 @@ public class SpeedTestSocket {
     }
 
     /**
-     * intialize download repeat task variables for report + state.
+     * intialize download/upload repeat task variables for report + state.
      */
-    private void initDownloadRepeat() {
-        isRepeatDownload = true;
-        isFirstDownloadRepeat = true;
-        initRepeatVars();
-    }
-
-    /**
-     * intialize upload repeat task variables for report + state.
-     */
-    private void initUploadRepeat() {
-        isRepeatUpload = true;
-        isFirstUploadRepeat = true;
+    private void initRepeat(final boolean isDownload) {
+        isRepeatDownload = isDownload;
+        isFirstDownloadRepeat = isDownload;
+        isRepeatUpload = !isDownload;
+        isFirstUploadRepeat = !isDownload;
         initRepeatVars();
     }
 
