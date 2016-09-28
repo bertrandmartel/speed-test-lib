@@ -92,6 +92,11 @@ public class SpeedTestSocketTest {
     private final static String SPEED_TEST_SERVER_HOST = "2.testdebit.info";
 
     /**
+     * fake server host name.
+     */
+    private final static String SPEED_TEST_FAKE_HOST = "this.is.something.fake";
+
+    /**
      * spedd examples server uri.
      */
     private final static String SPEED_TEST_SERVER_URI_DL = "/fichiers/100Mo.dat";
@@ -1227,5 +1232,94 @@ public class SpeedTestSocketTest {
         initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
 
         testHttpFrameErrorHandler("checkHttpContentLengthError");
+    }
+
+    /**
+     * Test unknown host error for download.
+     */
+    @Test
+    public void unknownHostDownloadTest() {
+        unknownHostTest(true);
+    }
+
+    /**
+     * Test unknown host error for download.
+     */
+    @Test
+    public void unknownHostUploadTest() {
+        unknownHostTest(false);
+    }
+
+    /**
+     * Test unknown host for download/upload.
+     *
+     * @param isDownload define if download or upload is testing.
+     */
+    private void unknownHostTest(final boolean isDownload) {
+        socket = new SpeedTestSocket();
+
+        waiter = new Waiter();
+
+        socket.addSpeedTestListener(new ISpeedTestListener() {
+            @Override
+            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
+                                                  final BigDecimal transferRateOps) {
+            }
+
+            @Override
+            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+
+                if (isDownload) {
+                    if (speedTestError != SpeedTestError.CONNECTION_ERROR) {
+                        waiter.fail(DOWNLOAD_ERROR_STR + speedTestError);
+                    } else {
+                        waiter.resume();
+                    }
+                } else {
+                    waiter.fail(UPLOAD_ERROR_STR + " : shouldnt be in onDownloadError");
+                }
+            }
+
+            @Override
+            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
+                                                final BigDecimal transferRateOps) {
+            }
+
+            @Override
+            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
+
+                if (isDownload) {
+                    waiter.fail(UPLOAD_ERROR_STR + " : shouldnt be in onUploadError");
+                } else {
+                    if (speedTestError != SpeedTestError.CONNECTION_ERROR) {
+                        waiter.fail(DOWNLOAD_ERROR_STR + speedTestError);
+                    } else {
+                        waiter.resume();
+                    }
+                }
+            }
+
+            @Override
+            public void onUploadProgress(final float percent, final SpeedTestReport report) {
+            }
+        });
+
+        if (isDownload) {
+            socket.startDownload(SPEED_TEST_FAKE_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL_1MO);
+        } else {
+            socket.startUpload(SPEED_TEST_FAKE_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
+                    FILE_SIZE_MEDIUM);
+        }
+
+        try {
+            waiter.await(WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+        }
+
+        socket.forceStopTask();
     }
 }
