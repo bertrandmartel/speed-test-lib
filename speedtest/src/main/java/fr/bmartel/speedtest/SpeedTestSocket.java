@@ -435,9 +435,7 @@ public class SpeedTestSocket {
             timeEnd = System.currentTimeMillis();
             closeSocket();
             executorService.shutdownNow();
-        } catch (IOException e) {
-            catchError(true, e.getMessage());
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             catchError(true, e.getMessage());
         }
         errorDispatched = false;
@@ -599,17 +597,10 @@ public class SpeedTestSocket {
                 }
             }
             executorService.shutdownNow();
-        } catch (SocketException e) {
+
+        } catch (IOException | InterruptedException e) {
             if (!errorDispatched) {
                 catchError(false, e.getMessage());
-            }
-        } catch (IOException e) {
-            if (!errorDispatched) {
-                catchError(true, e.getMessage());
-            }
-        } catch (InterruptedException e) {
-            if (!errorDispatched) {
-                catchError(true, e.getMessage());
             }
         }
         errorDispatched = false;
@@ -1170,10 +1161,7 @@ public class SpeedTestSocket {
             future.cancel(true);
             executor.shutdownNow();
             return -1;
-        } catch (InterruptedException e) {
-            executor.shutdownNow();
-            return -1;
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             executor.shutdownNow();
             return -1;
         }
