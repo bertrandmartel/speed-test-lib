@@ -406,9 +406,7 @@ public class SpeedTestSocket {
             if (isRepeatDownload) {
                 repeatPacketSize = repeatPacketSize.add(downloadPckSize);
             }
-
             downloadReadingLoop();
-
             timeEnd = System.currentTimeMillis();
 
             final BigDecimal transferRateOps = downloadPckSize.divide(new BigDecimal(timeEnd -
@@ -417,7 +415,6 @@ public class SpeedTestSocket {
             final BigDecimal transferRateBps = transferRateOps.multiply(BIT_MULTIPLIER);
 
             closeSocket();
-
             for (int i = 0; i < listenerList.size(); i++) {
                 listenerList.get(i).onDownloadPacketsReceived(downloadPckSize.longValueExact(), transferRateBps,
                         transferRateOps);
@@ -466,10 +463,10 @@ public class SpeedTestSocket {
                 repeatTempPckSize += read;
             }
 
-            for (int i = 0; i < listenerList.size(); i++) {
+            final SpeedTestReport report = getLiveDownloadReport();
 
-                final SpeedTestReport report = getLiveDownloadReport();
-                listenerList.get(i).onDownloadProgress(report.getProgressPercent(), getLiveDownloadReport());
+            for (int i = 0; i < listenerList.size(); i++) {
+                listenerList.get(i).onDownloadProgress(report.getProgressPercent(), report);
             }
 
             if (downloadTemporaryPacketSize == downloadPckSize.longValueExact()) {
@@ -805,7 +802,6 @@ public class SpeedTestSocket {
                 }
             }
         }, reportPeriodMillis, reportPeriodMillis);
-
         startDownloadRepeat(hostname, port, uri);
     }
 
