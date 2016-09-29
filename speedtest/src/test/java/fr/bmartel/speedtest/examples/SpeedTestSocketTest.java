@@ -193,9 +193,9 @@ public class SpeedTestSocketTest {
     private final static int FILE_SIZE_LARGE = 100000000;
 
     /**
-     * speed test duration set to 2s.
+     * speed test duration set to 10s.
      */
-    private static final int SPEED_TEST_DURATION = 2000;
+    private static final int SPEED_TEST_DURATION = 10000;
 
     /**
      * amount of time between each speed test report set to 500ms.
@@ -206,6 +206,11 @@ public class SpeedTestSocketTest {
      * number of expected reports based on report interval & speed test duration.
      */
     private static final int EXPECTED_REPORT = SPEED_TEST_DURATION / REPORT_INTERVAL;
+
+    /**
+     * time to wait for thread in ms.
+     */
+    private static final int WAIT_THREAD_TIMEOUT = 250;
 
     /**
      * test socket timeout default value.
@@ -831,12 +836,15 @@ public class SpeedTestSocketTest {
             }
         });
 
+        final int threadCount = Thread.activeCount();
+
         socket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL_1MO);
 
         try {
             waiter.await(WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
         }
+        Assert.assertEquals(threadCount + 1, Thread.activeCount());
         try {
             waiter2.await(WAITING_TIMEOUT_LONG_OPERATION, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
@@ -900,6 +908,8 @@ public class SpeedTestSocketTest {
             }
         });
 
+        final int threadCount = Thread.activeCount();
+
         socket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
                 packetSizeExpected);
 
@@ -907,6 +917,7 @@ public class SpeedTestSocketTest {
             waiter.await(WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
         }
+        Assert.assertTrue(Thread.activeCount() == (threadCount + 2) || Thread.activeCount() == (threadCount + 3));
         try {
             waiter2.await(WAITING_TIMEOUT_LONG_OPERATION, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
@@ -1461,6 +1472,8 @@ public class SpeedTestSocketTest {
                 Assert.fail(e.getMessage());
             }
             */
+            listenerList.get(1).onUploadProgress(0, null);
+            listenerList.get(1).onUploadPacketsReceived(0, null, null);
         } else {
             socket.startUploadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
                     SPEED_TEST_DURATION, REPORT_INTERVAL, FILE_SIZE_REGULAR, new
@@ -1486,6 +1499,8 @@ public class SpeedTestSocketTest {
             } catch (IllegalAccessException e) {
                 Assert.fail(e.getMessage());
             }
+            listenerList.get(1).onDownloadProgress(0, null);
+            listenerList.get(1).onDownloadPacketsReceived(0, null, null);
         }
 
         Assert.assertEquals(listenerList.size(), 2);
@@ -1768,6 +1783,146 @@ public class SpeedTestSocketTest {
 
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             Assert.fail(e.getMessage());
+        }
+
+    }
+
+    @Test
+    public void repeatThreadCounterTest() {
+
+        int threadCount = Thread.activeCount();
+
+        socket = new SpeedTestSocket();
+
+        testClearRepeatThreadCount(true, threadCount);
+
+        threadCount = Thread.activeCount();
+
+        socket = new SpeedTestSocket();
+
+        testClearRepeatThreadCount(false, threadCount);
+    }
+
+    /**
+     * Test thread number count on clearRepeatTask.
+     *
+     * @param download
+     * @param initialThreadCount
+     */
+    private void testClearRepeatThreadCount(final boolean download, final int initialThreadCount) {
+
+        int threadOffset = 4;
+
+        if (download) {
+            threadOffset = 2;
+        }
+
+        final List<ISpeedTestListener> listenerList = new ArrayList<>();
+        setListenerList(listenerList);
+
+        Assert.assertEquals(listenerList.size(), 0);
+
+        startRepeatTask(download);
+
+        Assert.assertEquals(listenerList.size(), 1);
+
+        try {
+            Thread.sleep(WAIT_THREAD_TIMEOUT);
+        } catch (InterruptedException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertEquals(initialThreadCount + threadOffset, Thread.activeCount());
+        socket.forceStopTask();
+
+        try {
+            Thread.sleep(WAIT_THREAD_TIMEOUT);
+        } catch (InterruptedException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertEquals(initialThreadCount, Thread.activeCount());
+        Assert.assertEquals(listenerList.size(), 0);
+
+        startRepeatTask(download);
+
+        Assert.assertEquals(listenerList.size(), 1);
+
+        try {
+            Thread.sleep(WAIT_THREAD_TIMEOUT);
+        } catch (InterruptedException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertEquals(initialThreadCount + threadOffset, Thread.activeCount());
+
+        listenerList.get(0).onDownloadError(SpeedTestError.SOCKET_ERROR, "some error");
+
+        try {
+            Thread.sleep(WAIT_THREAD_TIMEOUT);
+        } catch (InterruptedException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertEquals(initialThreadCount, Thread.activeCount());
+        Assert.assertEquals(listenerList.size(), 0);
+
+        startRepeatTask(download);
+
+        Assert.assertEquals(listenerList.size(), 1);
+
+        try {
+            Thread.sleep(WAIT_THREAD_TIMEOUT);
+        } catch (InterruptedException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertEquals(initialThreadCount + threadOffset, Thread.activeCount());
+
+        listenerList.get(0).onUploadError(SpeedTestError.SOCKET_ERROR, "some error");
+
+        try {
+            Thread.sleep(WAIT_THREAD_TIMEOUT);
+        } catch (InterruptedException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertEquals(initialThreadCount, Thread.activeCount());
+        Assert.assertEquals(listenerList.size(), 0);
+
+    }
+
+    /**
+     * Start download or upload repeat task.
+     *
+     * @param download
+     */
+    private void startRepeatTask(final boolean download) {
+
+        if (download) {
+            socket.startDownloadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL_1MO,
+                    SPEED_TEST_DURATION, REPORT_INTERVAL, new
+                            IRepeatListener() {
+                                @Override
+                                public void onFinish(final SpeedTestReport report) {
+                                }
+
+                                @Override
+                                public void onReport(final SpeedTestReport report) {
+                                }
+                            });
+        } else {
+            socket.startUploadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
+                    SPEED_TEST_DURATION, REPORT_INTERVAL, FILE_SIZE_REGULAR, new
+                            IRepeatListener() {
+                                @Override
+                                public void onFinish(final SpeedTestReport report) {
+                                }
+
+                                @Override
+                                public void onReport(final SpeedTestReport report) {
+                                }
+                            });
         }
     }
 
