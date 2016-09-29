@@ -1706,13 +1706,12 @@ public class SpeedTestSocketTest {
      */
     private void testInitRepeat(final RepeatVars repeatVars, final boolean download) {
 
-        final Method method;
         try {
 
             Class[] cArg = new Class[1];
             cArg[0] = boolean.class;
 
-            method = socket.getClass().getDeclaredMethod("initRepeat", cArg);
+            final Method method = socket.getClass().getDeclaredMethod("initRepeat", cArg);
 
             method.setAccessible(true);
             Assert.assertNotNull(method);
