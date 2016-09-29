@@ -1307,7 +1307,8 @@ public class SpeedTestSocketTest {
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
 
                 if (download) {
-                    if (speedTestError != SpeedTestError.CONNECTION_ERROR) {
+                    if (speedTestError != SpeedTestError.CONNECTION_ERROR && speedTestError != SpeedTestError
+                            .FORCE_CLOSE_SOCKET) {
                         waiter.fail(DOWNLOAD_ERROR_STR + speedTestError);
                     } else {
                         waiter.resume();
@@ -1328,7 +1329,8 @@ public class SpeedTestSocketTest {
                 if (download) {
                     waiter.fail(UPLOAD_ERROR_STR + " : shouldnt be in onUploadError");
                 } else {
-                    if (speedTestError != SpeedTestError.CONNECTION_ERROR) {
+                    if (speedTestError != SpeedTestError.CONNECTION_ERROR && speedTestError != SpeedTestError
+                            .FORCE_CLOSE_SOCKET) {
                         waiter.fail(DOWNLOAD_ERROR_STR + speedTestError);
                     } else {
                         waiter.resume();
