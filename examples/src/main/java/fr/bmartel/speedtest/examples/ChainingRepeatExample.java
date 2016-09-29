@@ -147,6 +147,9 @@ public class ChainingRepeatExample {
         startDownload();
     }
 
+    /**
+     * Start downloading.
+     */
     private static void startDownload() {
 
         speedTestSocket.startDownloadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL,
@@ -175,6 +178,9 @@ public class ChainingRepeatExample {
                         });
     }
 
+    /**
+     * Start uploading.
+     */
     private static void startUpload() {
 
         speedTestSocket.startUploadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT,
