@@ -530,7 +530,7 @@ public class SpeedTestSocket {
      * @param httpFrame http frame state to check
      */
     private void checkHttpContentLengthError(final HttpFrame httpFrame) {
-        
+
         if (httpFrame.getContentLength() <= 0) {
 
             if (!forceCloseSocket) {
@@ -936,7 +936,7 @@ public class SpeedTestSocket {
         }
         repeatFinished = true;
         closeSocket();
-        executorService.shutdownNow();
+        shutdownAndWait();
     }
 
     /**
