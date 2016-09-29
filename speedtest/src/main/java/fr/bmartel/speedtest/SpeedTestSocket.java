@@ -813,6 +813,7 @@ public class SpeedTestSocket {
      * @param uri                uri to fetch to download file
      * @param repeatWindow       time window for the repeated upload in milliseconds
      * @param reportPeriodMillis time interval between each report in milliseconds
+     * @param fileSizeOctet      file size in octet
      * @param repeatListener     listener for upload repeat task completion & reports
      */
     public void startUploadRepeat(final String hostname,
@@ -895,7 +896,9 @@ public class SpeedTestSocket {
     }
 
     /**
-     * intialize download/upload repeat task variables for report + state.
+     * Initialize download/upload repeat task variables for report + state.
+     *
+     * @param isDownload define if initialization is for download or upload
      */
     private void initRepeat(final boolean isDownload) {
         isRepeatDownload = isDownload;
@@ -906,7 +909,7 @@ public class SpeedTestSocket {
     }
 
     /**
-     * intialize upload/download repeat task variables for report + state.
+     * Initialize upload/download repeat task variables for report + state.
      */
     private void initRepeatVars() {
         repeatRequestNum = 0;
