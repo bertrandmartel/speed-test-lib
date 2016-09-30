@@ -24,8 +24,6 @@
 
 package fr.bmartel.speedtest;
 
-import java.math.BigDecimal;
-
 /**
  * Listener for speed examples output results.
  * <p/>
@@ -44,17 +42,15 @@ public interface ISpeedTestListener {
     /**
      * monitor download process result with transfer rate in bit/s and octet/s.
      *
-     * @param packetSize      packet size retrieved from server
-     * @param transferRateBps transfer rate in bit/seconds
-     * @param transferRateOps transfer rate in octet/seconds
+     * @param report download speed test report
      */
-    void onDownloadPacketsReceived(long packetSize, BigDecimal transferRateBps, BigDecimal transferRateOps);
+    void onDownloadFinished(SpeedTestReport report);
 
     /**
      * monitor download progress.
      *
      * @param percent % of progress
-     * @param report  current speed examples download report
+     * @param report  current speed test download report
      */
     void onDownloadProgress(float percent, SpeedTestReport report);
 
@@ -69,11 +65,9 @@ public interface ISpeedTestListener {
     /**
      * monitor upload process result with transfer rate in bit/s and octet/s.
      *
-     * @param packetSize      packet size in octet
-     * @param transferRateBps transfer rate in bit/second
-     * @param transferRateOps transfer rate in octet/second
+     * @param report upload speed test report
      */
-    void onUploadPacketsReceived(long packetSize, BigDecimal transferRateBps, BigDecimal transferRateOps);
+    void onUploadFinished(SpeedTestReport report);
 
     /**
      * Error catch for upload process.
@@ -87,7 +81,7 @@ public interface ISpeedTestListener {
      * monitor upload progress.
      *
      * @param percent % of progress
-     * @param report  current speed examples upload report
+     * @param report  current speed test upload report
      */
     void onUploadProgress(float percent, SpeedTestReport report);
 
