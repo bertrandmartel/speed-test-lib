@@ -25,9 +25,6 @@
 package fr.bmartel.speedtest.examples;
 
 import fr.bmartel.speedtest.*;
-
-import java.math.BigDecimal;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -106,8 +103,7 @@ public class ChainingRepeatExample {
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds,
-                                                  final BigDecimal transferRateOctetPerSeconds) {
+            public void onDownloadFinished(final SpeedTestReport report) {
                 //called when download is finished
             }
 
@@ -120,8 +116,7 @@ public class ChainingRepeatExample {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds, final
-            BigDecimal transferRateOctetPerSeconds) {
+            public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
             }
 

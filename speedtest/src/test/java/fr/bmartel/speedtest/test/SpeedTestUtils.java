@@ -85,10 +85,11 @@ public class SpeedTestUtils {
         if (!isRepeat) {
             //percent is 100% for non repeat task. Repeat task are proportionnal to the window duration which can
             // contains multiple DL/UL results
-            waiter.assertTrue(report.getProgressPercent() ==
-                    100);
+            waiter.assertTrue(report.getProgressPercent() == 100);
+            //total size is the next step in repeat task
+            waiter.assertEquals(packetSize, packetSizeExpected);
         }
-        waiter.assertEquals(packetSize, packetSizeExpected);
+
         waiter.assertNotNull(transferRateBps);
         waiter.assertNotNull(transferRateOps);
         waiter.assertTrue(transferRateBps.intValue()

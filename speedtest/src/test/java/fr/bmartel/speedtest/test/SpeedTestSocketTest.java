@@ -30,7 +30,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -64,6 +63,11 @@ public class SpeedTestSocketTest {
      * Waiter for speed test listener callback error.
      */
     private static Waiter waiterError;
+
+    /**
+     * define if download running or upload.
+     */
+    private boolean isDownload;
 
     /**
      * test socket timeout default value.
@@ -163,8 +167,7 @@ public class SpeedTestSocketTest {
 
         socket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                  final BigDecimal transferRateOps) {
+            public void onDownloadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -178,8 +181,7 @@ public class SpeedTestSocketTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                final BigDecimal transferRateOps) {
+            public void onUploadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -227,8 +229,7 @@ public class SpeedTestSocketTest {
 
         final ISpeedTestListener listener = new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                  final BigDecimal transferRateOps) {
+            public void onDownloadFinished(final SpeedTestReport report) {
 
             }
 
@@ -243,8 +244,7 @@ public class SpeedTestSocketTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                final BigDecimal transferRateOps) {
+            public void onUploadFinished(final SpeedTestReport report) {
 
             }
 
@@ -279,8 +279,7 @@ public class SpeedTestSocketTest {
 
         socket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                  final BigDecimal transferRateOps) {
+            public void onDownloadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -299,8 +298,7 @@ public class SpeedTestSocketTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                final BigDecimal transferRateOps) {
+            public void onUploadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -437,8 +435,7 @@ public class SpeedTestSocketTest {
 
         socket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                  final BigDecimal transferRateOps) {
+            public void onDownloadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -455,8 +452,7 @@ public class SpeedTestSocketTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                final BigDecimal transferRateOps) {
+            public void onUploadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -498,8 +494,7 @@ public class SpeedTestSocketTest {
 
         socket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                  final BigDecimal transferRateOps) {
+            public void onDownloadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -514,8 +509,7 @@ public class SpeedTestSocketTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                final BigDecimal transferRateOps) {
+            public void onUploadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -562,10 +556,10 @@ public class SpeedTestSocketTest {
 
         socket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                  final BigDecimal transferRateOps) {
-                SpeedTestUtils.checkSpeedTestResult(socket, waiter2, packetSize, packetSizeExpected, transferRateBps,
-                        transferRateOps, true,
+            public void onDownloadFinished(final SpeedTestReport report) {
+                SpeedTestUtils.checkSpeedTestResult(socket, waiter2, report.getTotalPacketSize(), packetSizeExpected,
+                        report.getTransferRateBit(),
+                        report.getTransferRateOctet(), true,
                         false);
                 waiter2.resume();
             }
@@ -586,10 +580,9 @@ public class SpeedTestSocketTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                final BigDecimal transferRateOps) {
-                waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadPacketsReceived");
-                waiter2.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadPacketsReceived");
+            public void onUploadFinished(final SpeedTestReport report) {
+                waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadFinished");
+                waiter2.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadFinished");
             }
 
             @Override
@@ -632,10 +625,9 @@ public class SpeedTestSocketTest {
 
         socket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                  final BigDecimal transferRateOps) {
-                waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onDownloadPacketsReceived");
-                waiter2.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onDownloadPacketsReceived");
+            public void onDownloadFinished(final SpeedTestReport report) {
+                waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onDownloadFinished");
+                waiter2.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onDownloadFinished");
 
             }
 
@@ -652,10 +644,10 @@ public class SpeedTestSocketTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                final BigDecimal transferRateOps) {
-                SpeedTestUtils.checkSpeedTestResult(socket, waiter2, packetSize, packetSizeExpected, transferRateBps,
-                        transferRateOps,
+            public void onUploadFinished(final SpeedTestReport report) {
+                SpeedTestUtils.checkSpeedTestResult(socket, waiter2, report.getTotalPacketSize(), packetSizeExpected,
+                        report.getTransferRateBit(),
+                        report.getTransferRateOctet(),
                         false, false);
                 waiter2.resume();
             }
@@ -688,5 +680,67 @@ public class SpeedTestSocketTest {
         waiter2.await(TestCommon.WAITING_TIMEOUT_LONG_OPERATION, TimeUnit.SECONDS);
 
         socket.forceStopTask();
+    }
+
+    @Test
+    public void fixDurationTest() throws TimeoutException {
+
+        socket = new SpeedTestSocket();
+
+        final int packetSizeExpected = TestCommon.FILE_SIZE_LARGE;
+
+        final int duration = 2000;
+
+        socket.addSpeedTestListener(new ISpeedTestListener() {
+            @Override
+            public void onDownloadFinished(final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+
+            }
+
+            @Override
+            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (isDownload && speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    waiter.resume();
+                } else {
+                    waiter.fail("unexpected error in onDownloadError : " + speedTestError);
+                }
+            }
+
+            @Override
+            public void onUploadFinished(final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (!isDownload && speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    waiter.resume();
+                } else {
+                    waiter.fail("unexpected error in onUploadError : " + speedTestError);
+                }
+            }
+
+            @Override
+            public void onUploadProgress(final float percent, final SpeedTestReport report) {
+            }
+        });
+
+        waiter = new Waiter();
+        isDownload = false;
+        socket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
+                TestCommon.SPEED_TEST_SERVER_URI_UL,
+                packetSizeExpected, duration);
+
+        waiter.await(duration, TimeUnit.MILLISECONDS);
+
+        waiter = new Waiter();
+        isDownload = true;
+        socket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
+                TestCommon.SPEED_TEST_SERVER_URI_DL, duration);
+
+        waiter.await(duration, TimeUnit.MILLISECONDS);
     }
 }

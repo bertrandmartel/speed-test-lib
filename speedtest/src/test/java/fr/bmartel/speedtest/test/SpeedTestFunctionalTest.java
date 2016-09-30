@@ -150,10 +150,9 @@ public class SpeedTestFunctionalTest {
 
         socket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                  final BigDecimal transferRateOps) {
-                expectedTransferRateOps = transferRateOps;
-                expectedTransferRateBps = transferRateBps;
+            public void onDownloadFinished(final SpeedTestReport report) {
+                expectedTransferRateOps = report.getTransferRateOctet();
+                expectedTransferRateBps = report.getTransferRateBit();
                 waiter.resume();
             }
 
@@ -170,8 +169,7 @@ public class SpeedTestFunctionalTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                final BigDecimal transferRateOps) {
+            public void onUploadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -205,8 +203,7 @@ public class SpeedTestFunctionalTest {
 
         socket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                  final BigDecimal transferRateOps) {
+            public void onDownloadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -220,10 +217,9 @@ public class SpeedTestFunctionalTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                final BigDecimal transferRateOps) {
-                expectedTransferRateOps = transferRateOps;
-                expectedTransferRateBps = transferRateBps;
+            public void onUploadFinished(final SpeedTestReport report) {
+                expectedTransferRateOps = report.getTransferRateOctet();
+                expectedTransferRateBps = report.getTransferRateBit();
                 waiter.resume();
             }
 
@@ -259,8 +255,7 @@ public class SpeedTestFunctionalTest {
 
         socket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                  final BigDecimal transferRateOps) {
+            public void onDownloadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -281,8 +276,7 @@ public class SpeedTestFunctionalTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                final BigDecimal transferRateOps) {
+            public void onUploadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -378,10 +372,9 @@ public class SpeedTestFunctionalTest {
 
         socket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                  final BigDecimal transferRateOps) {
-                SpeedTestFunctionalTest.this.transfeRateOctetRef = transferRateOps;
-                SpeedTestFunctionalTest.this.transferRateBpsRef = transferRateBps;
+            public void onDownloadFinished(final SpeedTestReport report) {
+                SpeedTestFunctionalTest.this.transfeRateOctetRef = report.getTransferRateOctet();
+                SpeedTestFunctionalTest.this.transferRateBpsRef = report.getTransferRateBit();
                 waiter.resume();
             }
 
@@ -398,8 +391,7 @@ public class SpeedTestFunctionalTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                final BigDecimal transferRateOps) {
+            public void onUploadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -436,10 +428,10 @@ public class SpeedTestFunctionalTest {
 
         socket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                  final BigDecimal transferRateOps) {
+            public void onDownloadFinished(final SpeedTestReport report) {
 
-                checkResult(waiter, totalPacketSize, packetSize, transferRateBps, transferRateOps, true, true);
+                checkResult(waiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
+                        report.getTransferRateOctet(), true, true);
                 waiter.resume();
 
                 socket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
@@ -459,9 +451,9 @@ public class SpeedTestFunctionalTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                final BigDecimal transferRateOps) {
-                checkResult(waiter, totalPacketSize, packetSize, transferRateBps, transferRateOps, false, true);
+            public void onUploadFinished(final SpeedTestReport report) {
+                checkResult(waiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
+                        report.getTransferRateOctet(), false, true);
                 waiter.resume();
             }
 
@@ -535,11 +527,10 @@ public class SpeedTestFunctionalTest {
         socket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds,
-                                                  final BigDecimal transferRateOctetPerSeconds) {
+            public void onDownloadFinished(final SpeedTestReport report) {
                 //called when download is finished
-                checkResult(waiter, totalPacketSize, packetSize, transferRateBitPerSeconds,
-                        transferRateOctetPerSeconds, true, true);
+                checkResult(waiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
+                        report.getTransferRateOctet(), true, true);
             }
 
             @Override
@@ -551,11 +542,10 @@ public class SpeedTestFunctionalTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds, final
-            BigDecimal transferRateOctetPerSeconds) {
+            public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-                checkResult(waiter, totalPacketSize, packetSize, transferRateBitPerSeconds,
-                        transferRateOctetPerSeconds, false, true);
+                checkResult(waiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
+                        report.getTransferRateOctet(), false, true);
             }
 
             @Override
