@@ -3,6 +3,6 @@
  * <p/>
  *
  * @author Bertrand Martel
- * @version 1.1
+ * @version 1.2
  */
-package fr.bmartel.speedtest.examples;
+package fr.bmartel.speedtest.test;

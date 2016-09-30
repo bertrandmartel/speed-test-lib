@@ -1,4 +1,4 @@
-package fr.bmartel.speedtest.examples.server;
+package fr.bmartel.speedtest.test.server;
 
 import fr.bmartel.protocol.http.inter.IHttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;

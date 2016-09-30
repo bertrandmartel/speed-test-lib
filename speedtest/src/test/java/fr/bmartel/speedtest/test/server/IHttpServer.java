@@ -1,4 +1,4 @@
-package fr.bmartel.speedtest.examples.server;
+package fr.bmartel.speedtest.test.server;
 
 /**
  * Template for http server interface featuring close and events.
