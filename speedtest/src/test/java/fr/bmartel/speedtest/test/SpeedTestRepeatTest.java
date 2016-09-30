@@ -30,7 +30,6 @@ import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -99,15 +98,14 @@ public class SpeedTestRepeatTest {
 
         socket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                  final BigDecimal transferRateOps) {
+            public void onDownloadFinished(final SpeedTestReport report) {
 
                 if (!download) {
-                    waiterError.fail("shouldnt be in onUploadPacketsReceived");
+                    waiterError.fail("shouldnt be in onUploadFinished");
                 } else {
-                    SpeedTestUtils.checkSpeedTestResult(socket, waiterError, packetSize, TestCommon
-                                    .FILE_SIZE_REGULAR, transferRateBps,
-                            transferRateOps,
+                    SpeedTestUtils.checkSpeedTestResult(socket, waiterError, report.getTemporaryPacketSize(),
+                            TestCommon.FILE_SIZE_REGULAR, report.getTransferRateBit(),
+                            report.getTransferRateOctet(),
                             true, true);
                 }
             }
@@ -134,14 +132,14 @@ public class SpeedTestRepeatTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                final BigDecimal transferRateOps) {
+            public void onUploadFinished(final SpeedTestReport report) {
                 if (download) {
-                    waiterError.fail("shouldnt be in onUploadPacketsReceived");
+                    waiterError.fail("shouldnt be in onUploadFinished");
                 } else {
-                    SpeedTestUtils.checkSpeedTestResult(socket, waiterError, packetSize, TestCommon.FILE_SIZE_REGULAR,
-                            transferRateBps,
-                            transferRateOps,
+                    SpeedTestUtils.checkSpeedTestResult(socket, waiterError, report.getTemporaryPacketSize(),
+                            TestCommon.FILE_SIZE_REGULAR,
+                            report.getTransferRateBit(),
+                            report.getTransferRateOctet(),
                             false, true);
                 }
             }
@@ -205,7 +203,7 @@ public class SpeedTestRepeatTest {
             }
             */
             listenerList.get(1).onUploadProgress(0, null);
-            listenerList.get(1).onUploadPacketsReceived(0, null, null);
+            listenerList.get(1).onUploadFinished(null);
         } else {
             socket.startUploadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                             .SPEED_TEST_SERVER_URI_UL,
@@ -237,7 +235,7 @@ public class SpeedTestRepeatTest {
                             });
             Assert.assertEquals(repeatVars.isFirstUploadRepeat(), true);
             listenerList.get(1).onDownloadProgress(0, null);
-            listenerList.get(1).onDownloadPacketsReceived(0, null, null);
+            listenerList.get(1).onDownloadFinished(null);
         }
 
         Assert.assertEquals(listenerList.size(), 2);
@@ -397,8 +395,7 @@ public class SpeedTestRepeatTest {
 
         final ISpeedTestListener listener = new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                  final BigDecimal transferRateOps) {
+            public void onDownloadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -410,8 +407,7 @@ public class SpeedTestRepeatTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                final BigDecimal transferRateOps) {
+            public void onUploadFinished(final SpeedTestReport report) {
             }
 
             @Override

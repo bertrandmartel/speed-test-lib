@@ -24,14 +24,7 @@
 
 package fr.bmartel.speedtest.examples;
 
-import fr.bmartel.speedtest.ISpeedTestListener;
-import fr.bmartel.speedtest.SpeedTestError;
-import fr.bmartel.speedtest.SpeedTestMode;
-import fr.bmartel.speedtest.SpeedTestReport;
-import fr.bmartel.speedtest.SpeedTestSocket;
-
-import java.math.BigDecimal;
-
+import fr.bmartel.speedtest.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -89,11 +82,11 @@ public class UploadFileExample {
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds,
-                                                  final BigDecimal transferRateOctetPerSeconds) {
+            public void onDownloadFinished(final SpeedTestReport report) {
 
-                LogUtils.logFinishedTask(SpeedTestMode.DOWNLOAD, packetSize, transferRateBitPerSeconds,
-                        transferRateOctetPerSeconds, LOGGER);
+                LogUtils.logFinishedTask(SpeedTestMode.DOWNLOAD, report.getTotalPacketSize(),
+                        report.getTransferRateBit(),
+                        report.getTransferRateOctet(), LOGGER);
 
             }
 
@@ -105,11 +98,11 @@ public class UploadFileExample {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds,
-                                                final BigDecimal transferRateOctetPerSeconds) {
+            public void onUploadFinished(final SpeedTestReport report) {
 
-                LogUtils.logFinishedTask(SpeedTestMode.UPLOAD, packetSize, transferRateBitPerSeconds,
-                        transferRateOctetPerSeconds, LOGGER);
+                LogUtils.logFinishedTask(SpeedTestMode.UPLOAD, report.getTotalPacketSize(),
+                        report.getTransferRateBit(),
+                        report.getTransferRateOctet(), LOGGER);
 
             }
 

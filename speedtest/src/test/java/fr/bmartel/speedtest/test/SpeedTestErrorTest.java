@@ -36,7 +36,6 @@ import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -107,8 +106,7 @@ public class SpeedTestErrorTest {
 
         socket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                  final BigDecimal transferRateOps) {
+            public void onDownloadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -133,8 +131,7 @@ public class SpeedTestErrorTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                final BigDecimal transferRateOps) {
+            public void onUploadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -376,8 +373,7 @@ public class SpeedTestErrorTest {
 
         socket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                  final BigDecimal transferRateOps) {
+            public void onDownloadFinished(final SpeedTestReport report) {
             }
 
             @Override
@@ -400,8 +396,7 @@ public class SpeedTestErrorTest {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBps,
-                                                final BigDecimal transferRateOps) {
+            public void onUploadFinished(final SpeedTestReport report) {
             }
 
             @Override
