@@ -1,4 +1,4 @@
-package fr.bmartel.speedtest.examples.server;
+package fr.bmartel.speedtest.test.server;
 
 /**
  * The MIT License (MIT)

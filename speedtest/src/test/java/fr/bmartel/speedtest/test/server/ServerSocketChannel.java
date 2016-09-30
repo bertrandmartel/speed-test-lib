@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package fr.bmartel.speedtest.examples.server;
+package fr.bmartel.speedtest.test.server;
 
 
 import fr.bmartel.protocol.http.HttpFrame;
