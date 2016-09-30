@@ -1206,8 +1206,12 @@ public class SpeedTestSocket {
             currentTime = timeEnd;
         }
 
-        final BigDecimal transferRateOps = temporaryPacketSize.divide(new BigDecimal(currentTime - timeStart)
-                .divide(MILLIS_DIVIDER, scale, roundingMode), scale, roundingMode);
+        BigDecimal transferRateOps = BigDecimal.ZERO;
+
+        if ((currentTime - timeStart) != 0) {
+            transferRateOps = temporaryPacketSize.divide(new BigDecimal(currentTime - timeStart)
+                    .divide(MILLIS_DIVIDER, scale, roundingMode), scale, roundingMode);
+        }
 
         final BigDecimal transferRateBitps = transferRateOps.multiply(BIT_MULTIPLIER);
 
