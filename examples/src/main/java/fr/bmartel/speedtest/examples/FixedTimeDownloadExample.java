@@ -28,13 +28,11 @@ import fr.bmartel.speedtest.ISpeedTestListener;
 import fr.bmartel.speedtest.SpeedTestError;
 import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.SpeedTestSocket;
-
-import java.math.BigDecimal;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Begin to download a file from server & stop downloading when test duration is elapsed.
@@ -87,8 +85,7 @@ public class FixedTimeDownloadExample {
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds,
-                                                  final BigDecimal transferRateOctetPerSeconds) {
+            public void onDownloadFinished(final SpeedTestReport report) {
                 //called when download is finished
             }
 
@@ -105,8 +102,7 @@ public class FixedTimeDownloadExample {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds,
-                                                final BigDecimal transferRateOctetPerSeconds) {
+            public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
             }
 
