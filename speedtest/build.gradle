@@ -24,8 +24,8 @@ dependencies {
     compile 'akinaru:http-endec:1.02'
 }
 
-def siteUrl = 'https://github.com/akinaru/speed-examples-lib'
-def gitUrl = 'https://github.com/akinaru/speed-examples-lib.git'
+def siteUrl = 'https://github.com/akinaru/speed-test-lib'
+def gitUrl = 'https://github.com/akinaru/speed-test-lib.git'
 
 bintray {
     user = "$System.env.BINTRAY_USER"
@@ -41,10 +41,10 @@ bintray {
         name = 'speedtest'
         desc = 'Speed Test library for Java/Android'
         websiteUrl = siteUrl
-        issueTrackerUrl = 'https://github.com/akinaru/speed-examples-lib/issues'
+        issueTrackerUrl = 'https://github.com/akinaru/speed-test-lib/issues'
         vcsUrl = gitUrl
         licenses = ['MIT']
-        labels = ['speed-examples', 'speedtest']
+        labels = ['speed-test', 'speedtest']
         publicDownloadNumbers = true
 
         version {
@@ -79,7 +79,7 @@ install {
                 licenses {
                     license {
                         name 'The MIT License'
-                        url 'https://github.com/akinaru/speed-examples-lib/blob/master/LICENSE.md'
+                        url 'https://github.com/akinaru/speed-test-lib/blob/master/LICENSE.md'
                     }
                 }
                 developers {
@@ -90,8 +90,8 @@ install {
                     }
                 }
                 scm {
-                    connection 'https://github.com/akinaru/speed-examples-lib.git'
-                    developerConnection 'https://github.com/akinaru/speed-examples-lib.git'
+                    connection 'https://github.com/akinaru/speed-test-lib.git'
+                    developerConnection 'https://github.com/akinaru/speed-test-lib.git'
                     url siteUrl
                 }
             }
