@@ -517,9 +517,18 @@ All following examples use speed test server `1.testdebit.info`
 
 JRE 1.7 compliant
 
-## Build
+## Build & test
 
-Gradle using IntelliJ IDEA or Eclipse
+```
+./gradlew clean build -x test
+```
+
+## Run specific test
+
+for example :
+```
+./gradlew test --tests "fr.bmartel.speedtest.examples.SpeedTestFunctionalTest"
+```
 
 ## External libraries
 

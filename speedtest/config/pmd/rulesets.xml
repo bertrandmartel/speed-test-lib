@@ -50,7 +50,7 @@
     </rule>
     <rule ref="rulesets/java/basic.xml/BigIntegerInstantiation"/>
     <rule ref="rulesets/java/basic.xml/AvoidUsingOctalValues"/>
-    <rule ref="rulesets/java/basic.xml/AvoidUsingHardCodedIP"/>
+    <!--<rule ref="rulesets/java/basic.xml/AvoidUsingHardCodedIP"/>-->
     <rule ref="rulesets/java/basic.xml/CheckResultSet"/>
     <rule ref="rulesets/java/basic.xml/AvoidMultipleUnaryOperators"/>
     <rule ref="rulesets/java/basic.xml/ExtendsObject"/>
@@ -67,12 +67,12 @@
     <rule ref="rulesets/java/design.xml/SwitchStmtsShouldHaveDefault"/>
     <rule ref="rulesets/java/design.xml/AvoidDeeplyNestedIfStmts"/>
     <rule ref="rulesets/java/design.xml/AvoidReassigningParameters"/>
-    <rule ref="rulesets/java/design.xml/SwitchDensity">
+    <!--<rule ref="rulesets/java/design.xml/SwitchDensity">
         <priority>2</priority>
         <properties>
             <property name="minimum" value="5"/>
         </properties>
-    </rule>
+    </rule>-->
     <rule ref="rulesets/java/design.xml/ConstructorCallsOverridableMethod"/>
     <rule ref="rulesets/java/design.xml/AccessorClassGeneration"/>
     <rule ref="rulesets/java/design.xml/FinalFieldCouldBeStatic">

@@ -26,15 +26,14 @@ package fr.bmartel.speedtest.examples;
 
 import fr.bmartel.speedtest.SpeedTestMode;
 import fr.bmartel.speedtest.SpeedTestReport;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 /**
- * Speed examples report object examples.
+ * Speed Test report testing.
  *
  * @author Bertrand Martel
  */
