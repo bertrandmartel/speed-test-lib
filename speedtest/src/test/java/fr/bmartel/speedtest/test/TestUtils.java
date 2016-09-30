@@ -22,40 +22,22 @@
  * THE SOFTWARE.
  */
 
-package fr.bmartel.speedtest.examples;
-
-import fr.bmartel.speedtest.RandomGen;
-import org.junit.Assert;
-import org.junit.Test;
+package fr.bmartel.speedtest.test;
 
 /**
- * Random file generator examples.
+ * Test utils class for unit examples.
  *
  * @author Bertrand Martel
  */
-public class RandomGenTest {
+public class TestUtils {
 
     /**
-     * unit examples message header.
+     * generate a header for unit examples message.
+     *
+     * @param className class name to print
+     * @return message prefix
      */
-    private static final String HEADER = TestUtils.generateMessageHeader(RandomGenTest.class);
-
-    /**
-     * file size tested.
-     */
-    private final int[] SIZES = new int[]{1, 10, 10000, 10000000};
-
-    /**
-     * test generated file for upload.
-     */
-    @Test
-    public void randomGenTest() {
-
-        for (int i = 0; i < SIZES.length; i++) {
-            final RandomGen random = new RandomGen(SIZES[i]);
-            final int length = random.nextArray().length;
-            Assert.assertEquals(HEADER + "random generated array are not equals", length, SIZES[i]);
-        }
-
+    public static String generateMessageHeader(final Class className) {
+        return "[" + className.getSimpleName() + "] ";
     }
 }

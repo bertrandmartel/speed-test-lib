@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package fr.bmartel.speedtest.examples;
+package fr.bmartel.speedtest.test;
 
 import fr.bmartel.speedtest.*;
 import net.jodah.concurrentunit.Waiter;

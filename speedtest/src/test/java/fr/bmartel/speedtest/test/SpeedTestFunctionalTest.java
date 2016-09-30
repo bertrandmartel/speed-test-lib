@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package fr.bmartel.speedtest.examples;
+package fr.bmartel.speedtest.test;
 
 import fr.bmartel.protocol.http.HttpResponseFrame;
 import fr.bmartel.protocol.http.HttpVersion;
@@ -29,9 +29,9 @@ import fr.bmartel.protocol.http.constants.StatusCodeList;
 import fr.bmartel.protocol.http.inter.IHttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;
 import fr.bmartel.speedtest.*;
-import fr.bmartel.speedtest.examples.server.HttpServer;
-import fr.bmartel.speedtest.examples.server.IHttpServerEventListener;
-import fr.bmartel.speedtest.examples.server.IHttpStream;
+import fr.bmartel.speedtest.test.server.HttpServer;
+import fr.bmartel.speedtest.test.server.IHttpServerEventListener;
+import fr.bmartel.speedtest.test.server.IHttpStream;
 import net.jodah.concurrentunit.Waiter;
 import org.junit.Assert;
 import org.junit.Test;
