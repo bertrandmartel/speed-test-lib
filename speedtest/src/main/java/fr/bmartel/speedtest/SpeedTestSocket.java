@@ -169,9 +169,19 @@ public class SpeedTestSocket {
     private static final int THREAD_POOL_SIZE = 1;
 
     /**
+     * maximum size for report thread pool.
+     */
+    private static final int THREAD_POOL_REPORT_SIZE = 2;
+
+    /**
      * executor service.
      */
     private ScheduledExecutorService executorService;
+
+    /**
+     * executor service used for reporting.
+     */
+    private ScheduledExecutorService reportExecutorService;
 
     /**
      * force clause related error message.
@@ -320,6 +330,7 @@ public class SpeedTestSocket {
      */
     private void initThreadPool() {
         executorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE);
+        reportExecutorService = Executors.newScheduledThreadPool(THREAD_POOL_REPORT_SIZE);
     }
 
     /**
@@ -409,19 +420,18 @@ public class SpeedTestSocket {
             downloadReadingLoop();
             timeEnd = System.currentTimeMillis();
 
-            final BigDecimal transferRateOps = downloadPckSize.divide(new BigDecimal(timeEnd -
-                    timeStart).divide(MILLIS_DIVIDER), scale, roundingMode);
-
-            final BigDecimal transferRateBps = transferRateOps.multiply(BIT_MULTIPLIER);
-
             closeSocket();
+
+            final SpeedTestReport report = getLiveDownloadReport();
+
             for (int i = 0; i < listenerList.size(); i++) {
-                listenerList.get(i).onDownloadPacketsReceived(downloadPckSize.longValueExact(), transferRateBps,
-                        transferRateOps);
+                listenerList.get(i).onDownloadFinished(report);
             }
+
             if (!isRepeatDownload) {
                 executorService.shutdownNow();
             }
+            
         } catch (SocketTimeoutException e) {
             dispatchSocketTimeout(true, e.getMessage());
             timeEnd = System.currentTimeMillis();
@@ -560,19 +570,14 @@ public class SpeedTestSocket {
 
                     timeEnd = System.currentTimeMillis();
 
-                    final BigDecimal transferRateOps = uploadFileSize.divide(new BigDecimal(timeEnd -
-                                    timeStart).divide(MILLIS_DIVIDER, scale, roundingMode),
-                            scale,
-                            roundingMode);
-
-                    final BigDecimal transferRateBps = transferRateOps.multiply(BIT_MULTIPLIER);
-
                     closeSocket();
 
+                    final SpeedTestReport report = getLiveUploadReport();
+
                     for (int i = 0; i < listenerList.size(); i++) {
-                        listenerList.get(i).onUploadPacketsReceived(uploadFileSize.longValueExact(), transferRateBps,
-                                transferRateOps);
+                        listenerList.get(i).onUploadFinished(report);
                     }
+
                 } else {
                     closeSocket();
                 }
@@ -682,6 +687,26 @@ public class SpeedTestSocket {
     }
 
     /**
+     * Start download process with a fixed duration.
+     *
+     * @param hostname    server hostname
+     * @param port        server port
+     * @param uri         uri to fetch to download file
+     * @param maxDuration maximum duration of the speed test in milliseconds
+     */
+    public void startDownload(final String hostname, final int port, final String uri, final int maxDuration) {
+
+        reportExecutorService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                forceStopTask();
+            }
+        }, maxDuration, TimeUnit.MILLISECONDS);
+
+        startDownload(hostname, port, uri);
+    }
+
+    /**
      * Start download process.
      *
      * @param hostname server hostname
@@ -741,10 +766,8 @@ public class SpeedTestSocket {
 
         final ISpeedTestListener speedTestListener = new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds,
-                                                  final
-                                                  BigDecimal transferRateOctetPerSeconds) {
-                repeatTransferRateList.add(transferRateOctetPerSeconds);
+            public void onDownloadFinished(final SpeedTestReport report) {
+                repeatTransferRateList.add(report.getTransferRateOctet());
                 startDownloadRepeat(hostname, port, uri);
                 repeatRequestNum++;
             }
@@ -760,8 +783,7 @@ public class SpeedTestSocket {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds, final
-            BigDecimal transferRateOctetPerSeconds) {
+            public void onUploadFinished(final SpeedTestReport report) {
                 //nothing to do here for download repeat task listener
             }
 
@@ -830,9 +852,7 @@ public class SpeedTestSocket {
 
         final ISpeedTestListener speedTestListener = new ISpeedTestListener() {
             @Override
-            public void onDownloadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds,
-                                                  final
-                                                  BigDecimal transferRateOctetPerSeconds) {
+            public void onDownloadFinished(final SpeedTestReport report) {
                 //nothing to do here for upload repeat task listener
             }
 
@@ -847,9 +867,8 @@ public class SpeedTestSocket {
             }
 
             @Override
-            public void onUploadPacketsReceived(final long packetSize, final BigDecimal transferRateBitPerSeconds, final
-            BigDecimal transferRateOctetPerSeconds) {
-                repeatTransferRateList.add(transferRateOctetPerSeconds);
+            public void onUploadFinished(final SpeedTestReport report) {
+                repeatTransferRateList.add(report.getTransferRateOctet());
                 startUploadRepeat(hostname, port, uri, fileSizeOctet);
                 repeatRequestNum++;
             }
@@ -983,6 +1002,31 @@ public class SpeedTestSocket {
                 }
             }
         }, true);
+    }
+
+    /**
+     * Start upload process.
+     *
+     * @param hostname      server hostname
+     * @param port          server port
+     * @param uri           uri to fetch
+     * @param fileSizeOctet size of file to upload
+     * @param maxDuration   maxumum duration of speed test in milliseconds
+     */
+    public void startUpload(final String hostname,
+                            final int port,
+                            final String uri,
+                            final int fileSizeOctet,
+                            final int maxDuration) {
+
+        reportExecutorService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                forceStopTask();
+            }
+        }, maxDuration, TimeUnit.MILLISECONDS);
+
+        startUpload(hostname, port, uri, fileSizeOctet);
     }
 
     /**
