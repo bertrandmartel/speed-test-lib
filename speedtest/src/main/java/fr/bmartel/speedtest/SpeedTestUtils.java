@@ -59,16 +59,8 @@ public class SpeedTestUtils {
                 }
             }
         } else {
-            if (isDownload) {
-                for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.FORCE_CLOSE_SOCKET, errorMessage +
-                            SpeedTestConst.FORCE_CLOSE_CAUSE_MESSAGE);
-                }
-            } else {
-                for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onUploadError(SpeedTestError.FORCE_CLOSE_SOCKET, errorMessage +
-                            SpeedTestConst.FORCE_CLOSE_CAUSE_MESSAGE);
-                }
+            for (int i = 0; i < listenerList.size(); i++) {
+                listenerList.get(i).onInterruption();
             }
         }
     }
@@ -121,9 +113,7 @@ public class SpeedTestUtils {
                 }
             } else {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.FORCE_CLOSE_SOCKET,
-                            SpeedTestConst.PARSING_HTTP_ERROR +
-                                    "frame" + SpeedTestConst.FORCE_CLOSE_CAUSE_MESSAGE);
+                    listenerList.get(i).onInterruption();
                 }
             }
         }
@@ -150,9 +140,7 @@ public class SpeedTestUtils {
                 }
             } else {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.FORCE_CLOSE_SOCKET,
-                            SpeedTestConst.PARSING_HTTP_ERROR +
-                                    "headers" + SpeedTestConst.FORCE_CLOSE_CAUSE_MESSAGE);
+                    listenerList.get(i).onInterruption();
                 }
             }
         }
@@ -178,8 +166,7 @@ public class SpeedTestUtils {
                 }
             } else {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.FORCE_CLOSE_SOCKET, "Error content length is " +
-                            "inconsistent" + SpeedTestConst.FORCE_CLOSE_CAUSE_MESSAGE);
+                    listenerList.get(i).onInterruption();
                 }
             }
         }

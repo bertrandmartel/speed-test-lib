@@ -46,10 +46,6 @@ public enum SpeedTestError {
     /**
      * connection error occured.
      */
-    CONNECTION_ERROR,
-    /**
-     * error due to call to force close method.
-     */
-    FORCE_CLOSE_SOCKET
+    CONNECTION_ERROR
 
 }

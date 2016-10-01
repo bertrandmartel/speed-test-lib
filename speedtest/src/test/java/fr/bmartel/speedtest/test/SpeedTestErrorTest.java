@@ -58,11 +58,6 @@ public class SpeedTestErrorTest {
     private static String errorMessage = "this is an error message";
 
     /**
-     * error suffix message for force close.
-     */
-    private static String errorMessageSuffix = " caused by socket force close";
-
-    /**
      * download/upload mode for testing error callback.
      */
     private static boolean mDownload = true;
@@ -123,13 +118,8 @@ public class SpeedTestErrorTest {
                         mWaiter.assertEquals(errorMessage, SpeedTestErrorTest.this.errorMessage);
                     }
                     mWaiter.resume();
-                } else if (mForceStop && mDownload && speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    if (mNoCheckMessage) {
-                        mWaiter.assertEquals(errorMessage, SpeedTestErrorTest.this.errorMessage + errorMessageSuffix);
-                    }
-                    mWaiter.resume();
                 } else {
-                    mWaiter.fail("error connection error expected");
+                    mWaiter.fail("error " + error + " expected");
                 }
             }
 
@@ -144,18 +134,23 @@ public class SpeedTestErrorTest {
                         mWaiter.assertEquals(errorMessage, SpeedTestErrorTest.this.errorMessage);
                     }
                     mWaiter.resume();
-                } else if (mForceStop && !mDownload && speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    if (mNoCheckMessage) {
-                        mWaiter.assertEquals(errorMessage, SpeedTestErrorTest.this.errorMessage + errorMessageSuffix);
-                    }
-                    mWaiter.resume();
                 } else {
-                    mWaiter.fail("error connection error expected");
+                    mWaiter.fail("error " + error + " expected");
                 }
             }
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onInterruption() {
+
+                if (mForceStop) {
+                    mWaiter.resume();
+                } else {
+                    mWaiter.fail("error in onInterruption");
+                }
             }
         });
 
@@ -198,6 +193,7 @@ public class SpeedTestErrorTest {
             mSocket.forceStopTask();
             mForceStop = true;
             mDownload = false;
+            mWaiter = new Waiter();
 
             if (dispatchError) {
                 fr.bmartel.speedtest.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
@@ -367,8 +363,7 @@ public class SpeedTestErrorTest {
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
 
                 if (download) {
-                    if (speedTestError != SpeedTestError.CONNECTION_ERROR && speedTestError != SpeedTestError
-                            .FORCE_CLOSE_SOCKET) {
+                    if (speedTestError != SpeedTestError.CONNECTION_ERROR) {
                         mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
                     } else {
                         mWaiter.resume();
@@ -388,8 +383,7 @@ public class SpeedTestErrorTest {
                 if (download) {
                     mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadError");
                 } else {
-                    if (speedTestError != SpeedTestError.CONNECTION_ERROR && speedTestError != SpeedTestError
-                            .FORCE_CLOSE_SOCKET) {
+                    if (speedTestError != SpeedTestError.CONNECTION_ERROR) {
                         mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
                     } else {
                         mWaiter.resume();
@@ -399,6 +393,11 @@ public class SpeedTestErrorTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onInterruption() {
+
             }
         });
 
