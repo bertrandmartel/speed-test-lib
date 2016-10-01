@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  * <p/>
  * Copyright (c) 2016 Bertrand Martel
@@ -42,24 +42,24 @@ public class ServerSocketChannel implements Runnable, IHttpStream {
     /**
      * socket to be used by server.
      */
-    private Socket socket;
+    private Socket mSocket;
 
     /**
      * inputstream to be used for reading.
      */
-    private InputStream inputStream;
+    private InputStream mInputStream;
 
     /**
      * outputstream to be used for writing.
      */
-    private OutputStream outputStream;
+    private OutputStream mOutputStream;
 
     /**
      * http request parser.
      */
-    private HttpFrame httpFrameParser;
+    private HttpFrame mHttpFrameParser;
 
-    private IHttpServerEventListener clientListener;
+    private IHttpServerEventListener mClientListener;
 
     /**
      * Initialize socket connection when the connection is available ( socket
@@ -71,20 +71,20 @@ public class ServerSocketChannel implements Runnable, IHttpStream {
     public ServerSocketChannel(final Socket socket,
                                final IHttpServerEventListener clientListener) {
         try {
-            this.clientListener = clientListener;
+            this.mClientListener = clientListener;
 
-			/* give the socket opened to the main class */
-            this.socket = socket;
+			/* give the mSocket opened to the main class */
+            this.mSocket = socket;
             /* extract the associated input stream */
-            this.inputStream = socket.getInputStream();
+            this.mInputStream = socket.getInputStream();
             /* extract the associated output stream */
-            this.outputStream = socket.getOutputStream();
+            this.mOutputStream = socket.getOutputStream();
 
 			/*
              * initialize parsing method for request string and different body
 			 * of http request
 			 */
-            this.httpFrameParser = new HttpFrame();
+            this.mHttpFrameParser = new HttpFrame();
             /*
              * intialize response manager for writing data to outputstream
 			 * method (headers generation ...)
@@ -103,11 +103,11 @@ public class ServerSocketChannel implements Runnable, IHttpStream {
         try {
 
 			/* clear richRequest object (specially headers) */
-            this.httpFrameParser = new HttpFrame();
+            this.mHttpFrameParser = new HttpFrame();
 
-            final HttpStates httpStates = this.httpFrameParser.parseHttp(inputStream);
+            final HttpStates httpStates = this.mHttpFrameParser.parseHttp(mInputStream);
 
-            clientListener.onHttpFrameReceived(this.httpFrameParser,
+            mClientListener.onHttpFrameReceived(this.mHttpFrameParser,
                     httpStates, this);
 
             closeSocket();
@@ -124,21 +124,21 @@ public class ServerSocketChannel implements Runnable, IHttpStream {
      * @throws IOException
      */
     private void closeInputStream() throws IOException {
-        this.inputStream.close();
+        this.mInputStream.close();
     }
 
     /**
      * Close socket inputstream.
      */
     private void closeOutputStream() throws IOException {
-        this.outputStream.close();
+        this.mOutputStream.close();
     }
 
     private void closeSocket() {
         try {
             closeInputStream();
             closeOutputStream();
-            this.socket.close();
+            this.mSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -147,8 +147,8 @@ public class ServerSocketChannel implements Runnable, IHttpStream {
     @Override
     public int writeHttpFrame(final byte[] data) {
         try {
-            this.outputStream.write(data);
-            this.outputStream.flush();
+            this.mOutputStream.write(data);
+            this.mOutputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
             return -1;
