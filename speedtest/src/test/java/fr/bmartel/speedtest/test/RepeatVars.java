@@ -23,6 +23,7 @@
  */
 package fr.bmartel.speedtest.test;
 
+import fr.bmartel.speedtest.RepeatWrapper;
 import fr.bmartel.speedtest.SpeedTestSocket;
 import org.junit.Assert;
 
@@ -40,121 +41,122 @@ public class RepeatVars {
     /**
      * define if download should be repeated.
      */
-    private Field repeatDownload;
+    private final Field repeatDownload;
 
     /**
      * define if upload should be repeated.
      */
-    private Field repeatUpload;
+    private final Field repeatUpload;
 
     /**
      * start time for download repeat task.
      */
-    private Field startDateRepeat;
+    private final Field startDateRepeat;
 
     /**
      * time window for download repeat task.
      */
-    private Field repeatWindows;
+    private final Field repeatWindows;
 
     /**
      * current number of request for download repeat task.
      */
-    private Field repeatRequestNum;
+    private final Field repeatRequestNum;
 
     /**
      * number of packet pending for download repeat task.
      */
-    private Field repeatPacketSize;
+    private final Field repeatPacketSize;
 
     /**
      * number of packet downloaded for download/upload repeat task.
      */
-    private Field repeatTempPckSize;
+    private final Field repeatTempPckSize;
 
     /**
      * define if the first download repeat has been sent and waiting for connection
      * It is reset to false when the client is connected to server the first time.
      */
-    private Field firstDownloadRepeat;
+    private final Field firstDownloadRepeat;
 
     /**
      * define if the first upload repeat has been sent and waiting for connection
      * It is reset to false when the client is connected to server the first time.
      */
-    private Field firstUploadRepeat;
+    private final Field firstUploadRepeat;
 
     /**
      * transfer rate list.
      */
-    private Field repeatTransferRateList;
+    private final Field repeatTransferRateList;
 
     /**
      * define if download repeat task is finished.
      */
-    private Field repeatFinished;
+    private final Field repeatFinished;
 
     /**
-     * Object class to call the Fields from.
+     * Repeat wrapper.
      */
-    private final SpeedTestSocket socket;
+    private final RepeatWrapper repeatWrapper;
 
     /**
      * Get repeat vars field and set SpeedTestSocket object ref.
      *
      * @param socket
      */
-    public RepeatVars(final SpeedTestSocket socket) {
+    public RepeatVars(final SpeedTestSocket socket) throws NoSuchFieldException, IllegalAccessException {
 
-        this.socket = socket;
-        try {
-            repeatDownload = socket.getClass().getDeclaredField("isRepeatDownload");
-            Assert.assertNotNull("repeatDownload is null", repeatDownload);
-            repeatDownload.setAccessible(true);
+        final Field repeatWrapperField = socket.getClass().getDeclaredField("repeatWrapper");
+        Assert.assertNotNull("repeatWrapper is null", repeatWrapperField);
+        repeatWrapperField.setAccessible(true);
 
-            repeatUpload = socket.getClass().getDeclaredField("isRepeatUpload");
-            Assert.assertNotNull("repeatUpload is null", repeatUpload);
-            repeatUpload.setAccessible(true);
+        repeatWrapper = (RepeatWrapper) repeatWrapperField.get(socket);
+        Assert.assertNotNull("repeatWrapper is null", repeatWrapper);
 
-            startDateRepeat = socket.getClass().getDeclaredField("startDateRepeat");
-            Assert.assertNotNull("startDateRepeat is null", startDateRepeat);
-            startDateRepeat.setAccessible(true);
+        repeatDownload = repeatWrapper.getClass().getDeclaredField("repeatDownload");
+        Assert.assertNotNull("repeatDownload is null", repeatDownload);
+        repeatDownload.setAccessible(true);
 
-            repeatWindows = socket.getClass().getDeclaredField("repeatWindows");
-            Assert.assertNotNull("repeatWindows is null", repeatWindows);
-            repeatWindows.setAccessible(true);
+        repeatUpload = repeatWrapper.getClass().getDeclaredField("repeatUpload");
+        Assert.assertNotNull("repeatUpload is null", repeatUpload);
+        repeatUpload.setAccessible(true);
 
-            repeatRequestNum = socket.getClass().getDeclaredField("repeatRequestNum");
-            Assert.assertNotNull("repeatRequestNum is null", repeatRequestNum);
-            repeatRequestNum.setAccessible(true);
+        startDateRepeat = repeatWrapper.getClass().getDeclaredField("startDateRepeat");
+        Assert.assertNotNull("startDateRepeat is null", startDateRepeat);
+        startDateRepeat.setAccessible(true);
 
-            repeatPacketSize = socket.getClass().getDeclaredField("repeatPacketSize");
-            Assert.assertNotNull("repeatPacketSize is null", repeatPacketSize);
-            repeatPacketSize.setAccessible(true);
+        repeatWindows = repeatWrapper.getClass().getDeclaredField("repeatWindows");
+        Assert.assertNotNull("repeatWindows is null", repeatWindows);
+        repeatWindows.setAccessible(true);
 
-            repeatTempPckSize = socket.getClass().getDeclaredField("repeatTempPckSize");
-            Assert.assertNotNull("repeatTempPckSize is null", repeatTempPckSize);
-            repeatTempPckSize.setAccessible(true);
+        repeatRequestNum = repeatWrapper.getClass().getDeclaredField("repeatRequestNum");
+        Assert.assertNotNull("repeatRequestNum is null", repeatRequestNum);
+        repeatRequestNum.setAccessible(true);
 
-            firstDownloadRepeat = socket.getClass().getDeclaredField("isFirstDownloadRepeat");
-            Assert.assertNotNull("firstDownloadRepeat is null", firstDownloadRepeat);
-            firstDownloadRepeat.setAccessible(true);
+        repeatPacketSize = repeatWrapper.getClass().getDeclaredField("repeatPacketSize");
+        Assert.assertNotNull("repeatPacketSize is null", repeatPacketSize);
+        repeatPacketSize.setAccessible(true);
 
-            firstUploadRepeat = socket.getClass().getDeclaredField("isFirstUploadRepeat");
-            Assert.assertNotNull("firstUploadRepeat is null", firstUploadRepeat);
-            firstUploadRepeat.setAccessible(true);
+        repeatTempPckSize = repeatWrapper.getClass().getDeclaredField("repeatTempPckSize");
+        Assert.assertNotNull("repeatTempPckSize is null", repeatTempPckSize);
+        repeatTempPckSize.setAccessible(true);
 
-            repeatTransferRateList = socket.getClass().getDeclaredField("repeatTransferRateList");
-            Assert.assertNotNull("repeatTransferRateList is null", repeatTransferRateList);
-            repeatTransferRateList.setAccessible(true);
+        firstDownloadRepeat = repeatWrapper.getClass().getDeclaredField("firstDownloadRepeat");
+        Assert.assertNotNull("firstDownloadRepeat is null", firstDownloadRepeat);
+        firstDownloadRepeat.setAccessible(true);
 
-            repeatFinished = socket.getClass().getDeclaredField("repeatFinished");
-            Assert.assertNotNull("repeatFinished is null", repeatFinished);
-            repeatFinished.setAccessible(true);
+        firstUploadRepeat = repeatWrapper.getClass().getDeclaredField("firstUploadRepeat");
+        Assert.assertNotNull("firstUploadRepeat is null", firstUploadRepeat);
+        firstUploadRepeat.setAccessible(true);
 
-        } catch (NoSuchFieldException e) {
-            Assert.fail(e.getMessage());
-        }
+        repeatTransferRateList = repeatWrapper.getClass().getDeclaredField("repeatTransferRateList");
+        Assert.assertNotNull("repeatTransferRateList is null", repeatTransferRateList);
+        repeatTransferRateList.setAccessible(true);
+
+        repeatFinished = repeatWrapper.getClass().getDeclaredField("repeatFinished");
+        Assert.assertNotNull("repeatFinished is null", repeatFinished);
+        repeatFinished.setAccessible(true);
     }
 
     /**
@@ -164,7 +166,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public boolean isRepeatDownload() throws IllegalAccessException {
-        return repeatDownload.getBoolean(socket);
+        return repeatDownload.getBoolean(repeatWrapper);
     }
 
     /**
@@ -174,7 +176,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public void setRepeatDownload(final boolean repeatDownload) throws IllegalAccessException {
-        this.repeatDownload.setBoolean(socket, repeatDownload);
+        this.repeatDownload.setBoolean(repeatWrapper, repeatDownload);
     }
 
     /**
@@ -184,7 +186,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public boolean isRepeatUpload() throws IllegalAccessException {
-        return repeatUpload.getBoolean(socket);
+        return repeatUpload.getBoolean(repeatWrapper);
     }
 
     /**
@@ -194,7 +196,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public void setRepeatUpload(final boolean repeatUpload) throws IllegalAccessException {
-        this.repeatUpload.setBoolean(socket, repeatUpload);
+        this.repeatUpload.setBoolean(repeatWrapper, repeatUpload);
     }
 
     /**
@@ -204,7 +206,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public long getStartDateRepeat() throws IllegalAccessException {
-        return startDateRepeat.getLong(socket);
+        return startDateRepeat.getLong(repeatWrapper);
     }
 
     /**
@@ -214,7 +216,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public void setStartDateRepeat(final long startDateRepeat) throws IllegalAccessException {
-        this.startDateRepeat.setLong(socket, startDateRepeat);
+        this.startDateRepeat.setLong(repeatWrapper, startDateRepeat);
     }
 
     /**
@@ -224,7 +226,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public int getRepeatWindows() throws IllegalAccessException {
-        return repeatWindows.getInt(socket);
+        return repeatWindows.getInt(repeatWrapper);
     }
 
     /**
@@ -234,7 +236,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public void setRepeatWindows(final int repeatWindows) throws IllegalAccessException {
-        this.repeatWindows.setInt(socket, repeatWindows);
+        this.repeatWindows.setInt(repeatWrapper, repeatWindows);
     }
 
     /**
@@ -244,7 +246,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public int getRepeatRequestNum() throws IllegalAccessException {
-        return repeatRequestNum.getInt(socket);
+        return repeatRequestNum.getInt(repeatWrapper);
     }
 
     /**
@@ -254,7 +256,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public void setRepeatRequestNum(final int repeatRequestNum) throws IllegalAccessException {
-        this.repeatRequestNum.setInt(socket, repeatRequestNum);
+        this.repeatRequestNum.setInt(repeatWrapper, repeatRequestNum);
     }
 
     /**
@@ -264,7 +266,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public BigDecimal getRepeatPacketSize() throws IllegalAccessException {
-        return (BigDecimal) repeatPacketSize.get(socket);
+        return (BigDecimal) repeatPacketSize.get(repeatWrapper);
     }
 
     /**
@@ -274,7 +276,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public void setRepeatPacketSize(final BigDecimal repeatPacketSize) throws IllegalAccessException {
-        this.repeatPacketSize.set(socket, repeatPacketSize);
+        this.repeatPacketSize.set(repeatWrapper, repeatPacketSize);
     }
 
     /**
@@ -283,7 +285,7 @@ public class RepeatVars {
      * @return
      */
     public long getRepeatTempPckSize() throws IllegalAccessException {
-        return repeatTempPckSize.getLong(socket);
+        return repeatTempPckSize.getLong(repeatWrapper);
     }
 
     /**
@@ -292,7 +294,7 @@ public class RepeatVars {
      * @param repeatTempPckSize
      */
     public void setRepeatTempPckSize(final long repeatTempPckSize) throws IllegalAccessException {
-        this.repeatTempPckSize.setLong(socket, repeatTempPckSize);
+        this.repeatTempPckSize.setLong(repeatWrapper, repeatTempPckSize);
     }
 
     /**
@@ -302,7 +304,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public boolean isFirstDownloadRepeat() throws IllegalAccessException {
-        return firstDownloadRepeat.getBoolean(socket);
+        return firstDownloadRepeat.getBoolean(repeatWrapper);
     }
 
     /**
@@ -312,7 +314,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public void setFirstDownloadRepeat(final boolean firstDownloadRepeat) throws IllegalAccessException {
-        this.firstDownloadRepeat.setBoolean(socket, firstDownloadRepeat);
+        this.firstDownloadRepeat.setBoolean(repeatWrapper, firstDownloadRepeat);
     }
 
     /**
@@ -322,7 +324,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public boolean isFirstUploadRepeat() throws IllegalAccessException {
-        return firstUploadRepeat.getBoolean(socket);
+        return firstUploadRepeat.getBoolean(repeatWrapper);
     }
 
     /**
@@ -332,7 +334,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public void setFirstUploadRepeat(final boolean firstUploadRepeat) throws IllegalAccessException {
-        this.firstUploadRepeat.setBoolean(socket, firstUploadRepeat);
+        this.firstUploadRepeat.setBoolean(repeatWrapper, firstUploadRepeat);
     }
 
     /**
@@ -343,7 +345,7 @@ public class RepeatVars {
      */
     @SuppressWarnings("unchecked")
     public List<BigDecimal> getRepeatTransferRateList() throws IllegalAccessException {
-        return (List<BigDecimal>) repeatTransferRateList.get(socket);
+        return (List<BigDecimal>) repeatTransferRateList.get(repeatWrapper);
     }
 
     /**
@@ -353,7 +355,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public void setRepeatTransferRateList(final List<BigDecimal> repeatTransferRateList) throws IllegalAccessException {
-        this.repeatTransferRateList.set(socket, repeatTransferRateList);
+        this.repeatTransferRateList.set(repeatWrapper, repeatTransferRateList);
     }
 
     /**
@@ -363,7 +365,7 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public boolean isRepeatFinished() throws IllegalAccessException {
-        return repeatFinished.getBoolean(socket);
+        return repeatFinished.getBoolean(repeatWrapper);
     }
 
     /**
@@ -373,6 +375,6 @@ public class RepeatVars {
      * @throws IllegalAccessException
      */
     public void setRepeatFinished(final boolean repeatFinished) throws IllegalAccessException {
-        this.repeatFinished.setBoolean(socket, repeatFinished);
+        this.repeatFinished.setBoolean(repeatWrapper, repeatFinished);
     }
 }

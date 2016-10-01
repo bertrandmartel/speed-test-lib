@@ -495,7 +495,9 @@ public class SpeedTestFunctionalTest {
                              final boolean isDownload,
                              final boolean isRepeat) {
 
-        waiter.assertEquals(expectedPacketSize, actualPacketSize);
+        if (!isRepeat) {
+            waiter.assertEquals(expectedPacketSize, actualPacketSize);
+        }
         waiter.assertNotNull(transferRateBps);
         waiter.assertNotNull(transferRateOps);
         waiter.assertTrue(transferRateBps.intValue() > 0);
