@@ -51,8 +51,8 @@ SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
 	@Override
-	public void onDownloadPacketsReceived(long packetSize, BigDecimal transferRateBitPerSeconds,
-                                          BigDecimal transferRateOctetPerSeconds) {
+	public void onDownloadPacketsReceived(long packetSize, float transferRateBitPerSeconds,
+                                          float transferRateOctetPerSeconds) {
 		System.out.println("download transfer rate  : " + transferRateBitPerSeconds + " bps");
 		System.out.println("download transfer rate  : " + transferRateOctetPerSeconds + "Bps");
 	}
@@ -63,8 +63,8 @@ speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 	}
 
 	@Override
-	public void onUploadPacketsReceived(int packetSize, BigDecimal transferRateBitPerSeconds, 
-                                        BigDecimal transferRateOctetPerSeconds) {
+	public void onUploadPacketsReceived(int packetSize, float transferRateBitPerSeconds, 
+                                        float transferRateOctetPerSeconds) {
 		System.out.println("download transfer rate  : " + transferRateBitPerSeconds + " bps");
 		System.out.println("download transfer rate  : " + transferRateOctetPerSeconds + "Bps");
 	}
@@ -146,7 +146,7 @@ final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
     @Override
-    public void onDownloadPacketsReceived(long packetSize, BigDecimal transferRateBitPerSeconds, BigDecimal transferRateOctetPerSeconds) {
+    public void onDownloadPacketsReceived(long packetSize, float transferRateBitPerSeconds, float transferRateOctetPerSeconds) {
     }
 
     @Override
@@ -160,8 +160,8 @@ speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
     }
 
     @Override
-    public void onUploadPacketsReceived(long packetSize, BigDecimal transferRateBitPerSeconds, 
-                                        BigDecimal transferRateOctetPerSeconds) {
+    public void onUploadPacketsReceived(long packetSize, float transferRateBitPerSeconds, 
+                                        float transferRateOctetPerSeconds) {
     }
 
     @Override
@@ -233,8 +233,8 @@ final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
     @Override
-    public void onDownloadPacketsReceived(long packetSize, BigDecimal transferRateBitPerSeconds, 
-                                          BigDecimal transferRateOctetPerSeconds) {
+    public void onDownloadPacketsReceived(long packetSize, float transferRateBitPerSeconds, 
+                                          float transferRateOctetPerSeconds) {
     }
 
     @Override
@@ -248,8 +248,8 @@ speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
     }
 
     @Override
-    public void onUploadPacketsReceived(long packetSize, BigDecimal transferRateBitPerSeconds, 
-                                        BigDecimal transferRateOctetPerSeconds) {
+    public void onUploadPacketsReceived(long packetSize, float transferRateBitPerSeconds, 
+                                        float transferRateOctetPerSeconds) {
     }
 
     @Override
@@ -385,7 +385,7 @@ speedTestSocket.setSocketTimeout(5000);
 
 ### Set transfer rate precision
 
-These settings are used to alter transfer rate BigDecimal rounding / scale :
+These settings are used to alter transfer rate float rounding / scale :
 
 * set RoundingMode :
 
@@ -421,8 +421,8 @@ public class SpeedTestTask extends AsyncTask<Void, Void, String> {
 
             @Override
             public void onDownloadPacketsReceived(int packetSize, 
-            									BigDecimal transferRateBitPerSeconds, 
-            									BigDecimal transferRateOctetPerSeconds) {
+            									float transferRateBitPerSeconds, 
+            									float transferRateOctetPerSeconds) {
                 Log.i("speed-test-app","download transfer rate  : " + transferRateOctetPerSeconds + "Bps");
             }
 
@@ -433,8 +433,8 @@ public class SpeedTestTask extends AsyncTask<Void, Void, String> {
 
             @Override
             public void onUploadPacketsReceived(int packetSize, 
-            									BigDecimal transferRateBitPerSeconds, 
-            									BigDecimal transferRateOctetPerSeconds) {
+            									float transferRateBitPerSeconds, 
+            									float transferRateOctetPerSeconds) {
                 Log.i("speed-test-app","download transfer rate  : " + transferRateOctetPerSeconds + "Bps");
             }
 
