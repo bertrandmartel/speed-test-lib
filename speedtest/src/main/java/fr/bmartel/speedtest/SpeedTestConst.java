@@ -89,11 +89,6 @@ public class SpeedTestConst {
     public static final String PARSING_ERROR = "Error occurred while parsing ";
 
     /**
-     * parsing http error message.
-     */
-    public static final String PARSING_HTTP_ERROR = "Error occurred while parsing http ";
-
-    /**
      * writing socket error message.
      */
     public static final String SOCKET_WRITE_ERROR = "Error occurred while writing to socket";
@@ -107,10 +102,5 @@ public class SpeedTestConst {
      * default rounding mode for BigDecimal.
      */
     public static final RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_EVEN;
-
-    /**
-     * force clause related error message.
-     */
-    public static final String FORCE_CLOSE_CAUSE_MESSAGE = " caused by socket force close";
 
 }
