@@ -127,7 +127,7 @@ public class SpeedTestRepeatTest {
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (!download) {
                     mWaiterError.fail("shouldnt be in onUploadError");
-                } else if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
+                } else {
                     mWaiterError.fail("unexpected error : " + speedTestError);
                 }
             }
@@ -149,7 +149,7 @@ public class SpeedTestRepeatTest {
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (download) {
                     mWaiterError.fail("shouldnt be in onUploadError");
-                } else if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
+                } else {
                     mWaiterError.fail("unexpected error : " + speedTestError);
                 }
             }
@@ -164,6 +164,11 @@ public class SpeedTestRepeatTest {
                 } else {
                     mWaiterError.fail("shouldnt be in onUploadProgress");
                 }
+            }
+
+            @Override
+            public void onInterruption() {
+
             }
         });
 
@@ -244,7 +249,8 @@ public class SpeedTestRepeatTest {
         Assert.assertEquals(repeatVars.getRepeatWindows(), TestCommon.SPEED_TEST_DURATION);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
-        mWaiterError.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS, TestCommon.EXPECTED_REPORT);
+        mWaiterError.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS, TestCommon
+                .EXPECTED_REPORT);
         finishWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         mSocket.forceStopTask();
@@ -444,6 +450,11 @@ public class SpeedTestRepeatTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onInterruption() {
+
             }
         };
 

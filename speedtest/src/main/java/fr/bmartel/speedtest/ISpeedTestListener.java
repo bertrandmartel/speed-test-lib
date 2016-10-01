@@ -85,4 +85,9 @@ public interface ISpeedTestListener {
      */
     void onUploadProgress(float percent, SpeedTestReport report);
 
+    /**
+     * called when speed test is interrupted.
+     */
+    void onInterruption();
+
 }

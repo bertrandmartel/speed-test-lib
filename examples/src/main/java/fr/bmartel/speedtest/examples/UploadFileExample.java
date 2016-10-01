@@ -124,6 +124,11 @@ public class UploadFileExample {
 
                 LogUtils.logSpeedTestReport(uploadReport, LOGGER);
             }
+
+            @Override
+            public void onInterruption() {
+
+            }
         });
 
         speedTestSocket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,

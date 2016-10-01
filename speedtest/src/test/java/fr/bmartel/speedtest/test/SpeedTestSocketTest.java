@@ -65,11 +65,6 @@ public class SpeedTestSocketTest {
     private static Waiter mWaiterError;
 
     /**
-     * define if download running or upload.
-     */
-    private boolean download;
-
-    /**
      * test socket timeout default value.
      */
     @Test
@@ -98,8 +93,9 @@ public class SpeedTestSocketTest {
         mSocket = new SpeedTestSocket();
         Assert.assertNotSame(HEADER + "socket timeout are equals, shouldnt be (-1)", mSocket.getSocketTimeout(),
                 TestCommon.SOCKET_TO_INVALID);
-        Assert.assertEquals(HEADER + "socket timeout should be " + TestCommon.SOCKET_TO_DEFAULT, mSocket.getSocketTimeout
-                (), TestCommon.SOCKET_TO_DEFAULT);
+        Assert.assertEquals(HEADER + "socket timeout should be " + TestCommon.SOCKET_TO_DEFAULT, mSocket
+                .getSocketTimeout
+                        (), TestCommon.SOCKET_TO_DEFAULT);
 
     }
 
@@ -186,16 +182,17 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiter.resume();
-                } else {
-                    waiter.fail("onUploadError : " + TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                    waiter.resume();
-                }
+                waiter.fail("onUploadError : " + TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                waiter.resume();
             }
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                waiter.resume();
+            }
+
+            @Override
+            public void onInterruption() {
                 waiter.resume();
             }
         });
@@ -257,6 +254,11 @@ public class SpeedTestSocketTest {
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
 
             }
+
+            @Override
+            public void onInterruption() {
+
+            }
         };
 
         SpeedTestUtils.setListenerList(mSocket, listenerList);
@@ -289,12 +291,8 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    mWaiterError.resume();
-                } else {
-                    mWaiterError.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                    mWaiterError.resume();
-                }
+                mWaiterError.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                mWaiterError.resume();
             }
 
             @Override
@@ -303,17 +301,18 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    mWaiterError.resume();
-                } else {
-                    mWaiterError.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                    mWaiterError.resume();
-                }
+                mWaiterError.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                mWaiterError.resume();
             }
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
                 mWaiter.resume();
+            }
+
+            @Override
+            public void onInterruption() {
+                mWaiterError.resume();
             }
         });
 
@@ -445,10 +444,8 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                    mWaiter.resume();
-                }
+                mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                mWaiter.resume();
             }
 
             @Override
@@ -457,14 +454,17 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                    mWaiter.resume();
-                }
+                mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                mWaiter.resume();
             }
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onInterruption() {
+
             }
         });
 
@@ -503,9 +503,7 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                }
+                mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
             }
 
             @Override
@@ -514,14 +512,17 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                }
+                mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
             }
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
                 mWaiter.resume();
+            }
+
+            @Override
+            public void onInterruption() {
+
             }
         });
 
@@ -573,10 +574,8 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
-                    waiter2.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
-                }
+                waiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
+                waiter2.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
             }
 
             @Override
@@ -595,6 +594,11 @@ public class SpeedTestSocketTest {
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
                 waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadProgress");
                 waiter2.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadProgress");
+            }
+
+            @Override
+            public void onInterruption() {
+
             }
         });
 
@@ -654,10 +658,8 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
-                    waiter2.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
-                }
+                waiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
+                waiter2.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
             }
 
             @Override
@@ -665,6 +667,11 @@ public class SpeedTestSocketTest {
                 SpeedTestUtils.testReportNotEmpty(waiter, report, packetSizeExpected, false, false);
                 waiter.assertTrue(percent >= 0 && percent <= 100);
                 waiter.resume();
+            }
+
+            @Override
+            public void onInterruption() {
+
             }
         });
 
@@ -703,11 +710,7 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (download && speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    mWaiter.resume();
-                } else {
-                    mWaiter.fail("unexpected error in onDownloadError : " + speedTestError);
-                }
+                mWaiter.fail("unexpected error in onDownloadError : " + speedTestError);
             }
 
             @Override
@@ -716,20 +719,20 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (!download && speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    mWaiter.resume();
-                } else {
-                    mWaiter.fail("unexpected error in onUploadError : " + speedTestError);
-                }
+                mWaiter.fail("unexpected error in onUploadError : " + speedTestError);
             }
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
             }
+
+            @Override
+            public void onInterruption() {
+                mWaiter.resume();
+            }
         });
 
         mWaiter = new Waiter();
-        download = false;
         mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
                 TestCommon.SPEED_TEST_SERVER_URI_UL,
                 packetSizeExpected, duration);
@@ -737,7 +740,6 @@ public class SpeedTestSocketTest {
         mWaiter.await(duration, TimeUnit.MILLISECONDS);
 
         mWaiter = new Waiter();
-        download = true;
         mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
                 TestCommon.SPEED_TEST_SERVER_URI_DL, duration);
 

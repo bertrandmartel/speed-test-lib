@@ -123,6 +123,11 @@ public class RepeatUploadExample {
             public void onUploadProgress(final float percent, final SpeedTestReport uploadReport) {
                 //notify upload progress
             }
+
+            @Override
+            public void onInterruption() {
+                
+            }
         });
 
         speedTestSocket.startUploadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,

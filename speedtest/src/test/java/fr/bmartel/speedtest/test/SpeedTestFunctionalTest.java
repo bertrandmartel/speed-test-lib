@@ -162,10 +162,8 @@ public class SpeedTestFunctionalTest {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
-                    mWaiter.resume();
-                }
+                mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
+                mWaiter.resume();
             }
 
             @Override
@@ -180,6 +178,11 @@ public class SpeedTestFunctionalTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onInterruption() {
+
             }
         });
 
@@ -225,14 +228,17 @@ public class SpeedTestFunctionalTest {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
-                    mWaiter.resume();
-                }
+                mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
+                mWaiter.resume();
             }
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onInterruption() {
+
             }
         });
 
@@ -294,6 +300,11 @@ public class SpeedTestFunctionalTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onInterruption() {
+
             }
         });
 
@@ -384,10 +395,8 @@ public class SpeedTestFunctionalTest {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiter.fail("onDownloadError : " + speedTestError);
-                    waiter.resume();
-                }
+                waiter.fail("onDownloadError : " + speedTestError);
+                waiter.resume();
             }
 
             @Override
@@ -402,6 +411,11 @@ public class SpeedTestFunctionalTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onInterruption() {
+
             }
         });
 
@@ -465,6 +479,11 @@ public class SpeedTestFunctionalTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onInterruption() {
+
             }
         });
 
@@ -537,10 +556,8 @@ public class SpeedTestFunctionalTest {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                    mWaiter.resume();
-                }
+                mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                mWaiter.resume();
             }
 
             @Override
@@ -552,10 +569,8 @@ public class SpeedTestFunctionalTest {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                    mWaiter.resume();
-                }
+                mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                mWaiter.resume();
             }
 
             @Override
@@ -568,6 +583,11 @@ public class SpeedTestFunctionalTest {
             public void onUploadProgress(final float percent, final SpeedTestReport uploadReport) {
                 //notify upload progress
                 mWaiter.assertTrue(percent >= 0 && percent <= 100);
+            }
+
+            @Override
+            public void onInterruption() {
+
             }
         });
 
