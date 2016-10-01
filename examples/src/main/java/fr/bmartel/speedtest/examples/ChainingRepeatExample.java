@@ -110,7 +110,7 @@ public class ChainingRepeatExample {
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
 
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET && LOGGER.isErrorEnabled()) {
+                if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(errorMessage);
                 }
             }
@@ -123,7 +123,7 @@ public class ChainingRepeatExample {
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
 
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET && LOGGER.isErrorEnabled()) {
+                if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(errorMessage);
                 }
             }
@@ -136,6 +136,11 @@ public class ChainingRepeatExample {
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport uploadReport) {
                 //notify upload progress
+            }
+
+            @Override
+            public void onInterruption() {
+
             }
         });
 

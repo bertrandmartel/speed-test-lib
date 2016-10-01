@@ -251,6 +251,11 @@ public class RepeatWrapper {
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
                 //nothing to do here for download repeat task listener
             }
+
+            @Override
+            public void onInterruption() {
+
+            }
         };
 
         mSpeedTestSocket.addSpeedTestListener(speedTestListener);
@@ -336,6 +341,11 @@ public class RepeatWrapper {
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
                 //nothing to do here for upload repeat task listener
+            }
+
+            @Override
+            public void onInterruption() {
+                
             }
         };
 

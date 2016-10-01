@@ -95,7 +95,7 @@ public class FixedTimeDownloadExample {
                 if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(errorMessage);
                 }
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET && timer != null) {
+                if (timer != null) {
                     timer.purge();
                     timer.cancel();
                 }
@@ -113,7 +113,7 @@ public class FixedTimeDownloadExample {
                     LOGGER.error(errorMessage);
                 }
 
-                if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET && timer != null) {
+                if (timer != null) {
                     timer.purge();
                     timer.cancel();
                 }
@@ -127,6 +127,14 @@ public class FixedTimeDownloadExample {
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport uploadReport) {
                 //notify upload progress
+            }
+
+            @Override
+            public void onInterruption() {
+                if (timer != null) {
+                    timer.purge();
+                    timer.cancel();
+                }
             }
         });
 

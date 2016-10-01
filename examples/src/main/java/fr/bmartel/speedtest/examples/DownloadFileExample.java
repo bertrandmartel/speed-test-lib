@@ -119,6 +119,11 @@ public class DownloadFileExample {
 
                 LogUtils.logSpeedTestReport(uploadReport, LOGGER);
             }
+
+            @Override
+            public void onInterruption() {
+                
+            }
         });
 
         speedTestSocket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL);
