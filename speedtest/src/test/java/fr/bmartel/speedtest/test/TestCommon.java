@@ -143,7 +143,7 @@ public class TestCommon {
     /**
      * number of expected reports based on report interval & speed test duration.
      */
-    public static final int EXPECTED_REPORT = SPEED_TEST_DURATION / REPORT_INTERVAL;
+    public static final int EXPECTED_REPORT = (SPEED_TEST_DURATION / REPORT_INTERVAL) - 1;
 
     /**
      * time to wait for thread in ms.
