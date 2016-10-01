@@ -49,7 +49,7 @@ public class SpeedTestUtils {
     public static void setListenerList(final SpeedTestSocket socket, final List<ISpeedTestListener> listenerList)
             throws NoSuchFieldException, IllegalAccessException {
 
-        final Field field = socket.getClass().getDeclaredField("listenerList");
+        final Field field = socket.getClass().getDeclaredField("mListenerList");
         Assert.assertNotNull("listenerList is null", field);
         field.setAccessible(true);
         field.set(socket, listenerList);

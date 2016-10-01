@@ -43,7 +43,7 @@ import java.util.concurrent.TimeoutException;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
- * download / upload functional test mocking a speed test server.
+ * download / upload functional test mocking a speed test mServer.
  *
  * @author Bertrand Martel
  */
@@ -92,47 +92,47 @@ public class SpeedTestFunctionalTest {
     /**
      * http server.
      */
-    private static HttpServer server;
+    private static HttpServer mServer;
 
     /**
      * transfer rate reference in octet.
      */
-    private BigDecimal transfeRateOctetRef;
+    private BigDecimal mTransfeRateOctetRef;
 
     /**
      * transfer rate reference in bps.
      */
-    private BigDecimal transferRateBpsRef;
+    private BigDecimal mTransferRateBpsRef;
 
     /**
      * SpeedTtest socket used in all functional tests.
      */
-    private SpeedTestSocket socket;
+    private SpeedTestSocket mSocket;
 
     /**
      * transfer rate value received in ops.
      */
-    private BigDecimal expectedTransferRateOps;
+    private BigDecimal mExpectedTransferRateOps;
 
     /**
      * transfer rate value reiceved in bps.
      */
-    private BigDecimal expectedTransferRateBps;
+    private BigDecimal mExpectedTransferRateBps;
 
     /**
-     * socketTimeout used.
+     * socket timeout used.
      */
-    private int socketTimeout;
+    private int mSocketTimeout;
 
     /**
      * Common waiter for functional test.
      */
-    private Waiter waiter;
+    private Waiter mWaiter;
 
     /**
      * Define if download mode enabled.
      */
-    private boolean isDownload;
+    private boolean download;
 
     /**
      * default socket timeout.
@@ -144,16 +144,16 @@ public class SpeedTestFunctionalTest {
 
         calculateReference();
 
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
-        socket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
+        mSocket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
 
-        socket.addSpeedTestListener(new ISpeedTestListener() {
+        mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
-                expectedTransferRateOps = report.getTransferRateOctet();
-                expectedTransferRateBps = report.getTransferRateBit();
-                waiter.resume();
+                mExpectedTransferRateOps = report.getTransferRateOctet();
+                mExpectedTransferRateBps = report.getTransferRateBit();
+                mWaiter.resume();
             }
 
             @Override
@@ -163,8 +163,8 @@ public class SpeedTestFunctionalTest {
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
-                    waiter.resume();
+                    mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
+                    mWaiter.resume();
                 }
             }
 
@@ -174,8 +174,8 @@ public class SpeedTestFunctionalTest {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                waiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
-                waiter.resume();
+                mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
+                mWaiter.resume();
             }
 
             @Override
@@ -195,13 +195,13 @@ public class SpeedTestFunctionalTest {
 
         calculateReference();
 
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
-        socket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
+        mSocket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
 
-        waiter = new Waiter();
+        mWaiter = new Waiter();
 
-        socket.addSpeedTestListener(new ISpeedTestListener() {
+        mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
             }
@@ -212,22 +212,22 @@ public class SpeedTestFunctionalTest {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                waiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
-                waiter.resume();
+                mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
+                mWaiter.resume();
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
-                expectedTransferRateOps = report.getTransferRateOctet();
-                expectedTransferRateBps = report.getTransferRateBit();
-                waiter.resume();
+                mExpectedTransferRateOps = report.getTransferRateOctet();
+                mExpectedTransferRateBps = report.getTransferRateBit();
+                mWaiter.resume();
             }
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
-                    waiter.resume();
+                    mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
+                    mWaiter.resume();
                 }
             }
 
@@ -247,13 +247,13 @@ public class SpeedTestFunctionalTest {
 
         calculateReference();
 
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
-        socket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
+        mSocket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
 
-        waiter = new Waiter();
+        mWaiter = new Waiter();
 
-        socket.addSpeedTestListener(new ISpeedTestListener() {
+        mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
             }
@@ -264,14 +264,14 @@ public class SpeedTestFunctionalTest {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (isDownload) {
+                if (download) {
                     if (speedTestError == SpeedTestError.SOCKET_TIMEOUT) {
-                        waiter.resume();
+                        mWaiter.resume();
                     } else {
-                        waiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
+                        mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
                     }
                 } else {
-                    waiter.fail("onDownloadError : shouldnt be in that cb" + speedTestError);
+                    mWaiter.fail("onDownloadError : shouldnt be in that cb" + speedTestError);
                 }
             }
 
@@ -281,14 +281,14 @@ public class SpeedTestFunctionalTest {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (!isDownload) {
+                if (!download) {
                     if (speedTestError == SpeedTestError.SOCKET_TIMEOUT) {
-                        waiter.resume();
+                        mWaiter.resume();
                     } else {
-                        waiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
+                        mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
                     }
                 } else {
-                    waiter.fail("onUploadError : shouldnt be in that cb" + speedTestError);
+                    mWaiter.fail("onUploadError : shouldnt be in that cb" + speedTestError);
                 }
             }
 
@@ -297,14 +297,14 @@ public class SpeedTestFunctionalTest {
             }
         });
 
-        socketTimeout = 2000;
+        mSocketTimeout = 2000;
 
-        socket.setSocketTimeout(socketTimeout);
+        mSocket.setSocketTimeout(mSocketTimeout);
 
-        isDownload = true;
-        socket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_TIMEOUT);
+        download = true;
+        mSocket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_TIMEOUT);
 
-        waiter.await(WAITING_TIMEOUT_LONG_OPERATION, SECONDS);
+        mWaiter.await(WAITING_TIMEOUT_LONG_OPERATION, SECONDS);
 
         stopServer();
     }
@@ -316,15 +316,15 @@ public class SpeedTestFunctionalTest {
      */
     private void testUpload(final int size) throws TimeoutException {
 
-        waiter = new Waiter();
+        mWaiter = new Waiter();
 
-        socket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL, size);
+        mSocket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL, size);
 
-        waiter.await(WAITING_TIMEOUT_LONG_OPERATION, SECONDS);
+        mWaiter.await(WAITING_TIMEOUT_LONG_OPERATION, SECONDS);
 
         testTransferRate();
 
-        socket.forceStopTask();
+        mSocket.forceStopTask();
     }
 
     /**
@@ -334,15 +334,15 @@ public class SpeedTestFunctionalTest {
      */
     private void testDownload(final String uri) throws TimeoutException {
 
-        waiter = new Waiter();
+        mWaiter = new Waiter();
 
-        socket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, uri);
+        mSocket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, uri);
 
-        waiter.await(WAITING_TIMEOUT_LONG_OPERATION, SECONDS);
+        mWaiter.await(WAITING_TIMEOUT_LONG_OPERATION, SECONDS);
 
         testTransferRate();
 
-        socket.forceStopTask();
+        mSocket.forceStopTask();
     }
 
     /**
@@ -350,31 +350,31 @@ public class SpeedTestFunctionalTest {
      */
     private void testTransferRate() {
 
-        Assert.assertNotNull(expectedTransferRateOps);
-        Assert.assertNotNull(expectedTransferRateBps);
+        Assert.assertNotNull(mExpectedTransferRateOps);
+        Assert.assertNotNull(mExpectedTransferRateBps);
 
-        Assert.assertTrue(expectedTransferRateBps.intValue() > 0);
-        Assert.assertTrue(expectedTransferRateOps.intValue() > 0);
+        Assert.assertTrue(mExpectedTransferRateBps.intValue() > 0);
+        Assert.assertTrue(mExpectedTransferRateOps.intValue() > 0);
     }
 
     /**
-     * start server & calculate transfer rate reference.
+     * start mServer & calculate transfer rate reference.
      */
     private void calculateReference() throws TimeoutException {
 
         startServer();
 
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
-        socket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
+        mSocket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
 
         final Waiter waiter = new Waiter();
 
-        socket.addSpeedTestListener(new ISpeedTestListener() {
+        mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
-                SpeedTestFunctionalTest.this.transfeRateOctetRef = report.getTransferRateOctet();
-                SpeedTestFunctionalTest.this.transferRateBpsRef = report.getTransferRateBit();
+                SpeedTestFunctionalTest.this.mTransfeRateOctetRef = report.getTransferRateOctet();
+                SpeedTestFunctionalTest.this.mTransferRateBpsRef = report.getTransferRateBit();
                 waiter.resume();
             }
 
@@ -405,62 +405,62 @@ public class SpeedTestFunctionalTest {
             }
         });
 
-        socket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL_1MO);
+        mSocket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL_1MO);
 
         waiter.await(WAITING_TIMEOUT_LONG_OPERATION, SECONDS);
 
-        socket.forceStopTask();
+        mSocket.forceStopTask();
 
-        Assert.assertNotNull(transfeRateOctetRef);
-        Assert.assertNotNull(transferRateBpsRef);
-        Assert.assertTrue(transfeRateOctetRef.intValue() > 0);
-        Assert.assertTrue(transferRateBpsRef.intValue() > 0);
+        Assert.assertNotNull(mTransfeRateOctetRef);
+        Assert.assertNotNull(mTransferRateBpsRef);
+        Assert.assertTrue(mTransfeRateOctetRef.intValue() > 0);
+        Assert.assertTrue(mTransferRateBpsRef.intValue() > 0);
     }
 
     @Test
     public void chainDownloadUploadTest() throws TimeoutException {
 
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
-        socket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
+        mSocket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
 
         final int totalPacketSize = 1000000;
 
-        socket.addSpeedTestListener(new ISpeedTestListener() {
+        mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
 
-                checkResult(waiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
+                checkResult(mWaiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
                         report.getTransferRateOctet(), true, true);
-                waiter.resume();
+                mWaiter.resume();
 
-                socket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+                mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                         .SPEED_TEST_SERVER_URI_UL, totalPacketSize);
 
             }
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
-                waiter.resume();
+                mWaiter.resume();
             }
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                waiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                waiter.resume();
+                mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                mWaiter.resume();
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
-                checkResult(waiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
+                checkResult(mWaiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
                         report.getTransferRateOctet(), false, true);
-                waiter.resume();
+                mWaiter.resume();
             }
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                waiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                waiter.resume();
+                mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                mWaiter.resume();
             }
 
             @Override
@@ -468,12 +468,12 @@ public class SpeedTestFunctionalTest {
             }
         });
 
-        waiter = new Waiter();
+        mWaiter = new Waiter();
 
-        socket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+        mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                 .SPEED_TEST_SERVER_URI_DL_1MO);
 
-        waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, SECONDS, 2);
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, SECONDS, 2);
     }
 
     /**
@@ -509,10 +509,10 @@ public class SpeedTestFunctionalTest {
                 ((transferRateBps.floatValue() - 0.1) <= check));
 
         if (isDownload) {
-            SpeedTestUtils.testReportNotEmpty(waiter, socket.getLiveDownloadReport(), expectedPacketSize, false,
+            SpeedTestUtils.testReportNotEmpty(waiter, mSocket.getLiveDownloadReport(), expectedPacketSize, false,
                     isRepeat);
         } else {
-            SpeedTestUtils.testReportNotEmpty(waiter, socket.getLiveUploadReport(), expectedPacketSize, false,
+            SpeedTestUtils.testReportNotEmpty(waiter, mSocket.getLiveUploadReport(), expectedPacketSize, false,
                     isRepeat);
         }
     }
@@ -520,62 +520,62 @@ public class SpeedTestFunctionalTest {
     @Test
     public void chainDownloadUploadRepeatTest() throws TimeoutException {
 
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
-        socket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
+        mSocket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
 
         final int totalPacketSize = 1000000;
 
-        socket.addSpeedTestListener(new ISpeedTestListener() {
+        mSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
                 //called when download is finished
-                checkResult(waiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
+                checkResult(mWaiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
                         report.getTransferRateOctet(), true, true);
             }
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                    waiter.resume();
+                    mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                    mWaiter.resume();
                 }
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-                checkResult(waiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
+                checkResult(mWaiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
                         report.getTransferRateOctet(), false, true);
             }
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                    waiter.resume();
+                    mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                    mWaiter.resume();
                 }
             }
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport downloadReport) {
                 //notify download progress
-                waiter.assertTrue(percent >= 0 && percent <= 100);
+                mWaiter.assertTrue(percent >= 0 && percent <= 100);
             }
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport uploadReport) {
                 //notify upload progress
-                waiter.assertTrue(percent >= 0 && percent <= 100);
+                mWaiter.assertTrue(percent >= 0 && percent <= 100);
             }
         });
 
-        waiter = new Waiter();
+        mWaiter = new Waiter();
 
-        startRepeatDownload(waiter, 3000, 1000, 2, 1000000);
+        startRepeatDownload(mWaiter, 3000, 1000, 2, 1000000);
 
-        waiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
     }
 
     /**
@@ -593,14 +593,14 @@ public class SpeedTestFunctionalTest {
                                      final int chainCount,
                                      final int packetSize) {
 
-        socket.startDownloadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+        mSocket.startDownloadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                         .SPEED_TEST_SERVER_URI_DL_1MO,
                 duration, reportInterval, new
                         IRepeatListener() {
                             @Override
                             public void onFinish(final SpeedTestReport report) {
 
-                                SpeedTestUtils.compareFinishReport(socket, waiter, packetSize, report, true);
+                                SpeedTestUtils.compareFinishReport(mSocket, waiter, packetSize, report, true);
 
                                 startRepeatUpload(waiter, duration, reportInterval, chainCount, packetSize);
                             }
@@ -631,14 +631,14 @@ public class SpeedTestFunctionalTest {
                                    final int chainCount,
                                    final int packetSize) {
 
-        socket.startUploadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+        mSocket.startUploadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                         .SPEED_TEST_SERVER_URI_UL,
                 duration, reportInterval, packetSize, new
                         IRepeatListener() {
                             @Override
                             public void onFinish(final SpeedTestReport report) {
 
-                                SpeedTestUtils.compareFinishReport(socket, waiter, packetSize, report, false);
+                                SpeedTestUtils.compareFinishReport(mSocket, waiter, packetSize, report, false);
 
                                 final int count = chainCount - 1;
 
@@ -661,19 +661,19 @@ public class SpeedTestFunctionalTest {
     }
 
     /**
-     * Start Http server.
+     * Start Http mServer.
      */
     private void startServer() throws TimeoutException {
 
-        // initiate HTTP server
-        server = new HttpServer(SPEED_TEST_SERVER_PORT);
+        // initiate HTTP mServer
+        mServer = new HttpServer(SPEED_TEST_SERVER_PORT);
 
         // set ssl encryption
-        server.setSsl(false);
+        mServer.setSsl(false);
 
         final Waiter waiter = new Waiter();
 
-        server.addServerEventListener(new IHttpServerEventListener() {
+        mServer.addServerEventListener(new IHttpServerEventListener() {
 
             @Override
             public void onServerStarted() {
@@ -703,7 +703,7 @@ public class SpeedTestFunctionalTest {
                                     break;
                                 case SPEED_TEST_SERVER_URI_TIMEOUT:
                                     try {
-                                        Thread.sleep(socketTimeout + 1000);
+                                        Thread.sleep(mSocketTimeout + 1000);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
@@ -720,7 +720,7 @@ public class SpeedTestFunctionalTest {
                                     break;
                                 case SPEED_TEST_SERVER_URI_TIMEOUT:
                                     try {
-                                        Thread.sleep(socketTimeout + 1000);
+                                        Thread.sleep(mSocketTimeout + 1000);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
@@ -744,7 +744,7 @@ public class SpeedTestFunctionalTest {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                server.start(); // start HTTP server => this method will block
+                mServer.start(); // start HTTP server => this method will block
             }
         }).start();
 
@@ -752,6 +752,6 @@ public class SpeedTestFunctionalTest {
     }
 
     private void stopServer() {
-        server.closeServer();
+        mServer.closeServer();
     }
 }

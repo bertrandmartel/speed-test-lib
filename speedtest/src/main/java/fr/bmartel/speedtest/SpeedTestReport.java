@@ -38,47 +38,47 @@ public class SpeedTestReport {
     /**
      * current size of file to upload.
      */
-    private final long tempPacketSize;
+    private final long mTempPacketSize;
 
     /**
      * total file size.
      */
-    private final long totalPacketSize;
+    private final long mTotalPacketSize;
 
     /**
      * transfer rate in octet/s.
      */
-    private final BigDecimal transferRateOctet;
+    private final BigDecimal mTransferRateOctet;
 
     /**
      * transfer rate in bit/s.
      */
-    private final BigDecimal transferRateBit;
+    private final BigDecimal mTransferRateBit;
 
     /**
      * upload start time in millis since 1970.
      */
-    private final long startTime;
+    private final long mStartTime;
 
     /**
      * upload report time in millis since 1970.
      */
-    private final long reportTime;
+    private final long mReportTime;
 
     /**
      * speed examples mode for this report.
      */
-    private final SpeedTestMode speedTestMode;
+    private final SpeedTestMode mSpeedTestMode;
 
     /**
      * speed examples progress in percent (%).
      */
-    private final float progressPercent;
+    private final float mProgressPercent;
 
     /**
      * number of request.
      */
-    private final int requestNum;
+    private final int mRequestNum;
 
     /**
      * Build Upload report.
@@ -103,15 +103,15 @@ public class SpeedTestReport {
                            final BigDecimal transferRateBit,
                            final int requestNum) {
 
-        this.speedTestMode = speedTestMode;
-        this.progressPercent = progressPercent;
-        this.startTime = startTime;
-        this.reportTime = reportTime;
-        this.tempPacketSize = tempPacketSize;
-        this.totalPacketSize = totalPacketSize;
-        this.transferRateOctet = transferRateOctet;
-        this.transferRateBit = transferRateBit;
-        this.requestNum = requestNum;
+        this.mSpeedTestMode = speedTestMode;
+        this.mProgressPercent = progressPercent;
+        this.mStartTime = startTime;
+        this.mReportTime = reportTime;
+        this.mTempPacketSize = tempPacketSize;
+        this.mTotalPacketSize = totalPacketSize;
+        this.mTransferRateOctet = transferRateOctet;
+        this.mTransferRateBit = transferRateBit;
+        this.mRequestNum = requestNum;
     }
 
     /**
@@ -120,7 +120,7 @@ public class SpeedTestReport {
      * @return packet size in bit
      */
     public long getTemporaryPacketSize() {
-        return tempPacketSize;
+        return mTempPacketSize;
     }
 
     /**
@@ -129,7 +129,7 @@ public class SpeedTestReport {
      * @return total file size in bit
      */
     public long getTotalPacketSize() {
-        return totalPacketSize;
+        return mTotalPacketSize;
     }
 
     /**
@@ -138,7 +138,7 @@ public class SpeedTestReport {
      * @return transfer rate in octet/s
      */
     public BigDecimal getTransferRateOctet() {
-        return transferRateOctet;
+        return mTransferRateOctet;
     }
 
     /**
@@ -147,7 +147,7 @@ public class SpeedTestReport {
      * @return transfer rate in bit/s
      */
     public BigDecimal getTransferRateBit() {
-        return transferRateBit;
+        return mTransferRateBit;
     }
 
     /**
@@ -156,7 +156,7 @@ public class SpeedTestReport {
      * @return start time timestamp (millis since 1970)
      */
     public long getStartTime() {
-        return startTime;
+        return mStartTime;
     }
 
     /**
@@ -165,7 +165,7 @@ public class SpeedTestReport {
      * @return current timestamp for this report measurement (millis since 1970)
      */
     public long getReportTime() {
-        return reportTime;
+        return mReportTime;
     }
 
     /**
@@ -174,7 +174,7 @@ public class SpeedTestReport {
      * @return speed examples mode
      */
     public SpeedTestMode getSpeedTestMode() {
-        return speedTestMode;
+        return mSpeedTestMode;
     }
 
     /**
@@ -183,7 +183,7 @@ public class SpeedTestReport {
      * @return progress in %
      */
     public float getProgressPercent() {
-        return progressPercent;
+        return mProgressPercent;
     }
 
     /**
@@ -192,6 +192,6 @@ public class SpeedTestReport {
      * @return http request number
      */
     public int getRequestNum() {
-        return requestNum;
+        return mRequestNum;
     }
 }

@@ -1,6 +1,4 @@
-package fr.bmartel.speedtest.test.server;
-
-/**
+/*
  * The MIT License (MIT)
  * <p/>
  * Copyright (c) 2015 Bertrand Martel
@@ -23,6 +21,7 @@ package fr.bmartel.speedtest.test.server;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package fr.bmartel.speedtest.test.server;
 
 import fr.bmartel.protocol.http.inter.IHttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;
@@ -51,98 +50,98 @@ public class HttpServer implements IHttpServer, IHttpServerEventListener {
     /**
      * boolean loop control for server instance running.
      */
-    private volatile boolean running = true;
+    private volatile boolean mRunning = true;
 
     /**
      * define which port we use for connection.
      */
-    private final int port;
+    private final int mPort;
 
     /**
-     * set ssl encryption or not.
+     * set SSL encryption or not.
      */
-    private boolean ssl;
+    private boolean mSsl;
 
-    private boolean isServerClosed;
+    private boolean mServerClosed;
 
     /**
      * keystore certificate type.
      */
-    private String keystoreDefaultType = "";
+    private String mKeystoreDefaultType = "";
 
     /**
      * trustore certificate type.
      */
-    private String trustoreDefaultType = "";
+    private String mTrustoreDefaultType = "";
 
     /**
      * keystore file path.
      */
-    private String keystoreFile = "";
+    private String mKeystoreFile = "";
 
     /**
      * trustore file path.
      */
-    private String trustoreFile = "";
+    private String mTrustoreFile = "";
 
     /**
-     * ssl protocol used.
+     * mSsl protocol used.
      */
-    private String sslProtocol = "";
+    private String mSslProtocol = "";
 
     /**
      * keystore file password.
      */
-    private String keystorePassword = "";
+    private String mKeystorePassword = "";
 
     /**
      * trustore file password.
      */
-    private String trustorePassword = "";
+    private String mTrustorePassword = "";
 
     /**
      * define server socket object.
      */
-    private ServerSocket serverSocket;
+    private ServerSocket mServerSocket;
 
     /**
      * server event listener.
      */
-    private final List<IHttpServerEventListener> serverEventListenerList = new ArrayList<IHttpServerEventListener>();
+    private final List<IHttpServerEventListener> mServerEventListenerList = new ArrayList<IHttpServerEventListener>();
 
     /**
      * Initialize server.
      */
     public HttpServer(final int port) {
-        this.port = port;
+        this.mPort = port;
     }
 
     /**
-     * main loop for web server running.
+     * main loop for web server mRunning.
      */
     public void start() {
         try {
-            /* server will be running while running == true */
-            running = true;
+            /* server will be mRunning while mRunning == true */
+            mRunning = true;
 
-            if (ssl) {
+            if (mSsl) {
 
 				/* initial server keystore instance */
-                final KeyStore keystore = KeyStore.getInstance(keystoreDefaultType);
+                final KeyStore keystore = KeyStore.getInstance(mKeystoreDefaultType);
 
 				/* load keystore from file */
-                keystore.load(new FileInputStream(keystoreFile),
-                        keystorePassword.toCharArray());
+                keystore.load(new FileInputStream(mKeystoreFile),
+                        mKeystorePassword.toCharArray());
 
 				/*
                  * assign a new keystore containing all certificated to be
 				 * trusted
 				 */
-                final KeyStore tks = KeyStore.getInstance(trustoreDefaultType);
+                final KeyStore tks = KeyStore.getInstance(mTrustoreDefaultType);
 
 				/* load this keystore from file */
-                tks.load(new FileInputStream(trustoreFile),
-                        trustorePassword.toCharArray());
+                tks.load(new FileInputStream(mTrustoreFile),
+                        mTrustorePassword.toCharArray());
 
 				/* initialize key manager factory with chosen algorithm */
                 final KeyManagerFactory kmf = KeyManagerFactory
@@ -155,7 +154,7 @@ public class HttpServer implements IHttpServer, IHttpServerEventListener {
                         .getDefaultAlgorithm());
 
 				/* initialize key manager factory with initial keystore */
-                kmf.init(keystore, keystorePassword.toCharArray());
+                kmf.init(keystore, mKeystorePassword.toCharArray());
 
 				/*
                  * initialize trust manager factory with keystore containing
@@ -164,7 +163,7 @@ public class HttpServer implements IHttpServer, IHttpServerEventListener {
                 tmf.init(tks);
 
 				/* get SSL context chosen algorithm */
-                final SSLContext ctx = SSLContext.getInstance(sslProtocol);
+                final SSLContext ctx = SSLContext.getInstance(mSslProtocol);
 
 				/*
                  * initialize SSL context with key manager and trust managers
@@ -174,22 +173,22 @@ public class HttpServer implements IHttpServer, IHttpServerEventListener {
                 final SSLServerSocketFactory sslserversocketfactory = ctx
                         .getServerSocketFactory();
 
-                serverSocket = sslserversocketfactory.createServerSocket(port);
+                mServerSocket = sslserversocketfactory.createServerSocket(mPort);
 
             } else {
-                serverSocket = new ServerSocket(port);
+                mServerSocket = new ServerSocket(mPort);
             }
 
-            for (int i = 0; i < serverEventListenerList.size(); i++) {
-                serverEventListenerList.get(i).onServerStarted();
+            for (int i = 0; i < mServerEventListenerList.size(); i++) {
+                mServerEventListenerList.get(i).onServerStarted();
             }
 
 			/*
              * server thread main loop : accept a new connect each time
 			 * requested by correct client
 			 */
-            while (running) {
-                final Socket newSocketConnection = serverSocket.accept();
+            while (mRunning) {
+                final Socket newSocketConnection = mServerSocket.accept();
 
                 newSocketConnection.setKeepAlive(true);
                 final ServerSocketChannel server = new ServerSocketChannel(
@@ -199,7 +198,7 @@ public class HttpServer implements IHttpServer, IHttpServerEventListener {
                 newSocket.start();
             }
             /* close server socket safely */
-            serverSocket.close();
+            mServerSocket.close();
         } catch (SocketException e) {
             //e.printStackTrace();
             /* stop all thread and server socket */
@@ -225,13 +224,13 @@ public class HttpServer implements IHttpServer, IHttpServerEventListener {
     }
 
     /**
-     * Set ssl parameters.
+     * Set mSsl parameters.
      *
      * @param keystoreDefaultType keystore certificates type
      * @param trustoreDefaultType trustore certificates type
      * @param keystoreFile        keystore file path
      * @param trustoreFile        trustore file path
-     * @param sslProtocol         ssl protocol used
+     * @param sslProtocol         mSsl protocol used
      * @param keystorePassword    keystore password
      * @param trustorePassword    trustore password
      */
@@ -242,24 +241,24 @@ public class HttpServer implements IHttpServer, IHttpServerEventListener {
                              final String sslProtocol,
                              final String keystorePassword,
                              final String trustorePassword) {
-        this.keystoreDefaultType = keystoreDefaultType;
-        this.trustoreDefaultType = trustoreDefaultType;
-        this.keystoreFile = keystoreFile;
-        this.trustoreFile = trustoreFile;
-        this.sslProtocol = sslProtocol;
-        this.keystorePassword = keystorePassword;
-        this.trustorePassword = trustorePassword;
+        this.mKeystoreDefaultType = keystoreDefaultType;
+        this.mTrustoreDefaultType = trustoreDefaultType;
+        this.mKeystoreFile = keystoreFile;
+        this.mTrustoreFile = trustoreFile;
+        this.mSslProtocol = sslProtocol;
+        this.mKeystorePassword = keystorePassword;
+        this.mTrustorePassword = trustorePassword;
     }
 
     /**
-     * Stop server socket and stop running thread.
+     * Stop server socket and stop mRunning thread.
      */
     private void stop() {
         /* disable loop */
-        running = false;
+        mRunning = false;
 
-        if (!isServerClosed) {
-            isServerClosed = true;
+        if (!mServerClosed) {
+            mServerClosed = true;
 
 			/* close socket connection */
             closeServerSocket();
@@ -271,9 +270,9 @@ public class HttpServer implements IHttpServer, IHttpServerEventListener {
      * Stop server socket.
      */
     private void closeServerSocket() {
-        if (serverSocket != null) {
+        if (mServerSocket != null) {
             try {
-                serverSocket.close();
+                mServerSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -286,16 +285,16 @@ public class HttpServer implements IHttpServer, IHttpServerEventListener {
     }
 
     public boolean isSsl() {
-        return ssl;
+        return mSsl;
     }
 
-    public void setSsl(final boolean ssl) {
-        this.ssl = ssl;
+    public void setSsl(final boolean mSsl) {
+        this.mSsl = mSsl;
     }
 
     @Override
     public void addServerEventListener(final IHttpServerEventListener listener) {
-        serverEventListenerList.add(listener);
+        mServerEventListenerList.add(listener);
     }
 
     @Override
@@ -306,8 +305,8 @@ public class HttpServer implements IHttpServer, IHttpServerEventListener {
     @Override
     public void onHttpFrameReceived(final IHttpFrame httpFrame,
                                     final HttpStates receptionStates, final IHttpStream httpStream) {
-        for (int i = 0; i < serverEventListenerList.size(); i++) {
-            serverEventListenerList.get(i).onHttpFrameReceived(httpFrame,
+        for (int i = 0; i < mServerEventListenerList.size(); i++) {
+            mServerEventListenerList.get(i).onHttpFrameReceived(httpFrame,
                     receptionStates, httpStream);
         }
     }
