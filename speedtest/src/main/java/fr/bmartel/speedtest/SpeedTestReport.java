@@ -102,6 +102,7 @@ public class SpeedTestReport {
                            final BigDecimal transferRateOctet,
                            final BigDecimal transferRateBit,
                            final int requestNum) {
+
         this.speedTestMode = speedTestMode;
         this.progressPercent = progressPercent;
         this.startTime = startTime;

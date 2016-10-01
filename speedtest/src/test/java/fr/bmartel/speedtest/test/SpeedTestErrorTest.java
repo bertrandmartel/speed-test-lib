@@ -31,12 +31,12 @@ import fr.bmartel.speedtest.SpeedTestError;
 import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.SpeedTestSocket;
 import net.jodah.concurrentunit.Waiter;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -87,12 +87,12 @@ public class SpeedTestErrorTest {
      */
     @Test
     public void socketConnectionErrorTest() throws TimeoutException, NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
+            InvocationTargetException, NoSuchFieldException {
         socket = new SpeedTestSocket();
         noCheckMessage = true;
-        initErrorListener(SpeedTestError.CONNECTION_ERROR);
+        final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.CONNECTION_ERROR);
 
-        testErrorHandler("dispatchError", true);
+        testErrorHandler(listenerList, true, true);
     }
 
     /**
@@ -100,11 +100,14 @@ public class SpeedTestErrorTest {
      *
      * @param error type of error to catch
      */
-    private void initErrorListener(final SpeedTestError error) {
+    private List<ISpeedTestListener> initErrorListener(final SpeedTestError error) throws NoSuchFieldException,
+            IllegalAccessException {
 
         waiter = new Waiter();
 
-        socket.addSpeedTestListener(new ISpeedTestListener() {
+        final List<ISpeedTestListener> listenerList = new ArrayList<>();
+
+        listenerList.add(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
             }
@@ -155,122 +158,38 @@ public class SpeedTestErrorTest {
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
             }
         });
-    }
 
-    /**
-     * Test http frame error for forceClose or not.
-     *
-     * @param methodName method to reflect
-     */
-    private void testHttpFrameErrorHandler(final String methodName) throws TimeoutException, NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
+        SpeedTestUtils.setListenerList(socket, listenerList);
 
-        Class[] cArg = new Class[1];
-        cArg[0] = HttpFrame.class;
-
-        final Method method = socket.getClass().getDeclaredMethod(methodName, cArg);
-        method.setAccessible(true);
-        Assert.assertNotNull(method);
-
-        isForceStop = false;
-        isDownload = true;
-
-        final HttpFrame frame = new HttpFrame();
-        final HashMap<String, String> headers = new HashMap<String, String>();
-        headers.put(HttpHeader.CONTENT_LENGTH, String.valueOf(0));
-        frame.setHeaders(headers);
-
-        method.invoke(socket, frame);
-
-        waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
-
-        isForceStop = true;
-        socket.forceStopTask();
-
-        method.invoke(socket, frame);
-
-        waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
-
-    }
-
-    /**
-     * Test http error for forceClose or not.
-     *
-     * @param methodName method to reflect
-     */
-    private void testHttpErrorHandler(final String methodName) throws TimeoutException,
-            NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException {
-
-        Class[] cArg = new Class[1];
-        cArg[0] = HttpStates.class;
-
-        testErrorForceClose(methodName, cArg);
-    }
-
-    /**
-     * Test an error handler + force close event.
-     */
-    private void testErrorForceClose(final String methodName, final Class... cArg) throws TimeoutException,
-            NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-
-        final Method method = socket.getClass().getDeclaredMethod(methodName, cArg);
-        method.setAccessible(true);
-        Assert.assertNotNull(method);
-
-        isForceStop = false;
-        isDownload = true;
-
-        iterateIncorrectHeaders(method);
-
-        socket.forceStopTask();
-        isForceStop = true;
-
-        iterateIncorrectHeaders(method);
-    }
-
-    /**
-     * Iterate over http header enum to test all values except OK.
-     *
-     * @param method method to use to test error
-     */
-    private void iterateIncorrectHeaders(final Method method) throws InvocationTargetException,
-            IllegalAccessException, TimeoutException {
-
-        for (final HttpStates state : HttpStates.values()) {
-            if (state != HttpStates.HTTP_FRAME_OK) {
-                method.invoke(socket, state);
-
-                waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
-            }
-        }
+        return listenerList;
     }
 
     /**
      * Test connection error for download/upload/forceStopTask.
-     *
-     * @param methodName method name to reflect
      */
-    private void testErrorHandler(final String methodName, final boolean forceCloseStatus) throws TimeoutException,
-            NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
-
-        Class[] cArg = new Class[2];
-        cArg[0] = boolean.class;
-        cArg[1] = String.class;
-
-        final Method method = socket.getClass().getDeclaredMethod(methodName, cArg);
-        method.setAccessible(true);
-        Assert.assertNotNull(method);
+    private void testErrorHandler(final List<ISpeedTestListener> listenerList, final boolean forceCloseStatus,
+                                  final boolean dispatchError)
+            throws TimeoutException {
 
         isForceStop = false;
         isDownload = true;
-        method.invoke(socket, isDownload, errorMessage);
 
+        if (dispatchError) {
+            fr.bmartel.speedtest.SpeedTestUtils.dispatchError(isForceStop, listenerList, isDownload, errorMessage);
+        } else {
+            fr.bmartel.speedtest.SpeedTestUtils.dispatchSocketTimeout(isForceStop, listenerList, isDownload,
+                    errorMessage);
+        }
         waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         isDownload = false;
-        method.invoke(socket, isDownload, errorMessage);
+
+        if (dispatchError) {
+            fr.bmartel.speedtest.SpeedTestUtils.dispatchError(isForceStop, listenerList, isDownload, errorMessage);
+        } else {
+            fr.bmartel.speedtest.SpeedTestUtils.dispatchSocketTimeout(isForceStop, listenerList, isDownload,
+                    errorMessage);
+        }
 
         waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
@@ -279,12 +198,24 @@ public class SpeedTestErrorTest {
             socket.forceStopTask();
             isForceStop = true;
             isDownload = false;
-            method.invoke(socket, isDownload, errorMessage);
+
+            if (dispatchError) {
+                fr.bmartel.speedtest.SpeedTestUtils.dispatchError(isForceStop, listenerList, isDownload, errorMessage);
+            } else {
+                fr.bmartel.speedtest.SpeedTestUtils.dispatchSocketTimeout(isForceStop, listenerList, isDownload,
+                        errorMessage);
+            }
 
             waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
             isDownload = true;
-            method.invoke(socket, isDownload, errorMessage);
+
+            if (dispatchError) {
+                fr.bmartel.speedtest.SpeedTestUtils.dispatchError(isForceStop, listenerList, isDownload, errorMessage);
+            } else {
+                fr.bmartel.speedtest.SpeedTestUtils.dispatchSocketTimeout(isForceStop, listenerList, isDownload,
+                        errorMessage);
+            }
 
             waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
         }
@@ -295,13 +226,13 @@ public class SpeedTestErrorTest {
      */
     @Test
     public void socketTimeoutErrorTest() throws TimeoutException, NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
+            InvocationTargetException, NoSuchFieldException {
 
         socket = new SpeedTestSocket();
         noCheckMessage = true;
-        initErrorListener(SpeedTestError.SOCKET_TIMEOUT);
+        final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.SOCKET_TIMEOUT);
 
-        testErrorHandler("dispatchSocketTimeout", false);
+        testErrorHandler(listenerList, false, false);
     }
 
     /**
@@ -309,13 +240,31 @@ public class SpeedTestErrorTest {
      */
     @Test
     public void httpFrameErrorTest() throws TimeoutException, NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
+            InvocationTargetException, NoSuchFieldException {
 
         socket = new SpeedTestSocket();
         noCheckMessage = false;
-        initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
+        final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
 
-        testHttpErrorHandler("checkHttpFrameError");
+        isForceStop = false;
+        isDownload = true;
+
+        for (final HttpStates state : HttpStates.values()) {
+            if (state != HttpStates.HTTP_FRAME_OK) {
+                fr.bmartel.speedtest.SpeedTestUtils.checkHttpFrameError(isForceStop, listenerList, state);
+                waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+            }
+        }
+
+        socket.forceStopTask();
+        isForceStop = true;
+
+        for (final HttpStates state : HttpStates.values()) {
+            if (state != HttpStates.HTTP_FRAME_OK) {
+                fr.bmartel.speedtest.SpeedTestUtils.checkHttpFrameError(isForceStop, listenerList, state);
+                waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+            }
+        }
     }
 
     /**
@@ -323,26 +272,60 @@ public class SpeedTestErrorTest {
      */
     @Test
     public void httpHeaderErrorTest() throws TimeoutException, NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
+            InvocationTargetException, NoSuchFieldException {
 
         socket = new SpeedTestSocket();
         noCheckMessage = false;
-        initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
+        final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
 
-        testHttpErrorHandler("checkHttpHeaderError");
+        isForceStop = false;
+        isDownload = true;
+
+        for (final HttpStates state : HttpStates.values()) {
+            if (state != HttpStates.HTTP_FRAME_OK) {
+                fr.bmartel.speedtest.SpeedTestUtils.checkHttpHeaderError(isForceStop, listenerList, state);
+                waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+            }
+        }
+
+        socket.forceStopTask();
+        isForceStop = true;
+
+        for (final HttpStates state : HttpStates.values()) {
+            if (state != HttpStates.HTTP_FRAME_OK) {
+                fr.bmartel.speedtest.SpeedTestUtils.checkHttpHeaderError(isForceStop, listenerList, state);
+                waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+            }
+        }
     }
 
     /**
      * Test http content length error.
      */
     @Test
-    public void httpContentLengthErrorTest() throws TimeoutException, NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
+    public void httpContentLengthErrorTest() throws TimeoutException, NoSuchFieldException, IllegalAccessException {
         socket = new SpeedTestSocket();
         noCheckMessage = false;
-        initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
+        final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
 
-        testHttpFrameErrorHandler("checkHttpContentLengthError");
+        isForceStop = false;
+        isDownload = true;
+
+        final HttpFrame frame = new HttpFrame();
+        final HashMap<String, String> headers = new HashMap<>();
+        headers.put(HttpHeader.CONTENT_LENGTH, String.valueOf(0));
+        frame.setHeaders(headers);
+
+        fr.bmartel.speedtest.SpeedTestUtils.checkHttpContentLengthError(isForceStop, listenerList, frame);
+
+        waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+
+        isForceStop = true;
+        socket.forceStopTask();
+
+        fr.bmartel.speedtest.SpeedTestUtils.checkHttpContentLengthError(isForceStop, listenerList, frame);
+
+        waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
     }
 
     /**
