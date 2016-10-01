@@ -28,6 +28,7 @@ import net.jodah.concurrentunit.Waiter;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -243,7 +244,7 @@ public class SpeedTestRepeatTest {
         Assert.assertEquals(repeatVars.getRepeatWindows(), TestCommon.SPEED_TEST_DURATION);
 
         waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
-        waiterError.await(TestCommon.WAITING_TIMEOUT_LONG_OPERATION, TimeUnit.SECONDS, TestCommon.EXPECTED_REPORT);
+        waiterError.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS, TestCommon.EXPECTED_REPORT);
         finishWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         socket.forceStopTask();
@@ -342,10 +343,30 @@ public class SpeedTestRepeatTest {
     }
 
     /**
+     * Get Repeat wrapper field from socket.
+     *
+     * @return
+     * @throws NoSuchFieldException
+     * @throws IllegalAccessException
+     */
+    private RepeatWrapper getRepeatWrapper() throws NoSuchFieldException, IllegalAccessException {
+
+        final Field repeatWrapperField = socket.getClass().getDeclaredField("repeatWrapper");
+        Assert.assertNotNull("repeatWrapper is null", repeatWrapperField);
+        repeatWrapperField.setAccessible(true);
+
+        final RepeatWrapper repeatWrapper = (RepeatWrapper) repeatWrapperField.get(socket);
+        Assert.assertNotNull("repeatWrapper is null", repeatWrapper);
+
+        return repeatWrapper;
+    }
+
+    /**
      * Test download repeat.
      */
     @Test
-    public void initRepeatTest() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public void initRepeatTest() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException,
+            NoSuchFieldException {
 
         socket = new SpeedTestSocket();
 
@@ -353,8 +374,10 @@ public class SpeedTestRepeatTest {
 
         testRepeatVarsNoRepeat(repeatVars);
 
-        testInitRepeat(repeatVars, true);
-        testInitRepeat(repeatVars, false);
+        final RepeatWrapper repeatWrapper = getRepeatWrapper();
+
+        testInitRepeat(repeatVars, true, repeatWrapper);
+        testInitRepeat(repeatVars, false, repeatWrapper);
     }
 
     /**
@@ -362,19 +385,24 @@ public class SpeedTestRepeatTest {
      *
      * @param repeatVars
      * @param download
+     * @param repeatWrapper
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
      */
-    private void testInitRepeat(final RepeatVars repeatVars, final boolean download) throws NoSuchMethodException,
+    private void testInitRepeat(final RepeatVars repeatVars, final boolean download,
+                                final RepeatWrapper repeatWrapper) throws NoSuchMethodException,
             InvocationTargetException, IllegalAccessException {
 
         Class[] cArg = new Class[1];
         cArg[0] = boolean.class;
 
-        final Method method = socket.getClass().getDeclaredMethod("initRepeat", cArg);
+        final Method method = repeatWrapper.getClass().getDeclaredMethod("initRepeat", cArg);
 
         method.setAccessible(true);
         Assert.assertNotNull(method);
 
-        method.invoke(socket, download);
+        method.invoke(repeatWrapper, download);
 
         Assert.assertEquals(repeatVars.isRepeatDownload(), download);
         Assert.assertEquals(repeatVars.isRepeatUpload(), !download);
@@ -427,18 +455,20 @@ public class SpeedTestRepeatTest {
 
         Assert.assertEquals(listenerList.size(), 1);
 
+        final RepeatWrapper repeatWrapper = getRepeatWrapper();
+
         final Method method;
 
         Class[] cArg = new Class[2];
         cArg[0] = ISpeedTestListener.class;
         cArg[1] = Timer.class;
 
-        method = socket.getClass().getDeclaredMethod("clearRepeatTask", cArg);
+        method = repeatWrapper.getClass().getDeclaredMethod("clearRepeatTask", cArg);
 
         method.setAccessible(true);
         Assert.assertNotNull(method);
 
-        method.invoke(socket, listener, new Timer());
+        method.invoke(repeatWrapper, listener, new Timer());
 
         Assert.assertEquals(repeatVars.isRepeatFinished(), true);
         Assert.assertEquals(listenerList.size(), 0);
