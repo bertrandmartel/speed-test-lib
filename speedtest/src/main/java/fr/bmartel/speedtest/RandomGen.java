@@ -59,12 +59,12 @@ public class RandomGen {
     /**
      * random object.
      */
-    private final Random random = new Random();
+    private final Random mRandom = new Random();
 
     /**
      * buffer used to retrieve random values.
      */
-    private final byte[] buf;
+    private final byte[] mBuf;
 
     /**
      * Build Random generator object with specify file length.
@@ -75,19 +75,19 @@ public class RandomGen {
         if (length < MINIMUM_LENGTH) {
             throw new IllegalArgumentException("length < " + MINIMUM_LENGTH + ": " + length);
         }
-        buf = new byte[length];
+        mBuf = new byte[length];
     }
 
     /**
-     * generate random byte array.
+     * generate mRandom byte array.
      *
      * @return byte array
      */
     public byte[] nextArray() {
-        for (int idx = 0; idx < buf.length; ++idx) {
-            final int val = random.nextInt(SYMBOLS_LENGTH);
-            buf[idx] = SYMBOLS[val];
+        for (int idx = 0; idx < mBuf.length; ++idx) {
+            final int val = mRandom.nextInt(SYMBOLS_LENGTH);
+            mBuf[idx] = SYMBOLS[val];
         }
-        return Arrays.copyOf(buf, buf.length);
+        return Arrays.copyOf(mBuf, mBuf.length);
     }
 }

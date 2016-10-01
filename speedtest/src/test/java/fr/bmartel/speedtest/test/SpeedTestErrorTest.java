@@ -50,7 +50,7 @@ public class SpeedTestErrorTest {
     /**
      * SpeedTtest socket used in all functional tests.
      */
-    private SpeedTestSocket socket;
+    private SpeedTestSocket mSocket;
 
     /**
      * error message for testing error callback.
@@ -65,22 +65,22 @@ public class SpeedTestErrorTest {
     /**
      * download/upload mode for testing error callback.
      */
-    private static boolean isDownload = true;
+    private static boolean mDownload = true;
 
     /**
      * define if force stop is to be expected in error callback.
      */
-    private static boolean isForceStop;
+    private static boolean mForceStop;
 
     /**
      * define if error message value should be checked.
      */
-    private static boolean noCheckMessage;
+    private static boolean mNoCheckMessage;
 
     /**
      * Waiter for speed test listener callback.
      */
-    private static Waiter waiter;
+    private static Waiter mWaiter;
 
     /**
      * Test socket connection error.
@@ -88,8 +88,8 @@ public class SpeedTestErrorTest {
     @Test
     public void socketConnectionErrorTest() throws TimeoutException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, NoSuchFieldException {
-        socket = new SpeedTestSocket();
-        noCheckMessage = true;
+        mSocket = new SpeedTestSocket();
+        mNoCheckMessage = true;
         final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.CONNECTION_ERROR);
 
         testErrorHandler(listenerList, true, true);
@@ -103,7 +103,7 @@ public class SpeedTestErrorTest {
     private List<ISpeedTestListener> initErrorListener(final SpeedTestError error) throws NoSuchFieldException,
             IllegalAccessException {
 
-        waiter = new Waiter();
+        mWaiter = new Waiter();
 
         final List<ISpeedTestListener> listenerList = new ArrayList<>();
 
@@ -118,18 +118,18 @@ public class SpeedTestErrorTest {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError.equals(error) && isDownload) {
-                    if (noCheckMessage) {
-                        waiter.assertEquals(errorMessage, SpeedTestErrorTest.this.errorMessage);
+                if (speedTestError.equals(error) && mDownload) {
+                    if (mNoCheckMessage) {
+                        mWaiter.assertEquals(errorMessage, SpeedTestErrorTest.this.errorMessage);
                     }
-                    waiter.resume();
-                } else if (isForceStop && isDownload && speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    if (noCheckMessage) {
-                        waiter.assertEquals(errorMessage, SpeedTestErrorTest.this.errorMessage + errorMessageSuffix);
+                    mWaiter.resume();
+                } else if (mForceStop && mDownload && speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    if (mNoCheckMessage) {
+                        mWaiter.assertEquals(errorMessage, SpeedTestErrorTest.this.errorMessage + errorMessageSuffix);
                     }
-                    waiter.resume();
+                    mWaiter.resume();
                 } else {
-                    waiter.fail("error connection error expected");
+                    mWaiter.fail("error connection error expected");
                 }
             }
 
@@ -139,18 +139,18 @@ public class SpeedTestErrorTest {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError.equals(error) && !isDownload && !isForceStop) {
-                    if (noCheckMessage) {
-                        waiter.assertEquals(errorMessage, SpeedTestErrorTest.this.errorMessage);
+                if (speedTestError.equals(error) && !mDownload && !mForceStop) {
+                    if (mNoCheckMessage) {
+                        mWaiter.assertEquals(errorMessage, SpeedTestErrorTest.this.errorMessage);
                     }
-                    waiter.resume();
-                } else if (isForceStop && !isDownload && speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    if (noCheckMessage) {
-                        waiter.assertEquals(errorMessage, SpeedTestErrorTest.this.errorMessage + errorMessageSuffix);
+                    mWaiter.resume();
+                } else if (mForceStop && !mDownload && speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    if (mNoCheckMessage) {
+                        mWaiter.assertEquals(errorMessage, SpeedTestErrorTest.this.errorMessage + errorMessageSuffix);
                     }
-                    waiter.resume();
+                    mWaiter.resume();
                 } else {
-                    waiter.fail("error connection error expected");
+                    mWaiter.fail("error connection error expected");
                 }
             }
 
@@ -159,65 +159,65 @@ public class SpeedTestErrorTest {
             }
         });
 
-        SpeedTestUtils.setListenerList(socket, listenerList);
+        SpeedTestUtils.setListenerList(mSocket, listenerList);
 
         return listenerList;
     }
 
     /**
-     * Test connection error for download/upload/forceStopTask.
+     * Test connection error for mDownload/upload/forceStopTask.
      */
     private void testErrorHandler(final List<ISpeedTestListener> listenerList, final boolean forceCloseStatus,
                                   final boolean dispatchError)
             throws TimeoutException {
 
-        isForceStop = false;
-        isDownload = true;
+        mForceStop = false;
+        mDownload = true;
 
         if (dispatchError) {
-            fr.bmartel.speedtest.SpeedTestUtils.dispatchError(isForceStop, listenerList, isDownload, errorMessage);
+            fr.bmartel.speedtest.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
         } else {
-            fr.bmartel.speedtest.SpeedTestUtils.dispatchSocketTimeout(isForceStop, listenerList, isDownload,
+            fr.bmartel.speedtest.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
                     errorMessage);
         }
-        waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-        isDownload = false;
+        mDownload = false;
 
         if (dispatchError) {
-            fr.bmartel.speedtest.SpeedTestUtils.dispatchError(isForceStop, listenerList, isDownload, errorMessage);
+            fr.bmartel.speedtest.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
         } else {
-            fr.bmartel.speedtest.SpeedTestUtils.dispatchSocketTimeout(isForceStop, listenerList, isDownload,
+            fr.bmartel.speedtest.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
                     errorMessage);
         }
 
-        waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         if (forceCloseStatus) {
 
-            socket.forceStopTask();
-            isForceStop = true;
-            isDownload = false;
+            mSocket.forceStopTask();
+            mForceStop = true;
+            mDownload = false;
 
             if (dispatchError) {
-                fr.bmartel.speedtest.SpeedTestUtils.dispatchError(isForceStop, listenerList, isDownload, errorMessage);
+                fr.bmartel.speedtest.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
             } else {
-                fr.bmartel.speedtest.SpeedTestUtils.dispatchSocketTimeout(isForceStop, listenerList, isDownload,
+                fr.bmartel.speedtest.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
                         errorMessage);
             }
 
-            waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+            mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-            isDownload = true;
+            mDownload = true;
 
             if (dispatchError) {
-                fr.bmartel.speedtest.SpeedTestUtils.dispatchError(isForceStop, listenerList, isDownload, errorMessage);
+                fr.bmartel.speedtest.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
             } else {
-                fr.bmartel.speedtest.SpeedTestUtils.dispatchSocketTimeout(isForceStop, listenerList, isDownload,
+                fr.bmartel.speedtest.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
                         errorMessage);
             }
 
-            waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+            mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
         }
     }
 
@@ -228,8 +228,8 @@ public class SpeedTestErrorTest {
     public void socketTimeoutErrorTest() throws TimeoutException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, NoSuchFieldException {
 
-        socket = new SpeedTestSocket();
-        noCheckMessage = true;
+        mSocket = new SpeedTestSocket();
+        mNoCheckMessage = true;
         final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.SOCKET_TIMEOUT);
 
         testErrorHandler(listenerList, false, false);
@@ -242,27 +242,27 @@ public class SpeedTestErrorTest {
     public void httpFrameErrorTest() throws TimeoutException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, NoSuchFieldException {
 
-        socket = new SpeedTestSocket();
-        noCheckMessage = false;
+        mSocket = new SpeedTestSocket();
+        mNoCheckMessage = false;
         final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
 
-        isForceStop = false;
-        isDownload = true;
+        mForceStop = false;
+        mDownload = true;
 
         for (final HttpStates state : HttpStates.values()) {
             if (state != HttpStates.HTTP_FRAME_OK) {
-                fr.bmartel.speedtest.SpeedTestUtils.checkHttpFrameError(isForceStop, listenerList, state);
-                waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+                fr.bmartel.speedtest.SpeedTestUtils.checkHttpFrameError(mForceStop, listenerList, state);
+                mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
             }
         }
 
-        socket.forceStopTask();
-        isForceStop = true;
+        mSocket.forceStopTask();
+        mForceStop = true;
 
         for (final HttpStates state : HttpStates.values()) {
             if (state != HttpStates.HTTP_FRAME_OK) {
-                fr.bmartel.speedtest.SpeedTestUtils.checkHttpFrameError(isForceStop, listenerList, state);
-                waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+                fr.bmartel.speedtest.SpeedTestUtils.checkHttpFrameError(mForceStop, listenerList, state);
+                mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
             }
         }
     }
@@ -274,27 +274,27 @@ public class SpeedTestErrorTest {
     public void httpHeaderErrorTest() throws TimeoutException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, NoSuchFieldException {
 
-        socket = new SpeedTestSocket();
-        noCheckMessage = false;
+        mSocket = new SpeedTestSocket();
+        mNoCheckMessage = false;
         final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
 
-        isForceStop = false;
-        isDownload = true;
+        mForceStop = false;
+        mDownload = true;
 
         for (final HttpStates state : HttpStates.values()) {
             if (state != HttpStates.HTTP_FRAME_OK) {
-                fr.bmartel.speedtest.SpeedTestUtils.checkHttpHeaderError(isForceStop, listenerList, state);
-                waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+                fr.bmartel.speedtest.SpeedTestUtils.checkHttpHeaderError(mForceStop, listenerList, state);
+                mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
             }
         }
 
-        socket.forceStopTask();
-        isForceStop = true;
+        mSocket.forceStopTask();
+        mForceStop = true;
 
         for (final HttpStates state : HttpStates.values()) {
             if (state != HttpStates.HTTP_FRAME_OK) {
-                fr.bmartel.speedtest.SpeedTestUtils.checkHttpHeaderError(isForceStop, listenerList, state);
-                waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+                fr.bmartel.speedtest.SpeedTestUtils.checkHttpHeaderError(mForceStop, listenerList, state);
+                mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
             }
         }
     }
@@ -304,32 +304,32 @@ public class SpeedTestErrorTest {
      */
     @Test
     public void httpContentLengthErrorTest() throws TimeoutException, NoSuchFieldException, IllegalAccessException {
-        socket = new SpeedTestSocket();
-        noCheckMessage = false;
+        mSocket = new SpeedTestSocket();
+        mNoCheckMessage = false;
         final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
 
-        isForceStop = false;
-        isDownload = true;
+        mForceStop = false;
+        mDownload = true;
 
         final HttpFrame frame = new HttpFrame();
         final HashMap<String, String> headers = new HashMap<>();
         headers.put(HttpHeader.CONTENT_LENGTH, String.valueOf(0));
         frame.setHeaders(headers);
 
-        fr.bmartel.speedtest.SpeedTestUtils.checkHttpContentLengthError(isForceStop, listenerList, frame);
+        fr.bmartel.speedtest.SpeedTestUtils.checkHttpContentLengthError(mForceStop, listenerList, frame);
 
-        waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-        isForceStop = true;
-        socket.forceStopTask();
+        mForceStop = true;
+        mSocket.forceStopTask();
 
-        fr.bmartel.speedtest.SpeedTestUtils.checkHttpContentLengthError(isForceStop, listenerList, frame);
+        fr.bmartel.speedtest.SpeedTestUtils.checkHttpContentLengthError(mForceStop, listenerList, frame);
 
-        waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
     }
 
     /**
-     * Test unknown host error for download.
+     * Test unknown host error for mDownload.
      */
     @Test
     public void unknownHostDownloadTest() throws TimeoutException {
@@ -337,7 +337,7 @@ public class SpeedTestErrorTest {
     }
 
     /**
-     * Test unknown host error for download.
+     * Test unknown host error for mDownload.
      */
     @Test
     public void unknownHostUploadTest() throws TimeoutException {
@@ -345,16 +345,16 @@ public class SpeedTestErrorTest {
     }
 
     /**
-     * Test unknown host for download/upload.
+     * Test unknown host for mDownload/upload.
      *
-     * @param download define if download or upload is testing.
+     * @param download define if mDownload or upload is testing.
      */
     private void unknownHostTest(final boolean download) throws TimeoutException {
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
-        waiter = new Waiter();
+        mWaiter = new Waiter();
 
-        socket.addSpeedTestListener(new ISpeedTestListener() {
+        mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
             }
@@ -369,12 +369,12 @@ public class SpeedTestErrorTest {
                 if (download) {
                     if (speedTestError != SpeedTestError.CONNECTION_ERROR && speedTestError != SpeedTestError
                             .FORCE_CLOSE_SOCKET) {
-                        waiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
+                        mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
                     } else {
-                        waiter.resume();
+                        mWaiter.resume();
                     }
                 } else {
-                    waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onDownloadError");
+                    mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onDownloadError");
                 }
             }
 
@@ -386,13 +386,13 @@ public class SpeedTestErrorTest {
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
 
                 if (download) {
-                    waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadError");
+                    mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadError");
                 } else {
                     if (speedTestError != SpeedTestError.CONNECTION_ERROR && speedTestError != SpeedTestError
                             .FORCE_CLOSE_SOCKET) {
-                        waiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
+                        mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
                     } else {
-                        waiter.resume();
+                        mWaiter.resume();
                     }
                 }
             }
@@ -403,16 +403,16 @@ public class SpeedTestErrorTest {
         });
 
         if (download) {
-            socket.startDownload(TestCommon.SPEED_TEST_FAKE_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+            mSocket.startDownload(TestCommon.SPEED_TEST_FAKE_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                     .SPEED_TEST_SERVER_URI_DL_1MO);
         } else {
-            socket.startUpload(TestCommon.SPEED_TEST_FAKE_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+            mSocket.startUpload(TestCommon.SPEED_TEST_FAKE_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                             .SPEED_TEST_SERVER_URI_UL,
                     TestCommon.FILE_SIZE_MEDIUM);
         }
 
-        waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-        socket.forceStopTask();
+        mSocket.forceStopTask();
     }
 }

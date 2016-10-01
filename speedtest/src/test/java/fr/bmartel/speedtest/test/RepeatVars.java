@@ -41,64 +41,64 @@ public class RepeatVars {
     /**
      * define if download should be repeated.
      */
-    private final Field repeatDownload;
+    private final Field mRepeatDownload;
 
     /**
      * define if upload should be repeated.
      */
-    private final Field repeatUpload;
+    private final Field mRepeatUpload;
 
     /**
      * start time for download repeat task.
      */
-    private final Field startDateRepeat;
+    private final Field mStartDateRepeat;
 
     /**
      * time window for download repeat task.
      */
-    private final Field repeatWindows;
+    private final Field mRepeatWindows;
 
     /**
      * current number of request for download repeat task.
      */
-    private final Field repeatRequestNum;
+    private final Field mRepeatRequestNum;
 
     /**
      * number of packet pending for download repeat task.
      */
-    private final Field repeatPacketSize;
+    private final Field mRepeatPacketSize;
 
     /**
      * number of packet downloaded for download/upload repeat task.
      */
-    private final Field repeatTempPckSize;
+    private final Field mRepeatTempPckSize;
 
     /**
      * define if the first download repeat has been sent and waiting for connection
      * It is reset to false when the client is connected to server the first time.
      */
-    private final Field firstDownloadRepeat;
+    private final Field mFirstDownloadRepeat;
 
     /**
      * define if the first upload repeat has been sent and waiting for connection
      * It is reset to false when the client is connected to server the first time.
      */
-    private final Field firstUploadRepeat;
+    private final Field mFirstUploadRepeat;
 
     /**
      * transfer rate list.
      */
-    private final Field repeatTransferRateList;
+    private final Field mRepeatTransferRateList;
 
     /**
      * define if download repeat task is finished.
      */
-    private final Field repeatFinished;
+    private final Field mRepeatFinished;
 
     /**
      * Repeat wrapper.
      */
-    private final RepeatWrapper repeatWrapper;
+    private final RepeatWrapper mRepeatWrapper;
 
     /**
      * Get repeat vars field and set SpeedTestSocket object ref.
@@ -107,274 +107,274 @@ public class RepeatVars {
      */
     public RepeatVars(final SpeedTestSocket socket) throws NoSuchFieldException, IllegalAccessException {
 
-        final Field repeatWrapperField = socket.getClass().getDeclaredField("repeatWrapper");
-        Assert.assertNotNull("repeatWrapper is null", repeatWrapperField);
+        final Field repeatWrapperField = socket.getClass().getDeclaredField("mRepeatWrapper");
+        Assert.assertNotNull("mRepeatWrapper is null", repeatWrapperField);
         repeatWrapperField.setAccessible(true);
 
-        repeatWrapper = (RepeatWrapper) repeatWrapperField.get(socket);
-        Assert.assertNotNull("repeatWrapper is null", repeatWrapper);
+        mRepeatWrapper = (RepeatWrapper) repeatWrapperField.get(socket);
+        Assert.assertNotNull("mRepeatWrapper is null", mRepeatWrapper);
 
-        repeatDownload = repeatWrapper.getClass().getDeclaredField("repeatDownload");
-        Assert.assertNotNull("repeatDownload is null", repeatDownload);
-        repeatDownload.setAccessible(true);
+        mRepeatDownload = mRepeatWrapper.getClass().getDeclaredField("mRepeatDownload");
+        Assert.assertNotNull("mRepeatDownload is null", mRepeatDownload);
+        mRepeatDownload.setAccessible(true);
 
-        repeatUpload = repeatWrapper.getClass().getDeclaredField("repeatUpload");
-        Assert.assertNotNull("repeatUpload is null", repeatUpload);
-        repeatUpload.setAccessible(true);
+        mRepeatUpload = mRepeatWrapper.getClass().getDeclaredField("mRepeatUpload");
+        Assert.assertNotNull("mRepeatUpload is null", mRepeatUpload);
+        mRepeatUpload.setAccessible(true);
 
-        startDateRepeat = repeatWrapper.getClass().getDeclaredField("startDateRepeat");
-        Assert.assertNotNull("startDateRepeat is null", startDateRepeat);
-        startDateRepeat.setAccessible(true);
+        mStartDateRepeat = mRepeatWrapper.getClass().getDeclaredField("mStartDateRepeat");
+        Assert.assertNotNull("mStartDateRepeat is null", mStartDateRepeat);
+        mStartDateRepeat.setAccessible(true);
 
-        repeatWindows = repeatWrapper.getClass().getDeclaredField("repeatWindows");
-        Assert.assertNotNull("repeatWindows is null", repeatWindows);
-        repeatWindows.setAccessible(true);
+        mRepeatWindows = mRepeatWrapper.getClass().getDeclaredField("mRepeatWindows");
+        Assert.assertNotNull("mRepeatWindows is null", mRepeatWindows);
+        mRepeatWindows.setAccessible(true);
 
-        repeatRequestNum = repeatWrapper.getClass().getDeclaredField("repeatRequestNum");
-        Assert.assertNotNull("repeatRequestNum is null", repeatRequestNum);
-        repeatRequestNum.setAccessible(true);
+        mRepeatRequestNum = mRepeatWrapper.getClass().getDeclaredField("mRepeatRequestNum");
+        Assert.assertNotNull("mRepeatRequestNum is null", mRepeatRequestNum);
+        mRepeatRequestNum.setAccessible(true);
 
-        repeatPacketSize = repeatWrapper.getClass().getDeclaredField("repeatPacketSize");
-        Assert.assertNotNull("repeatPacketSize is null", repeatPacketSize);
-        repeatPacketSize.setAccessible(true);
+        mRepeatPacketSize = mRepeatWrapper.getClass().getDeclaredField("mRepeatPacketSize");
+        Assert.assertNotNull("mRepeatPacketSize is null", mRepeatPacketSize);
+        mRepeatPacketSize.setAccessible(true);
 
-        repeatTempPckSize = repeatWrapper.getClass().getDeclaredField("repeatTempPckSize");
-        Assert.assertNotNull("repeatTempPckSize is null", repeatTempPckSize);
-        repeatTempPckSize.setAccessible(true);
+        mRepeatTempPckSize = mRepeatWrapper.getClass().getDeclaredField("mRepeatTempPckSize");
+        Assert.assertNotNull("mRepeatTempPckSize is null", mRepeatTempPckSize);
+        mRepeatTempPckSize.setAccessible(true);
 
-        firstDownloadRepeat = repeatWrapper.getClass().getDeclaredField("firstDownloadRepeat");
-        Assert.assertNotNull("firstDownloadRepeat is null", firstDownloadRepeat);
-        firstDownloadRepeat.setAccessible(true);
+        mFirstDownloadRepeat = mRepeatWrapper.getClass().getDeclaredField("mFirstDownloadRepeat");
+        Assert.assertNotNull("mFirstDownloadRepeat is null", mFirstDownloadRepeat);
+        mFirstDownloadRepeat.setAccessible(true);
 
-        firstUploadRepeat = repeatWrapper.getClass().getDeclaredField("firstUploadRepeat");
-        Assert.assertNotNull("firstUploadRepeat is null", firstUploadRepeat);
-        firstUploadRepeat.setAccessible(true);
+        mFirstUploadRepeat = mRepeatWrapper.getClass().getDeclaredField("mFirstUploadRepeat");
+        Assert.assertNotNull("mFirstUploadRepeat is null", mFirstUploadRepeat);
+        mFirstUploadRepeat.setAccessible(true);
 
-        repeatTransferRateList = repeatWrapper.getClass().getDeclaredField("repeatTransferRateList");
-        Assert.assertNotNull("repeatTransferRateList is null", repeatTransferRateList);
-        repeatTransferRateList.setAccessible(true);
+        mRepeatTransferRateList = mRepeatWrapper.getClass().getDeclaredField("mRepeatTransferRateList");
+        Assert.assertNotNull("mRepeatTransferRateList is null", mRepeatTransferRateList);
+        mRepeatTransferRateList.setAccessible(true);
 
-        repeatFinished = repeatWrapper.getClass().getDeclaredField("repeatFinished");
-        Assert.assertNotNull("repeatFinished is null", repeatFinished);
-        repeatFinished.setAccessible(true);
+        mRepeatFinished = mRepeatWrapper.getClass().getDeclaredField("mRepeatFinished");
+        Assert.assertNotNull("mRepeatFinished is null", mRepeatFinished);
+        mRepeatFinished.setAccessible(true);
     }
 
     /**
-     * Get current value of field repeatDownload.
+     * Get current value of field mRepeatDownload.
      *
      * @return
      * @throws IllegalAccessException
      */
     public boolean isRepeatDownload() throws IllegalAccessException {
-        return repeatDownload.getBoolean(repeatWrapper);
+        return mRepeatDownload.getBoolean(mRepeatWrapper);
     }
 
     /**
-     * Set value of field repeatDownload.
+     * Set value of field mRepeatDownload.
      *
      * @param repeatDownload
      * @throws IllegalAccessException
      */
     public void setRepeatDownload(final boolean repeatDownload) throws IllegalAccessException {
-        this.repeatDownload.setBoolean(repeatWrapper, repeatDownload);
+        this.mRepeatDownload.setBoolean(mRepeatWrapper, repeatDownload);
     }
 
     /**
-     * Get current value of field repeatUpload.
+     * Get current value of field mRepeatUpload.
      *
      * @return
      * @throws IllegalAccessException
      */
     public boolean isRepeatUpload() throws IllegalAccessException {
-        return repeatUpload.getBoolean(repeatWrapper);
+        return mRepeatUpload.getBoolean(mRepeatWrapper);
     }
 
     /**
-     * Set value of field repeatUpload.
+     * Set value of field mRepeatUpload.
      *
      * @param repeatUpload
      * @throws IllegalAccessException
      */
     public void setRepeatUpload(final boolean repeatUpload) throws IllegalAccessException {
-        this.repeatUpload.setBoolean(repeatWrapper, repeatUpload);
+        this.mRepeatUpload.setBoolean(mRepeatWrapper, repeatUpload);
     }
 
     /**
-     * Get current value of field startDateRepeat.
+     * Get current value of field mStartDateRepeat.
      *
      * @return
      * @throws IllegalAccessException
      */
     public long getStartDateRepeat() throws IllegalAccessException {
-        return startDateRepeat.getLong(repeatWrapper);
+        return mStartDateRepeat.getLong(mRepeatWrapper);
     }
 
     /**
-     * Set current value of field startDateRepeat.
+     * Set current value of field mStartDateRepeat.
      *
      * @param startDateRepeat
      * @throws IllegalAccessException
      */
     public void setStartDateRepeat(final long startDateRepeat) throws IllegalAccessException {
-        this.startDateRepeat.setLong(repeatWrapper, startDateRepeat);
+        this.mStartDateRepeat.setLong(mRepeatWrapper, startDateRepeat);
     }
 
     /**
-     * Get current value of field repeatWindows.
+     * Get current value of field mRepeatWindows.
      *
      * @return
      * @throws IllegalAccessException
      */
     public int getRepeatWindows() throws IllegalAccessException {
-        return repeatWindows.getInt(repeatWrapper);
+        return mRepeatWindows.getInt(mRepeatWrapper);
     }
 
     /**
-     * Set current value of field repeatWindows.
+     * Set current value of field mRepeatWindows.
      *
      * @param repeatWindows
      * @throws IllegalAccessException
      */
     public void setRepeatWindows(final int repeatWindows) throws IllegalAccessException {
-        this.repeatWindows.setInt(repeatWrapper, repeatWindows);
+        this.mRepeatWindows.setInt(mRepeatWrapper, repeatWindows);
     }
 
     /**
-     * Get current value of field repeatRequestNum.
+     * Get current value of field mRepeatRequestNum.
      *
      * @return
      * @throws IllegalAccessException
      */
     public int getRepeatRequestNum() throws IllegalAccessException {
-        return repeatRequestNum.getInt(repeatWrapper);
+        return mRepeatRequestNum.getInt(mRepeatWrapper);
     }
 
     /**
-     * Set current value of field repeatRequestNum.
+     * Set current value of field mRepeatRequestNum.
      *
      * @param repeatRequestNum
      * @throws IllegalAccessException
      */
     public void setRepeatRequestNum(final int repeatRequestNum) throws IllegalAccessException {
-        this.repeatRequestNum.setInt(repeatWrapper, repeatRequestNum);
+        this.mRepeatRequestNum.setInt(mRepeatWrapper, repeatRequestNum);
     }
 
     /**
-     * Get current value of field repeatPacketSize.
+     * Get current value of field mRepeatPacketSize.
      *
      * @return
      * @throws IllegalAccessException
      */
     public BigDecimal getRepeatPacketSize() throws IllegalAccessException {
-        return (BigDecimal) repeatPacketSize.get(repeatWrapper);
+        return (BigDecimal) mRepeatPacketSize.get(mRepeatWrapper);
     }
 
     /**
-     * Set current value of field repeatPacketSize.
+     * Set current value of field mRepeatPacketSize.
      *
      * @param repeatPacketSize
      * @throws IllegalAccessException
      */
     public void setRepeatPacketSize(final BigDecimal repeatPacketSize) throws IllegalAccessException {
-        this.repeatPacketSize.set(repeatWrapper, repeatPacketSize);
+        this.mRepeatPacketSize.set(mRepeatWrapper, repeatPacketSize);
     }
 
     /**
-     * Get current value of field repeatTempPckSize.
+     * Get current value of field mRepeatTempPckSize.
      *
      * @return
      */
     public long getRepeatTempPckSize() throws IllegalAccessException {
-        return repeatTempPckSize.getLong(repeatWrapper);
+        return mRepeatTempPckSize.getLong(mRepeatWrapper);
     }
 
     /**
-     * Set current value of field repeatTempPckSize.
+     * Set current value of field mRepeatTempPckSize.
      *
      * @param repeatTempPckSize
      */
     public void setRepeatTempPckSize(final long repeatTempPckSize) throws IllegalAccessException {
-        this.repeatTempPckSize.setLong(repeatWrapper, repeatTempPckSize);
+        this.mRepeatTempPckSize.setLong(mRepeatWrapper, repeatTempPckSize);
     }
 
     /**
-     * Get current value of field firstDownloadRepeat.
+     * Get current value of field mFirstDownloadRepeat.
      *
      * @return
      * @throws IllegalAccessException
      */
     public boolean isFirstDownloadRepeat() throws IllegalAccessException {
-        return firstDownloadRepeat.getBoolean(repeatWrapper);
+        return mFirstDownloadRepeat.getBoolean(mRepeatWrapper);
     }
 
     /**
-     * Set current value of field firstDownloadRepeat.
+     * Set current value of field mFirstDownloadRepeat.
      *
      * @param firstDownloadRepeat
      * @throws IllegalAccessException
      */
     public void setFirstDownloadRepeat(final boolean firstDownloadRepeat) throws IllegalAccessException {
-        this.firstDownloadRepeat.setBoolean(repeatWrapper, firstDownloadRepeat);
+        this.mFirstDownloadRepeat.setBoolean(mRepeatWrapper, firstDownloadRepeat);
     }
 
     /**
-     * Get current value of field firstUploadRepeat.
+     * Get current value of field mFirstUploadRepeat.
      *
      * @return
      * @throws IllegalAccessException
      */
     public boolean isFirstUploadRepeat() throws IllegalAccessException {
-        return firstUploadRepeat.getBoolean(repeatWrapper);
+        return mFirstUploadRepeat.getBoolean(mRepeatWrapper);
     }
 
     /**
-     * Set current value of field firstUploadRepeat.
+     * Set current value of field mFirstUploadRepeat.
      *
      * @param firstUploadRepeat
      * @throws IllegalAccessException
      */
     public void setFirstUploadRepeat(final boolean firstUploadRepeat) throws IllegalAccessException {
-        this.firstUploadRepeat.setBoolean(repeatWrapper, firstUploadRepeat);
+        this.mFirstUploadRepeat.setBoolean(mRepeatWrapper, firstUploadRepeat);
     }
 
     /**
-     * Get current value of field repeatTransferRateList.
+     * Get current value of field mRepeatTransferRateList.
      *
      * @return
      * @throws IllegalAccessException
      */
     @SuppressWarnings("unchecked")
     public List<BigDecimal> getRepeatTransferRateList() throws IllegalAccessException {
-        return (List<BigDecimal>) repeatTransferRateList.get(repeatWrapper);
+        return (List<BigDecimal>) mRepeatTransferRateList.get(mRepeatWrapper);
     }
 
     /**
-     * Set current value of field repeatTransferRateList.
+     * Set current value of field mRepeatTransferRateList.
      *
      * @param repeatTransferRateList
      * @throws IllegalAccessException
      */
     public void setRepeatTransferRateList(final List<BigDecimal> repeatTransferRateList) throws IllegalAccessException {
-        this.repeatTransferRateList.set(repeatWrapper, repeatTransferRateList);
+        this.mRepeatTransferRateList.set(mRepeatWrapper, repeatTransferRateList);
     }
 
     /**
-     * Get current value of repeatFinished.
+     * Get current value of mRepeatFinished.
      *
      * @return
      * @throws IllegalAccessException
      */
     public boolean isRepeatFinished() throws IllegalAccessException {
-        return repeatFinished.getBoolean(repeatWrapper);
+        return mRepeatFinished.getBoolean(mRepeatWrapper);
     }
 
     /**
-     * Set current value of repeatFinished.
+     * Set current value of mRepeatFinished.
      *
      * @param repeatFinished
      * @throws IllegalAccessException
      */
     public void setRepeatFinished(final boolean repeatFinished) throws IllegalAccessException {
-        this.repeatFinished.setBoolean(repeatWrapper, repeatFinished);
+        this.mRepeatFinished.setBoolean(mRepeatWrapper, repeatFinished);
     }
 }

@@ -47,17 +47,17 @@ public class SpeedTestRepeatTest {
     /**
      * speed test socket object.
      */
-    private SpeedTestSocket socket;
+    private SpeedTestSocket mSocket;
 
     /**
      * Waiter for speed test listener callback.
      */
-    private static Waiter waiter;
+    private static Waiter mWaiter;
 
     /**
      * Waiter for speed test listener callback error.
      */
-    private static Waiter waiterError;
+    private static Waiter mWaiterError;
 
     /**
      * Test download repeat.
@@ -83,28 +83,28 @@ public class SpeedTestRepeatTest {
     private void repeatTest(final boolean download) throws TimeoutException, IllegalAccessException,
             NoSuchFieldException {
 
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
-        final RepeatVars repeatVars = new RepeatVars(socket);
+        final RepeatVars repeatVars = new RepeatVars(mSocket);
 
         testRepeatVarsNoRepeat(repeatVars);
 
-        waiter = new Waiter();
-        waiterError = new Waiter();
+        mWaiter = new Waiter();
+        mWaiterError = new Waiter();
 
         final Waiter finishWaiter = new Waiter();
         final List<ISpeedTestListener> listenerList = new ArrayList<>();
 
-        SpeedTestUtils.setListenerList(socket, listenerList);
+        SpeedTestUtils.setListenerList(mSocket, listenerList);
 
-        socket.addSpeedTestListener(new ISpeedTestListener() {
+        mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
 
                 if (!download) {
-                    waiterError.fail("shouldnt be in onUploadFinished");
+                    mWaiterError.fail("shouldnt be in onUploadFinished");
                 } else {
-                    SpeedTestUtils.checkSpeedTestResult(socket, waiterError, report.getTemporaryPacketSize(),
+                    SpeedTestUtils.checkSpeedTestResult(mSocket, mWaiterError, report.getTemporaryPacketSize(),
                             TestCommon.FILE_SIZE_REGULAR, report.getTransferRateBit(),
                             report.getTransferRateOctet(),
                             true, true);
@@ -114,30 +114,30 @@ public class SpeedTestRepeatTest {
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
                 if (download) {
-                    SpeedTestUtils.testReportNotEmpty(waiter, report, TestCommon.FILE_SIZE_REGULAR, false, true);
+                    SpeedTestUtils.testReportNotEmpty(mWaiter, report, TestCommon.FILE_SIZE_REGULAR, false, true);
                     checkRepeatVarsDuringDownload(repeatVars);
-                    waiterError.assertTrue(percent >= 0 && percent <= 100);
-                    waiter.resume();
+                    mWaiterError.assertTrue(percent >= 0 && percent <= 100);
+                    mWaiter.resume();
                 } else {
-                    waiterError.fail("shouldnt be in onDownloadProgress");
+                    mWaiterError.fail("shouldnt be in onDownloadProgress");
                 }
             }
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (!download) {
-                    waiterError.fail("shouldnt be in onUploadError");
+                    mWaiterError.fail("shouldnt be in onUploadError");
                 } else if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiterError.fail("unexpected error : " + speedTestError);
+                    mWaiterError.fail("unexpected error : " + speedTestError);
                 }
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 if (download) {
-                    waiterError.fail("shouldnt be in onUploadFinished");
+                    mWaiterError.fail("shouldnt be in onUploadFinished");
                 } else {
-                    SpeedTestUtils.checkSpeedTestResult(socket, waiterError, report.getTemporaryPacketSize(),
+                    SpeedTestUtils.checkSpeedTestResult(mSocket, mWaiterError, report.getTemporaryPacketSize(),
                             TestCommon.FILE_SIZE_REGULAR,
                             report.getTransferRateBit(),
                             report.getTransferRateOctet(),
@@ -148,21 +148,21 @@ public class SpeedTestRepeatTest {
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (download) {
-                    waiterError.fail("shouldnt be in onUploadError");
+                    mWaiterError.fail("shouldnt be in onUploadError");
                 } else if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiterError.fail("unexpected error : " + speedTestError);
+                    mWaiterError.fail("unexpected error : " + speedTestError);
                 }
             }
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
                 if (!download) {
-                    SpeedTestUtils.testReportNotEmpty(waiter, report, TestCommon.FILE_SIZE_REGULAR, false, true);
+                    SpeedTestUtils.testReportNotEmpty(mWaiter, report, TestCommon.FILE_SIZE_REGULAR, false, true);
                     checkRepeatVarsDuringUpload(repeatVars);
-                    waiterError.assertTrue(percent >= 0 && percent <= 100);
-                    waiter.resume();
+                    mWaiterError.assertTrue(percent >= 0 && percent <= 100);
+                    mWaiter.resume();
                 } else {
-                    waiterError.fail("shouldnt be in onUploadProgress");
+                    mWaiterError.fail("shouldnt be in onUploadProgress");
                 }
             }
         });
@@ -170,13 +170,13 @@ public class SpeedTestRepeatTest {
         Assert.assertEquals(listenerList.size(), 1);
 
         if (download) {
-            socket.startDownloadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
+            mSocket.startDownloadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
                     TestCommon.SPEED_TEST_SERVER_URI_DL_1MO,
                     TestCommon.SPEED_TEST_DURATION, TestCommon.REPORT_INTERVAL, new
                             IRepeatListener() {
                                 @Override
                                 public void onFinish(final SpeedTestReport report) {
-                                    SpeedTestUtils.compareFinishReport(socket, finishWaiter, TestCommon
+                                    SpeedTestUtils.compareFinishReport(mSocket, finishWaiter, TestCommon
                                             .FILE_SIZE_REGULAR, report, true);
                                     testRepeatVarsPostResult(finishWaiter, repeatVars, true, TestCommon
                                             .SPEED_TEST_DURATION, report
@@ -187,13 +187,13 @@ public class SpeedTestRepeatTest {
                                 @Override
                                 public void onReport(final SpeedTestReport report) {
                                     if (report.getProgressPercent() > 0) {
-                                        SpeedTestUtils.testReportNotEmpty(waiterError, report, TestCommon
+                                        SpeedTestUtils.testReportNotEmpty(mWaiterError, report, TestCommon
                                                 .FILE_SIZE_REGULAR, true, true);
                                     } else {
                                         SpeedTestUtils.testReportEmpty("empty report", report, true);
                                     }
                                     checkRepeatVarsDuringDownload(repeatVars);
-                                    waiterError.resume();
+                                    mWaiterError.resume();
                                 }
                             });
             /*
@@ -206,13 +206,13 @@ public class SpeedTestRepeatTest {
             listenerList.get(1).onUploadProgress(0, null);
             listenerList.get(1).onUploadFinished(null);
         } else {
-            socket.startUploadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+            mSocket.startUploadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                             .SPEED_TEST_SERVER_URI_UL,
                     TestCommon.SPEED_TEST_DURATION, TestCommon.REPORT_INTERVAL, TestCommon.FILE_SIZE_REGULAR, new
                             IRepeatListener() {
                                 @Override
                                 public void onFinish(final SpeedTestReport report) {
-                                    SpeedTestUtils.compareFinishReport(socket, finishWaiter, TestCommon
+                                    SpeedTestUtils.compareFinishReport(mSocket, finishWaiter, TestCommon
                                                     .FILE_SIZE_REGULAR,
                                             report, false);
                                     testRepeatVarsPostResult(finishWaiter, repeatVars, false, TestCommon
@@ -225,13 +225,13 @@ public class SpeedTestRepeatTest {
                                 @Override
                                 public void onReport(final SpeedTestReport report) {
                                     if (report.getProgressPercent() > 0) {
-                                        SpeedTestUtils.testReportNotEmpty(waiterError, report, TestCommon
+                                        SpeedTestUtils.testReportNotEmpty(mWaiterError, report, TestCommon
                                                 .FILE_SIZE_REGULAR, true, true);
                                     } else {
                                         SpeedTestUtils.testReportEmpty("empty report", report, true);
                                     }
                                     checkRepeatVarsDuringUpload(repeatVars);
-                                    waiterError.resume();
+                                    mWaiterError.resume();
                                 }
                             });
             Assert.assertEquals(repeatVars.isFirstUploadRepeat(), true);
@@ -243,11 +243,11 @@ public class SpeedTestRepeatTest {
 
         Assert.assertEquals(repeatVars.getRepeatWindows(), TestCommon.SPEED_TEST_DURATION);
 
-        waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
-        waiterError.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS, TestCommon.EXPECTED_REPORT);
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        mWaiterError.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS, TestCommon.EXPECTED_REPORT);
         finishWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-        socket.forceStopTask();
+        mSocket.forceStopTask();
     }
 
     /**
@@ -257,13 +257,13 @@ public class SpeedTestRepeatTest {
      */
     private void checkRepeatVarsDuringUpload(final RepeatVars repeatVars) {
         try {
-            waiter.assertEquals(repeatVars.isRepeatUpload(), true);
-            waiter.assertEquals(repeatVars.isRepeatDownload(), false);
-            waiter.assertEquals(repeatVars.isRepeatFinished(), false);
-            waiter.assertTrue(repeatVars.getStartDateRepeat() > 0);
-            //waiter.assertEquals(repeatVars.getRepeatTransferRateList().size(), report.getRequestNum());
+            mWaiter.assertEquals(repeatVars.isRepeatUpload(), true);
+            mWaiter.assertEquals(repeatVars.isRepeatDownload(), false);
+            mWaiter.assertEquals(repeatVars.isRepeatFinished(), false);
+            mWaiter.assertTrue(repeatVars.getStartDateRepeat() > 0);
+            //mWaiter.assertEquals(repeatVars.getRepeatTransferRateList().size(), report.getRequestNum());
         } catch (IllegalAccessException e) {
-            waiter.fail(e.getMessage());
+            mWaiter.fail(e.getMessage());
         }
     }
 
@@ -274,14 +274,14 @@ public class SpeedTestRepeatTest {
      */
     private void checkRepeatVarsDuringDownload(final RepeatVars repeatVars) {
         try {
-            waiter.assertEquals(repeatVars.isRepeatUpload(), false);
-            waiter.assertEquals(repeatVars.isRepeatDownload(), true);
-            waiter.assertEquals(repeatVars.isRepeatFinished(), false);
-            //waiter.assertTrue(repeatVars.getStartDateRepeat() > 0);
+            mWaiter.assertEquals(repeatVars.isRepeatUpload(), false);
+            mWaiter.assertEquals(repeatVars.isRepeatDownload(), true);
+            mWaiter.assertEquals(repeatVars.isRepeatFinished(), false);
+            //mWaiter.assertTrue(repeatVars.getStartDateRepeat() > 0);
             //depending being called before or after onProgress of each listener it can be requestNum or requestNum+1
-            //waiter.assertEquals(repeatVars.getRepeatTransferRateList().size(), report.getRequestNum());
+            //mWaiter.assertEquals(repeatVars.getRepeatTransferRateList().size(), report.getRequestNum());
         } catch (IllegalAccessException e) {
-            waiter.fail(e.getMessage());
+            mWaiter.fail(e.getMessage());
         }
     }
 
@@ -343,7 +343,7 @@ public class SpeedTestRepeatTest {
     }
 
     /**
-     * Get Repeat wrapper field from socket.
+     * Get Repeat wrapper field from mSocket.
      *
      * @return
      * @throws NoSuchFieldException
@@ -351,11 +351,11 @@ public class SpeedTestRepeatTest {
      */
     private RepeatWrapper getRepeatWrapper() throws NoSuchFieldException, IllegalAccessException {
 
-        final Field repeatWrapperField = socket.getClass().getDeclaredField("repeatWrapper");
+        final Field repeatWrapperField = mSocket.getClass().getDeclaredField("mRepeatWrapper");
         Assert.assertNotNull("repeatWrapper is null", repeatWrapperField);
         repeatWrapperField.setAccessible(true);
 
-        final RepeatWrapper repeatWrapper = (RepeatWrapper) repeatWrapperField.get(socket);
+        final RepeatWrapper repeatWrapper = (RepeatWrapper) repeatWrapperField.get(mSocket);
         Assert.assertNotNull("repeatWrapper is null", repeatWrapper);
 
         return repeatWrapper;
@@ -368,9 +368,9 @@ public class SpeedTestRepeatTest {
     public void initRepeatTest() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException,
             NoSuchFieldException {
 
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
-        final RepeatVars repeatVars = new RepeatVars(socket);
+        final RepeatVars repeatVars = new RepeatVars(mSocket);
 
         testRepeatVarsNoRepeat(repeatVars);
 
@@ -417,7 +417,7 @@ public class SpeedTestRepeatTest {
     public void clearRepeatTaskTest() throws NoSuchMethodException, InvocationTargetException,
             IllegalAccessException, NoSuchFieldException {
 
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
         final List<ISpeedTestListener> listenerList = new ArrayList<>();
 
@@ -447,11 +447,11 @@ public class SpeedTestRepeatTest {
             }
         };
 
-        SpeedTestUtils.setListenerList(socket, listenerList);
+        SpeedTestUtils.setListenerList(mSocket, listenerList);
 
-        socket.addSpeedTestListener(listener);
+        mSocket.addSpeedTestListener(listener);
 
-        final RepeatVars repeatVars = new RepeatVars(socket);
+        final RepeatVars repeatVars = new RepeatVars(mSocket);
 
         Assert.assertEquals(listenerList.size(), 1);
 
@@ -478,11 +478,11 @@ public class SpeedTestRepeatTest {
     @Test
     public void repeatThreadCounterTest() throws InterruptedException, NoSuchFieldException, IllegalAccessException {
 
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
         testClearRepeatThreadCount(true);
 
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
         testClearRepeatThreadCount(false);
     }
@@ -499,7 +499,7 @@ public class SpeedTestRepeatTest {
         }
 
         final List<ISpeedTestListener> listenerList = new ArrayList<>();
-        SpeedTestUtils.setListenerList(socket, listenerList);
+        SpeedTestUtils.setListenerList(mSocket, listenerList);
 
         Assert.assertEquals(listenerList.size(), 0);
 
@@ -510,7 +510,7 @@ public class SpeedTestRepeatTest {
         Thread.sleep(TestCommon.WAIT_THREAD_TIMEOUT);
 
         Assert.assertEquals(threadCount + threadOffset, Thread.activeCount());
-        socket.forceStopTask();
+        mSocket.forceStopTask();
 
         Thread.sleep(TestCommon.WAIT_THREAD_TIMEOUT);
 
@@ -556,7 +556,7 @@ public class SpeedTestRepeatTest {
     private void startRepeatTask(final boolean download) {
 
         if (download) {
-            socket.startDownloadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
+            mSocket.startDownloadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
                     TestCommon.SPEED_TEST_SERVER_URI_DL_1MO,
                     TestCommon.SPEED_TEST_DURATION, TestCommon.REPORT_INTERVAL, new
                             IRepeatListener() {
@@ -569,7 +569,7 @@ public class SpeedTestRepeatTest {
                                 }
                             });
         } else {
-            socket.startUploadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+            mSocket.startUploadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                             .SPEED_TEST_SERVER_URI_UL,
                     TestCommon.SPEED_TEST_DURATION, TestCommon.REPORT_INTERVAL, TestCommon.FILE_SIZE_REGULAR, new
                             IRepeatListener() {

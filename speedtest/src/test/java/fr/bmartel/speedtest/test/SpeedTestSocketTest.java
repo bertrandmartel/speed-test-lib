@@ -38,16 +38,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * SpeedTest socket testing.
+ * SpeedTest mSocket testing.
  *
  * @author Bertrand Martel
  */
 public class SpeedTestSocketTest {
 
     /**
-     * speed test socket object.
+     * speed test mSocket object.
      */
-    private SpeedTestSocket socket;
+    private SpeedTestSocket mSocket;
 
     /**
      * unit examples message header.
@@ -57,25 +57,25 @@ public class SpeedTestSocketTest {
     /**
      * Waiter for speed test listener callback.
      */
-    private static Waiter waiter;
+    private static Waiter mWaiter;
 
     /**
      * Waiter for speed test listener callback error.
      */
-    private static Waiter waiterError;
+    private static Waiter mWaiterError;
 
     /**
      * define if download running or upload.
      */
-    private boolean isDownload;
+    private boolean download;
 
     /**
      * test socket timeout default value.
      */
     @Test
     public void socketTimeoutDefaultTest() {
-        socket = new SpeedTestSocket();
-        Assert.assertEquals(HEADER + " socket timeout default value should be " + TestCommon.SOCKET_TO_DEFAULT, socket
+        mSocket = new SpeedTestSocket();
+        Assert.assertEquals(HEADER + " socket timeout default value should be " + TestCommon.SOCKET_TO_DEFAULT, mSocket
                 .getSocketTimeout(), TestCommon.SOCKET_TO_DEFAULT);
     }
 
@@ -84,9 +84,9 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void socketTimeoutSetterValidTest() {
-        socket = new SpeedTestSocket();
-        socket.setSocketTimeout(TestCommon.SOCKET_TO_VALID);
-        Assert.assertEquals(HEADER + "socket timeout are not equals", socket.getSocketTimeout(), TestCommon
+        mSocket = new SpeedTestSocket();
+        mSocket.setSocketTimeout(TestCommon.SOCKET_TO_VALID);
+        Assert.assertEquals(HEADER + "socket timeout are not equals", mSocket.getSocketTimeout(), TestCommon
                 .SOCKET_TO_VALID);
     }
 
@@ -95,10 +95,10 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void socketTimeoutSetterInvalidTest() {
-        socket = new SpeedTestSocket();
-        Assert.assertNotSame(HEADER + "socket timeout are equals, shouldnt be (-1)", socket.getSocketTimeout(),
+        mSocket = new SpeedTestSocket();
+        Assert.assertNotSame(HEADER + "socket timeout are equals, shouldnt be (-1)", mSocket.getSocketTimeout(),
                 TestCommon.SOCKET_TO_INVALID);
-        Assert.assertEquals(HEADER + "socket timeout should be " + TestCommon.SOCKET_TO_DEFAULT, socket.getSocketTimeout
+        Assert.assertEquals(HEADER + "socket timeout should be " + TestCommon.SOCKET_TO_DEFAULT, mSocket.getSocketTimeout
                 (), TestCommon.SOCKET_TO_DEFAULT);
 
     }
@@ -108,8 +108,8 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void uploadChunkSizeDefaultTest() {
-        socket = new SpeedTestSocket();
-        Assert.assertEquals(HEADER + "chunk size should be 65535 for default value", socket.getUploadChunkSize(),
+        mSocket = new SpeedTestSocket();
+        Assert.assertEquals(HEADER + "chunk size should be 65535 for default value", mSocket.getUploadChunkSize(),
                 TestCommon.UPLOAD_CHUNK_SIZE_DEFAULT);
     }
 
@@ -118,9 +118,9 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void uploadChunkSizeSetterTest() {
-        socket = new SpeedTestSocket();
-        socket.setUploadChunkSize(TestCommon.UPLOAD_CHUNK_INVALID);
-        Assert.assertEquals(HEADER + "chunk size incorrect value after set", socket.getUploadChunkSize(),
+        mSocket = new SpeedTestSocket();
+        mSocket.setUploadChunkSize(TestCommon.UPLOAD_CHUNK_INVALID);
+        Assert.assertEquals(HEADER + "chunk size incorrect value after set", mSocket.getUploadChunkSize(),
                 TestCommon.UPLOAD_CHUNK_INVALID);
     }
 
@@ -129,9 +129,9 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void defaultRoundingModeSetterTest() {
-        socket = new SpeedTestSocket();
-        socket.setDefaultRoundingMode(RoundingMode.HALF_UP);
-        Assert.assertEquals(HEADER + "rounding mode incorrect value after set", socket.getDefaultRoundingMode(),
+        mSocket = new SpeedTestSocket();
+        mSocket.setDefaultRoundingMode(RoundingMode.HALF_UP);
+        Assert.assertEquals(HEADER + "rounding mode incorrect value after set", mSocket.getDefaultRoundingMode(),
                 RoundingMode.HALF_UP);
     }
 
@@ -140,9 +140,9 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void defaultScaleSetterTest() {
-        socket = new SpeedTestSocket();
-        socket.setDefaultScale(8);
-        Assert.assertEquals(HEADER + "scale incorrect value after set", socket.getDefaultScale(),
+        mSocket = new SpeedTestSocket();
+        mSocket.setDefaultScale(8);
+        Assert.assertEquals(HEADER + "scale incorrect value after set", mSocket.getDefaultScale(),
                 8);
     }
 
@@ -152,20 +152,20 @@ public class SpeedTestSocketTest {
     @Test
     public void speedTestModeTest() throws TimeoutException {
 
-        socket = new SpeedTestSocket();
-        Assert.assertEquals(HEADER + "speed test mode value after init", socket.getSpeedTestMode(),
+        mSocket = new SpeedTestSocket();
+        Assert.assertEquals(HEADER + "speed test mode value after init", mSocket.getSpeedTestMode(),
                 SpeedTestMode.NONE);
-        socket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+        mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                 .SPEED_TEST_SERVER_URI_DL);
-        Assert.assertEquals(HEADER + "speed test mode value after startDownload", socket.getSpeedTestMode(),
+        Assert.assertEquals(HEADER + "speed test mode value after startDownload", mSocket.getSpeedTestMode(),
                 SpeedTestMode.DOWNLOAD);
-        socket.forceStopTask();
-        Assert.assertEquals(HEADER + "speed test mode value after forceStopTask", socket.getSpeedTestMode(),
+        mSocket.forceStopTask();
+        Assert.assertEquals(HEADER + "speed test mode value after forceStopTask", mSocket.getSpeedTestMode(),
                 SpeedTestMode.NONE);
 
         final Waiter waiter = new Waiter();
 
-        socket.addSpeedTestListener(new ISpeedTestListener() {
+        mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
             }
@@ -202,19 +202,19 @@ public class SpeedTestSocketTest {
 
         initCountDown();
 
-        socket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+        mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                         .SPEED_TEST_SERVER_URI_UL,
                 TestCommon.FILE_SIZE_MEDIUM);
 
         waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-        Assert.assertEquals(HEADER + "speed test mode value after startUpload", socket.getSpeedTestMode(),
+        Assert.assertEquals(HEADER + "speed test mode value after startUpload", mSocket.getSpeedTestMode(),
                 SpeedTestMode.UPLOAD);
-        socket.forceStopTask();
+        mSocket.forceStopTask();
 
         waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-        Assert.assertEquals(HEADER + "speed test mode value after forceStopTask", socket.getSpeedTestMode(),
+        Assert.assertEquals(HEADER + "speed test mode value after forceStopTask", mSocket.getSpeedTestMode(),
                 SpeedTestMode.NONE);
     }
 
@@ -223,7 +223,7 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void listenerTest() throws NoSuchFieldException, IllegalAccessException {
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
         final List<ISpeedTestListener> listenerList = new ArrayList<ISpeedTestListener>();
 
@@ -259,41 +259,41 @@ public class SpeedTestSocketTest {
             }
         };
 
-        SpeedTestUtils.setListenerList(socket, listenerList);
+        SpeedTestUtils.setListenerList(mSocket, listenerList);
 
-        socket.addSpeedTestListener(listener);
+        mSocket.addSpeedTestListener(listener);
 
         Assert.assertEquals(HEADER + "listener add failed", listenerList.size(), 1);
 
-        socket.removeSpeedTestListener(listener);
+        mSocket.removeSpeedTestListener(listener);
 
         Assert.assertEquals(HEADER + "listener remove failed", listenerList.size(), 0);
     }
 
     /**
-     * test socket valid value.
+     * test mSocket valid value.
      */
     @Test
     public void socketTest() throws IllegalAccessException, NoSuchFieldException, TimeoutException {
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
-        socket.addSpeedTestListener(new ISpeedTestListener() {
+        mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
             }
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
-                waiter.resume();
+                mWaiter.resume();
             }
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiterError.resume();
+                    mWaiterError.resume();
                 } else {
-                    waiterError.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                    waiterError.resume();
+                    mWaiterError.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                    mWaiterError.resume();
                 }
             }
 
@@ -304,33 +304,33 @@ public class SpeedTestSocketTest {
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiterError.resume();
+                    mWaiterError.resume();
                 } else {
-                    waiterError.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                    waiterError.resume();
+                    mWaiterError.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                    mWaiterError.resume();
                 }
             }
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                waiter.resume();
+                mWaiter.resume();
             }
         });
 
         initCountDown();
 
-        testSocket(socket);
+        testSocket(mSocket);
     }
 
     /**
-     * Test the socket object.
+     * Test the mSocket object.
      *
-     * @param socket socket object
+     * @param socket mSocket object
      */
     private void testSocket(final SpeedTestSocket socket) throws TimeoutException, NoSuchFieldException,
             IllegalAccessException {
 
-        final Field field = socket.getClass().getDeclaredField("socket");
+        final Field field = socket.getClass().getDeclaredField("mSocket");
         Assert.assertNotNull(HEADER + "socket is null", field);
         field.setAccessible(true);
 
@@ -339,13 +339,13 @@ public class SpeedTestSocketTest {
         socket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                 .SPEED_TEST_SERVER_URI_DL);
 
-        waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         testSocketConnected((Socket) field.get(socket));
 
         socket.forceStopTask();
 
-        waiterError.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        mWaiterError.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         Assert.assertTrue(HEADER + "socket closed after stop download", ((Socket) field.get(socket)).isClosed());
 
@@ -355,13 +355,13 @@ public class SpeedTestSocketTest {
                         .SPEED_TEST_SERVER_URI_UL,
                 TestCommon.FILE_SIZE_MEDIUM);
 
-        waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         testSocketConnected((Socket) field.get(socket));
 
         socket.forceStopTask();
 
-        waiterError.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        mWaiterError.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         Assert.assertTrue(HEADER + "socket closed after stop upload", ((Socket) field.get(socket)).isClosed());
 
@@ -370,13 +370,13 @@ public class SpeedTestSocketTest {
         socket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                 .SPEED_TEST_SERVER_URI_DL);
 
-        waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         testSocketConnected((Socket) field.get(socket));
 
         socket.forceStopTask();
 
-        waiterError.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        mWaiterError.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         socket.closeSocket();
         Assert.assertTrue(HEADER + "socket closed after stop download", ((Socket) field.get(socket)).isClosed());
@@ -395,8 +395,8 @@ public class SpeedTestSocketTest {
      * initialize both lock & lock error CountDown.
      */
     private void initCountDown() {
-        waiter = new Waiter();
-        waiterError = new Waiter();
+        mWaiter = new Waiter();
+        mWaiterError = new Waiter();
     }
 
     /**
@@ -404,8 +404,8 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void downloadReportEmptyTest() {
-        socket = new SpeedTestSocket();
-        final SpeedTestReport report = socket.getLiveDownloadReport();
+        mSocket = new SpeedTestSocket();
+        final SpeedTestReport report = mSocket.getLiveDownloadReport();
 
         Assert.assertEquals(HEADER + "download report empty - mode incorrect", report.getSpeedTestMode(),
                 SpeedTestMode.DOWNLOAD);
@@ -417,8 +417,8 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void uploadReportEmptyTest() {
-        socket = new SpeedTestSocket();
-        final SpeedTestReport report = socket.getLiveUploadReport();
+        mSocket = new SpeedTestSocket();
+        final SpeedTestReport report = mSocket.getLiveUploadReport();
 
         Assert.assertEquals(HEADER + "upload report empty - mode incorrect", report.getSpeedTestMode(),
                 SpeedTestMode.UPLOAD);
@@ -431,23 +431,23 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void downloadReportNotEmptyTest() throws TimeoutException {
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
-        socket.addSpeedTestListener(new ISpeedTestListener() {
+        mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
             }
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
-                waiter.resume();
+                mWaiter.resume();
             }
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                    waiter.resume();
+                    mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                    mWaiter.resume();
                 }
             }
 
@@ -458,8 +458,8 @@ public class SpeedTestSocketTest {
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                    waiter.resume();
+                    mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                    mWaiter.resume();
                 }
             }
 
@@ -468,21 +468,21 @@ public class SpeedTestSocketTest {
             }
         });
 
-        waiter = new Waiter();
+        mWaiter = new Waiter();
 
-        socket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+        mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                 .SPEED_TEST_SERVER_URI_DL);
 
-        waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-        final SpeedTestReport report = socket.getLiveDownloadReport();
+        final SpeedTestReport report = mSocket.getLiveDownloadReport();
 
         Assert.assertEquals(HEADER + "download report not empty - mode incorrect", report.getSpeedTestMode(),
                 SpeedTestMode.DOWNLOAD);
 
-        SpeedTestUtils.testReportNotEmpty(waiter, report, TestCommon.FILE_SIZE_LARGE, false, false);
+        SpeedTestUtils.testReportNotEmpty(mWaiter, report, TestCommon.FILE_SIZE_LARGE, false, false);
 
-        socket.forceStopTask();
+        mSocket.forceStopTask();
     }
 
     /**
@@ -490,9 +490,9 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void uploadReportNotEmptyTest() throws TimeoutException {
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
-        socket.addSpeedTestListener(new ISpeedTestListener() {
+        mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
             }
@@ -504,7 +504,7 @@ public class SpeedTestSocketTest {
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                    mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
                 }
             }
 
@@ -515,31 +515,31 @@ public class SpeedTestSocketTest {
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (speedTestError != SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
+                    mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
                 }
             }
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                waiter.resume();
+                mWaiter.resume();
             }
         });
 
-        waiter = new Waiter();
+        mWaiter = new Waiter();
 
-        socket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+        mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                         .SPEED_TEST_SERVER_URI_UL,
                 TestCommon.FILE_SIZE_REGULAR);
-        waiter.await(4, TimeUnit.SECONDS);
+        mWaiter.await(4, TimeUnit.SECONDS);
 
-        final SpeedTestReport report = socket.getLiveUploadReport();
+        final SpeedTestReport report = mSocket.getLiveUploadReport();
 
         Assert.assertEquals(HEADER + "upload report not empty - mode incorrect", report.getSpeedTestMode(),
                 SpeedTestMode.UPLOAD);
 
-        SpeedTestUtils.testReportNotEmpty(waiter, report, TestCommon.FILE_SIZE_REGULAR, false, false);
+        SpeedTestUtils.testReportNotEmpty(mWaiter, report, TestCommon.FILE_SIZE_REGULAR, false, false);
 
-        socket.forceStopTask();
+        mSocket.forceStopTask();
     }
 
     /**
@@ -547,17 +547,17 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void progressResultCallbackDownloadTest() throws TimeoutException {
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
         final Waiter waiter = new Waiter();
         final Waiter waiter2 = new Waiter();
 
         final int packetSizeExpected = TestCommon.FILE_SIZE_REGULAR;
 
-        socket.addSpeedTestListener(new ISpeedTestListener() {
+        mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
-                SpeedTestUtils.checkSpeedTestResult(socket, waiter2, report.getTotalPacketSize(), packetSizeExpected,
+                SpeedTestUtils.checkSpeedTestResult(mSocket, waiter2, report.getTotalPacketSize(), packetSizeExpected,
                         report.getTransferRateBit(),
                         report.getTransferRateOctet(), true,
                         false);
@@ -600,7 +600,7 @@ public class SpeedTestSocketTest {
 
         //final int threadCount = Thread.activeCount();
 
-        socket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+        mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                 .SPEED_TEST_SERVER_URI_DL_1MO);
 
         waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
@@ -608,7 +608,7 @@ public class SpeedTestSocketTest {
         //Assert.assertEquals(threadCount + 1, Thread.activeCount());
         waiter2.await(TestCommon.WAITING_TIMEOUT_LONG_OPERATION, TimeUnit.SECONDS);
 
-        socket.forceStopTask();
+        mSocket.forceStopTask();
     }
 
     /**
@@ -616,14 +616,14 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void progressResultCallbackUploadTest() throws TimeoutException {
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
         final Waiter waiter = new Waiter();
         final Waiter waiter2 = new Waiter();
 
         final int packetSizeExpected = TestCommon.FILE_SIZE_REGULAR;
 
-        socket.addSpeedTestListener(new ISpeedTestListener() {
+        mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
                 waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onDownloadFinished");
@@ -645,7 +645,7 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
-                SpeedTestUtils.checkSpeedTestResult(socket, waiter2, report.getTotalPacketSize(), packetSizeExpected,
+                SpeedTestUtils.checkSpeedTestResult(mSocket, waiter2, report.getTotalPacketSize(), packetSizeExpected,
                         report.getTransferRateBit(),
                         report.getTransferRateOctet(),
                         false, false);
@@ -670,7 +670,7 @@ public class SpeedTestSocketTest {
 
         //final int threadCount = Thread.activeCount();
 
-        socket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+        mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                         .SPEED_TEST_SERVER_URI_UL,
                 packetSizeExpected);
 
@@ -679,19 +679,19 @@ public class SpeedTestSocketTest {
         //Assert.assertTrue(Thread.activeCount() == (threadCount + 2) || Thread.activeCount() == (threadCount + 3));
         waiter2.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS);
 
-        socket.forceStopTask();
+        mSocket.forceStopTask();
     }
 
     @Test
     public void fixDurationTest() throws TimeoutException {
 
-        socket = new SpeedTestSocket();
+        mSocket = new SpeedTestSocket();
 
         final int packetSizeExpected = TestCommon.FILE_SIZE_LARGE;
 
         final int duration = 2000;
 
-        socket.addSpeedTestListener(new ISpeedTestListener() {
+        mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
             }
@@ -703,10 +703,10 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (isDownload && speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiter.resume();
+                if (download && speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    mWaiter.resume();
                 } else {
-                    waiter.fail("unexpected error in onDownloadError : " + speedTestError);
+                    mWaiter.fail("unexpected error in onDownloadError : " + speedTestError);
                 }
             }
 
@@ -716,10 +716,10 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (!isDownload && speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
-                    waiter.resume();
+                if (!download && speedTestError == SpeedTestError.FORCE_CLOSE_SOCKET) {
+                    mWaiter.resume();
                 } else {
-                    waiter.fail("unexpected error in onUploadError : " + speedTestError);
+                    mWaiter.fail("unexpected error in onUploadError : " + speedTestError);
                 }
             }
 
@@ -728,19 +728,19 @@ public class SpeedTestSocketTest {
             }
         });
 
-        waiter = new Waiter();
-        isDownload = false;
-        socket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
+        mWaiter = new Waiter();
+        download = false;
+        mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
                 TestCommon.SPEED_TEST_SERVER_URI_UL,
                 packetSizeExpected, duration);
 
-        waiter.await(duration, TimeUnit.MILLISECONDS);
+        mWaiter.await(duration, TimeUnit.MILLISECONDS);
 
-        waiter = new Waiter();
-        isDownload = true;
-        socket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
+        mWaiter = new Waiter();
+        download = true;
+        mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
                 TestCommon.SPEED_TEST_SERVER_URI_DL, duration);
 
-        waiter.await(duration, TimeUnit.MILLISECONDS);
+        mWaiter.await(duration, TimeUnit.MILLISECONDS);
     }
 }

@@ -40,64 +40,64 @@ public class RepeatWrapper {
     /**
      * transfer rate list.
      */
-    private List<BigDecimal> repeatTransferRateList = new ArrayList<>();
+    private List<BigDecimal> mRepeatTransferRateList = new ArrayList<>();
 
     /**
      * define if download repeat task is finished.
      */
-    private boolean repeatFinished;
+    private boolean mRepeatFinished;
 
     /**
      * number of packet downloaded for download/upload repeat task.
      */
-    private long repeatTempPckSize;
+    private long mRepeatTempPckSize;
 
     /**
      * define if upload should be repeated.
      */
-    private boolean repeatUpload;
+    private boolean mRepeatUpload;
 
     /**
      * start time for download repeat task.
      */
-    private long startDateRepeat;
+    private long mStartDateRepeat;
 
     /**
      * time window for download repeat task.
      */
-    private int repeatWindows;
+    private int mRepeatWindows;
 
     /**
      * current number of request for download repeat task.
      */
-    private int repeatRequestNum;
+    private int mRepeatRequestNum;
 
     /**
      * define if download should be repeated.
      */
-    private boolean repeatDownload;
+    private boolean mRepeatDownload;
 
     /**
      * number of packet pending for download repeat task.
      */
-    private BigDecimal repeatPacketSize = BigDecimal.ZERO;
+    private BigDecimal mRepeatPacketSize = BigDecimal.ZERO;
 
     /**
      * define if the first download repeat has been sent and waiting for connection
      * It is reset to false when the client is connected to server the first time.
      */
-    private boolean firstDownloadRepeat;
+    private boolean mFirstDownloadRepeat;
 
     /**
      * define if the first upload repeat has been sent and waiting for connection
      * It is reset to false when the client is connected to server the first time.
      */
-    private boolean firstUploadRepeat;
+    private boolean mFirstUploadRepeat;
 
     /**
      * speed test socket interface.
      */
-    private final ISpeedTestSocket speedTestSocket;
+    private final ISpeedTestSocket mSpeedTestSocket;
 
     /**
      * Build Speed test repeat.
@@ -105,7 +105,7 @@ public class RepeatWrapper {
      * @param socket speed test socket
      */
     public RepeatWrapper(final ISpeedTestSocket socket) {
-        speedTestSocket = socket;
+        mSpeedTestSocket = socket;
     }
 
     /**
@@ -129,11 +129,11 @@ public class RepeatWrapper {
         BigDecimal downloadRepeatRateOctet = transferRateOctet;
         long downloadRepeatReportTime = reportTime;
 
-        if (startDateRepeat != 0) {
-            if (!repeatFinished) {
-                progressPercent = new BigDecimal(System.currentTimeMillis() - startDateRepeat).multiply
+        if (mStartDateRepeat != 0) {
+            if (!mRepeatFinished) {
+                progressPercent = new BigDecimal(System.currentTimeMillis() - mStartDateRepeat).multiply
                         (SpeedTestConst.PERCENT_MAX)
-                        .divide(new BigDecimal(repeatWindows), scale, roundingMode);
+                        .divide(new BigDecimal(mRepeatWindows), scale, roundingMode);
             } else {
                 progressPercent = SpeedTestConst.PERCENT_MAX;
             }
@@ -144,35 +144,35 @@ public class RepeatWrapper {
 
         BigDecimal rates = BigDecimal.ZERO;
         for (final BigDecimal rate :
-                repeatTransferRateList) {
+                mRepeatTransferRateList) {
             rates = rates.add(rate);
         }
 
-        if (!repeatTransferRateList.isEmpty()) {
-            downloadRepeatRateOctet = rates.add(downloadRepeatRateOctet).divide(new BigDecimal(repeatTransferRateList
+        if (!mRepeatTransferRateList.isEmpty()) {
+            downloadRepeatRateOctet = rates.add(downloadRepeatRateOctet).divide(new BigDecimal(mRepeatTransferRateList
                     .size()).add
-                    (new BigDecimal(repeatTempPckSize).divide(repeatPacketSize, scale, roundingMode)
+                    (new BigDecimal(mRepeatTempPckSize).divide(mRepeatPacketSize, scale, roundingMode)
                     ), scale, roundingMode);
         }
 
         final BigDecimal transferRateBit = downloadRepeatRateOctet.multiply(SpeedTestConst.BIT_MULTIPLIER);
 
-        if (!repeatFinished) {
-            temporaryPacketSize = repeatTempPckSize;
+        if (!mRepeatFinished) {
+            temporaryPacketSize = mRepeatTempPckSize;
         } else {
-            temporaryPacketSize = repeatTempPckSize;
-            downloadRepeatReportTime = startDateRepeat + repeatWindows;
+            temporaryPacketSize = mRepeatTempPckSize;
+            downloadRepeatReportTime = mStartDateRepeat + mRepeatWindows;
         }
 
         return new SpeedTestReport(speedTestMode,
                 progressPercent.floatValue(),
-                startDateRepeat,
+                mStartDateRepeat,
                 downloadRepeatReportTime,
                 temporaryPacketSize,
-                repeatPacketSize.longValueExact(),
+                mRepeatPacketSize.longValueExact(),
                 downloadRepeatRateOctet,
                 transferRateBit,
-                repeatRequestNum);
+                mRepeatRequestNum);
     }
 
     /**
@@ -183,8 +183,8 @@ public class RepeatWrapper {
      * @param uri      uri to fetch to download file
      */
     private void startDownloadRepeat(final String hostname, final int port, final String uri) {
-        repeatDownload = true;
-        speedTestSocket.startDownload(hostname, port, uri);
+        mRepeatDownload = true;
+        mSpeedTestSocket.startDownload(hostname, port, uri);
     }
 
     /**
@@ -195,7 +195,7 @@ public class RepeatWrapper {
      * @param uri      uri to fetch to upload file
      */
     private void startUploadRepeat(final String hostname, final int port, final String uri, final int fileSizeOctet) {
-        speedTestSocket.startUpload(hostname, port, uri, fileSizeOctet);
+        mSpeedTestSocket.startUpload(hostname, port, uri, fileSizeOctet);
     }
 
     /**
@@ -222,9 +222,9 @@ public class RepeatWrapper {
         final ISpeedTestListener speedTestListener = new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
-                repeatTransferRateList.add(report.getTransferRateOctet());
+                mRepeatTransferRateList.add(report.getTransferRateOctet());
                 startDownloadRepeat(hostname, port, uri);
-                repeatRequestNum++;
+                mRepeatRequestNum++;
             }
 
             @Override
@@ -253,20 +253,20 @@ public class RepeatWrapper {
             }
         };
 
-        speedTestSocket.addSpeedTestListener(speedTestListener);
+        mSpeedTestSocket.addSpeedTestListener(speedTestListener);
 
-        repeatWindows = repeatWindow;
+        mRepeatWindows = repeatWindow;
 
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                speedTestSocket.removeSpeedTestListener(speedTestListener);
-                speedTestSocket.forceStopTask();
+                mSpeedTestSocket.removeSpeedTestListener(speedTestListener);
+                mSpeedTestSocket.forceStopTask();
                 timer.cancel();
                 timer.purge();
-                repeatFinished = true;
+                mRepeatFinished = true;
                 if (repeatListener != null) {
-                    repeatListener.onFinish(speedTestSocket.getLiveDownloadReport());
+                    repeatListener.onFinish(mSpeedTestSocket.getLiveDownloadReport());
                 }
             }
         }, repeatWindow);
@@ -275,7 +275,7 @@ public class RepeatWrapper {
             @Override
             public void run() {
                 if (repeatListener != null) {
-                    repeatListener.onReport(speedTestSocket.getLiveDownloadReport());
+                    repeatListener.onReport(mSpeedTestSocket.getLiveDownloadReport());
                 }
             }
         }, reportPeriodMillis, reportPeriodMillis);
@@ -323,9 +323,9 @@ public class RepeatWrapper {
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
-                repeatTransferRateList.add(report.getTransferRateOctet());
+                mRepeatTransferRateList.add(report.getTransferRateOctet());
                 startUploadRepeat(hostname, port, uri, fileSizeOctet);
-                repeatRequestNum++;
+                mRepeatRequestNum++;
             }
 
             @Override
@@ -339,20 +339,20 @@ public class RepeatWrapper {
             }
         };
 
-        speedTestSocket.addSpeedTestListener(speedTestListener);
+        mSpeedTestSocket.addSpeedTestListener(speedTestListener);
 
-        repeatWindows = repeatWindow;
+        mRepeatWindows = repeatWindow;
 
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                speedTestSocket.removeSpeedTestListener(speedTestListener);
-                speedTestSocket.forceStopTask();
+                mSpeedTestSocket.removeSpeedTestListener(speedTestListener);
+                mSpeedTestSocket.forceStopTask();
                 timer.cancel();
                 timer.purge();
-                repeatFinished = true;
+                mRepeatFinished = true;
                 if (repeatListener != null) {
-                    repeatListener.onFinish(speedTestSocket.getLiveUploadReport());
+                    repeatListener.onFinish(mSpeedTestSocket.getLiveUploadReport());
                 }
             }
         }, repeatWindow);
@@ -361,7 +361,7 @@ public class RepeatWrapper {
             @Override
             public void run() {
                 if (repeatListener != null) {
-                    repeatListener.onReport(speedTestSocket.getLiveUploadReport());
+                    repeatListener.onReport(mSpeedTestSocket.getLiveUploadReport());
                 }
             }
         }, reportPeriodMillis, reportPeriodMillis);
@@ -375,10 +375,10 @@ public class RepeatWrapper {
      * @param isDownload define if initialization is for download or upload
      */
     private void initRepeat(final boolean isDownload) {
-        repeatDownload = isDownload;
-        firstDownloadRepeat = isDownload;
-        repeatUpload = !isDownload;
-        firstUploadRepeat = !isDownload;
+        mRepeatDownload = isDownload;
+        mFirstDownloadRepeat = isDownload;
+        mRepeatUpload = !isDownload;
+        mFirstUploadRepeat = !isDownload;
         initRepeatVars();
     }
 
@@ -386,12 +386,12 @@ public class RepeatWrapper {
      * Initialize upload/download repeat task variables for report + state.
      */
     private void initRepeatVars() {
-        repeatRequestNum = 0;
-        repeatPacketSize = BigDecimal.ZERO;
-        repeatTempPckSize = 0;
-        repeatFinished = false;
-        startDateRepeat = 0;
-        repeatTransferRateList = new ArrayList<>();
+        mRepeatRequestNum = 0;
+        mRepeatPacketSize = BigDecimal.ZERO;
+        mRepeatTempPckSize = 0;
+        mRepeatFinished = false;
+        mStartDateRepeat = 0;
+        mRepeatTransferRateList = new ArrayList<>();
     }
 
     /**
@@ -402,53 +402,53 @@ public class RepeatWrapper {
      */
     private void clearRepeatTask(final ISpeedTestListener listener, final Timer timer) {
 
-        speedTestSocket.removeSpeedTestListener(listener);
+        mSpeedTestSocket.removeSpeedTestListener(listener);
         if (timer != null) {
             timer.cancel();
             timer.purge();
         }
-        repeatFinished = true;
-        speedTestSocket.closeSocket();
-        speedTestSocket.shutdownAndWait();
+        mRepeatFinished = true;
+        mSpeedTestSocket.closeSocket();
+        mSpeedTestSocket.shutdownAndWait();
     }
 
     public boolean isFirstDownload() {
-        return firstDownloadRepeat && repeatDownload;
+        return mFirstDownloadRepeat && mRepeatDownload;
     }
 
     public boolean isFirstUpload() {
-        return firstUploadRepeat && repeatUpload;
+        return mFirstUploadRepeat && mRepeatUpload;
     }
 
     public void setFirstDownloadRepeat(final boolean state) {
-        firstDownloadRepeat = state;
+        mFirstDownloadRepeat = state;
     }
 
     public void setStartDate(final long timeStart) {
-        startDateRepeat = timeStart;
+        mStartDateRepeat = timeStart;
     }
 
     public boolean isRepeatDownload() {
-        return repeatDownload;
+        return mRepeatDownload;
     }
 
     public void updatePacketSize(final BigDecimal packetSize) {
-        repeatPacketSize = repeatPacketSize.add(packetSize);
+        mRepeatPacketSize = mRepeatPacketSize.add(packetSize);
     }
 
     public void updateTempPacketSize(final int read) {
-        repeatTempPckSize += read;
+        mRepeatTempPckSize += read;
     }
 
     public boolean isRepeatUpload() {
-        return repeatUpload;
+        return mRepeatUpload;
     }
 
     public boolean isRepeat() {
-        return repeatDownload || repeatUpload;
+        return mRepeatDownload || mRepeatUpload;
     }
 
     public void setFirstUploadRepeat(final boolean state) {
-        firstUploadRepeat = state;
+        mFirstUploadRepeat = state;
     }
 }
