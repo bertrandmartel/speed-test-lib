@@ -158,6 +158,11 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     private final RepeatWrapper mRepeatWrapper;
 
     /**
+     * define if report interval is set.
+     */
+    private boolean mReportInterval;
+
+    /**
      * Build Client mSocket.
      */
     public SpeedTestSocket() {
@@ -290,6 +295,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
 
             if (!mRepeatWrapper.isRepeatDownload()) {
                 mExecutorService.shutdownNow();
+                mReportExecutorService.shutdownNow();
             }
 
         } catch (SocketTimeoutException e) {
@@ -297,9 +303,11 @@ public class SpeedTestSocket implements ISpeedTestSocket {
             mTimeEnd = System.currentTimeMillis();
             closeSocket();
             mExecutorService.shutdownNow();
+            mReportExecutorService.shutdownNow();
         } catch (IOException | InterruptedException e) {
             catchError(true, e.getMessage());
         }
+        mReportInterval = false;
         mErrorDispatched = false;
     }
 
@@ -309,6 +317,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     @Override
     public void shutdownAndWait() {
         mExecutorService.shutdownNow();
+        mReportExecutorService.shutdownNow();
         try {
             mExecutorService.awaitTermination(SpeedTestConst.THREADPOOL_WAIT_COMPLETION_MS, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
@@ -334,10 +343,12 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                 mRepeatWrapper.updateTempPacketSize(read);
             }
 
-            final SpeedTestReport report = getLiveDownloadReport();
+            if (!mReportInterval) {
+                final SpeedTestReport report = getLiveDownloadReport();
 
-            for (int i = 0; i < mListenerList.size(); i++) {
-                mListenerList.get(i).onDownloadProgress(report.getProgressPercent(), report);
+                for (int i = 0; i < mListenerList.size(); i++) {
+                    mListenerList.get(i).onDownloadProgress(report.getProgressPercent(), report);
+                }
             }
 
             if (mDownloadTemporaryPacketSize == mDownloadPckSize.longValueExact()) {
@@ -376,6 +387,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
 
                 if (!mRepeatWrapper.isRepeatUpload()) {
                     mExecutorService.shutdownNow();
+                    mReportExecutorService.shutdownNow();
                 }
 
                 return;
@@ -387,7 +399,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                 }
             }
             mExecutorService.shutdownNow();
-
+            mReportExecutorService.shutdownNow();
         } catch (IOException | InterruptedException e) {
             if (!mErrorDispatched) {
                 catchError(false, e.getMessage());
@@ -419,7 +431,14 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      * @param uri         uri to fetch to download file
      * @param maxDuration maximum duration of the speed test in milliseconds
      */
-    public void startDownload(final String hostname, final int port, final String uri, final int maxDuration) {
+    public void startFixedDownload(final String hostname,
+                                   final int port,
+                                   final String uri,
+                                   final int maxDuration) {
+
+        if (mReportExecutorService == null || mReportExecutorService.isShutdown()) {
+            mReportExecutorService = Executors.newScheduledThreadPool(SpeedTestConst.THREAD_POOL_REPORT_SIZE);
+        }
 
         mReportExecutorService.schedule(new Runnable() {
             @Override
@@ -428,6 +447,42 @@ public class SpeedTestSocket implements ISpeedTestSocket {
             }
         }, maxDuration, TimeUnit.MILLISECONDS);
 
+        startDownload(hostname, port, uri);
+    }
+
+    /**
+     * Start download process with a fixed duration.
+     *
+     * @param hostname       server mHostname
+     * @param port           server mPort
+     * @param uri            uri to fetch to download file
+     * @param maxDuration    maximum duration of the speed test in milliseconds
+     * @param reportInterval report interval in milliseconds
+     */
+    public void startFixedDownload(final String hostname,
+                                   final int port,
+                                   final String uri,
+                                   final int maxDuration,
+                                   final int reportInterval) {
+        initReportTask(reportInterval, false);
+        mReportInterval = true;
+        startFixedDownload(hostname, port, uri, maxDuration);
+    }
+
+    /**
+     * Start download process.
+     *
+     * @param hostname       server mHostname
+     * @param port           server mPort
+     * @param uri            uri to fetch to download file
+     * @param reportInterval report interval in milliseconds
+     */
+    public void startDownload(final String hostname,
+                              final int port,
+                              final String uri,
+                              final int reportInterval) {
+        initReportTask(reportInterval, false);
+        mReportInterval = true;
         startDownload(hostname, port, uri);
     }
 
@@ -483,9 +538,11 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                                 true, SpeedTestConst.SOCKET_WRITE_ERROR);
                         closeSocket();
                         mExecutorService.shutdownNow();
+                        mReportExecutorService.shutdownNow();
                     } catch (IOException e) {
                         SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, true, e.getMessage());
                         mExecutorService.shutdownNow();
+                        mReportExecutorService.shutdownNow();
                     }
                 }
             }
@@ -499,14 +556,17 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      * @param port          server mPort
      * @param uri           uri to fetch
      * @param fileSizeOctet size of file to upload
-     * @param maxDuration   maxumum duration of speed test in milliseconds
+     * @param maxDuration   maximum duration of speed test in milliseconds
      */
-    public void startUpload(final String hostname,
-                            final int port,
-                            final String uri,
-                            final int fileSizeOctet,
-                            final int maxDuration) {
+    public void startFixedUpload(final String hostname,
+                                 final int port,
+                                 final String uri,
+                                 final int fileSizeOctet,
+                                 final int maxDuration) {
 
+        if (mReportExecutorService == null || mReportExecutorService.isShutdown()) {
+            mReportExecutorService = Executors.newScheduledThreadPool(SpeedTestConst.THREAD_POOL_REPORT_SIZE);
+        }
         mReportExecutorService.schedule(new Runnable() {
             @Override
             public void run() {
@@ -514,6 +574,85 @@ public class SpeedTestSocket implements ISpeedTestSocket {
             }
         }, maxDuration, TimeUnit.MILLISECONDS);
 
+        startUpload(hostname, port, uri, fileSizeOctet);
+    }
+
+    /**
+     * Start upload process.
+     *
+     * @param hostname       server mHostname
+     * @param port           server mPort
+     * @param uri            uri to fetch
+     * @param fileSizeOctet  size of file to upload
+     * @param maxDuration    maximum duration of speed test in milliseconds
+     * @param reportInterval report interval in milliseconds
+     */
+    public void startFixedUpload(final String hostname,
+                                 final int port,
+                                 final String uri,
+                                 final int fileSizeOctet,
+                                 final int maxDuration,
+                                 final int reportInterval) {
+
+        initReportTask(reportInterval, false);
+
+        mReportInterval = true;
+        startFixedUpload(hostname, port, uri, fileSizeOctet, maxDuration);
+    }
+
+    /**
+     * initialize report task.
+     *
+     * @param reportInterval report interval in milliseconds
+     * @param download       define if download or upload report should be dispatched
+     */
+    private void initReportTask(final int reportInterval, final boolean download) {
+
+        if (mReportExecutorService == null || mReportExecutorService.isShutdown()) {
+            mReportExecutorService = Executors.newScheduledThreadPool(SpeedTestConst.THREAD_POOL_REPORT_SIZE);
+        }
+
+        mReportExecutorService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                final SpeedTestReport report;
+
+                if (!download) {
+
+                    report = getLiveUploadReport();
+
+                    for (final ISpeedTestListener listener : mListenerList) {
+                        listener.onUploadProgress(report.getProgressPercent(), report);
+                    }
+                } else {
+
+                    report = getLiveDownloadReport();
+
+                    for (final ISpeedTestListener listener : mListenerList) {
+                        listener.onDownloadProgress(report.getProgressPercent(), report);
+                    }
+                }
+            }
+        }, reportInterval, reportInterval, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Start upload process.
+     *
+     * @param hostname       server mHostname
+     * @param port           server mPort
+     * @param uri            uri to fetch
+     * @param fileSizeOctet  size of file to upload
+     * @param reportInterval report interval in milliseconds
+     */
+    public void startUpload(final String hostname,
+                            final int port,
+                            final String uri,
+                            final int fileSizeOctet,
+                            final int reportInterval) {
+
+        initReportTask(reportInterval, false);
+        mReportInterval = true;
         startUpload(hostname, port, uri, fileSizeOctet);
     }
 
@@ -605,11 +744,12 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                                     mRepeatWrapper.updateTempPacketSize(mUploadChunkSize);
                                 }
 
-                                final SpeedTestReport report = getLiveUploadReport();
+                                if (!mReportInterval) {
+                                    final SpeedTestReport report = getLiveUploadReport();
 
-                                for (int j = 0; j < mListenerList.size(); j++) {
-
-                                    mListenerList.get(j).onUploadProgress(report.getProgressPercent(), report);
+                                    for (int j = 0; j < mListenerList.size(); j++) {
+                                        mListenerList.get(j).onUploadProgress(report.getProgressPercent(), report);
+                                    }
                                 }
                             }
                             if (remain != 0 && writeFlushSocket(Arrays.copyOfRange(body, mUploadTempFileSize,
@@ -623,9 +763,15 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                                     mRepeatWrapper.updateTempPacketSize(remain);
                                 }
                             }
-                            for (int j = 0; j < mListenerList.size(); j++) {
-                                mListenerList.get(j).onUploadProgress(SpeedTestConst.PERCENT_MAX.floatValue(),
-                                        getLiveUploadReport());
+
+                            if (!mReportInterval) {
+                                final SpeedTestReport report = getLiveUploadReport();
+
+                                for (int j = 0; j < mListenerList.size(); j++) {
+                                    mListenerList.get(j).onUploadProgress(SpeedTestConst.PERCENT_MAX.floatValue(),
+                                            report);
+
+                                }
                             }
                         }
                     } catch (SocketTimeoutException e) {
@@ -638,10 +784,14 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                         }
                         closeSocket();
                         mExecutorService.shutdownNow();
+                        mReportExecutorService.shutdownNow();
                     } catch (IOException e) {
                         mErrorDispatched = true;
                         SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
                         mExecutorService.shutdownNow();
+                        mReportExecutorService.shutdownNow();
+                    } finally {
+                        mReportInterval = false;
                     }
                 }
             }
@@ -703,6 +853,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
         mTimeEnd = System.currentTimeMillis();
         closeSocket();
         mExecutorService.shutdownNow();
+        mReportExecutorService.shutdownNow();
     }
 
     /**
