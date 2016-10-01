@@ -65,6 +65,11 @@ public class SpeedTestSocketTest {
     private static Waiter mWaiterError;
 
     /**
+     * timestamp used to measure time interval.
+     */
+    private long mTimestamp;
+
+    /**
      * test socket timeout default value.
      */
     @Test
@@ -733,16 +738,98 @@ public class SpeedTestSocketTest {
         });
 
         mWaiter = new Waiter();
-        mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
+        mSocket.startFixedUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
                 TestCommon.SPEED_TEST_SERVER_URI_UL,
                 packetSizeExpected, duration);
 
         mWaiter.await(duration, TimeUnit.MILLISECONDS);
 
         mWaiter = new Waiter();
-        mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
+        mSocket.startFixedDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
                 TestCommon.SPEED_TEST_SERVER_URI_DL, duration);
 
         mWaiter.await(duration, TimeUnit.MILLISECONDS);
+    }
+
+    @Test
+    public void fixDurationWithReportIntervalTest() throws TimeoutException {
+
+        mSocket = new SpeedTestSocket();
+
+        final int packetSizeExpected = TestCommon.FILE_SIZE_LARGE;
+
+        final int duration = 2000;
+        final int requestInterval = 500;
+
+        mSocket.addSpeedTestListener(new ISpeedTestListener() {
+            @Override
+            public void onDownloadFinished(final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+                final long currentTimestamp = System.currentTimeMillis();
+                if (mTimestamp > 0) {
+                    final long diff = currentTimestamp - mTimestamp;
+                    if (diff != requestInterval && diff != (requestInterval + 1) && diff != (requestInterval - 1)) {
+                        mWaiter.fail("expected " + requestInterval + " | current val : " +
+                                (currentTimestamp - mTimestamp));
+                    }
+                }
+                mTimestamp = currentTimestamp;
+            }
+
+            @Override
+            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+                mWaiter.fail("unexpected error in onDownloadError : " + speedTestError);
+            }
+
+            @Override
+            public void onUploadFinished(final SpeedTestReport report) {
+            }
+
+            @Override
+            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
+                mWaiter.fail("unexpected error in onUploadError : " + speedTestError);
+            }
+
+            @Override
+            public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                final long currentTimestamp = System.currentTimeMillis();
+                if (mTimestamp > 0) {
+                    final long diff = currentTimestamp - mTimestamp;
+                    if (diff != requestInterval && diff != (requestInterval + 1) && diff != (requestInterval - 1)) {
+                        mWaiter.fail("expected " + requestInterval + " | current val : " +
+                                (currentTimestamp - mTimestamp));
+                    }
+                }
+                mTimestamp = currentTimestamp;
+            }
+
+            @Override
+            public void onInterruption() {
+                mWaiter.resume();
+            }
+        });
+
+        mWaiter = new Waiter();
+        mTimestamp = 0;
+        mSocket.startFixedUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
+                TestCommon.SPEED_TEST_SERVER_URI_UL,
+                packetSizeExpected, duration, requestInterval);
+
+        mWaiter.await(duration, TimeUnit.MILLISECONDS);
+
+        mWaiter = new Waiter();
+        mTimestamp = 0;
+        mSocket.startFixedDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
+                TestCommon.SPEED_TEST_SERVER_URI_DL, duration, requestInterval);
+
+        mWaiter.await(duration, TimeUnit.MILLISECONDS);
+    }
+
+    @Test
+    public void downloadWithReportIntervalTest() {
+
     }
 }

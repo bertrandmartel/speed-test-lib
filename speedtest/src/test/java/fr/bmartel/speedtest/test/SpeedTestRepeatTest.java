@@ -217,6 +217,7 @@ public class SpeedTestRepeatTest {
                             IRepeatListener() {
                                 @Override
                                 public void onFinish(final SpeedTestReport report) {
+
                                     SpeedTestUtils.compareFinishReport(mSocket, finishWaiter, TestCommon
                                                     .FILE_SIZE_REGULAR,
                                             report, false);
@@ -229,6 +230,7 @@ public class SpeedTestRepeatTest {
 
                                 @Override
                                 public void onReport(final SpeedTestReport report) {
+
                                     if (report.getProgressPercent() > 0) {
                                         SpeedTestUtils.testReportNotEmpty(mWaiterError, report, TestCommon
                                                 .FILE_SIZE_REGULAR, true, true);
