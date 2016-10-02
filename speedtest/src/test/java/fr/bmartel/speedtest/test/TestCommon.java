@@ -155,4 +155,9 @@ public class TestCommon {
      */
     public final static int OFFSET_REPORT_INTERVAL = 10;
 
+    /**
+     * default socket timeout.
+     */
+    public final static int DEFAULT_SOCKET_TIMEOUT = 10000;
+
 }

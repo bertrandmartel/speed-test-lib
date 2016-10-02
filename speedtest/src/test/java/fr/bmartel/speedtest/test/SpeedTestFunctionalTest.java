@@ -134,11 +134,6 @@ public class SpeedTestFunctionalTest {
      */
     private boolean download;
 
-    /**
-     * default socket timeout.
-     */
-    private final static int DEFAULT_SOCKET_TIMEOUT = 10000;
-
     @Test
     public void downloadTest() throws TimeoutException {
 
@@ -146,7 +141,7 @@ public class SpeedTestFunctionalTest {
 
         mSocket = new SpeedTestSocket();
 
-        mSocket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
@@ -200,7 +195,7 @@ public class SpeedTestFunctionalTest {
 
         mSocket = new SpeedTestSocket();
 
-        mSocket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         mWaiter = new Waiter();
 
@@ -255,7 +250,7 @@ public class SpeedTestFunctionalTest {
 
         mSocket = new SpeedTestSocket();
 
-        mSocket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         mWaiter = new Waiter();
 
@@ -377,7 +372,7 @@ public class SpeedTestFunctionalTest {
 
         mSocket = new SpeedTestSocket();
 
-        mSocket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final Waiter waiter = new Waiter();
 
@@ -436,7 +431,7 @@ public class SpeedTestFunctionalTest {
 
         mSocket = new SpeedTestSocket();
 
-        mSocket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final int totalPacketSize = 1000000;
 
@@ -541,7 +536,7 @@ public class SpeedTestFunctionalTest {
 
         mSocket = new SpeedTestSocket();
 
-        mSocket.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT);
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final int totalPacketSize = 1000000;
 

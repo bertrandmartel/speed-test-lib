@@ -154,6 +154,7 @@ public class SpeedTestSocketTest {
     public void speedTestModeTest() throws TimeoutException {
 
         mSocket = new SpeedTestSocket();
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
         Assert.assertEquals(HEADER + "speed test mode value after init", mSocket.getSpeedTestMode(),
                 SpeedTestMode.NONE);
 
@@ -297,6 +298,7 @@ public class SpeedTestSocketTest {
     @Test
     public void socketTest() throws IllegalAccessException, NoSuchFieldException, TimeoutException {
         mSocket = new SpeedTestSocket();
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
@@ -450,6 +452,7 @@ public class SpeedTestSocketTest {
     @Test
     public void downloadReportNotEmptyTest() throws TimeoutException {
         mSocket = new SpeedTestSocket();
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
@@ -510,6 +513,7 @@ public class SpeedTestSocketTest {
     @Test
     public void uploadReportNotEmptyTest() throws TimeoutException {
         mSocket = new SpeedTestSocket();
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
@@ -568,6 +572,7 @@ public class SpeedTestSocketTest {
     @Test
     public void progressResultCallbackDownloadTest() throws TimeoutException {
         mSocket = new SpeedTestSocket();
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final Waiter waiter = new Waiter();
         final Waiter waiter2 = new Waiter();
@@ -640,6 +645,7 @@ public class SpeedTestSocketTest {
     @Test
     public void progressResultCallbackUploadTest() throws TimeoutException {
         mSocket = new SpeedTestSocket();
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final Waiter waiter = new Waiter();
         final Waiter waiter2 = new Waiter();
@@ -712,6 +718,7 @@ public class SpeedTestSocketTest {
     public void fixDurationTest() throws TimeoutException {
 
         mSocket = new SpeedTestSocket();
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final int packetSizeExpected = TestCommon.FILE_SIZE_LARGE;
 
@@ -771,6 +778,7 @@ public class SpeedTestSocketTest {
     public void fixDurationWithReportIntervalTest() throws TimeoutException {
 
         mSocket = new SpeedTestSocket();
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final int packetSizeExpected = TestCommon.FILE_SIZE_LARGE;
 
@@ -834,6 +842,7 @@ public class SpeedTestSocketTest {
     public void downloadWithReportIntervalTest() throws TimeoutException {
 
         mSocket = new SpeedTestSocket();
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final int packetSizeExpected = TestCommon.FILE_SIZE_REGULAR;
 

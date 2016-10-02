@@ -84,7 +84,7 @@ public class SpeedTestRepeatTest {
             NoSuchFieldException {
 
         mSocket = new SpeedTestSocket();
-
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
         final RepeatVars repeatVars = new RepeatVars(mSocket);
 
         testRepeatVarsNoRepeat(repeatVars);
@@ -377,6 +377,7 @@ public class SpeedTestRepeatTest {
             NoSuchFieldException {
 
         mSocket = new SpeedTestSocket();
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final RepeatVars repeatVars = new RepeatVars(mSocket);
 
@@ -426,6 +427,7 @@ public class SpeedTestRepeatTest {
             IllegalAccessException, NoSuchFieldException {
 
         mSocket = new SpeedTestSocket();
+        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final List<ISpeedTestListener> listenerList = new ArrayList<>();
 
