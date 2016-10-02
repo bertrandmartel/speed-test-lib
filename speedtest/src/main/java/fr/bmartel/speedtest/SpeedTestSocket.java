@@ -102,9 +102,15 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     private boolean mForceCloseSocket;
 
     /**
-     * executor service.
+     * executor service for reading operation.
      */
-    private ScheduledExecutorService mExecutorService;
+    private ExecutorService mReadExecutorService;
+
+    /**
+     * executor service for writing operation.
+     */
+    private ExecutorService mWriteExecutorService;
+
 
     /**
      * executor service used for reporting.
@@ -194,8 +200,9 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      * initialize thread pool.
      */
     private void initThreadPool() {
-        mExecutorService = Executors.newScheduledThreadPool(SpeedTestConst.THREAD_POOL_SIZE);
+        mReadExecutorService = Executors.newSingleThreadExecutor();
         mReportExecutorService = Executors.newScheduledThreadPool(SpeedTestConst.THREAD_POOL_REPORT_SIZE);
+        mWriteExecutorService = Executors.newSingleThreadExecutor();
     }
 
     /**
@@ -225,8 +232,8 @@ public class SpeedTestSocket implements ISpeedTestSocket {
 
             mSocket.connect(new InetSocketAddress(mHostname, mPort));
 
-            if (!mExecutorService.isShutdown()) {
-                mExecutorService.execute(new Runnable() {
+            if (!mReadExecutorService.isShutdown()) {
+                mReadExecutorService.execute(new Runnable() {
 
                     @Override
                     public void run() {
@@ -294,16 +301,14 @@ public class SpeedTestSocket implements ISpeedTestSocket {
             }
 
             if (!mRepeatWrapper.isRepeatDownload()) {
-                mExecutorService.shutdownNow();
-                mReportExecutorService.shutdownNow();
+                closeExecutors();
             }
 
         } catch (SocketTimeoutException e) {
             SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList, true, e.getMessage());
             mTimeEnd = System.currentTimeMillis();
             closeSocket();
-            mExecutorService.shutdownNow();
-            mReportExecutorService.shutdownNow();
+            closeExecutors();
         } catch (IOException | InterruptedException e) {
             catchError(true, e.getMessage());
         }
@@ -316,10 +321,12 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      */
     @Override
     public void shutdownAndWait() {
-        mExecutorService.shutdownNow();
-        mReportExecutorService.shutdownNow();
+        closeExecutors();
         try {
-            mExecutorService.awaitTermination(SpeedTestConst.THREADPOOL_WAIT_COMPLETION_MS, TimeUnit.MILLISECONDS);
+            mReadExecutorService.awaitTermination(SpeedTestConst.THREADPOOL_WAIT_COMPLETION_MS, TimeUnit.MILLISECONDS);
+            mWriteExecutorService.awaitTermination(SpeedTestConst.THREADPOOL_WAIT_COMPLETION_MS, TimeUnit.MILLISECONDS);
+            mReportExecutorService.awaitTermination(SpeedTestConst.THREADPOOL_WAIT_COMPLETION_MS,
+                    TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             //e.printStackTrace();
         }
@@ -386,8 +393,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                 }
 
                 if (!mRepeatWrapper.isRepeatUpload()) {
-                    mExecutorService.shutdownNow();
-                    mReportExecutorService.shutdownNow();
+                    closeExecutors();
                 }
 
                 return;
@@ -398,8 +404,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                     mListenerList.get(i).onUploadError(SpeedTestError.SOCKET_ERROR, "mSocket error");
                 }
             }
-            mExecutorService.shutdownNow();
-            mReportExecutorService.shutdownNow();
+            closeExecutors();
         } catch (IOException | InterruptedException e) {
             if (!mErrorDispatched) {
                 catchError(false, e.getMessage());
@@ -420,7 +425,17 @@ public class SpeedTestSocket implements ISpeedTestSocket {
         this.mHostname = hostname;
         this.mPort = port;
         final String downloadRequest = "GET " + uri + " HTTP/1.1\r\n" + "Host: " + hostname + "\r\n\r\n";
-        writeDownload(downloadRequest.getBytes());
+
+        if (mWriteExecutorService == null || mWriteExecutorService.isShutdown()) {
+            mWriteExecutorService = Executors.newSingleThreadExecutor();
+        }
+
+        mWriteExecutorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                writeDownload(downloadRequest.getBytes());
+            }
+        });
     }
 
     /**
@@ -464,7 +479,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                                    final String uri,
                                    final int maxDuration,
                                    final int reportInterval) {
-        initReportTask(reportInterval, false);
+        initReportTask(reportInterval, true);
         mReportInterval = true;
         startFixedDownload(hostname, port, uri, maxDuration);
     }
@@ -481,7 +496,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                               final int port,
                               final String uri,
                               final int reportInterval) {
-        initReportTask(reportInterval, false);
+        initReportTask(reportInterval, true);
         mReportInterval = true;
         startDownload(hostname, port, uri);
     }
@@ -519,8 +534,8 @@ public class SpeedTestSocket implements ISpeedTestSocket {
 
         mSpeedTestMode = SpeedTestMode.DOWNLOAD;
 
-        if (mExecutorService == null || mExecutorService.isShutdown()) {
-            initThreadPool();
+        if (mReadExecutorService == null || mReadExecutorService.isShutdown()) {
+            mReadExecutorService = Executors.newSingleThreadExecutor();
         }
 
         connectAndExecuteTask(new TimerTask() {
@@ -537,12 +552,10 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                         SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList,
                                 true, SpeedTestConst.SOCKET_WRITE_ERROR);
                         closeSocket();
-                        mExecutorService.shutdownNow();
-                        mReportExecutorService.shutdownNow();
+                        closeExecutors();
                     } catch (IOException e) {
                         SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, true, e.getMessage());
-                        mExecutorService.shutdownNow();
-                        mReportExecutorService.shutdownNow();
+                        closeExecutors();
                     }
                 }
             }
@@ -681,12 +694,16 @@ public class SpeedTestSocket implements ISpeedTestSocket {
         final String uploadRequest = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + hostname + "\r\nAccept: " +
                 "*/*\r\nContent-Length: " + fileSizeOctet + "\r\n\r\n";
 
-        new Thread(new Runnable() {
+        if (mWriteExecutorService == null || mWriteExecutorService.isShutdown()) {
+            mWriteExecutorService = Executors.newSingleThreadExecutor();
+        }
+
+        mWriteExecutorService.execute(new Runnable() {
             @Override
             public void run() {
                 writeUpload(uploadRequest.getBytes(), fileContent);
             }
-        }).start();
+        });
     }
 
     /**
@@ -697,8 +714,8 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      */
     private void writeUpload(final byte[] head, final byte[] body) {
 
-        if (mExecutorService == null || mExecutorService.isShutdown()) {
-            initThreadPool();
+        if (mReadExecutorService == null || mReadExecutorService.isShutdown()) {
+            mReadExecutorService = Executors.newSingleThreadExecutor();
         }
 
         connectAndExecuteTask(new TimerTask() {
@@ -783,19 +800,26 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                             SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
                         }
                         closeSocket();
-                        mExecutorService.shutdownNow();
-                        mReportExecutorService.shutdownNow();
+                        closeExecutors();
                     } catch (IOException e) {
                         mErrorDispatched = true;
                         SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
-                        mExecutorService.shutdownNow();
-                        mReportExecutorService.shutdownNow();
+                        closeExecutors();
                     } finally {
                         mReportInterval = false;
                     }
                 }
             }
         }, false);
+    }
+
+    /**
+     * shutdown executors to release threads.
+     */
+    private void closeExecutors() {
+        mReadExecutorService.shutdownNow();
+        mReportExecutorService.shutdownNow();
+        mReadExecutorService.shutdownNow();
     }
 
     /**
@@ -806,7 +830,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      * @throws IOException mSocket io exception
      */
     private int writeFlushSocket(final byte[] data) throws IOException {
-
+        
         final ExecutorService executor = Executors.newSingleThreadExecutor();
 
         @SuppressWarnings("unchecked")
@@ -852,8 +876,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
         SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, isDownload, errorMessage);
         mTimeEnd = System.currentTimeMillis();
         closeSocket();
-        mExecutorService.shutdownNow();
-        mReportExecutorService.shutdownNow();
+        closeExecutors();
     }
 
     /**
