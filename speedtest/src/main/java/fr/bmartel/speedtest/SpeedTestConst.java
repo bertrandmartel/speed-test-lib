@@ -34,14 +34,9 @@ import java.math.RoundingMode;
 public class SpeedTestConst {
 
     /**
-     * max size for thread pool.
-     */
-    public static final int THREAD_POOL_SIZE = 1;
-
-    /**
      * maximum size for report thread pool.
      */
-    public static final int THREAD_POOL_REPORT_SIZE = 2;
+    public static final int THREAD_POOL_REPORT_SIZE = 1;
 
     /**
      * size of the write read buffer for downloading.

@@ -146,7 +146,13 @@ public class TestCommon {
     public static final int EXPECTED_REPORT = (SPEED_TEST_DURATION / REPORT_INTERVAL) - 1;
 
     /**
-     * time to wait for thread in ms.
+     * accepted delay for fixed duration.
      */
-    public static final int WAIT_THREAD_TIMEOUT = 250;
+    public final static int FIXED_DURATION_OFFSET = 500;
+
+    /**
+     * offset in milliseconds for report interval
+     */
+    public final static int OFFSET_REPORT_INTERVAL = 10;
+
 }
