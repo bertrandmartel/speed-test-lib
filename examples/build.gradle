@@ -44,9 +44,22 @@ task downloadFile(type: JavaExec) {
     args ""
 }
 
+task downloadFTP(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    classpath += sourceSets.main.resources
+    main = "fr.bmartel.speedtest.examples.DownloadFtpExample"
+    args ""
+}
+
 task uploadFile(type: JavaExec) {
     classpath sourceSets.test.runtimeClasspath
     main = "fr.bmartel.speedtest.examples.UploadFileExample"
+    args ""
+}
+
+task uploadFTP(type: JavaExec) {
+    classpath sourceSets.test.runtimeClasspath
+    main = "fr.bmartel.speedtest.examples.UploadFtpExample"
     args ""
 }
 

@@ -58,7 +58,7 @@ public class UploadFileExample {
     /**
      * upload 10Mo file size.
      */
-    private static final int FILE_SIZE = 10000000;
+    private static final int FILE_SIZE = 1000000;
 
     /**
      * logger.
