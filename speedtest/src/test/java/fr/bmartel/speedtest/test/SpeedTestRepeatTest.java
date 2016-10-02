@@ -85,6 +85,7 @@ public class SpeedTestRepeatTest {
 
         mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
+
         final RepeatVars repeatVars = new RepeatVars(mSocket);
 
         testRepeatVarsNoRepeat(repeatVars);
@@ -256,6 +257,8 @@ public class SpeedTestRepeatTest {
         finishWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         mSocket.forceStopTask();
+
+        mSocket.clearListeners();
     }
 
     /**
@@ -487,6 +490,8 @@ public class SpeedTestRepeatTest {
 
         Assert.assertEquals(repeatVars.isRepeatFinished(), true);
         Assert.assertEquals(listenerList.size(), 0);
+
+        mSocket.clearListeners();
     }
 
     /*
