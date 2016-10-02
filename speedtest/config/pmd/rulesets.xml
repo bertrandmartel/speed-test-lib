@@ -137,11 +137,11 @@
 
     <!-- string and string buffer handling -->
 
-    <rule ref="rulesets/java/strings.xml/AvoidDuplicateLiterals">
+    <!--<rule ref="rulesets/java/strings.xml/AvoidDuplicateLiterals">
         <properties>
             <property name="skipAnnotations" value="true"/>
         </properties>
-    </rule>
+    </rule>-->
     <rule ref="rulesets/java/strings.xml/StringInstantiation"/>
     <rule ref="rulesets/java/strings.xml/StringToString"/>
     <rule ref="rulesets/java/strings.xml/InefficientStringBuffering"/>

@@ -98,4 +98,23 @@ public class SpeedTestConst {
      */
     public static final RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_EVEN;
 
+    /**
+     * default port for http download/upload.
+     */
+    public static final int HTTP_DEFAULT_PORT = 80;
+
+    /**
+     * default port for FTP download/upload.
+     */
+    public static final int FTP_DEFAULT_PORT = 21;
+
+    /**
+     * default username for FTP download/upload.
+     */
+    public static final String FTP_DEFAULT_USER = "anonymous";
+
+    /**
+     * default password for FTP download/upload.
+     */
+    public static final String FTP_DEFAULT_PASSWORD = "";
 }
