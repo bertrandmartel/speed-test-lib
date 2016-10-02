@@ -471,16 +471,28 @@ Execute it with : `new SpeedTestTask().execute();`
 
 All following examples use speed test server `1.testdebit.info`
 
-* download (10Mo)
+* HTTP download (1Mo)
 
 ```
-./gradlew download
+./gradlew downloadFile
 ```
 
-* upload (10Mo)
+* HTTP upload (1Mo)
 
 ```
-./gradlew upload
+./gradlew uploadFile
+```
+
+* FTP download (1Mo)
+
+```
+./gradlew downloadFTP
+```
+
+* FTP upload (1Mo)
+
+```
+./gradlew uploadFTP
 ```
 
 * download during a fixed duration (size: 100Mo, duration: 15s, report interval: 1s)

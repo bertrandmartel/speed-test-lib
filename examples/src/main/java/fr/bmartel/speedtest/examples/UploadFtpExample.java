@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package fr.bmartel.speedtest.examples;
 
 import fr.bmartel.speedtest.*;
@@ -29,11 +28,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Download file Speed Test example.
+ * Upload FTP example.
  *
  * @author Bertrand Martel
  */
-public class DownloadFileExample {
+public class UploadFtpExample {
 
     /**
      * socket timeout used in ms.
@@ -41,24 +40,24 @@ public class DownloadFileExample {
     private final static int SOCKET_TIMEOUT = 5000;
 
     /**
-     * speed examples server host name.
+     * default ftp server host used for tests.
      */
-    private final static String SPEED_TEST_SERVER_HOST = "2.testdebit.info";
+    public final static String FTP_SERVER_HOST = "speedtest.tele2.net";
 
     /**
-     * spedd examples server uri.
+     * default ftp uri used for tests.
      */
-    private final static String SPEED_TEST_SERVER_URI_DL = "/fichiers/1Mo.dat";
+    public final static String FTP_SERVER_UPLOAD_URI = "/upload/test.txt";
 
     /**
-     * speed examples server port.
+     * file size in octet.
      */
-    private final static int SPEED_TEST_SERVER_PORT = 80;
+    public final static int FTP_FILE_SIZE = 1000000;
 
     /**
      * logger.
      */
-    private final static Logger LOGGER = LogManager.getLogger(DownloadFileExample.class.getName());
+    private final static Logger LOGGER = LogManager.getLogger(UploadFtpExample.class.getName());
 
     /**
      * Download file example main.
@@ -122,10 +121,10 @@ public class DownloadFileExample {
 
             @Override
             public void onInterruption() {
-                
+
             }
         });
 
-        speedTestSocket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL);
+        speedTestSocket.startFtpUpload(FTP_SERVER_HOST, FTP_SERVER_UPLOAD_URI, FTP_FILE_SIZE);
     }
 }
