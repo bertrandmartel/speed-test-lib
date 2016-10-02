@@ -36,7 +36,6 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.TimerTask;
 import java.util.concurrent.*;
 
 /**
@@ -208,10 +207,10 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     /**
      * Create and connect mSocket.
      *
-     * @param task       task to be executed when connected to mSocket
-     * @param isDownload define if it is a download or upload test
+     * @param task     task to be executed when connected to mSocket
+     * @param download define if it is a download or upload test
      */
-    private void connectAndExecuteTask(final TimerTask task, final boolean isDownload) {
+    private void connectAndExecuteTask(final Runnable task, final boolean download) {
 
         // close mSocket before recreating it
         if (mSocket != null) {
@@ -221,7 +220,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
             /* create a basic mSocket connection */
             mSocket = new Socket();
 
-            if (mSocketTimeout != 0 && isDownload) {
+            if (mSocketTimeout != 0 && download) {
                 mSocket.setSoTimeout(mSocketTimeout);
             }
 
@@ -232,28 +231,40 @@ public class SpeedTestSocket implements ISpeedTestSocket {
 
             mSocket.connect(new InetSocketAddress(mHostname, mPort));
 
-            if (!mReadExecutorService.isShutdown()) {
-                mReadExecutorService.execute(new Runnable() {
+            if (mReadExecutorService == null || mReadExecutorService.isShutdown()) {
+                mReadExecutorService = Executors.newSingleThreadExecutor();
+            }
 
-                    @Override
-                    public void run() {
+            mReadExecutorService.execute(new Runnable() {
 
-                        if (isDownload) {
-                            startSocketDownloadTask();
-                        } else {
-                            startSocketUploadTask();
-                        }
-                        mSpeedTestMode = SpeedTestMode.NONE;
+                @Override
+                public void run() {
+
+                    if (download) {
+                        startSocketDownloadTask();
+                    } else {
+                        startSocketUploadTask();
                     }
-                });
+                    mSpeedTestMode = SpeedTestMode.NONE;
+                }
+            });
+
+            if (mWriteExecutorService == null || mWriteExecutorService.isShutdown()) {
+                mWriteExecutorService = Executors.newSingleThreadExecutor();
             }
 
-            if (task != null) {
-                task.run();
-            }
+            mWriteExecutorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (task != null) {
+                        task.run();
+                    }
+                }
+            });
+
         } catch (IOException e) {
             if (!mErrorDispatched) {
-                SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, isDownload, e.getMessage());
+                SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, download, e.getMessage());
             }
         }
     }
@@ -426,16 +437,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
         this.mPort = port;
         final String downloadRequest = "GET " + uri + " HTTP/1.1\r\n" + "Host: " + hostname + "\r\n\r\n";
 
-        if (mWriteExecutorService == null || mWriteExecutorService.isShutdown()) {
-            mWriteExecutorService = Executors.newSingleThreadExecutor();
-        }
-
-        mWriteExecutorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                writeDownload(downloadRequest.getBytes());
-            }
-        });
+        writeDownload(downloadRequest.getBytes());
     }
 
     /**
@@ -534,11 +536,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
 
         mSpeedTestMode = SpeedTestMode.DOWNLOAD;
 
-        if (mReadExecutorService == null || mReadExecutorService.isShutdown()) {
-            mReadExecutorService = Executors.newSingleThreadExecutor();
-        }
-
-        connectAndExecuteTask(new TimerTask() {
+        connectAndExecuteTask(new Runnable() {
             @Override
             public void run() {
 
@@ -694,16 +692,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
         final String uploadRequest = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + hostname + "\r\nAccept: " +
                 "*/*\r\nContent-Length: " + fileSizeOctet + "\r\n\r\n";
 
-        if (mWriteExecutorService == null || mWriteExecutorService.isShutdown()) {
-            mWriteExecutorService = Executors.newSingleThreadExecutor();
-        }
-
-        mWriteExecutorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                writeUpload(uploadRequest.getBytes(), fileContent);
-            }
-        });
+        writeUpload(uploadRequest.getBytes(), fileContent);
     }
 
     /**
@@ -714,11 +703,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      */
     private void writeUpload(final byte[] head, final byte[] body) {
 
-        if (mReadExecutorService == null || mReadExecutorService.isShutdown()) {
-            mReadExecutorService = Executors.newSingleThreadExecutor();
-        }
-
-        connectAndExecuteTask(new TimerTask() {
+        connectAndExecuteTask(new Runnable() {
             @Override
             public void run() {
                 if (mSocket != null && !mSocket.isClosed()) {
@@ -819,7 +804,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     private void closeExecutors() {
         mReadExecutorService.shutdownNow();
         mReportExecutorService.shutdownNow();
-        mReadExecutorService.shutdownNow();
+        mWriteExecutorService.shutdownNow();
     }
 
     /**
@@ -830,7 +815,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      * @throws IOException mSocket io exception
      */
     private int writeFlushSocket(final byte[] data) throws IOException {
-        
+
         final ExecutorService executor = Executors.newSingleThreadExecutor();
 
         @SuppressWarnings("unchecked")
