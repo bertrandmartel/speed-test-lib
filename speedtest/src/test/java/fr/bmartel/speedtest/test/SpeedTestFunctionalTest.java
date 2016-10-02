@@ -186,6 +186,8 @@ public class SpeedTestFunctionalTest {
         testDownload(SPEED_TEST_SERVER_URI_DL_10MO);
 
         stopServer();
+
+        mSocket.clearListeners();
     }
 
     @Test
@@ -241,6 +243,8 @@ public class SpeedTestFunctionalTest {
         testUpload(10000000);
 
         stopServer();
+
+        mSocket.clearListeners();
     }
 
     @Test
@@ -313,6 +317,8 @@ public class SpeedTestFunctionalTest {
         mWaiter.await(WAITING_TIMEOUT_LONG_OPERATION, SECONDS);
 
         stopServer();
+
+        mSocket.clearListeners();
     }
 
     /**
@@ -488,6 +494,8 @@ public class SpeedTestFunctionalTest {
                 .SPEED_TEST_SERVER_URI_DL_1MO);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, SECONDS, 2);
+
+        mSocket.clearListeners();
     }
 
     /**
@@ -591,6 +599,8 @@ public class SpeedTestFunctionalTest {
         startRepeatDownload(mWaiter, 3000, 1000, 2, 1000000);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
+
+        mSocket.clearListeners();
     }
 
     /**
