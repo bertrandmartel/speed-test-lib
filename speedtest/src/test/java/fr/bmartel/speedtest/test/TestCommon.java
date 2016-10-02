@@ -160,4 +160,23 @@ public class TestCommon {
      */
     public final static int DEFAULT_SOCKET_TIMEOUT = 10000;
 
+    /**
+     * default ftp server host used for tests.
+     */
+    public final static String FTP_SERVER_HOST = "speedtest.tele2.net";
+
+    /**
+     * default ftp uri used for tests.
+     */
+    public final static String FTP_SERVER_URI = "/1MB.zip";
+
+    /**
+     * default ftp uri used for tests.
+     */
+    public final static String FTP_SERVER_UPLOAD_URI = "/upload/test.txt";
+
+    /**
+     * larg file ftp uri used for tests.
+     */
+    public final static String FTP_SERVER_URI_LARGE_FILE = "/50MB.zip";
 }

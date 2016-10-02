@@ -26,8 +26,10 @@ package fr.bmartel.speedtest;
 
 import fr.bmartel.protocol.http.HttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
 
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.InetSocketAddress;
@@ -166,6 +168,16 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      * define if report interval is set.
      */
     private boolean mReportInterval;
+
+    /**
+     * FTP inputstream.
+     */
+    private InputStream mFtpInputstream;
+
+    /**
+     * FTP outputstream.
+     */
+    private OutputStream mFtpOutputstream;
 
     /**
      * Build Client mSocket.
@@ -487,6 +499,30 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     }
 
     /**
+     * Start download process with default to port 80.
+     *
+     * @param hostname server mHostname
+     * @param uri      uri to fetch to download file
+     */
+    public void startDownload(final String hostname,
+                              final String uri) {
+        startDownload(hostname, SpeedTestConst.HTTP_DEFAULT_PORT, uri);
+    }
+
+    /**
+     * Start download process with default to port 80 with specified report interval.
+     *
+     * @param hostname       server mHostname
+     * @param uri            uri to fetch to download file
+     * @param reportInterval report interval in milliseconds
+     */
+    public void startDownload(final String hostname,
+                              final String uri,
+                              final int reportInterval) {
+        startDownload(hostname, SpeedTestConst.HTTP_DEFAULT_PORT, uri, reportInterval);
+    }
+
+    /**
      * Start download process.
      *
      * @param hostname       server mHostname
@@ -501,6 +537,202 @@ public class SpeedTestSocket implements ISpeedTestSocket {
         initReportTask(reportInterval, true);
         mReportInterval = true;
         startDownload(hostname, port, uri);
+    }
+
+    /**
+     * start FTP download on default port 21.
+     *
+     * @param hostname       ftp host
+     * @param uri            ftp uri
+     * @param fileSizeOctet  size to download in octet
+     * @param reportInterval report interval in milliseconds
+     */
+    public void startFtpDownload(final String hostname,
+                                 final String uri,
+                                 final int fileSizeOctet,
+                                 final int reportInterval) {
+
+        initReportTask(reportInterval, true);
+        mReportInterval = true;
+
+        startFtpDownload(hostname,
+                SpeedTestConst.FTP_DEFAULT_PORT,
+                uri,
+                fileSizeOctet,
+                SpeedTestConst.FTP_DEFAULT_USER,
+                SpeedTestConst.FTP_DEFAULT_PASSWORD);
+    }
+
+    /**
+     * start fixed FTP download on default port 21.
+     *
+     * @param hostname       ftp host
+     * @param uri            ftp uri
+     * @param fileSizeOctet  size to download in octet
+     * @param reportInterval report interval in milliseconds
+     */
+    public void startFtpFixedDownload(final String hostname,
+                                      final String uri,
+                                      final int fileSizeOctet,
+                                      final int maxDuration,
+                                      final int reportInterval) {
+        initReportTask(reportInterval, true);
+        mReportInterval = true;
+        startFtpFixedDownload(hostname, uri, fileSizeOctet, maxDuration);
+    }
+
+    /**
+     * start FTP download on default port 21.
+     *
+     * @param hostname      ftp host
+     * @param uri           ftp uri
+     * @param fileSizeOctet size to download in octet
+     */
+    public void startFtpFixedDownload(final String hostname,
+                                      final String uri,
+                                      final int fileSizeOctet,
+                                      final int maxDuration) {
+
+        if (mReportExecutorService == null || mReportExecutorService.isShutdown()) {
+            mReportExecutorService = Executors.newScheduledThreadPool(SpeedTestConst.THREAD_POOL_REPORT_SIZE);
+        }
+
+        mReportExecutorService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                forceStopTask();
+            }
+        }, maxDuration, TimeUnit.MILLISECONDS);
+
+        startFtpDownload(hostname,
+                SpeedTestConst.FTP_DEFAULT_PORT,
+                uri,
+                fileSizeOctet,
+                SpeedTestConst.FTP_DEFAULT_USER,
+                SpeedTestConst.FTP_DEFAULT_PASSWORD);
+    }
+
+    /**
+     * start FTP download on default port 21.
+     *
+     * @param hostname      ftp host
+     * @param uri           ftp uri
+     * @param fileSizeOctet size to download in octet
+     */
+    public void startFtpDownload(final String hostname,
+                                 final String uri,
+                                 final int fileSizeOctet) {
+        startFtpDownload(hostname,
+                SpeedTestConst.FTP_DEFAULT_PORT,
+                uri,
+                fileSizeOctet,
+                SpeedTestConst.FTP_DEFAULT_USER,
+                SpeedTestConst.FTP_DEFAULT_PASSWORD);
+    }
+
+    /**
+     * start FTP download with specific port, user, password.
+     *
+     * @param hostname ftp host
+     * @param uri      ftp uri
+     * @param user     ftp username
+     * @param password ftp password
+     */
+    public void startFtpDownload(final String hostname,
+                                 final int port,
+                                 final String uri,
+                                 final int fileSizeOctet,
+                                 final String user,
+                                 final String password) {
+
+        mSpeedTestMode = SpeedTestMode.DOWNLOAD;
+        mErrorDispatched = false;
+        mForceCloseSocket = false;
+
+        if (mReadExecutorService == null || mReadExecutorService.isShutdown()) {
+            mReadExecutorService = Executors.newSingleThreadExecutor();
+        }
+
+        mReadExecutorService.execute(new Runnable() {
+
+            @Override
+            public void run() {
+
+                final FTPClient ftpclient = new FTPClient();
+
+                try {
+                    ftpclient.connect(hostname, port);
+                    ftpclient.login(user, password);
+                    ftpclient.enterLocalPassiveMode();
+                    ftpclient.setFileType(FTP.BINARY_FILE_TYPE);
+
+                    mDownloadTemporaryPacketSize = 0;
+
+                    mTimeStart = System.currentTimeMillis();
+                    mTimeEnd = 0;
+
+                    if (mRepeatWrapper.isFirstDownload()) {
+                        mRepeatWrapper.setFirstDownloadRepeat(false);
+                        mRepeatWrapper.setStartDate(mTimeStart);
+                    }
+
+                    mDownloadPckSize = new BigDecimal(fileSizeOctet);
+
+                    if (mRepeatWrapper.isRepeatDownload()) {
+                        mRepeatWrapper.updatePacketSize(mDownloadPckSize);
+                    }
+
+                    mFtpInputstream = ftpclient.retrieveFileStream(uri);
+                    final byte[] bytesArray = new byte[SpeedTestConst.READ_BUFFER_SIZE];
+
+                    int read;
+                    while ((read = mFtpInputstream.read(bytesArray)) != -1) {
+                        mDownloadTemporaryPacketSize += read;
+
+                        if (mRepeatWrapper.isRepeatDownload()) {
+                            mRepeatWrapper.updateTempPacketSize(read);
+                        }
+
+                        if (!mReportInterval) {
+                            final SpeedTestReport report = getLiveDownloadReport();
+
+                            for (int i = 0; i < mListenerList.size(); i++) {
+                                mListenerList.get(i).onDownloadProgress(report.getProgressPercent(), report);
+                            }
+                        }
+
+                        if (mDownloadTemporaryPacketSize == mDownloadPckSize.longValueExact()) {
+                            break;
+                        }
+                    }
+
+                    mFtpInputstream.close();
+
+                    mTimeEnd = System.currentTimeMillis();
+
+                    closeSocket();
+                    mReportInterval = false;
+                    final SpeedTestReport report = getLiveDownloadReport();
+
+                    for (int i = 0; i < mListenerList.size(); i++) {
+                        mListenerList.get(i).onDownloadFinished(report);
+                    }
+
+                    if (!mRepeatWrapper.isRepeatDownload()) {
+                        closeExecutors();
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    catchError(true, e.getMessage());
+                } finally {
+                    mReportInterval = false;
+                    mErrorDispatched = false;
+                    mSpeedTestMode = SpeedTestMode.NONE;
+                    disconnectFtp(ftpclient);
+                }
+            }
+        });
     }
 
     /**
@@ -523,6 +755,20 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     public void forceStopTask() {
         mForceCloseSocket = true;
         mSpeedTestMode = SpeedTestMode.NONE;
+        if (mFtpInputstream != null) {
+            try {
+                mFtpInputstream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (mFtpOutputstream != null) {
+            try {
+                mFtpOutputstream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         closeSocket();
         shutdownAndWait();
     }
@@ -629,14 +875,12 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                 final SpeedTestReport report;
 
                 if (!download) {
-
                     report = getLiveUploadReport();
 
                     for (final ISpeedTestListener listener : mListenerList) {
                         listener.onUploadProgress(report.getProgressPercent(), report);
                     }
                 } else {
-
                     report = getLiveDownloadReport();
 
                     for (final ISpeedTestListener listener : mListenerList) {
@@ -645,6 +889,255 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                 }
             }
         }, reportInterval, reportInterval, TimeUnit.MILLISECONDS);
+    }
+
+    public void startFtpFixedUpload(final String hostname,
+                                    final String uri,
+                                    final int fileSizeOctet,
+                                    final int maxDuration,
+                                    final int reportInterval) {
+
+        initReportTask(reportInterval, false);
+        mReportInterval = true;
+
+        startFtpFixedUpload(hostname, uri, fileSizeOctet, maxDuration);
+    }
+
+    public void startFtpFixedUpload(final String hostname,
+                                    final String uri,
+                                    final int fileSizeOctet,
+                                    final int maxDuration) {
+
+        if (mReportExecutorService == null || mReportExecutorService.isShutdown()) {
+            mReportExecutorService = Executors.newScheduledThreadPool(SpeedTestConst.THREAD_POOL_REPORT_SIZE);
+        }
+
+        mReportExecutorService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                forceStopTask();
+            }
+        }, maxDuration, TimeUnit.MILLISECONDS);
+
+        startFtpUpload(hostname, SpeedTestConst.FTP_DEFAULT_PORT, uri, fileSizeOctet,
+                SpeedTestConst.FTP_DEFAULT_USER, SpeedTestConst.FTP_DEFAULT_PASSWORD);
+    }
+
+
+    public void startFtpUpload(final String hostname,
+                               final String uri,
+                               final int fileSizeOctet,
+                               final int reportInterval) {
+
+        initReportTask(reportInterval, false);
+        mReportInterval = true;
+
+        startFtpUpload(hostname, SpeedTestConst.FTP_DEFAULT_PORT, uri, fileSizeOctet,
+                SpeedTestConst.FTP_DEFAULT_USER, SpeedTestConst.FTP_DEFAULT_PASSWORD);
+    }
+
+    public void startFtpUpload(final String hostname,
+                               final String uri,
+                               final int fileSizeOctet) {
+
+        startFtpUpload(hostname, SpeedTestConst.FTP_DEFAULT_PORT, uri, fileSizeOctet,
+                SpeedTestConst.FTP_DEFAULT_USER, SpeedTestConst.FTP_DEFAULT_PASSWORD);
+    }
+
+    /**
+     * Start FTP upload.
+     *
+     * @param hostname      ftp host
+     * @param port          ftp port
+     * @param uri           upload uri
+     * @param fileSizeOctet file size in octet
+     * @param user          username
+     * @param password      password
+     */
+    public void startFtpUpload(final String hostname,
+                               final int port,
+                               final String uri,
+                               final int fileSizeOctet,
+                               final String user,
+                               final String password) {
+
+        mUploadFileSize = new BigDecimal(fileSizeOctet);
+        mForceCloseSocket = false;
+        mErrorDispatched = false;
+
+        mSpeedTestMode = SpeedTestMode.UPLOAD;
+
+        if (mWriteExecutorService == null || mWriteExecutorService.isShutdown()) {
+            mWriteExecutorService = Executors.newSingleThreadExecutor();
+        }
+
+        mWriteExecutorService.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                final FTPClient ftpClient = new FTPClient();
+
+                try {
+                    ftpClient.connect(hostname, port);
+                    ftpClient.login(user, password);
+                    ftpClient.enterLocalPassiveMode();
+                    ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+
+                    /* generate a file with size of fileSizeOctet octet */
+                    final byte[] fileContent = new RandomGen(fileSizeOctet).nextArray();
+
+                    mFtpOutputstream = ftpClient.storeFileStream(uri);
+
+                    if (mFtpOutputstream != null) {
+
+
+                        mUploadTempFileSize = 0;
+
+                        final int step = fileContent.length / mUploadChunkSize;
+                        final int remain = fileContent.length % mUploadChunkSize;
+
+                        mTimeStart = System.currentTimeMillis();
+                        mTimeEnd = 0;
+
+                        if (mRepeatWrapper.isFirstUpload()) {
+                            mRepeatWrapper.setFirstUploadRepeat(false);
+                            mRepeatWrapper.setStartDate(mTimeStart);
+                        }
+
+                        if (mRepeatWrapper.isRepeatUpload()) {
+                            mRepeatWrapper.updatePacketSize(mUploadFileSize);
+                        }
+
+                        for (int i = 0; i < step; i++) {
+
+                            mFtpOutputstream.write(Arrays.copyOfRange(fileContent, mUploadTempFileSize,
+                                    mUploadTempFileSize +
+                                            mUploadChunkSize), 0, mUploadChunkSize);
+
+                            mUploadTempFileSize += mUploadChunkSize;
+
+                            if (mRepeatWrapper.isRepeatUpload()) {
+                                mRepeatWrapper.updateTempPacketSize(mUploadChunkSize);
+                            }
+
+                            if (!mReportInterval) {
+                                final SpeedTestReport report = getLiveUploadReport();
+
+                                for (int j = 0; j < mListenerList.size(); j++) {
+                                    mListenerList.get(j).onUploadProgress(report.getProgressPercent(), report);
+                                }
+                            }
+                        }
+
+                        if (remain != 0) {
+
+                            mFtpOutputstream.write(Arrays.copyOfRange(fileContent, mUploadTempFileSize,
+                                    mUploadTempFileSize +
+                                            remain), 0, remain);
+
+                            mUploadTempFileSize += remain;
+
+                            if (mRepeatWrapper.isRepeatUpload()) {
+                                mRepeatWrapper.updateTempPacketSize(remain);
+                            }
+                        }
+                        if (!mReportInterval) {
+                            final SpeedTestReport report = getLiveUploadReport();
+
+                            for (int j = 0; j < mListenerList.size(); j++) {
+                                mListenerList.get(j).onUploadProgress(SpeedTestConst.PERCENT_MAX.floatValue(),
+                                        report);
+
+                            }
+                        }
+                        mTimeEnd = System.currentTimeMillis();
+
+                        mFtpOutputstream.close();
+
+                        mReportInterval = false;
+                        final SpeedTestReport report = getLiveUploadReport();
+
+                        for (int i = 0; i < mListenerList.size(); i++) {
+                            mListenerList.get(i).onUploadFinished(report);
+                        }
+
+                        if (!mRepeatWrapper.isRepeatUpload()) {
+                            closeExecutors();
+                        }
+
+                    } else {
+                        SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, "cant create stream " +
+                                "from uri " + uri + " with reply code : " + ftpClient.getReplyCode());
+                    }
+                } catch (SocketTimeoutException e) {
+                    e.printStackTrace();
+                    mErrorDispatched = true;
+                    if (!mForceCloseSocket) {
+                        SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList,
+                                false, SpeedTestConst.SOCKET_WRITE_ERROR);
+                    } else {
+                        SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
+                    }
+                    closeSocket();
+                    closeExecutors();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    mErrorDispatched = true;
+                    SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
+                    closeExecutors();
+                } finally {
+                    mReportInterval = false;
+                    mErrorDispatched = false;
+                    mSpeedTestMode = SpeedTestMode.NONE;
+                    disconnectFtp(ftpClient);
+                }
+            }
+        });
+    }
+
+    /**
+     * logout & diconnect FTP client.
+     *
+     * @param ftpclient
+     */
+    private void disconnectFtp(final FTPClient ftpclient) {
+
+        try {
+            if (ftpclient.isConnected()) {
+                ftpclient.logout();
+                ftpclient.disconnect();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Start upload process with default port 80.
+     *
+     * @param hostname      server mHostname
+     * @param uri           uri to fetch
+     * @param fileSizeOctet size of file to upload
+     */
+    public void startUpload(final String hostname,
+                            final String uri,
+                            final int fileSizeOctet) {
+        startUpload(hostname, SpeedTestConst.HTTP_DEFAULT_PORT, uri, fileSizeOctet);
+    }
+
+    /**
+     * Start upload process with default port 80 & specified report interval.
+     *
+     * @param hostname       server mHostname
+     * @param uri            uri to fetch
+     * @param fileSizeOctet  size of file to upload
+     * @param reportInterval report interval in milliseconds
+     */
+    public void startUpload(final String hostname,
+                            final String uri,
+                            final int fileSizeOctet,
+                            final int reportInterval) {
+        startUpload(hostname, SpeedTestConst.HTTP_DEFAULT_PORT, uri, fileSizeOctet, reportInterval);
     }
 
     /**
