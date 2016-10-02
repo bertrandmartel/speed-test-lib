@@ -723,7 +723,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                     }
 
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                     catchError(true, e.getMessage());
                 } finally {
                     mReportInterval = false;
@@ -759,14 +759,14 @@ public class SpeedTestSocket implements ISpeedTestSocket {
             try {
                 mFtpInputstream.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
         if (mFtpOutputstream != null) {
             try {
                 mFtpOutputstream.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
         closeSocket();
@@ -1070,7 +1070,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                                 "from uri " + uri + " with reply code : " + ftpClient.getReplyCode());
                     }
                 } catch (SocketTimeoutException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                     mErrorDispatched = true;
                     if (!mForceCloseSocket) {
                         SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList,
@@ -1081,7 +1081,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                     closeSocket();
                     closeExecutors();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                     mErrorDispatched = true;
                     SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
                     closeExecutors();
@@ -1108,7 +1108,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                 ftpclient.disconnect();
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
         }
     }
 
