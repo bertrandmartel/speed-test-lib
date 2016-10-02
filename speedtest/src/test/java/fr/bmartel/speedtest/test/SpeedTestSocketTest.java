@@ -720,6 +720,7 @@ public class SpeedTestSocketTest {
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
+                mWaiter.resume();
             }
 
             @Override
@@ -734,6 +735,7 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
+                mWaiter.resume();
             }
 
             @Override
@@ -778,6 +780,7 @@ public class SpeedTestSocketTest {
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
+                mWaiter.resume();
             }
 
             @Override
@@ -792,6 +795,7 @@ public class SpeedTestSocketTest {
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
+                mWaiter.resume();
             }
 
             @Override
