@@ -415,5 +415,7 @@ public class SpeedTestErrorTest {
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         mSocket.forceStopTask();
+
+        mSocket.clearListeners();
     }
 }

@@ -1091,4 +1091,11 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     public int getDefaultScale() {
         return mScale;
     }
+
+    /**
+     * Clear all listeners.
+     */
+    public void clearListeners() {
+        mListenerList.clear();
+    }
 }

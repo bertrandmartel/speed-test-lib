@@ -233,6 +233,8 @@ public class SpeedTestSocketTest {
 
         Assert.assertEquals(HEADER + "speed test mode value after forceStopTask", mSocket.getSpeedTestMode(),
                 SpeedTestMode.NONE);
+
+        mSocket.clearListeners();
     }
 
     /**
@@ -290,6 +292,14 @@ public class SpeedTestSocketTest {
         mSocket.removeSpeedTestListener(listener);
 
         Assert.assertEquals(HEADER + "listener remove failed", listenerList.size(), 0);
+
+        mSocket.addSpeedTestListener(listener);
+
+        Assert.assertEquals(HEADER + "listener add failed", listenerList.size(), 1);
+
+        mSocket.clearListeners();
+
+        Assert.assertEquals(HEADER + "listener remove failed", listenerList.size(), 0);
     }
 
     /**
@@ -340,6 +350,8 @@ public class SpeedTestSocketTest {
         initCountDown();
 
         testSocket(mSocket);
+
+        mSocket.clearListeners();
     }
 
     /**
@@ -505,6 +517,8 @@ public class SpeedTestSocketTest {
         SpeedTestUtils.testReportNotEmpty(mWaiter, report, TestCommon.FILE_SIZE_LARGE, false, false);
 
         mSocket.forceStopTask();
+
+        mSocket.clearListeners();
     }
 
     /**
@@ -564,6 +578,8 @@ public class SpeedTestSocketTest {
         SpeedTestUtils.testReportNotEmpty(mWaiter, report, TestCommon.FILE_SIZE_REGULAR, false, false);
 
         mSocket.forceStopTask();
+
+        mSocket.clearListeners();
     }
 
     /**
@@ -637,6 +653,8 @@ public class SpeedTestSocketTest {
         waiter2.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS);
 
         mSocket.forceStopTask();
+
+        mSocket.clearListeners();
     }
 
     /**
@@ -644,6 +662,7 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void progressResultCallbackUploadTest() throws TimeoutException {
+
         mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
@@ -712,6 +731,8 @@ public class SpeedTestSocketTest {
         waiter2.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS);
 
         mSocket.forceStopTask();
+
+        mSocket.clearListeners();
     }
 
     @Test
@@ -772,6 +793,8 @@ public class SpeedTestSocketTest {
                 TestCommon.SPEED_TEST_SERVER_URI_DL, duration);
 
         mWaiter.await(duration + TestCommon.FIXED_DURATION_OFFSET, TimeUnit.MILLISECONDS);
+
+        mSocket.clearListeners();
     }
 
     @Test
@@ -836,6 +859,8 @@ public class SpeedTestSocketTest {
                 TestCommon.SPEED_TEST_SERVER_URI_DL, duration, requestInterval);
 
         mWaiter.await(duration + TestCommon.FIXED_DURATION_OFFSET, TimeUnit.MILLISECONDS);
+
+        mSocket.clearListeners();
     }
 
     @Test
@@ -899,6 +924,8 @@ public class SpeedTestSocketTest {
                 TestCommon.SPEED_TEST_SERVER_URI_DL_1MO, requestInterval);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS);
+
+        mSocket.clearListeners();
     }
 
     /**
