@@ -724,9 +724,9 @@ public class SpeedTestSocket implements ISpeedTestSocket {
 
                 } catch (IOException e) {
                     //e.printStackTrace();
+                    mReportInterval = false;
                     catchError(true, e.getMessage());
                 } finally {
-                    mReportInterval = false;
                     mErrorDispatched = false;
                     mSpeedTestMode = SpeedTestMode.NONE;
                     disconnectFtp(ftpclient);
@@ -1071,6 +1071,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                     }
                 } catch (SocketTimeoutException e) {
                     //e.printStackTrace();
+                    mReportInterval = false;
                     mErrorDispatched = true;
                     if (!mForceCloseSocket) {
                         SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList,
@@ -1082,11 +1083,11 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                     closeExecutors();
                 } catch (IOException e) {
                     //e.printStackTrace();
+                    mReportInterval = false;
                     mErrorDispatched = true;
                     SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
                     closeExecutors();
                 } finally {
-                    mReportInterval = false;
                     mErrorDispatched = false;
                     mSpeedTestMode = SpeedTestMode.NONE;
                     disconnectFtp(ftpClient);
