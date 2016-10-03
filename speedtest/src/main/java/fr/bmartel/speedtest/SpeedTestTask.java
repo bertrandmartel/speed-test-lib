@@ -1092,7 +1092,7 @@ public class SpeedTestTask {
     /**
      * retrieve threadpool used to publish reports.
      *
-     * @return
+     * @return report threadpool
      */
     public ScheduledExecutorService getReportThreadPool() {
         return mReportExecutorService;
