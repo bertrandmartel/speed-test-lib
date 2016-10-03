@@ -48,11 +48,6 @@ public class UploadFtpExample {
     public final static String FTP_SERVER_HOST = "speedtest.tele2.net";
 
     /**
-     * default ftp uri used for tests.
-     */
-    public final static String FTP_SERVER_UPLOAD_URI = "/upload/test.txt";
-
-    /**
      * file size in octet.
      */
     public final static int FTP_FILE_SIZE = 1000000;
