@@ -113,7 +113,7 @@ public interface ISpeedTestSocket {
     /**
      * retrieve repeat wrapper object used to manage repeating Download/upload tasks.
      *
-     * @return
+     * @return repeat wrapper object
      */
     RepeatWrapper getRepeatWrapper();
 
