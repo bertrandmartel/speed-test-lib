@@ -366,7 +366,7 @@ public class SpeedTestSocketTest {
         Assert.assertNotNull(HEADER + "socket is null", fieldTask);
         fieldTask.setAccessible(true);
 
-        SpeedTestTask task = (SpeedTestTask) fieldTask.get(socket);
+        final SpeedTestTask task = (SpeedTestTask) fieldTask.get(socket);
         final Field field = task.getClass().getDeclaredField("mSocket");
         Assert.assertNotNull(HEADER + "socket is null", field);
         field.setAccessible(true);
