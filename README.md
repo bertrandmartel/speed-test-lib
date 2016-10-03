@@ -539,7 +539,7 @@ JRE 1.7 compliant
 
 for example :
 ```
-./gradlew test --tests "fr.bmartel.speedtest.examples.SpeedTestFunctionalTest"
+./gradlew test --tests "fr.bmartel.speedtest.test.SpeedTestFunctionalTest"
 ```
 
 ## External libraries

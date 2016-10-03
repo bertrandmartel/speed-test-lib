@@ -65,7 +65,7 @@
     <rule ref="rulesets/java/design.xml/SimplifyBooleanReturns"/>
     <rule ref="rulesets/java/design.xml/SimplifyBooleanExpressions"/>
     <rule ref="rulesets/java/design.xml/SwitchStmtsShouldHaveDefault"/>
-    <rule ref="rulesets/java/design.xml/AvoidDeeplyNestedIfStmts"/>
+    <!--<rule ref="rulesets/java/design.xml/AvoidDeeplyNestedIfStmts"/>-->
     <rule ref="rulesets/java/design.xml/AvoidReassigningParameters"/>
     <!--<rule ref="rulesets/java/design.xml/SwitchDensity">
         <priority>2</priority>
