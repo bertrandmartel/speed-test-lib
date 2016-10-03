@@ -27,6 +27,9 @@ import fr.bmartel.speedtest.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
 /**
  * Upload FTP example.
  *
@@ -58,6 +61,9 @@ public class UploadFtpExample {
      * logger.
      */
     private final static Logger LOGGER = LogManager.getLogger(UploadFtpExample.class.getName());
+
+
+    private static SecureRandom random = new SecureRandom();
 
     /**
      * Download file example main.
@@ -125,6 +131,11 @@ public class UploadFtpExample {
             }
         });
 
-        speedTestSocket.startFtpUpload(FTP_SERVER_HOST, FTP_SERVER_UPLOAD_URI, FTP_FILE_SIZE);
+        final String fileName = generateFileName() + ".txt";
+        speedTestSocket.startFtpUpload(FTP_SERVER_HOST, "/upload/" + fileName, FTP_FILE_SIZE);
+    }
+
+    private static String generateFileName() {
+        return new BigInteger(130, random).toString(32);
     }
 }
