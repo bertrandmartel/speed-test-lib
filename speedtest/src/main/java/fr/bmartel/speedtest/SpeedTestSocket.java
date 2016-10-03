@@ -1036,7 +1036,6 @@ public class SpeedTestSocket implements ISpeedTestSocket {
 
                     if (mFtpOutputstream != null) {
 
-
                         mUploadTempFileSize = 0;
 
                         final int step = fileContent.length / mUploadChunkSize;
@@ -1054,51 +1053,54 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                             mRepeatWrapper.updatePacketSize(mUploadFileSize);
                         }
 
-                        for (int i = 0; i < step; i++) {
+                        if (mForceCloseSocket) {
+                            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, "");
+                        } else {
+                            for (int i = 0; i < step; i++) {
 
-                            mFtpOutputstream.write(Arrays.copyOfRange(fileContent, mUploadTempFileSize,
-                                    mUploadTempFileSize +
-                                            mUploadChunkSize), 0, mUploadChunkSize);
+                                mFtpOutputstream.write(Arrays.copyOfRange(fileContent, mUploadTempFileSize,
+                                        mUploadTempFileSize +
+                                                mUploadChunkSize), 0, mUploadChunkSize);
 
-                            mUploadTempFileSize += mUploadChunkSize;
+                                mUploadTempFileSize += mUploadChunkSize;
 
-                            if (mRepeatWrapper.isRepeatUpload()) {
-                                mRepeatWrapper.updateTempPacketSize(mUploadChunkSize);
+                                if (mRepeatWrapper.isRepeatUpload()) {
+                                    mRepeatWrapper.updateTempPacketSize(mUploadChunkSize);
+                                }
+
+                                if (!mReportInterval) {
+
+                                    final SpeedTestReport report = getLiveUploadReport();
+
+                                    for (int j = 0; j < mListenerList.size(); j++) {
+                                        mListenerList.get(j).onUploadProgress(report.getProgressPercent(), report);
+                                    }
+                                }
                             }
 
-                            if (!mReportInterval) {
+                            if (remain != 0) {
 
+                                mFtpOutputstream.write(Arrays.copyOfRange(fileContent, mUploadTempFileSize,
+                                        mUploadTempFileSize +
+                                                remain), 0, remain);
+
+                                mUploadTempFileSize += remain;
+
+                                if (mRepeatWrapper.isRepeatUpload()) {
+                                    mRepeatWrapper.updateTempPacketSize(remain);
+                                }
+                            }
+                            if (!mReportInterval) {
                                 final SpeedTestReport report = getLiveUploadReport();
 
                                 for (int j = 0; j < mListenerList.size(); j++) {
-                                    mListenerList.get(j).onUploadProgress(report.getProgressPercent(), report);
+                                    mListenerList.get(j).onUploadProgress(SpeedTestConst.PERCENT_MAX.floatValue(),
+                                            report);
+
                                 }
                             }
+                            mTimeEnd = System.currentTimeMillis();
                         }
-
-                        if (remain != 0) {
-
-                            mFtpOutputstream.write(Arrays.copyOfRange(fileContent, mUploadTempFileSize,
-                                    mUploadTempFileSize +
-                                            remain), 0, remain);
-
-                            mUploadTempFileSize += remain;
-
-                            if (mRepeatWrapper.isRepeatUpload()) {
-                                mRepeatWrapper.updateTempPacketSize(remain);
-                            }
-                        }
-                        if (!mReportInterval) {
-                            final SpeedTestReport report = getLiveUploadReport();
-
-                            for (int j = 0; j < mListenerList.size(); j++) {
-                                mListenerList.get(j).onUploadProgress(SpeedTestConst.PERCENT_MAX.floatValue(),
-                                        report);
-
-                            }
-                        }
-                        mTimeEnd = System.currentTimeMillis();
-
                         mFtpOutputstream.close();
 
                         mReportInterval = false;
