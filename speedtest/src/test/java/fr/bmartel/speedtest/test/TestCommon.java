@@ -179,4 +179,10 @@ public class TestCommon {
      * larg file ftp uri used for tests.
      */
     public final static String FTP_SERVER_URI_LARGE_FILE = "/50MB.zip";
+
+    /**
+     * server list filename.
+     */
+    public final static String SERVER_LIST_FILENAME = "serverlist.json";
+
 }

@@ -1,0 +1,92 @@
+[
+    {
+        "host": "speedo.eltele.no",
+        "download": [
+            {
+                "protocol": "http",
+                "uri": "/speedtest/random2000x2000.jpg"
+            }
+        ],
+        "upload": [
+            {
+                "protocol": "http",
+                "uri": "/speedtest/upload.php"
+            }
+        ]
+    },
+    {
+        "host": "2.testdebit.info",
+        "download": [
+            {
+                "protocol": "http",
+                "uri": "/fichiers/1Mo.dat"
+            }
+        ],
+        "upload": [
+            {
+                "protocol": "http",
+                "uri": "/"
+            }
+        ]
+    },
+    {
+        "host": "mirror.internode.on.net",
+        "download": [
+            {
+                "protocol": "http",
+                "uri": "/pub/speed/SpeedTest_16MB"
+            }
+        ]
+    },
+    {
+        "host": "test.talia.net",
+        "download": [
+            {
+                "protocol": "http",
+                "uri": "/dl/1mb.pak"
+            }
+        ]
+    },
+    {
+        "host": "speedtest.ftp.otenet.gr",
+        "download": [
+            {
+                "protocol": "http",
+                "uri": "/files/test1Mb.db"
+            }
+        ]
+    },
+    {
+        "host": "ftp.otenet.gr",
+        "download": [
+            {
+                "protocol": "ftp",
+                "uri": "/test1Mb.db",
+                "username": "speedtest",
+                "password": "speedtest"
+            }
+        ]
+    },
+    {
+        "host": "speedtest.serverius.net",
+        "download": [
+            {
+                "protocol": "http",
+                "uri": "/files/10mb.bin"
+            },
+            {
+                "protocol": "ftp",
+                "uri": "/10mb.bin"
+            }
+        ]
+    },
+    {
+        "host": "ovh.net",
+        "download": [
+            {
+                "protocol": "http",
+                "uri": "/files/1Mb.dat"
+            }
+        ]
+    }
+]
