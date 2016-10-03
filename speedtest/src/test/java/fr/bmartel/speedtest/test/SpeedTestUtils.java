@@ -24,7 +24,6 @@
 package fr.bmartel.speedtest.test;
 
 import fr.bmartel.speedtest.ISpeedTestListener;
-import fr.bmartel.speedtest.SpeedTestConst;
 import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.SpeedTestSocket;
 import net.jodah.concurrentunit.Waiter;
