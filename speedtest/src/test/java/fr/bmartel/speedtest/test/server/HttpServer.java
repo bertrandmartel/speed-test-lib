@@ -200,7 +200,7 @@ public class HttpServer implements IHttpServer, IHttpServerEventListener {
             /* close server socket safely */
             mServerSocket.close();
         } catch (SocketException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
             /* stop all thread and server socket */
             stop();
         } catch (IOException e) {

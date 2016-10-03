@@ -79,7 +79,7 @@ public class SpeedTestFTPTest {
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
-                SpeedTestUtils.testReportNotEmpty(waiter, report, packetSizeExpected, false, false);
+                SpeedTestUtils.testReportNotEmpty(waiter, report, packetSizeExpected, true, false);
                 waiter.assertTrue(percent >= 0 && percent <= 100);
                 waiter.resume();
             }
@@ -172,7 +172,7 @@ public class SpeedTestFTPTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                SpeedTestUtils.testReportNotEmpty(waiter, report, packetSizeExpected, false, false);
+                SpeedTestUtils.testReportNotEmpty(waiter, report, packetSizeExpected, true, false);
                 waiter.assertTrue(percent >= 0 && percent <= 100);
                 waiter.resume();
             }
