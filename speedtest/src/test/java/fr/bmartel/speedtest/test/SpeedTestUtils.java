@@ -24,6 +24,7 @@
 package fr.bmartel.speedtest.test;
 
 import fr.bmartel.speedtest.ISpeedTestListener;
+import fr.bmartel.speedtest.SpeedTestConst;
 import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.SpeedTestSocket;
 import net.jodah.concurrentunit.Waiter;
@@ -31,6 +32,8 @@ import org.junit.Assert;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.List;
 
 /**
@@ -39,6 +42,16 @@ import java.util.List;
  * @author Bertrand Martel
  */
 public class SpeedTestUtils {
+
+    private static SecureRandom random = new SecureRandom();
+
+    public static String generateFileName() {
+        return new BigInteger(130, random).toString(32);
+    }
+
+    public static String getFTPUploadUri() {
+        return TestCommon.FTP_SERVER_UPLOAD_PREFIX_URI + SpeedTestUtils.generateFileName() + ".txt";
+    }
 
     /**
      * Set listenerList private object in speedTestSocket.
