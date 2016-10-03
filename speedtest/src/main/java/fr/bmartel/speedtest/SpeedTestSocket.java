@@ -319,6 +319,8 @@ public class SpeedTestSocket implements ISpeedTestSocket {
 
             final SpeedTestReport report = getLiveDownloadReport();
 
+            mReportInterval = false;
+
             for (int i = 0; i < mListenerList.size(); i++) {
                 mListenerList.get(i).onDownloadFinished(report);
             }
@@ -328,14 +330,15 @@ public class SpeedTestSocket implements ISpeedTestSocket {
             }
 
         } catch (SocketTimeoutException e) {
+            mReportInterval = false;
             SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList, true, e.getMessage());
             mTimeEnd = System.currentTimeMillis();
             closeSocket();
             closeExecutors();
         } catch (IOException | InterruptedException e) {
+            mReportInterval = false;
             catchError(true, e.getMessage());
         }
-        mReportInterval = false;
         mErrorDispatched = false;
     }
 
@@ -407,6 +410,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
 
                     final SpeedTestReport report = getLiveUploadReport();
 
+                    mReportInterval = false;
                     for (int i = 0; i < mListenerList.size(); i++) {
                         mListenerList.get(i).onUploadFinished(report);
                     }
@@ -429,6 +433,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
             }
             closeExecutors();
         } catch (IOException | InterruptedException e) {
+            mReportInterval = false;
             if (!mErrorDispatched) {
                 catchError(false, e.getMessage());
             }
@@ -1271,6 +1276,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                             }
                         }
                     } catch (SocketTimeoutException e) {
+                        mReportInterval = false;
                         mErrorDispatched = true;
                         if (!mForceCloseSocket) {
                             SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList,
@@ -1281,11 +1287,10 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                         closeSocket();
                         closeExecutors();
                     } catch (IOException e) {
+                        mReportInterval = false;
                         mErrorDispatched = true;
                         SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
                         closeExecutors();
-                    } finally {
-                        mReportInterval = false;
                     }
                 }
             }
