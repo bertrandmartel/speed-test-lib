@@ -23,6 +23,8 @@
  */
 package fr.bmartel.speedtest;
 
+import java.math.RoundingMode;
+
 /**
  * Interface for speed test socket.
  *
@@ -92,4 +94,40 @@ public interface ISpeedTestSocket {
      * Shutdown threadpool and wait for task completion.
      */
     void shutdownAndWait();
+
+    /**
+     * get socket timeout in milliseconds ( 0 if no timeout not defined).
+     *
+     * @return mSocket timeout value (0 if not defined)
+     */
+    int getSocketTimeout();
+
+    /**
+     * retrieve size of each packet sent to upload server.
+     *
+     * @return size of each packet sent to upload server
+     */
+    int getUploadChunkSize();
+
+
+    /**
+     * retrieve repeat wrapper object used to manage repeating Download/upload tasks.
+     *
+     * @return
+     */
+    RepeatWrapper getRepeatWrapper();
+
+    /**
+     * retrieve rounding mode used for BigDecimal.
+     *
+     * @return rounding mode
+     */
+    RoundingMode getDefaultRoundingMode();
+
+    /**
+     * retrieve scale used for BigDecimal.
+     *
+     * @return mScale value
+     */
+    int getDefaultScale();
 }
