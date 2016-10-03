@@ -383,8 +383,8 @@ public class SpeedTestSocketTest {
 
         initCountDown();
 
-        socket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
-                        .SPEED_TEST_SERVER_URI_UL,
+        socket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST,
+                TestCommon.SPEED_TEST_SERVER_URI_UL,
                 TestCommon.FILE_SIZE_MEDIUM);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
@@ -399,8 +399,7 @@ public class SpeedTestSocketTest {
 
         initCountDown();
 
-        socket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
-                .SPEED_TEST_SERVER_URI_DL);
+        socket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_URI_DL);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
@@ -912,7 +911,8 @@ public class SpeedTestSocketTest {
 
         mWaiter = new Waiter();
         mTimestamp = 0;
-        mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
+        mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST,
+                TestCommon.SPEED_TEST_SERVER_PORT,
                 TestCommon.SPEED_TEST_SERVER_URI_UL,
                 packetSizeExpected, requestInterval);
 
@@ -921,6 +921,21 @@ public class SpeedTestSocketTest {
         mWaiter = new Waiter();
         mTimestamp = 0;
         mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
+                TestCommon.SPEED_TEST_SERVER_URI_DL_1MO, requestInterval);
+
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS);
+
+        mWaiter = new Waiter();
+        mTimestamp = 0;
+        mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST,
+                TestCommon.SPEED_TEST_SERVER_URI_UL,
+                packetSizeExpected, requestInterval);
+
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS);
+
+        mWaiter = new Waiter();
+        mTimestamp = 0;
+        mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST,
                 TestCommon.SPEED_TEST_SERVER_URI_DL_1MO, requestInterval);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS);
