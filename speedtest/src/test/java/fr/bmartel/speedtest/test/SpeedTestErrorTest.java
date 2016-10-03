@@ -348,6 +348,7 @@ public class SpeedTestErrorTest {
      * @param download define if mDownload or upload is testing.
      */
     private void unknownHostTest(final boolean download) throws TimeoutException {
+
         mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
         mWaiter = new Waiter();

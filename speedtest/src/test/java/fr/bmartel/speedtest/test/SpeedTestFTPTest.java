@@ -114,7 +114,7 @@ public class SpeedTestFTPTest {
             }
         });
 
-        mSocket.startFtpDownload(TestCommon.FTP_SERVER_HOST, TestCommon.FTP_SERVER_URI, packetSizeExpected);
+        mSocket.startFtpDownload(TestCommon.FTP_SERVER_HOST, TestCommon.FTP_SERVER_URI);
 
         waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
@@ -198,8 +198,6 @@ public class SpeedTestFTPTest {
         mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
-        final int packetSizeExpected = 1048576;
-
         final int requestInterval = 500;
 
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
@@ -242,13 +240,13 @@ public class SpeedTestFTPTest {
         mWaiter = new Waiter();
         mTimestamp = 0;
         mSocket.startFtpUpload(TestCommon.FTP_SERVER_HOST, SpeedTestUtils.getFTPUploadUri(),
-                packetSizeExpected, requestInterval);
+                requestInterval);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS);
 
         mWaiter = new Waiter();
         mTimestamp = 0;
-        mSocket.startFtpDownload(TestCommon.FTP_SERVER_HOST, TestCommon.FTP_SERVER_URI, packetSizeExpected,
+        mSocket.startFtpDownload(TestCommon.FTP_SERVER_HOST, TestCommon.FTP_SERVER_URI,
                 requestInterval);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS);
@@ -328,7 +326,6 @@ public class SpeedTestFTPTest {
         mWaiter = new Waiter();
 
         mSocket.startFtpFixedDownload(TestCommon.FTP_SERVER_HOST, TestCommon.FTP_SERVER_URI_LARGE_FILE,
-                packetSizeExpected,
                 duration);
 
         mWaiter.await(duration + TestCommon.FIXED_DURATION_OFFSET, TimeUnit.MILLISECONDS);
@@ -395,7 +392,6 @@ public class SpeedTestFTPTest {
         mWaiter = new Waiter();
         mTimestamp = 0;
         mSocket.startFtpFixedDownload(TestCommon.FTP_SERVER_HOST, TestCommon.FTP_SERVER_URI_LARGE_FILE,
-                packetSizeExpected,
                 duration, requestInterval);
 
         mWaiter.await(duration + TestCommon.FIXED_DURATION_OFFSET, TimeUnit.MILLISECONDS);
