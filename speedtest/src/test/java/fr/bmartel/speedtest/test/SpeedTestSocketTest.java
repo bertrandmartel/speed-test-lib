@@ -362,24 +362,29 @@ public class SpeedTestSocketTest {
     private void testSocket(final SpeedTestSocket socket) throws TimeoutException, NoSuchFieldException,
             IllegalAccessException {
 
-        final Field field = socket.getClass().getDeclaredField("mSocket");
+        final Field fieldTask = socket.getClass().getDeclaredField("mTask");
+        Assert.assertNotNull(HEADER + "socket is null", fieldTask);
+        fieldTask.setAccessible(true);
+
+        SpeedTestTask task = (SpeedTestTask) fieldTask.get(socket);
+        final Field field = task.getClass().getDeclaredField("mSocket");
         Assert.assertNotNull(HEADER + "socket is null", field);
         field.setAccessible(true);
 
-        Assert.assertNull(HEADER + "socket value at init", field.get(socket));
+        Assert.assertNull(HEADER + "socket value at init", field.get(task));
 
         socket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                 .SPEED_TEST_SERVER_URI_DL);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-        testSocketConnected((Socket) field.get(socket));
+        testSocketConnected((Socket) field.get(task));
 
         socket.forceStopTask();
 
         mWaiterError.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-        Assert.assertTrue(HEADER + "socket closed after stop download", ((Socket) field.get(socket)).isClosed());
+        Assert.assertTrue(HEADER + "socket closed after stop download", ((Socket) field.get(task)).isClosed());
 
         initCountDown();
 
@@ -389,13 +394,13 @@ public class SpeedTestSocketTest {
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-        testSocketConnected((Socket) field.get(socket));
+        testSocketConnected((Socket) field.get(task));
 
         socket.forceStopTask();
 
         mWaiterError.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-        Assert.assertTrue(HEADER + "socket closed after stop upload", ((Socket) field.get(socket)).isClosed());
+        Assert.assertTrue(HEADER + "socket closed after stop upload", ((Socket) field.get(task)).isClosed());
 
         initCountDown();
 
@@ -403,14 +408,14 @@ public class SpeedTestSocketTest {
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-        testSocketConnected((Socket) field.get(socket));
+        testSocketConnected((Socket) field.get(task));
 
         socket.forceStopTask();
 
         mWaiterError.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         socket.closeSocket();
-        Assert.assertTrue(HEADER + "socket closed after stop download", ((Socket) field.get(socket)).isClosed());
+        Assert.assertTrue(HEADER + "socket closed after stop download", ((Socket) field.get(task)).isClosed());
     }
 
     /**
