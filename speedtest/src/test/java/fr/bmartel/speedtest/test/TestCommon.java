@@ -173,7 +173,7 @@ public class TestCommon {
     /**
      * default ftp uri used for tests.
      */
-    public final static String FTP_SERVER_UPLOAD_URI = "/upload/test.txt";
+    public final static String FTP_SERVER_UPLOAD_PREFIX_URI = "/upload/";
 
     /**
      * larg file ftp uri used for tests.
