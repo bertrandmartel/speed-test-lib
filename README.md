@@ -271,62 +271,73 @@ Default scale used for transfer rate calculation is 4
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-* run directly download/upload (no need to use an `AsyncTask`) :
+* use an `AsyncTask` to run your speed test :
 
 ```
-SpeedTestSocket speedTestSocket = new SpeedTestSocket();
-
-// add a listener to wait for speedtest completion and progress
-speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
+public class SpeedTestTask extends AsyncTask<Void, Void, String> {
 
     @Override
-    public void onDownloadFinished(SpeedTestReport report) {
-        // called when download is finished
-        Log.v("speedtest-app", "[DL FINISHED] rate in octet/s : " + report.getTransferRateOctet());
-        Log.v("speedtest-app", "[DL FINISHED] rate in bit/s   : " + report.getTransferRateBit());
-    }
+    protected String doInBackground(Void... params) {
 
-    @Override
-    public void onDownloadError(SpeedTestError speedTestError, String errorMessage) {
-         // called when a download error occur
-    }
+        SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 
-    @Override
-    public void onUploadFinished(SpeedTestReport report) {
-        // called when an upload is finished
-        Log.v("speedtest-app", "[UL FINISHED] rate in octet/s : " + report.getTransferRateOctet());
-        Log.v("speedtest-app", "[UL FINISHED] rate in bit/s   : " + report.getTransferRateBit());
-    }
+        // add a listener to wait for speedtest completion and progress
+        speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
-    @Override
-    public void onUploadError(SpeedTestError speedTestError, String errorMessage) {
-        // called when an upload error occur
-    }
+            @Override
+            public void onDownloadFinished(SpeedTestReport report) {
+                // called when download is finished
+                Log.v("speedtest", "[DL FINISHED] rate in octet/s : " + report.getTransferRateOctet());
+                Log.v("speedtest", "[DL FINISHED] rate in bit/s   : " + report.getTransferRateBit());
+            }
 
-    @Override
-    public void onDownloadProgress(float percent, SpeedTestReport report) {
-        // called to notify download progress
-        Log.v("speedtest-app", "[DL PROGRESS] progress : " + percent + "%");
-        Log.v("speedtest-app", "[DL PROGRESS] rate in octet/s : " + report.getTransferRateOctet());
-        Log.v("speedtest-app", "[DL PROGRESS] rate in bit/s   : " + report.getTransferRateBit());
-    }
+            @Override
+            public void onDownloadError(SpeedTestError speedTestError, String errorMessage) {
+                // called when a download error occur
+            }
 
-    @Override
-    public void onUploadProgress(float percent, SpeedTestReport report) {
-        // called to notify upload progress
-        Log.v("speedtest-app", "[UL PROGRESS] progress : " + percent + "%");
-        Log.v("speedtest-app", "[UL PROGRESS] rate in octet/s : " + report.getTransferRateOctet());
-        Log.v("speedtest-app", "[UL PROGRESS] rate in bit/s   : " + report.getTransferRateBit());
-    }
+            @Override
+            public void onUploadFinished(SpeedTestReport report) {
+                // called when an upload is finished
+                Log.v("speedtest", "[UL FINISHED] rate in octet/s : " + report.getTransferRateOctet());
+                Log.v("speedtest", "[UL FINISHED] rate in bit/s   : " + report.getTransferRateBit());
+            }
 
-    @Override
-    public void onInterruption() {
-        // triggered when forceStopTask is called
-    }
-});
+            @Override
+            public void onUploadError(SpeedTestError speedTestError, String errorMessage) {
+                // called when an upload error occur
+            }
 
-speedTestSocket.startDownload("2.testdebit.info", "/fichiers/1Mo.dat");
+            @Override
+            public void onDownloadProgress(float percent, SpeedTestReport report) {
+                // called to notify download progress
+                Log.v("speedtest", "[DL PROGRESS] progress : " + percent + "%");
+                Log.v("speedtest", "[DL PROGRESS] rate in octet/s : " + report.getTransferRateOctet());
+                Log.v("speedtest", "[DL PROGRESS] rate in bit/s   : " + report.getTransferRateBit());
+            }
+
+            @Override
+            public void onUploadProgress(float percent, SpeedTestReport report) {
+                // called to notify upload progress
+                Log.v("speedtest", "[UL PROGRESS] progress : " + percent + "%");
+                Log.v("speedtest", "[UL PROGRESS] rate in octet/s : " + report.getTransferRateOctet());
+                Log.v("speedtest", "[UL PROGRESS] rate in bit/s   : " + report.getTransferRateBit());
+            }
+
+            @Override
+            public void onInterruption() {
+                // triggered when forceStopTask is called
+            }
+        });
+
+        speedTestSocket.startDownload("2.testdebit.info", "/fichiers/1Mo.dat");
+
+        return null;
+    }
+}
 ```
+
+Execute it with : `new SpeedTestTask().execute();`
 
 ## Features examples
 
