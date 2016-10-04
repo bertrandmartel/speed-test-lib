@@ -240,6 +240,7 @@ public class SpeedTestFTPTest {
         mWaiter = new Waiter();
         mTimestamp = 0;
         mSocket.startFtpUpload(TestCommon.FTP_SERVER_HOST, SpeedTestUtils.getFTPUploadUri(),
+                TestCommon.FILE_SIZE_REGULAR,
                 requestInterval);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS);
