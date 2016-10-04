@@ -1,4 +1,6 @@
-# Non exhaustive list of speed test server
+# List of compatible speed test server
+
+This list is non-exhaustive
 
 ## speedtest.net
 
