@@ -66,14 +66,19 @@ public class TestCommon {
     public final static String SPEED_TEST_FAKE_HOST = "this.is.something.fake";
 
     /**
-     * spedd examples server uri.
+     * speed examples server uri.
      */
     public final static String SPEED_TEST_SERVER_URI_DL = "/fichiers/100Mo.dat";
 
     /**
-     * spedd examples 1Mo server uri.
+     * speed examples 1Mo server uri.
      */
     public final static String SPEED_TEST_SERVER_URI_DL_1MO = "/fichiers/1Mo.dat";
+
+    /**
+     * A fake uri to test connection error.
+     */
+    public final static String SPEED_TEST_SERVER_FAKE_URI = "/fichiers/qsdqdqsdqsd";
 
     /**
      * speed examples server port.
@@ -164,6 +169,11 @@ public class TestCommon {
      * default ftp server host used for tests.
      */
     public final static String FTP_SERVER_HOST = "speedtest.tele2.net";
+
+    /**
+     * fake uri for FTP connection error testing.
+     */
+    public final static String FTP_FAKE_URI = "/qsdqsdqsd/qsdqs";
 
     /**
      * default ftp uri used for tests.

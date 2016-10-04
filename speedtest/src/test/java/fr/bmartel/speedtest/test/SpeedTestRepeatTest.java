@@ -60,27 +60,28 @@ public class SpeedTestRepeatTest {
     private static Waiter mWaiterError;
 
     /**
-     * Test download repeat.
+     * Test HTTP download repeat.
      */
     @Test
-    public void downloadRepeatTest() throws TimeoutException, IllegalAccessException, NoSuchFieldException {
-        repeatTest(true);
+    public void downloadHTTPRepeatTest() throws TimeoutException, IllegalAccessException, NoSuchFieldException {
+        repeatTest(true, true);
     }
 
     /**
-     * Test upload repeat.
+     * Test HTTP upload repeat.
      */
     @Test
-    public void uploadRepeatTest() throws TimeoutException, IllegalAccessException, NoSuchFieldException {
-        repeatTest(false);
+    public void uploadHTTPRepeatTest() throws TimeoutException, IllegalAccessException, NoSuchFieldException {
+        repeatTest(false, true);
     }
 
     /**
      * Test repeat for DL & UL.
      *
      * @param download define if download or upload is testing.
+     * @param http     http or ftp mode
      */
-    private void repeatTest(final boolean download) throws TimeoutException, IllegalAccessException,
+    private void repeatTest(final boolean download, final boolean http) throws TimeoutException, IllegalAccessException,
             NoSuchFieldException {
 
         mSocket = new SpeedTestSocket();
@@ -94,9 +95,9 @@ public class SpeedTestRepeatTest {
         mWaiterError = new Waiter();
 
         final Waiter finishWaiter = new Waiter();
-        //final List<ISpeedTestListener> listenerList = new ArrayList<>();
+        final List<ISpeedTestListener> listenerList = new ArrayList<>();
 
-        //SpeedTestUtils.setListenerList(mSocket, listenerList);
+        SpeedTestUtils.setListenerList(mSocket, listenerList);
 
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
@@ -173,9 +174,10 @@ public class SpeedTestRepeatTest {
             }
         });
 
-        //Assert.assertEquals(listenerList.size(), 1);
+        Assert.assertEquals(listenerList.size(), 1);
 
-        if (download) {
+        if (download && http) {
+
             mSocket.startDownloadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
                     TestCommon.SPEED_TEST_SERVER_URI_DL_1MO,
                     TestCommon.SPEED_TEST_DURATION, TestCommon.REPORT_INTERVAL, new
@@ -209,9 +211,12 @@ public class SpeedTestRepeatTest {
                 Assert.fail(e.getMessage());
             }
             */
-            //listenerList.get(1).onUploadProgress(0, null);
-            //listenerList.get(1).onUploadFinished(null);
-        } else {
+            listenerList.get(1).onUploadProgress(0, null);
+            listenerList.get(1).onUploadFinished(null);
+            listenerList.get(1).onInterruption();
+
+        } else if (!download && http) {
+
             mSocket.startUploadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                             .SPEED_TEST_SERVER_URI_UL,
                     TestCommon.SPEED_TEST_DURATION, TestCommon.REPORT_INTERVAL, TestCommon.FILE_SIZE_REGULAR, new
@@ -243,8 +248,9 @@ public class SpeedTestRepeatTest {
                                 }
                             });
             Assert.assertEquals(repeatVars.isFirstUploadRepeat(), true);
-            //listenerList.get(1).onDownloadProgress(0, null);
-            //listenerList.get(1).onDownloadFinished(null);
+            listenerList.get(1).onDownloadProgress(0, null);
+            listenerList.get(1).onDownloadFinished(null);
+            listenerList.get(1).onInterruption();
         }
 
         //Assert.assertEquals(listenerList.size(), 2);

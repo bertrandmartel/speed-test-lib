@@ -327,19 +327,55 @@ public class SpeedTestErrorTest {
     }
 
     /**
-     * Test unknown host error for mDownload.
+     * Test unknown host error for HTTP download.
      */
     @Test
-    public void unknownHostDownloadTest() throws TimeoutException {
-        unknownHostTest(true);
+    public void unknownHostHTTPDownloadTest() throws TimeoutException {
+        connectionErrorTest(true, ConnectionError.HTTP_UNKNOWN_HOST);
     }
 
     /**
-     * Test unknown host error for mDownload.
+     * Test unknown host error for HTTP upload.
      */
     @Test
-    public void unknownHostUploadTest() throws TimeoutException {
-        unknownHostTest(false);
+    public void unknownHostHTTPUploadTest() throws TimeoutException {
+        connectionErrorTest(false, ConnectionError.HTTP_UNKNOWN_HOST);
+    }
+
+    /**
+     * Test unknown host error for FTP download.
+     */
+    @Test
+    public void unknownHostFTPDownloadTest() throws TimeoutException {
+        connectionErrorTest(true, ConnectionError.FTP_UNKNOWN_HOST);
+    }
+
+    /**
+     * Test unknown host error for FTP upload.
+     */
+    @Test
+    public void unknownHostFTPUploadTest() throws TimeoutException {
+        connectionErrorTest(false, ConnectionError.FTP_UNKNOWN_HOST);
+    }
+
+    @Test
+    public void downloadBadStatusCodeTest() throws TimeoutException {
+        connectionErrorTest(true, ConnectionError.BAD_STATUS);
+    }
+
+    @Test
+    public void uploadBadStatusCodeTest() throws TimeoutException {
+        connectionErrorTest(false, ConnectionError.BAD_STATUS);
+    }
+
+    @Test
+    public void downloadFTPBadUri() throws TimeoutException {
+        connectionErrorTest(true, ConnectionError.FTP_BAD_URI);
+    }
+
+    @Test
+    public void uploadFTPBadUri() throws TimeoutException {
+        connectionErrorTest(false, ConnectionError.FTP_BAD_URI);
     }
 
     /**
@@ -347,7 +383,7 @@ public class SpeedTestErrorTest {
      *
      * @param download define if mDownload or upload is testing.
      */
-    private void unknownHostTest(final boolean download) throws TimeoutException {
+    private void connectionErrorTest(final boolean download, final ConnectionError error) throws TimeoutException {
 
         mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
@@ -366,11 +402,7 @@ public class SpeedTestErrorTest {
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
 
                 if (download) {
-                    if (speedTestError != SpeedTestError.CONNECTION_ERROR) {
-                        mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
-                    } else {
-                        mWaiter.resume();
-                    }
+                    dispatchConnectionError(error, speedTestError);
                 } else {
                     mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onDownloadError");
                 }
@@ -386,11 +418,7 @@ public class SpeedTestErrorTest {
                 if (download) {
                     mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadError");
                 } else {
-                    if (speedTestError != SpeedTestError.CONNECTION_ERROR) {
-                        mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
-                    } else {
-                        mWaiter.resume();
-                    }
+                    dispatchConnectionError(error, speedTestError);
                 }
             }
 
@@ -404,19 +432,72 @@ public class SpeedTestErrorTest {
             }
         });
 
-        if (download) {
-            mSocket.startDownload(TestCommon.SPEED_TEST_FAKE_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
-                    .SPEED_TEST_SERVER_URI_DL_1MO);
-        } else {
-            mSocket.startUpload(TestCommon.SPEED_TEST_FAKE_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
-                            .SPEED_TEST_SERVER_URI_UL,
-                    TestCommon.FILE_SIZE_MEDIUM);
-        }
+        switch (error) {
+            case HTTP_UNKNOWN_HOST:
+                if (download) {
+                    mSocket.startDownload(TestCommon.SPEED_TEST_FAKE_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+                            .SPEED_TEST_SERVER_URI_DL_1MO);
+                } else {
+                    mSocket.startUpload(TestCommon.SPEED_TEST_FAKE_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+                                    .SPEED_TEST_SERVER_URI_UL,
+                            TestCommon.FILE_SIZE_MEDIUM);
+                }
 
-        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+                mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+                break;
+            case BAD_STATUS:
+                if (download) {
+                    mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
+                            TestCommon
+                                    .SPEED_TEST_SERVER_FAKE_URI);
+                } else {
+                    mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+                                    .SPEED_TEST_SERVER_FAKE_URI,
+                            TestCommon.FILE_SIZE_REGULAR);
+                }
+                mWaiter.await(TestCommon.WAITING_TIMEOUT_LONG_OPERATION, TimeUnit.SECONDS);
+                break;
+            case FTP_UNKNOWN_HOST:
+                if (download) {
+                    mSocket.startFtpDownload(TestCommon.SPEED_TEST_FAKE_HOST, TestCommon
+                            .FTP_SERVER_URI);
+                } else {
+                    mSocket.startFtpUpload(TestCommon.SPEED_TEST_FAKE_HOST, TestCommon.FTP_SERVER_UPLOAD_PREFIX_URI +
+                                    "something.txt",
+                            TestCommon.FILE_SIZE_REGULAR);
+                }
+                mWaiter.await(TestCommon.WAITING_TIMEOUT_LONG_OPERATION, TimeUnit.SECONDS);
+                break;
+            case FTP_BAD_URI:
+                if (download) {
+                    mSocket.startFtpDownload(TestCommon.FTP_SERVER_HOST, TestCommon.FTP_FAKE_URI);
+                } else {
+                    mSocket.startFtpUpload(TestCommon.FTP_SERVER_HOST, TestCommon.FTP_FAKE_URI,
+                            TestCommon.FILE_SIZE_REGULAR);
+                }
+                mWaiter.await(TestCommon.WAITING_TIMEOUT_LONG_OPERATION, TimeUnit.SECONDS);
+                break;
+            default:
+                break;
+        }
 
         mSocket.forceStopTask();
 
         mSocket.clearListeners();
+    }
+
+    private void dispatchConnectionError(final ConnectionError error, final SpeedTestError speedTestError) {
+
+        if (error == ConnectionError.HTTP_UNKNOWN_HOST && speedTestError != SpeedTestError.CONNECTION_ERROR) {
+            mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
+        } else if (error == ConnectionError.FTP_UNKNOWN_HOST && speedTestError != SpeedTestError.CONNECTION_ERROR) {
+            mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
+        } else if (error == ConnectionError.BAD_STATUS && speedTestError != SpeedTestError.INVALID_HTTP_RESPONSE) {
+            mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
+        } else if (error == ConnectionError.FTP_BAD_URI && speedTestError != SpeedTestError.CONNECTION_ERROR) {
+            mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
+        } else {
+            mWaiter.resume();
+        }
     }
 }

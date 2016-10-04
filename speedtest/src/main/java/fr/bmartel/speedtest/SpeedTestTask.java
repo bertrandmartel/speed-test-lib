@@ -413,6 +413,7 @@ public class SpeedTestTask {
             }
 
             final HttpStates httFrameState = httpFrame.decodeFrame(mSocket.getInputStream());
+
             SpeedTestUtils.checkHttpFrameError(mForceCloseSocket, mListenerList, httFrameState);
 
             final HttpStates httpHeaderState = httpFrame.parseHeader(mSocket.getInputStream());
@@ -536,15 +537,15 @@ public class SpeedTestTask {
                     mReportInterval = false;
 
                     for (int i = 0; i < mListenerList.size(); i++) {
-                        mListenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error status code" +
+                        mListenerList.get(i).onUploadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error status code" +
                                 " " + frame.getStatusCode());
                     }
 
-                    if (!mRepeatWrapper.isRepeatUpload()) {
-                        closeExecutors();
-                    }
-
                     closeSocket();
+                }
+
+                if (!mRepeatWrapper.isRepeatUpload()) {
+                    closeExecutors();
                 }
 
                 return;
@@ -849,8 +850,9 @@ public class SpeedTestTask {
                         }
 
                     } else {
+
                         mReportInterval = false;
-                        SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, "cant create stream " +
+                        SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, true, "cant create stream " +
                                 "from uri " + uri + " with reply code : " + ftpclient.getReplyCode());
                     }
 
