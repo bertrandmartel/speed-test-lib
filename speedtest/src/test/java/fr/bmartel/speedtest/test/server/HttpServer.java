@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest.test.server;
 
 import fr.bmartel.protocol.http.inter.IHttpFrame;
@@ -133,10 +134,10 @@ public class HttpServer implements IHttpServer, IHttpServerEventListener {
                 keystore.load(new FileInputStream(mKeystoreFile),
                         mKeystorePassword.toCharArray());
 
-				/*
+                /*
                  * assign a new keystore containing all certificated to be
-				 * trusted
-				 */
+                 * trusted
+                 */
                 final KeyStore tks = KeyStore.getInstance(mTrustoreDefaultType);
 
 				/* load this keystore from file */
@@ -204,7 +205,7 @@ public class HttpServer implements IHttpServer, IHttpServerEventListener {
             /* stop all thread and server socket */
             stop();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         } catch (KeyStoreException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest.test;
 
 import fr.bmartel.protocol.http.HttpFrame;
@@ -100,10 +101,12 @@ public class SpeedTestErrorTest extends AbstractTest {
         listenerList.add(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
+                //called when download is finished
             }
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+                //called to notify download progresss
             }
 
             @Override
@@ -120,6 +123,7 @@ public class SpeedTestErrorTest extends AbstractTest {
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
+                //called when upload is finished
             }
 
             @Override
@@ -136,6 +140,7 @@ public class SpeedTestErrorTest extends AbstractTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                //called to notify upload progress
             }
 
             @Override
@@ -382,10 +387,12 @@ public class SpeedTestErrorTest extends AbstractTest {
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
+                //called when download is finished
             }
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+                //called to notify download progress
             }
 
             @Override
@@ -400,6 +407,7 @@ public class SpeedTestErrorTest extends AbstractTest {
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
+                //called when upload is finished
             }
 
             @Override
@@ -414,11 +422,12 @@ public class SpeedTestErrorTest extends AbstractTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                //called to notify upload progress
             }
 
             @Override
             public void onInterruption() {
-
+                //triggered when forceStopTask is called
             }
         });
 

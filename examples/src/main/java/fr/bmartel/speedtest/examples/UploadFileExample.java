@@ -127,7 +127,7 @@ public class UploadFileExample {
 
             @Override
             public void onInterruption() {
-
+                //triggered when forceStopTask is called
             }
         });
 

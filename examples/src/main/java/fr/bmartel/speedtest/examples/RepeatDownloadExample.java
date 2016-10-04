@@ -121,7 +121,7 @@ public class RepeatDownloadExample {
 
             @Override
             public void onInterruption() {
-                
+                //triggered when forceStopTask is called
             }
         });
 

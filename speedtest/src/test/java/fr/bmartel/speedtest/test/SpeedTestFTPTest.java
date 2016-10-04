@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest.test;
 
 import fr.bmartel.speedtest.ISpeedTestListener;
@@ -103,7 +104,7 @@ public class SpeedTestFTPTest extends AbstractTest {
 
             @Override
             public void onInterruption() {
-
+                //triggered when forceStopTask is called
             }
         });
 
@@ -171,7 +172,7 @@ public class SpeedTestFTPTest extends AbstractTest {
 
             @Override
             public void onInterruption() {
-
+                //triggered when forceStopTask is called
             }
         });
 
@@ -282,7 +283,7 @@ public class SpeedTestFTPTest extends AbstractTest {
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
-
+                //called to notify download progress
             }
 
             @Override

@@ -126,7 +126,7 @@ public class RepeatUploadExample {
 
             @Override
             public void onInterruption() {
-                
+                //triggered when forceStopTask is called
             }
         });
 
