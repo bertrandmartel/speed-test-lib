@@ -27,6 +27,8 @@ package fr.bmartel.speedtest;
 import fr.bmartel.protocol.http.HttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.List;
 
 /**
@@ -35,6 +37,20 @@ import java.util.List;
  * @author Bertrand Martel
  */
 public class SpeedTestUtils {
+
+    /**
+     * random number.
+     */
+    private static SecureRandom random = new SecureRandom();
+
+    /**
+     * Generate a random file name for file FTP upload.
+     *
+     * @return random file name
+     */
+    public static String generateFileName() {
+        return new BigInteger(130, random).toString(32);
+    }
 
     /**
      * dispatch error listener according to errors.
