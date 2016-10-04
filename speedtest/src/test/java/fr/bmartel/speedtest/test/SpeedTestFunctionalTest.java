@@ -130,6 +130,11 @@ public class SpeedTestFunctionalTest extends AbstractTest {
      */
     private boolean download;
 
+    /**
+     * number of chain for DL/UL/DL chain requests.
+     */
+    private int chainCount = 1;
+
     @Test
     public void downloadTest() throws TimeoutException {
 
@@ -450,6 +455,8 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
         final int totalPacketSize = 1000000;
 
+        chainCount = 0;
+
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
@@ -457,15 +464,16 @@ public class SpeedTestFunctionalTest extends AbstractTest {
                 checkResult(mWaiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
                         report.getTransferRateOctet(), true, true);
                 mWaiter.resume();
-
-                mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
-                        .SPEED_TEST_SERVER_URI_UL, totalPacketSize);
+                chainCount++;
+                if (chainCount < 2) {
+                    mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+                            .SPEED_TEST_SERVER_URI_UL, totalPacketSize);
+                }
 
             }
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
-                mWaiter.resume();
             }
 
             @Override
@@ -476,9 +484,14 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
+
                 checkResult(mWaiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
                         report.getTransferRateOctet(), false, true);
+
                 mWaiter.resume();
+
+                mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+                        .SPEED_TEST_SERVER_URI_DL_1MO);
             }
 
             @Override
@@ -503,7 +516,7 @@ public class SpeedTestFunctionalTest extends AbstractTest {
         mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
                 .SPEED_TEST_SERVER_URI_DL_1MO);
 
-        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, SECONDS, 2);
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_LONG_OPERATION, SECONDS, 3);
 
         mSocket.clearListeners();
     }
