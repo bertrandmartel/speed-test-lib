@@ -26,6 +26,7 @@ package fr.bmartel.speedtest.test;
 import fr.bmartel.speedtest.ISpeedTestListener;
 import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.SpeedTestSocket;
+import fr.bmartel.speedtest.SpeedTestTask;
 import net.jodah.concurrentunit.Waiter;
 import org.junit.Assert;
 
@@ -65,6 +66,16 @@ public class SpeedTestUtils {
         Assert.assertNotNull("listenerList is null", field);
         field.setAccessible(true);
         field.set(socket, listenerList);
+
+        final Field fieldTask = socket.getClass().getDeclaredField("mTask");
+        Assert.assertNotNull("task is null", fieldTask);
+        fieldTask.setAccessible(true);
+
+        SpeedTestTask task = (SpeedTestTask) fieldTask.get(socket);
+        final Field fieldListenerList = task.getClass().getDeclaredField("mListenerList");
+        Assert.assertNotNull("listenerList is null", fieldListenerList);
+        fieldListenerList.setAccessible(true);
+        fieldListenerList.set(task, listenerList);
     }
 
     /**
