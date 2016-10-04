@@ -407,10 +407,10 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     /**
      * Start FTP upload for a fixed duration.
      *
-     * @param hostname       server hostname
-     * @param uri            ftp uri
-     * @param fileSizeOctet  file size to upload in octet
-     * @param maxDuration    max duration of upload in milliseconds
+     * @param hostname      server hostname
+     * @param uri           ftp uri
+     * @param fileSizeOctet file size to upload in octet
+     * @param maxDuration   max duration of upload in milliseconds
      */
     public void startFtpFixedUpload(final String hostname,
                                     final String uri,
@@ -453,9 +453,9 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     /**
      * Start FTP upload.
      *
-     * @param hostname       server hostname
-     * @param uri            ftp uri
-     * @param fileSizeOctet  file size to upload in octet
+     * @param hostname      server hostname
+     * @param uri           ftp uri
+     * @param fileSizeOctet file size to upload in octet
      */
     public void startFtpUpload(final String hostname,
                                final String uri,
@@ -550,6 +550,24 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      * Start repeat download task.
      *
      * @param hostname           server mHostname
+     * @param uri                uri to fetch to download file
+     * @param repeatWindow       time window for the repeated download in milliseconds
+     * @param reportPeriodMillis time interval between each report in milliseconds
+     * @param repeatListener     listener for download repeat task completion & reports
+     */
+    public void startDownloadRepeat(final String hostname,
+                                    final String uri,
+                                    final int repeatWindow,
+                                    final int reportPeriodMillis,
+                                    final IRepeatListener repeatListener) {
+        startDownloadRepeat(hostname, SpeedTestConst.HTTP_DEFAULT_PORT, uri, repeatWindow,
+                reportPeriodMillis, repeatListener);
+    }
+
+    /**
+     * Start repeat download task.
+     *
+     * @param hostname           server mHostname
      * @param port               server mPort
      * @param uri                uri to fetch to download file
      * @param repeatWindow       time window for the repeated download in milliseconds
@@ -563,6 +581,32 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                                     final int reportPeriodMillis,
                                     final IRepeatListener repeatListener) {
         mRepeatWrapper.startDownloadRepeat(hostname, port, uri, repeatWindow, reportPeriodMillis, repeatListener);
+    }
+
+    /**
+     * Start repeat upload task.
+     *
+     * @param hostname           server mHostname
+     * @param uri                uri to fetch to download file
+     * @param repeatWindow       time window for the repeated upload in milliseconds
+     * @param reportPeriodMillis time interval between each report in milliseconds
+     * @param fileSizeOctet      file size in octet
+     * @param repeatListener     listener for upload repeat task completion & reports
+     */
+    public void startUploadRepeat(final String hostname,
+                                  final String uri,
+                                  final int repeatWindow,
+                                  final int reportPeriodMillis,
+                                  final int fileSizeOctet,
+                                  final IRepeatListener repeatListener) {
+
+        startUploadRepeat(hostname,
+                SpeedTestConst.HTTP_DEFAULT_PORT,
+                uri,
+                repeatWindow,
+                reportPeriodMillis,
+                fileSizeOctet,
+                repeatListener);
     }
 
     /**
