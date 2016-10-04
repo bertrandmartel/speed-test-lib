@@ -438,6 +438,10 @@ public class SpeedTestTask {
 
                 mReportInterval = false;
 
+                if (!mRepeatWrapper.isRepeatDownload()) {
+                    closeExecutors();
+                }
+
                 final SpeedTestReport report = mSocketInterface.getLiveDownloadReport();
 
                 for (int i = 0; i < mListenerList.size(); i++) {
@@ -454,10 +458,10 @@ public class SpeedTestTask {
                 }
 
                 closeSocket();
-            }
 
-            if (!mRepeatWrapper.isRepeatDownload()) {
-                closeExecutors();
+                if (!mRepeatWrapper.isRepeatDownload()) {
+                    closeExecutors();
+                }
             }
 
         } catch (SocketTimeoutException e) {
@@ -543,12 +547,11 @@ public class SpeedTestTask {
                     }
 
                     closeSocket();
-                }
 
-                if (!mRepeatWrapper.isRepeatUpload()) {
-                    closeExecutors();
+                    if (!mRepeatWrapper.isRepeatUpload()) {
+                        closeExecutors();
+                    }
                 }
-
                 return;
             }
             closeSocket();
