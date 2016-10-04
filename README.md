@@ -23,7 +23,7 @@ Check a [non-exhaustive list](./server_list.md) of compatible speed test server.
 * with Gradle, from jcenter or mavenCentral :
 
 ```
-compile 'com.github.akinaru:speedtest:1.2'
+compile 'com.github.akinaru:speedtest:1.21'
 ```
 
 ## Usage
