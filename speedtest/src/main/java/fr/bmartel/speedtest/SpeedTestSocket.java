@@ -369,8 +369,8 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     /**
      * Start upload process.
      *
-     * @param hostname       server mHostname
-     * @param port           server mPort
+     * @param hostname       server hostname
+     * @param port           server port
      * @param uri            uri to fetch
      * @param fileSizeOctet  size of file to upload
      * @param maxDuration    maximum duration of speed test in milliseconds
@@ -389,6 +389,15 @@ public class SpeedTestSocket implements ISpeedTestSocket {
         startFixedUpload(hostname, port, uri, fileSizeOctet, maxDuration);
     }
 
+    /**
+     * Start FTP upload for a fixed duration.
+     *
+     * @param hostname       server hostname
+     * @param uri            ftp uri
+     * @param fileSizeOctet  file size to upload in octet
+     * @param maxDuration    max duration of upload in milliseconds
+     * @param reportInterval report interval in milliseconds
+     */
     public void startFtpFixedUpload(final String hostname,
                                     final String uri,
                                     final int fileSizeOctet,
@@ -401,6 +410,14 @@ public class SpeedTestSocket implements ISpeedTestSocket {
         startFtpFixedUpload(hostname, uri, fileSizeOctet, maxDuration);
     }
 
+    /**
+     * Start FTP upload for a fixed duration.
+     *
+     * @param hostname       server hostname
+     * @param uri            ftp uri
+     * @param fileSizeOctet  file size to upload in octet
+     * @param maxDuration    max duration of upload in milliseconds
+     */
     public void startFtpFixedUpload(final String hostname,
                                     final String uri,
                                     final int fileSizeOctet,
@@ -419,7 +436,14 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                 SpeedTestConst.FTP_DEFAULT_USER, SpeedTestConst.FTP_DEFAULT_PASSWORD);
     }
 
-
+    /**
+     * Start FTP upload.
+     *
+     * @param hostname       server hostname
+     * @param uri            ftp uri
+     * @param fileSizeOctet  file size to upload in octet
+     * @param reportInterval report interval in milliseconds
+     */
     public void startFtpUpload(final String hostname,
                                final String uri,
                                final int fileSizeOctet,
@@ -432,6 +456,13 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                 SpeedTestConst.FTP_DEFAULT_USER, SpeedTestConst.FTP_DEFAULT_PASSWORD);
     }
 
+    /**
+     * Start FTP upload.
+     *
+     * @param hostname       server hostname
+     * @param uri            ftp uri
+     * @param fileSizeOctet  file size to upload in octet
+     */
     public void startFtpUpload(final String hostname,
                                final String uri,
                                final int fileSizeOctet) {

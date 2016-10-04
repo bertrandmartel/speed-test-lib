@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest.test;
 
 import fr.bmartel.protocol.http.HttpResponseFrame;
@@ -148,6 +149,7 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+                //called to notify download progress
             }
 
             @Override
@@ -158,6 +160,7 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
+                //called when upload is finished
             }
 
             @Override
@@ -168,11 +171,12 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                //called to notify upload progress
             }
 
             @Override
             public void onInterruption() {
-
+                //triggered when forceStopTask is called
             }
         });
 
@@ -199,10 +203,12 @@ public class SpeedTestFunctionalTest extends AbstractTest {
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
+                //called when download is finished
             }
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+                //called to notify download progress
             }
 
             @Override
@@ -226,11 +232,12 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                //called to notify upload progress
             }
 
             @Override
             public void onInterruption() {
-
+                //triggered when forceStopTask is called
             }
         });
 
@@ -256,10 +263,12 @@ public class SpeedTestFunctionalTest extends AbstractTest {
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
+                //called when download is finished
             }
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+                //called to notify download progress
             }
 
             @Override
@@ -277,6 +286,7 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
+                //called when upload is finished
             }
 
             @Override
@@ -294,11 +304,12 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                //called to notify upload progress
             }
 
             @Override
             public void onInterruption() {
-
+                //triggered when forceStopTask is called
             }
         });
 
@@ -387,6 +398,7 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+                //called to notify download progress
             }
 
             @Override
@@ -397,6 +409,7 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
+                //called when upload is finished
             }
 
             @Override
@@ -407,11 +420,12 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                //called to notify progress
             }
 
             @Override
             public void onInterruption() {
-
+                //triggered when forceStopTask is called
             }
         });
 
@@ -475,11 +489,12 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                //called to notify upload progress
             }
 
             @Override
             public void onInterruption() {
-
+                //triggered when forceStopTask is called
             }
         });
 
@@ -585,7 +600,7 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
             @Override
             public void onInterruption() {
-
+                //triggered when foceStopTask is called
             }
         });
 
@@ -725,7 +740,7 @@ public class SpeedTestFunctionalTest extends AbstractTest {
                                     try {
                                         Thread.sleep(mSocketTimeout + 1000);
                                     } catch (InterruptedException e) {
-                                        e.printStackTrace();
+                                        waiter.fail(e.getMessage());
                                     }
                                     break;
                                 default:
@@ -742,7 +757,7 @@ public class SpeedTestFunctionalTest extends AbstractTest {
                                     try {
                                         Thread.sleep(mSocketTimeout + 1000);
                                     } catch (InterruptedException e) {
-                                        e.printStackTrace();
+                                        waiter.fail(e.getMessage());
                                     }
                                     break;
                                 default:

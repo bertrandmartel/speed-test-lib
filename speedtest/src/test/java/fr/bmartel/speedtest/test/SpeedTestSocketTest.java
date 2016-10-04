@@ -150,6 +150,7 @@ public class SpeedTestSocketTest extends AbstractTest {
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
+                //called when download is finished
             }
 
             @Override
@@ -165,6 +166,7 @@ public class SpeedTestSocketTest extends AbstractTest {
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
+                //called when upload is finished
             }
 
             @Override
@@ -235,37 +237,37 @@ public class SpeedTestSocketTest extends AbstractTest {
         final ISpeedTestListener listener = new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
-
+                //called when download is finished
             }
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
-
+                //called to notify progress
             }
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-
+                //called when download error occur
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
-
+                //called when upload is finished
             }
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-
+                //called when upload error occur
             }
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
-
+                //called to notify progress
             }
 
             @Override
             public void onInterruption() {
-
+                //triggered when forceStopTask is called
             }
         };
 
@@ -298,6 +300,7 @@ public class SpeedTestSocketTest extends AbstractTest {
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
+                //called when download is finished
             }
 
             @Override
@@ -313,6 +316,7 @@ public class SpeedTestSocketTest extends AbstractTest {
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
+                //called when upload is finished
             }
 
             @Override
@@ -458,6 +462,7 @@ public class SpeedTestSocketTest extends AbstractTest {
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
+                //called when download is finished
             }
 
             @Override
@@ -473,6 +478,7 @@ public class SpeedTestSocketTest extends AbstractTest {
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
+                //called when upload is finished
             }
 
             @Override
@@ -483,11 +489,12 @@ public class SpeedTestSocketTest extends AbstractTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                //called to notify progress
             }
 
             @Override
             public void onInterruption() {
-
+                //triggered when forceStopTask is called
             }
         });
 
@@ -521,10 +528,12 @@ public class SpeedTestSocketTest extends AbstractTest {
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
+                //called when download is finished
             }
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+                //called to notify download progress
             }
 
             @Override
@@ -534,6 +543,7 @@ public class SpeedTestSocketTest extends AbstractTest {
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
+                //called when upload is finished
             }
 
             @Override
@@ -548,7 +558,7 @@ public class SpeedTestSocketTest extends AbstractTest {
 
             @Override
             public void onInterruption() {
-
+                //triggered when forceStopTask is called
             }
         });
 
@@ -703,7 +713,7 @@ public class SpeedTestSocketTest extends AbstractTest {
 
             @Override
             public void onInterruption() {
-
+                //triggered when forceStopTask is called
             }
         });
 
@@ -740,7 +750,7 @@ public class SpeedTestSocketTest extends AbstractTest {
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport report) {
-
+                //called to notify download progress
             }
 
             @Override
@@ -760,6 +770,7 @@ public class SpeedTestSocketTest extends AbstractTest {
 
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport report) {
+                //called to notify upload progress
             }
 
             @Override

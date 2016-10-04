@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest;
 
 import java.math.BigDecimal;
@@ -188,11 +189,12 @@ public class RepeatWrapper {
     }
 
     /**
-     * start upload for download repeat.
+     * start upload for upload repeat.
      *
      * @param hostname server hostname
      * @param port     server port
      * @param uri      uri to fetch to upload file
+     * @fileSizeOctet file size in octet
      */
     private void startUploadRepeat(final String hostname, final int port, final String uri, final int fileSizeOctet) {
         mSpeedTestSocket.startUpload(hostname, port, uri, fileSizeOctet);
@@ -254,7 +256,7 @@ public class RepeatWrapper {
 
             @Override
             public void onInterruption() {
-
+                //triggered when forceStopTask is called
             }
         };
 
@@ -345,7 +347,7 @@ public class RepeatWrapper {
 
             @Override
             public void onInterruption() {
-                
+                //triggered when forceStopTask is called
             }
         };
 
@@ -422,42 +424,92 @@ public class RepeatWrapper {
         mSpeedTestSocket.shutdownAndWait();
     }
 
+    /**
+     * check if this is the first packet to be downloaded for repeat operation.
+     *
+     * @return
+     */
     public boolean isFirstDownload() {
         return mFirstDownloadRepeat && mRepeatDownload;
     }
 
+    /**
+     * check if this is the first packet to be uploaded for repeat operation.
+     *
+     * @return
+     */
     public boolean isFirstUpload() {
         return mFirstUploadRepeat && mRepeatUpload;
     }
 
+    /**
+     * set the first downloaded packet status.
+     *
+     * @param state
+     */
     public void setFirstDownloadRepeat(final boolean state) {
         mFirstDownloadRepeat = state;
     }
 
+    /**
+     * Set the start date for repeat task.
+     *
+     * @param timeStart
+     */
     public void setStartDate(final long timeStart) {
         mStartDateRepeat = timeStart;
     }
 
+    /**
+     * check if download repeat task is running.
+     *
+     * @return
+     */
     public boolean isRepeatDownload() {
         return mRepeatDownload;
     }
 
+    /**
+     * update total packet size to be downloaded/uploaded
+     *
+     * @param packetSize
+     */
     public void updatePacketSize(final BigDecimal packetSize) {
         mRepeatPacketSize = mRepeatPacketSize.add(packetSize);
     }
 
+    /**
+     * update temporary packet size currently downloaded/uploaded.
+     *
+     * @param read
+     */
     public void updateTempPacketSize(final int read) {
         mRepeatTempPckSize += read;
     }
 
+    /**
+     * check if upload repeat task is running.
+     *
+     * @return
+     */
     public boolean isRepeatUpload() {
         return mRepeatUpload;
     }
 
+    /**
+     * check if repeat task is running.
+     *
+     * @return
+     */
     public boolean isRepeat() {
         return mRepeatDownload || mRepeatUpload;
     }
 
+    /**
+     * Set the first uploaded packet status.
+     *
+     * @param state
+     */
     public void setFirstUploadRepeat(final boolean state) {
         mFirstUploadRepeat = state;
     }

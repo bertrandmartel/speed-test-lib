@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest;
 
 import fr.bmartel.protocol.http.HttpFrame;
@@ -226,7 +227,7 @@ public class SpeedTestTask {
         mForceCloseSocket = false;
         mErrorDispatched = false;
 
-            /* generate a file with size of fileSizeOctet octet */
+        /* generate a file with size of fileSizeOctet octet */
         final byte[] body = new RandomGen(fileSizeOctet).nextArray();
 
         final String head = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + hostname + "\r\nAccept: " +
@@ -349,7 +350,7 @@ public class SpeedTestTask {
                 mSocket.setSoTimeout(mSocketInterface.getSocketTimeout());
             }
 
-			/* establish mSocket parameters */
+            /* establish mSocket parameters */
             mSocket.setReuseAddress(true);
 
             mSocket.setKeepAlive(true);
@@ -599,9 +600,9 @@ public class SpeedTestTask {
     }
 
     /**
-     * logout & diconnect FTP client.
+     * logout & disconnect FTP client.
      *
-     * @param ftpclient
+     * @param ftpclient ftp client
      */
     private void disconnectFtp(final FTPClient ftpclient) {
 
@@ -650,11 +651,9 @@ public class SpeedTestTask {
             status = future.get(mSocketInterface.getSocketTimeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
             future.cancel(true);
-            executor.shutdownNow();
-            return -1;
+            status = -1;
         } catch (InterruptedException | ExecutionException e) {
-            executor.shutdownNow();
-            return -1;
+            status = -1;
         }
         executor.shutdownNow();
         return status;
@@ -745,8 +744,8 @@ public class SpeedTestTask {
      * Get FTP file size.
      *
      * @param ftpClient ftp client
-     * @param filePath
-     * @return
+     * @param filePath  remote file path
+     * @return file size
      * @throws Exception
      */
     private long getFileSize(final FTPClient ftpClient, final String filePath) throws IOException {

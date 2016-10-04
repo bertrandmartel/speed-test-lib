@@ -140,7 +140,7 @@ public class ChainingRepeatExample {
 
             @Override
             public void onInterruption() {
-
+                //triggered when forceStopTask is called
             }
         });
 

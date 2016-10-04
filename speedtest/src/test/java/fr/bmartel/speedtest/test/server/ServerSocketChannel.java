@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest.test.server;
 
 
@@ -91,7 +92,7 @@ public class ServerSocketChannel implements Runnable, IHttpStream {
 			 */
 
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -112,9 +113,9 @@ public class ServerSocketChannel implements Runnable, IHttpStream {
 
             closeSocket();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -146,13 +147,14 @@ public class ServerSocketChannel implements Runnable, IHttpStream {
 
     @Override
     public int writeHttpFrame(final byte[] data) {
+        int ret = 0;
         try {
             this.mOutputStream.write(data);
             this.mOutputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
-            return -1;
+            ret = -1;
         }
-        return 0;
+        return ret;
     }
 }

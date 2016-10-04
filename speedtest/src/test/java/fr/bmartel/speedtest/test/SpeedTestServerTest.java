@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest.test;
 
 import fr.bmartel.speedtest.*;
@@ -209,6 +210,7 @@ public class SpeedTestServerTest extends AbstractTest {
 
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
+                //called when download is finished
             }
 
             @Override
@@ -219,6 +221,7 @@ public class SpeedTestServerTest extends AbstractTest {
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
+                //called when upload is finished
             }
 
             @Override
