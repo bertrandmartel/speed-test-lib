@@ -46,12 +46,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  *
  * @author Bertrand Martel
  */
-public class SpeedTestServerTest {
-
-    /**
-     * speed test mSocket object.
-     */
-    private SpeedTestSocket mSocket;
+public class SpeedTestServerTest extends AbstractTest {
 
     /**
      * Common waiter for functional test.
@@ -207,8 +202,6 @@ public class SpeedTestServerTest {
     }
 
     private void initSocket() {
-
-        mSocket = new SpeedTestSocket();
 
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 

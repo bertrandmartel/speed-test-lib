@@ -42,12 +42,7 @@ import java.util.concurrent.TimeoutException;
  *
  * @author Bertrand Martel
  */
-public class SpeedTestSocketTest {
-
-    /**
-     * speed test mSocket object.
-     */
-    private SpeedTestSocket mSocket;
+public class SpeedTestSocketTest extends AbstractTest {
 
     /**
      * unit examples message header.
@@ -74,7 +69,6 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void socketTimeoutDefaultTest() {
-        mSocket = new SpeedTestSocket();
         Assert.assertEquals(HEADER + " socket timeout default value should be " + TestCommon.SOCKET_TO_DEFAULT, mSocket
                 .getSocketTimeout(), TestCommon.SOCKET_TO_DEFAULT);
     }
@@ -84,7 +78,6 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void socketTimeoutSetterValidTest() {
-        mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.SOCKET_TO_VALID);
         Assert.assertEquals(HEADER + "socket timeout are not equals", mSocket.getSocketTimeout(), TestCommon
                 .SOCKET_TO_VALID);
@@ -95,7 +88,6 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void socketTimeoutSetterInvalidTest() {
-        mSocket = new SpeedTestSocket();
         Assert.assertNotSame(HEADER + "socket timeout are equals, shouldnt be (-1)", mSocket.getSocketTimeout(),
                 TestCommon.SOCKET_TO_INVALID);
         Assert.assertEquals(HEADER + "socket timeout should be " + TestCommon.SOCKET_TO_DEFAULT, mSocket
@@ -109,7 +101,6 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void uploadChunkSizeDefaultTest() {
-        mSocket = new SpeedTestSocket();
         Assert.assertEquals(HEADER + "chunk size should be 65535 for default value", mSocket.getUploadChunkSize(),
                 TestCommon.UPLOAD_CHUNK_SIZE_DEFAULT);
     }
@@ -119,7 +110,6 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void uploadChunkSizeSetterTest() {
-        mSocket = new SpeedTestSocket();
         mSocket.setUploadChunkSize(TestCommon.UPLOAD_CHUNK_INVALID);
         Assert.assertEquals(HEADER + "chunk size incorrect value after set", mSocket.getUploadChunkSize(),
                 TestCommon.UPLOAD_CHUNK_INVALID);
@@ -130,7 +120,6 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void defaultRoundingModeSetterTest() {
-        mSocket = new SpeedTestSocket();
         mSocket.setDefaultRoundingMode(RoundingMode.HALF_UP);
         Assert.assertEquals(HEADER + "rounding mode incorrect value after set", mSocket.getDefaultRoundingMode(),
                 RoundingMode.HALF_UP);
@@ -141,7 +130,6 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void defaultScaleSetterTest() {
-        mSocket = new SpeedTestSocket();
         mSocket.setDefaultScale(8);
         Assert.assertEquals(HEADER + "scale incorrect value after set", mSocket.getDefaultScale(),
                 8);
@@ -153,7 +141,6 @@ public class SpeedTestSocketTest {
     @Test
     public void speedTestModeTest() throws TimeoutException {
 
-        mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
         Assert.assertEquals(HEADER + "speed test mode value after init", mSocket.getSpeedTestMode(),
                 SpeedTestMode.NONE);
@@ -242,7 +229,6 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void listenerTest() throws NoSuchFieldException, IllegalAccessException {
-        mSocket = new SpeedTestSocket();
 
         final List<ISpeedTestListener> listenerList = new ArrayList<ISpeedTestListener>();
 
@@ -307,7 +293,6 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void socketTest() throws IllegalAccessException, NoSuchFieldException, TimeoutException {
-        mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
@@ -440,7 +425,7 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void downloadReportEmptyTest() {
-        mSocket = new SpeedTestSocket();
+
         final SpeedTestReport report = mSocket.getLiveDownloadReport();
 
         Assert.assertEquals(HEADER + "download report empty - mode incorrect", report.getSpeedTestMode(),
@@ -453,7 +438,7 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void uploadReportEmptyTest() {
-        mSocket = new SpeedTestSocket();
+
         final SpeedTestReport report = mSocket.getLiveUploadReport();
 
         Assert.assertEquals(HEADER + "upload report empty - mode incorrect", report.getSpeedTestMode(),
@@ -467,7 +452,7 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void downloadReportNotEmptyTest() throws TimeoutException {
-        mSocket = new SpeedTestSocket();
+
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
@@ -530,7 +515,7 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void uploadReportNotEmptyTest() throws TimeoutException {
-        mSocket = new SpeedTestSocket();
+
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
@@ -591,7 +576,7 @@ public class SpeedTestSocketTest {
      */
     @Test
     public void progressResultCallbackDownloadTest() throws TimeoutException {
-        mSocket = new SpeedTestSocket();
+
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final Waiter waiter = new Waiter();
@@ -667,7 +652,6 @@ public class SpeedTestSocketTest {
     @Test
     public void progressResultCallbackUploadTest() throws TimeoutException {
 
-        mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final Waiter waiter = new Waiter();
@@ -742,7 +726,6 @@ public class SpeedTestSocketTest {
     @Test
     public void fixDurationTest() throws TimeoutException {
 
-        mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final int packetSizeExpected = TestCommon.FILE_SIZE_LARGE;
@@ -804,7 +787,6 @@ public class SpeedTestSocketTest {
     @Test
     public void fixDurationWithReportIntervalTest() throws TimeoutException {
 
-        mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final int packetSizeExpected = TestCommon.FILE_SIZE_LARGE;
@@ -870,7 +852,6 @@ public class SpeedTestSocketTest {
     @Test
     public void downloadWithReportIntervalTest() throws TimeoutException {
 
-        mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final int packetSizeExpected = TestCommon.FILE_SIZE_REGULAR;
