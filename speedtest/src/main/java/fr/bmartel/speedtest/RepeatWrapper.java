@@ -427,7 +427,7 @@ public class RepeatWrapper {
     /**
      * check if this is the first packet to be downloaded for repeat operation.
      *
-     * @return
+     * @return state for first download
      */
     public boolean isFirstDownload() {
         return mFirstDownloadRepeat && mRepeatDownload;
@@ -436,7 +436,7 @@ public class RepeatWrapper {
     /**
      * check if this is the first packet to be uploaded for repeat operation.
      *
-     * @return
+     * @return state of first upload
      */
     public boolean isFirstUpload() {
         return mFirstUploadRepeat && mRepeatUpload;
@@ -445,7 +445,7 @@ public class RepeatWrapper {
     /**
      * set the first downloaded packet status.
      *
-     * @param state
+     * @param state download repeat status
      */
     public void setFirstDownloadRepeat(final boolean state) {
         mFirstDownloadRepeat = state;
@@ -454,7 +454,7 @@ public class RepeatWrapper {
     /**
      * Set the start date for repeat task.
      *
-     * @param timeStart
+     * @param timeStart start date in millis
      */
     public void setStartDate(final long timeStart) {
         mStartDateRepeat = timeStart;
@@ -463,7 +463,7 @@ public class RepeatWrapper {
     /**
      * check if download repeat task is running.
      *
-     * @return
+     * @return repeat download status
      */
     public boolean isRepeatDownload() {
         return mRepeatDownload;
@@ -472,7 +472,7 @@ public class RepeatWrapper {
     /**
      * update total packet size to be downloaded/uploaded
      *
-     * @param packetSize
+     * @param packetSize packet size in octet
      */
     public void updatePacketSize(final BigDecimal packetSize) {
         mRepeatPacketSize = mRepeatPacketSize.add(packetSize);
@@ -481,7 +481,7 @@ public class RepeatWrapper {
     /**
      * update temporary packet size currently downloaded/uploaded.
      *
-     * @param read
+     * @param read packet size in octet
      */
     public void updateTempPacketSize(final int read) {
         mRepeatTempPckSize += read;
@@ -490,7 +490,7 @@ public class RepeatWrapper {
     /**
      * check if upload repeat task is running.
      *
-     * @return
+     * @return repeat upload status
      */
     public boolean isRepeatUpload() {
         return mRepeatUpload;
@@ -499,7 +499,7 @@ public class RepeatWrapper {
     /**
      * check if repeat task is running.
      *
-     * @return
+     * @return repeat status
      */
     public boolean isRepeat() {
         return mRepeatDownload || mRepeatUpload;
@@ -508,7 +508,7 @@ public class RepeatWrapper {
     /**
      * Set the first uploaded packet status.
      *
-     * @param state
+     * @param state first upload repeat status
      */
     public void setFirstUploadRepeat(final boolean state) {
         mFirstUploadRepeat = state;

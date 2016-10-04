@@ -46,11 +46,6 @@ public class RepeatUploadExample {
     private final static String SPEED_TEST_SERVER_URI_UL = "/";
 
     /**
-     * speed examples server port.
-     */
-    private final static int SPEED_TEST_SERVER_PORT = 80;
-
-    /**
      * logger.
      */
     private final static Logger LOGGER = LogManager.getLogger(RepeatUploadExample.class.getName());

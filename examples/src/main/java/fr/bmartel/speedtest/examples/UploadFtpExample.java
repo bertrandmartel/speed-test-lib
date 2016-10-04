@@ -28,9 +28,6 @@ import fr.bmartel.speedtest.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-
 /**
  * Upload FTP example.
  *
