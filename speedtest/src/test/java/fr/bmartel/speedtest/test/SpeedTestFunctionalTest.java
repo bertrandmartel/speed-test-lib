@@ -47,7 +47,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  *
  * @author Bertrand Martel
  */
-public class SpeedTestFunctionalTest {
+public class SpeedTestFunctionalTest extends AbstractTest {
 
     /**
      * speed examples server host name.
@@ -105,17 +105,12 @@ public class SpeedTestFunctionalTest {
     private BigDecimal mTransferRateBpsRef;
 
     /**
-     * SpeedTtest socket used in all functional tests.
-     */
-    private SpeedTestSocket mSocket;
-
-    /**
      * transfer rate value received in ops.
      */
     private BigDecimal mExpectedTransferRateOps;
 
     /**
-     * transfer rate value reiceved in bps.
+     * transfer rate value received in bps.
      */
     private BigDecimal mExpectedTransferRateBps;
 

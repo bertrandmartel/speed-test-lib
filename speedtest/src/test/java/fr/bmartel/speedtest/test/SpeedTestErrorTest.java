@@ -29,7 +29,6 @@ import fr.bmartel.protocol.http.states.HttpStates;
 import fr.bmartel.speedtest.ISpeedTestListener;
 import fr.bmartel.speedtest.SpeedTestError;
 import fr.bmartel.speedtest.SpeedTestReport;
-import fr.bmartel.speedtest.SpeedTestSocket;
 import net.jodah.concurrentunit.Waiter;
 import org.junit.Test;
 
@@ -45,12 +44,7 @@ import java.util.concurrent.TimeoutException;
  *
  * @author Bertrand Martel
  */
-public class SpeedTestErrorTest {
-
-    /**
-     * SpeedTtest socket used in all functional tests.
-     */
-    private SpeedTestSocket mSocket;
+public class SpeedTestErrorTest extends AbstractTest {
 
     /**
      * error message for testing error callback.
@@ -83,7 +77,7 @@ public class SpeedTestErrorTest {
     @Test
     public void socketConnectionErrorTest() throws TimeoutException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, NoSuchFieldException {
-        mSocket = new SpeedTestSocket();
+
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
         mNoCheckMessage = true;
         final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.CONNECTION_ERROR);
@@ -225,7 +219,6 @@ public class SpeedTestErrorTest {
     public void socketTimeoutErrorTest() throws TimeoutException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, NoSuchFieldException {
 
-        mSocket = new SpeedTestSocket();
         mNoCheckMessage = true;
         final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.SOCKET_TIMEOUT);
 
@@ -239,7 +232,6 @@ public class SpeedTestErrorTest {
     public void httpFrameErrorTest() throws TimeoutException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, NoSuchFieldException {
 
-        mSocket = new SpeedTestSocket();
         mNoCheckMessage = false;
         final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
 
@@ -271,7 +263,6 @@ public class SpeedTestErrorTest {
     public void httpHeaderErrorTest() throws TimeoutException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, NoSuchFieldException {
 
-        mSocket = new SpeedTestSocket();
         mNoCheckMessage = false;
         final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
 
@@ -301,7 +292,7 @@ public class SpeedTestErrorTest {
      */
     @Test
     public void httpContentLengthErrorTest() throws TimeoutException, NoSuchFieldException, IllegalAccessException {
-        mSocket = new SpeedTestSocket();
+
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
         mNoCheckMessage = false;
         final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
@@ -385,7 +376,6 @@ public class SpeedTestErrorTest {
      */
     private void connectionErrorTest(final boolean download, final ConnectionError error) throws TimeoutException {
 
-        mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
         mWaiter = new Waiter();
 

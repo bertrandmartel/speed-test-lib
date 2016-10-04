@@ -26,7 +26,6 @@ package fr.bmartel.speedtest.test;
 import fr.bmartel.speedtest.ISpeedTestListener;
 import fr.bmartel.speedtest.SpeedTestError;
 import fr.bmartel.speedtest.SpeedTestReport;
-import fr.bmartel.speedtest.SpeedTestSocket;
 import net.jodah.concurrentunit.Waiter;
 import org.junit.Test;
 
@@ -38,12 +37,7 @@ import java.util.concurrent.TimeoutException;
  *
  * @author Bertrand Martel
  */
-public class SpeedTestFTPTest {
-
-    /**
-     * speed test mSocket object.
-     */
-    private SpeedTestSocket mSocket;
+public class SpeedTestFTPTest extends AbstractTest {
 
     /**
      * Waiter used for tests.
@@ -58,7 +52,6 @@ public class SpeedTestFTPTest {
     @Test
     public void downloadTest() throws TimeoutException {
 
-        mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final Waiter waiter = new Waiter();
@@ -126,7 +119,6 @@ public class SpeedTestFTPTest {
     @Test
     public void uploadTest() throws TimeoutException {
 
-        mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final Waiter waiter = new Waiter();
@@ -195,7 +187,6 @@ public class SpeedTestFTPTest {
     @Test
     public void downloadWithReportIntervalTest() throws TimeoutException {
 
-        mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final int requestInterval = 500;
@@ -261,6 +252,7 @@ public class SpeedTestFTPTest {
      * @param requestInterval
      */
     private void checkReportIntervalValue(final int requestInterval) {
+
         final long currentTimestamp = System.currentTimeMillis();
         if (mTimestamp > 0) {
             final long diff = currentTimestamp - mTimestamp;
@@ -276,7 +268,6 @@ public class SpeedTestFTPTest {
     @Test
     public void fixDurationTest() throws TimeoutException {
 
-        mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final int packetSizeExpected = 50000000;
@@ -338,7 +329,6 @@ public class SpeedTestFTPTest {
     @Test
     public void fixDurationWithReportIntervalTest() throws TimeoutException {
 
-        mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final int packetSizeExpected = 50000000;

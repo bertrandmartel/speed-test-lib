@@ -42,12 +42,7 @@ import java.util.concurrent.TimeoutException;
  *
  * @author Bertrand Martel
  */
-public class SpeedTestRepeatTest {
-
-    /**
-     * speed test socket object.
-     */
-    private SpeedTestSocket mSocket;
+public class SpeedTestRepeatTest  extends AbstractTest {
 
     /**
      * Waiter for speed test listener callback.
@@ -84,7 +79,6 @@ public class SpeedTestRepeatTest {
     private void repeatTest(final boolean download, final boolean http) throws TimeoutException, IllegalAccessException,
             NoSuchFieldException {
 
-        mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final RepeatVars repeatVars = new RepeatVars(mSocket);
@@ -385,7 +379,6 @@ public class SpeedTestRepeatTest {
     public void initRepeatTest() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException,
             NoSuchFieldException {
 
-        mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final RepeatVars repeatVars = new RepeatVars(mSocket);
@@ -435,7 +428,6 @@ public class SpeedTestRepeatTest {
     public void clearRepeatTaskTest() throws NoSuchMethodException, InvocationTargetException,
             IllegalAccessException, NoSuchFieldException {
 
-        mSocket = new SpeedTestSocket();
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final List<ISpeedTestListener> listenerList = new ArrayList<>();
