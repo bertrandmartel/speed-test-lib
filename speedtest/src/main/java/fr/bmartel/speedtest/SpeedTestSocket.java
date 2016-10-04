@@ -82,12 +82,6 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     private final SpeedTestTask mTask = new SpeedTestTask(this, mListenerList);
 
     /**
-     * Build SpeedTest instance.
-     */
-    public SpeedTestSocket() {
-    }
-
-    /**
      * initialize report task.
      *
      * @param reportInterval report interval in milliseconds
