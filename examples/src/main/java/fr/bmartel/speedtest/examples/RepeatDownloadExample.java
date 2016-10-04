@@ -125,7 +125,7 @@ public class RepeatDownloadExample {
             }
         });
 
-        speedTestSocket.startDownloadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL,
+        speedTestSocket.startDownloadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_URI_DL,
                 SPEED_TEST_DURATION, REPORT_INTERVAL, new
                         IRepeatListener() {
                             @Override

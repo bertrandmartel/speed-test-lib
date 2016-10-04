@@ -58,9 +58,6 @@ public class UploadFtpExample {
      */
     private final static Logger LOGGER = LogManager.getLogger(UploadFtpExample.class.getName());
 
-
-    private static SecureRandom random = new SecureRandom();
-
     /**
      * Download file example main.
      *
@@ -127,11 +124,7 @@ public class UploadFtpExample {
             }
         });
 
-        final String fileName = generateFileName() + ".txt";
+        final String fileName = SpeedTestUtils.generateFileName() + ".txt";
         speedTestSocket.startFtpUpload(FTP_SERVER_HOST, "/upload/" + fileName, FTP_FILE_SIZE);
-    }
-
-    private static String generateFileName() {
-        return new BigInteger(130, random).toString(32);
     }
 }
