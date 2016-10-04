@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package fr.bmartel.speedtest.examples;
 
 import fr.bmartel.speedtest.*;
@@ -121,7 +122,7 @@ public class DownloadFtpExample {
 
             @Override
             public void onInterruption() {
-
+                //triggered when forceStopTask is called
             }
         });
 
