@@ -130,7 +130,7 @@ public class RepeatUploadExample {
             }
         });
 
-        speedTestSocket.startUploadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
+        speedTestSocket.startUploadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_URI_UL,
                 SPEED_TEST_DURATION, REPORT_INTERVAL, FILE_SIZE, new
                         IRepeatListener() {
                             @Override

@@ -51,11 +51,6 @@ public class DownloadFtpExample {
     public final static String FTP_SERVER_URI = "/1MB.zip";
 
     /**
-     * file size in octet.
-     */
-    public final static int FTP_FILE_SIZE = 1048576;
-
-    /**
      * logger.
      */
     private final static Logger LOGGER = LogManager.getLogger(DownloadFtpExample.class.getName());
@@ -126,6 +121,6 @@ public class DownloadFtpExample {
             }
         });
 
-        speedTestSocket.startFtpDownload(FTP_SERVER_HOST, FTP_SERVER_URI, FTP_FILE_SIZE);
+        speedTestSocket.startFtpDownload(FTP_SERVER_HOST, FTP_SERVER_URI);
     }
 }
