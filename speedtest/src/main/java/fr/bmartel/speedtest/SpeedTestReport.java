@@ -24,6 +24,8 @@
 
 package fr.bmartel.speedtest;
 
+import fr.bmartel.speedtest.model.SpeedTestMode;
+
 import java.math.BigDecimal;
 
 /**

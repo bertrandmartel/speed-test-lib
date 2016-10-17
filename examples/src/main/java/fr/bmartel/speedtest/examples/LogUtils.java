@@ -24,7 +24,7 @@
 
 package fr.bmartel.speedtest.examples;
 
-import fr.bmartel.speedtest.SpeedTestMode;
+import fr.bmartel.speedtest.model.SpeedTestMode;
 import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.SpeedTestSocket;
 

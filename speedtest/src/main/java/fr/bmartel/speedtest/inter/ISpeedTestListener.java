@@ -22,7 +22,10 @@
  * THE SOFTWARE.
  */
 
-package fr.bmartel.speedtest;
+package fr.bmartel.speedtest.inter;
+
+import fr.bmartel.speedtest.SpeedTestReport;
+import fr.bmartel.speedtest.model.SpeedTestError;
 
 /**
  * Listener for speed examples output results.
