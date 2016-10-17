@@ -24,6 +24,8 @@
 
 package fr.bmartel.speedtest;
 
+import fr.bmartel.speedtest.model.UploadStorageType;
+
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,11 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      * BigDecimal RoundingMode used in transfer rate calculation.
      */
     private RoundingMode mRoundingMode = SpeedTestConst.DEFAULT_ROUNDING_MODE;
+
+    /**
+     * Upload storage type.
+     */
+    private UploadStorageType mUploadStorageType = UploadStorageType.RAM_STORAGE;
 
     /**
      * speed test listener list.
@@ -762,6 +769,16 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     @Override
     public int getDefaultScale() {
         return mScale;
+    }
+
+    @Override
+    public UploadStorageType getUploadStorageType() {
+        return mUploadStorageType;
+    }
+
+    @Override
+    public void setUploadStorageType(final UploadStorageType uploadStorageType) {
+        mUploadStorageType = uploadStorageType;
     }
 
     /**

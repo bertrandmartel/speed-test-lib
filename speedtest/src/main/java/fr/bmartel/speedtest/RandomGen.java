@@ -24,70 +24,78 @@
 
 package fr.bmartel.speedtest;
 
-import java.util.Arrays;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Random;
 
 /**
- * Generate Random byte array for randomly generated uploaded file.
+ * Generate Random byte array, file for randomly generated uploaded file.
  *
  * @author Bertrand Martel
  */
 public class RandomGen {
 
     /**
-     * list of incremented byte.
-     */
-    private static final byte[] SYMBOLS;
-
-    /**
-     * number of incremented byte.
-     */
-    private static final int SYMBOLS_LENGTH = 255;
-
-    /**
-     * minimum length required for random byte array.
-     */
-    private static final int MINIMUM_LENGTH = 1;
-
-    static {
-        SYMBOLS = new byte[SYMBOLS_LENGTH];
-        for (int i = 0; i < SYMBOLS_LENGTH; i++) {
-            SYMBOLS[i] = (byte) i;
-        }
-    }
-
-    /**
-     * random object.
+     * Random object.
      */
     private final Random mRandom = new Random();
 
     /**
-     * buffer used to retrieve random values.
-     */
-    private final byte[] mBuf;
-
-    /**
-     * Build Random generator object with specify file length.
+     * Generate random byte array.
      *
-     * @param length file length to generate
+     * @param length number of bytes to be generated
+     * @return random byte array
      */
-    public RandomGen(final int length) {
-        if (length < MINIMUM_LENGTH) {
-            throw new IllegalArgumentException("length < " + MINIMUM_LENGTH + ": " + length);
+    public byte[] generateRandomArray(final int length) {
+
+        final byte[] buffer = new byte[length];
+
+        final int iter = length / SpeedTestConst.UPLOAD_FILE_WRITE_CHUNK;
+        final int remain = length % SpeedTestConst.UPLOAD_FILE_WRITE_CHUNK;
+
+        for (int i = 0; i < iter; i++) {
+            final byte[] random = new byte[SpeedTestConst.UPLOAD_FILE_WRITE_CHUNK];
+            mRandom.nextBytes(random);
+            System.arraycopy(random, 0, buffer, i * SpeedTestConst.UPLOAD_FILE_WRITE_CHUNK, SpeedTestConst
+                    .UPLOAD_FILE_WRITE_CHUNK);
         }
-        mBuf = new byte[length];
+        if (remain > 0) {
+            final byte[] random = new byte[remain];
+            mRandom.nextBytes(random);
+            System.arraycopy(random, 0, buffer, iter * SpeedTestConst.UPLOAD_FILE_WRITE_CHUNK, remain);
+        }
+        return buffer;
     }
 
     /**
-     * generate mRandom byte array.
+     * generate random file.
      *
-     * @return byte array
+     * @param length number of bytes to be generated
+     * @return file with random content
      */
-    public byte[] nextArray() {
-        for (int idx = 0; idx < mBuf.length; ++idx) {
-            final int val = mRandom.nextInt(SYMBOLS_LENGTH);
-            mBuf[idx] = SYMBOLS[val];
+    public RandomAccessFile generateRandomFile(final int length) throws IOException {
+
+        final File temp = File.createTempFile(SpeedTestConst.UPLOAD_TEMP_FILE_NAME,
+                SpeedTestConst.UPLOAD_TEMP_FILE_EXTENSION);
+
+        final RandomAccessFile randomFile = new RandomAccessFile(temp.getAbsolutePath(), "rw");
+        randomFile.setLength(length);
+
+        final int iter = length / SpeedTestConst.UPLOAD_FILE_WRITE_CHUNK;
+        final int remain = length % SpeedTestConst.UPLOAD_FILE_WRITE_CHUNK;
+
+        for (int i = 0; i < iter; i++) {
+            final byte[] random = new byte[SpeedTestConst.UPLOAD_FILE_WRITE_CHUNK];
+            mRandom.nextBytes(random);
+            randomFile.write(random);
         }
-        return Arrays.copyOf(mBuf, mBuf.length);
+        if (remain > 0) {
+            final byte[] random = new byte[remain];
+            mRandom.nextBytes(random);
+            randomFile.write(random);
+        }
+
+        return randomFile;
     }
 }
