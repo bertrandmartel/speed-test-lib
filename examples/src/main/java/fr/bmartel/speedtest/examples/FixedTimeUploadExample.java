@@ -24,15 +24,9 @@
 
 package fr.bmartel.speedtest.examples;
 
-import fr.bmartel.speedtest.ISpeedTestListener;
-import fr.bmartel.speedtest.SpeedTestError;
-import fr.bmartel.speedtest.SpeedTestReport;
-import fr.bmartel.speedtest.SpeedTestSocket;
+import fr.bmartel.speedtest.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Begin to upload a file from server & stop uploading when test duration is elapsed.
@@ -83,9 +77,9 @@ public class FixedTimeUploadExample {
      */
     public static void main(final String[] args) {
 
-        final Timer timer = new Timer();
-
         final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
+
+        //speedTestSocket.setUploadStorageType(UploadStorageType.FILE_STORAGE);
 
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
@@ -100,15 +94,14 @@ public class FixedTimeUploadExample {
                 if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(errorMessage);
                 }
-                if (timer != null) {
-                    timer.purge();
-                    timer.cancel();
-                }
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
+                LogUtils.logFinishedTask(SpeedTestMode.UPLOAD, report.getTotalPacketSize(),
+                        report.getTransferRateBit(),
+                        report.getTransferRateOctet(), LOGGER);
             }
 
             @Override
@@ -116,11 +109,6 @@ public class FixedTimeUploadExample {
 
                 if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(errorMessage);
-                }
-
-                if (timer != null) {
-                    timer.purge();
-                    timer.cancel();
                 }
             }
 
@@ -132,46 +120,15 @@ public class FixedTimeUploadExample {
             @Override
             public void onUploadProgress(final float percent, final SpeedTestReport uploadReport) {
                 //notify upload progress
+                LogUtils.logSpeedTestReport(uploadReport, LOGGER);
             }
 
             @Override
             public void onInterruption() {
-                if (timer != null) {
-                    timer.purge();
-                    timer.cancel();
-                }
             }
         });
 
-        final TimerTask task = new TimerTask() {
-
-            @Override
-            public void run() {
-
-                LogUtils.logReport(speedTestSocket, LOGGER);
-            }
-        };
-
-        timer.scheduleAtFixedRate(task, 0, REPORT_INTERVAL);
-
-        final TimerTask stopTask = new TimerTask() {
-
-            @Override
-            public void run() {
-
-                LogUtils.logReport(speedTestSocket, LOGGER);
-
-                speedTestSocket.forceStopTask();
-
-                if (timer != null) {
-                    timer.cancel();
-                    timer.purge();
-                }
-            }
-        };
-
-        timer.schedule(stopTask, SPEED_TEST_DURATION);
-        speedTestSocket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
-                FILE_SIZE);
+        speedTestSocket.startFixedUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
+                FILE_SIZE, SPEED_TEST_DURATION, REPORT_INTERVAL);
     }
 }
