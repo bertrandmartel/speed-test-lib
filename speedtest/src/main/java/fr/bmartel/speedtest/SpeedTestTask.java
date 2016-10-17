@@ -26,6 +26,7 @@ package fr.bmartel.speedtest;
 
 import fr.bmartel.protocol.http.HttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;
+import fr.bmartel.speedtest.model.UploadStorageType;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -33,12 +34,12 @@ import org.apache.commons.net.ftp.FTPFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -227,24 +228,34 @@ public class SpeedTestTask {
         mForceCloseSocket = false;
         mErrorDispatched = false;
 
-        /* generate a file with size of fileSizeOctet octet */
-        final byte[] body = new RandomGen(fileSizeOctet).nextArray();
-
-        final String head = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + hostname + "\r\nAccept: " +
-                "*/*\r\nContent-Length: " + fileSizeOctet + "\r\n\r\n";
-
         connectAndExecuteTask(new Runnable() {
             @Override
             public void run() {
                 if (mSocket != null && !mSocket.isClosed()) {
+
                     try {
+
+                        byte[] body = new byte[]{};
+                        RandomAccessFile uploadFile = null;
+                        final RandomGen randomGen = new RandomGen();
+
+                        if (mSocketInterface.getUploadStorageType() == UploadStorageType.RAM_STORAGE) {
+                            /* generate a file with size of fileSizeOctet octet */
+                            body = randomGen.generateRandomArray(fileSizeOctet);
+                        } else {
+                            uploadFile = randomGen.generateRandomFile(fileSizeOctet);
+                            uploadFile.seek(0);
+                        }
+
+                        final String head = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + hostname + "\r\nAccept: " +
+                                "*/*\r\nContent-Length: " + fileSizeOctet + "\r\n\r\n";
 
                         mUploadTempFileSize = 0;
 
                         final int uploadChunkSize = mSocketInterface.getUploadChunkSize();
 
-                        final int step = body.length / uploadChunkSize;
-                        final int remain = body.length % uploadChunkSize;
+                        final int step = fileSizeOctet / uploadChunkSize;
+                        final int remain = fileSizeOctet % uploadChunkSize;
 
                         if (mSocket.getOutputStream() != null) {
 
@@ -266,9 +277,14 @@ public class SpeedTestTask {
 
                             for (int i = 0; i < step; i++) {
 
-                                if (writeFlushSocket(Arrays.copyOfRange(body, mUploadTempFileSize,
-                                        mUploadTempFileSize +
-                                                uploadChunkSize)) != 0) {
+                                final byte[] chunk = SpeedTestUtils.readUploadData(mSocketInterface
+                                                .getUploadStorageType(),
+                                        body,
+                                        uploadFile,
+                                        mUploadTempFileSize,
+                                        uploadChunkSize);
+
+                                if (writeFlushSocket(chunk) != 0) {
                                     throw new SocketTimeoutException();
                                 }
 
@@ -286,9 +302,14 @@ public class SpeedTestTask {
                                     }
                                 }
                             }
-                            if (remain != 0 && writeFlushSocket(Arrays.copyOfRange(body, mUploadTempFileSize,
-                                    mUploadTempFileSize +
-                                            remain)) != 0) {
+
+                            final byte[] chunk = SpeedTestUtils.readUploadData(mSocketInterface.getUploadStorageType(),
+                                    body,
+                                    uploadFile,
+                                    mUploadTempFileSize,
+                                    remain);
+
+                            if (remain != 0 && writeFlushSocket(chunk) != 0) {
                                 throw new SocketTimeoutException();
                             } else {
                                 mUploadTempFileSize += remain;
@@ -915,8 +936,17 @@ public class SpeedTestTask {
                     ftpClient.enterLocalPassiveMode();
                     ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
-                    /* generate a file with size of fileSizeOctet octet */
-                    final byte[] fileContent = new RandomGen(fileSizeOctet).nextArray();
+                    byte[] fileContent = new byte[]{};
+                    RandomAccessFile uploadFile = null;
+                    final RandomGen randomGen = new RandomGen();
+
+                    if (mSocketInterface.getUploadStorageType() == UploadStorageType.RAM_STORAGE) {
+                        /* generate a file with size of fileSizeOctet octet */
+                        fileContent = randomGen.generateRandomArray(fileSizeOctet);
+                    } else {
+                        uploadFile = randomGen.generateRandomFile(fileSizeOctet);
+                        uploadFile.seek(0);
+                    }
 
                     mFtpOutputstream = ftpClient.storeFileStream(uri);
 
@@ -926,8 +956,8 @@ public class SpeedTestTask {
 
                         final int uploadChunkSize = mSocketInterface.getUploadChunkSize();
 
-                        final int step = fileContent.length / uploadChunkSize;
-                        final int remain = fileContent.length % uploadChunkSize;
+                        final int step = fileSizeOctet / uploadChunkSize;
+                        final int remain = fileSizeOctet % uploadChunkSize;
 
                         mTimeStart = System.currentTimeMillis();
                         mTimeEnd = 0;
@@ -946,9 +976,15 @@ public class SpeedTestTask {
                         } else {
                             for (int i = 0; i < step; i++) {
 
-                                mFtpOutputstream.write(Arrays.copyOfRange(fileContent, mUploadTempFileSize,
-                                        mUploadTempFileSize +
-                                                uploadChunkSize), 0, uploadChunkSize);
+
+                                final byte[] chunk = SpeedTestUtils.readUploadData(mSocketInterface
+                                                .getUploadStorageType(),
+                                        fileContent,
+                                        uploadFile,
+                                        mUploadTempFileSize,
+                                        uploadChunkSize);
+
+                                mFtpOutputstream.write(chunk, 0, uploadChunkSize);
 
                                 mUploadTempFileSize += uploadChunkSize;
 
@@ -968,9 +1004,14 @@ public class SpeedTestTask {
 
                             if (remain != 0) {
 
-                                mFtpOutputstream.write(Arrays.copyOfRange(fileContent, mUploadTempFileSize,
-                                        mUploadTempFileSize +
-                                                remain), 0, remain);
+                                final byte[] chunk = SpeedTestUtils.readUploadData(mSocketInterface
+                                                .getUploadStorageType(),
+                                        fileContent,
+                                        uploadFile,
+                                        mUploadTempFileSize,
+                                        remain);
+
+                                mFtpOutputstream.write(chunk, 0, remain);
 
                                 mUploadTempFileSize += remain;
 

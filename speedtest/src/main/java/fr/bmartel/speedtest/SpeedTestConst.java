@@ -118,4 +118,19 @@ public class SpeedTestConst {
      * default password for FTP download/upload.
      */
     public static final String FTP_DEFAULT_PASSWORD = "";
+
+    /**
+     * Chunk to write at each iteration for upload file generation.
+     */
+    public static final int UPLOAD_FILE_WRITE_CHUNK = 64000;
+
+    /**
+     * Temporary file name for upload file.
+     */
+    public static final String UPLOAD_TEMP_FILE_NAME = "speed-test-random";
+
+    /**
+     * Temporary file extension.
+     */
+    public static final String UPLOAD_TEMP_FILE_EXTENSION = ".tmp";
 }
