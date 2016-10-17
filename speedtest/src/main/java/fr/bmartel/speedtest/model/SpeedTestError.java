@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package fr.bmartel.speedtest;
+package fr.bmartel.speedtest.model;
 
 /**
  * Feature Speed Test common Error code.

@@ -22,26 +22,24 @@
  * THE SOFTWARE.
  */
 
-package fr.bmartel.speedtest;
+package fr.bmartel.speedtest.model;
 
 /**
- * Listener for download repeat completion task + reports.
+ * Speed examples mode.
  *
  * @author Bertrand Martel
  */
-public interface IRepeatListener {
-
+public enum SpeedTestMode {
     /**
-     * called when repeat download task is finished.
-     *
-     * @param report speed examples report
+     * no examples.
      */
-    void onFinish(SpeedTestReport report);
-
+    NONE,
     /**
-     * called when a speed examples report is sent.
-     *
-     * @param report speed examples report
+     * download examples.
      */
-    void onReport(SpeedTestReport report);
+    DOWNLOAD,
+    /**
+     * upload examples.
+     */
+    UPLOAD
 }

@@ -25,6 +25,9 @@
 package fr.bmartel.speedtest.examples;
 
 import fr.bmartel.speedtest.*;
+import fr.bmartel.speedtest.inter.ISpeedTestListener;
+import fr.bmartel.speedtest.model.SpeedTestError;
+import fr.bmartel.speedtest.model.SpeedTestMode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
