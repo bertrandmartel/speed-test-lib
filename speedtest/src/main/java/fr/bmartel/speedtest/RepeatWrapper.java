@@ -24,6 +24,12 @@
 
 package fr.bmartel.speedtest;
 
+import fr.bmartel.speedtest.inter.IRepeatListener;
+import fr.bmartel.speedtest.inter.ISpeedTestListener;
+import fr.bmartel.speedtest.inter.ISpeedTestSocket;
+import fr.bmartel.speedtest.model.SpeedTestError;
+import fr.bmartel.speedtest.model.SpeedTestMode;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;

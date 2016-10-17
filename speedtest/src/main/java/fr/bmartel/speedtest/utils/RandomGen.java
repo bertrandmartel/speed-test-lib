@@ -22,7 +22,9 @@
  * THE SOFTWARE.
  */
 
-package fr.bmartel.speedtest;
+package fr.bmartel.speedtest.utils;
+
+import fr.bmartel.speedtest.SpeedTestConst;
 
 import java.io.File;
 import java.io.IOException;

@@ -24,6 +24,10 @@
 
 package fr.bmartel.speedtest;
 
+import fr.bmartel.speedtest.inter.IRepeatListener;
+import fr.bmartel.speedtest.inter.ISpeedTestListener;
+import fr.bmartel.speedtest.inter.ISpeedTestSocket;
+import fr.bmartel.speedtest.model.SpeedTestMode;
 import fr.bmartel.speedtest.model.UploadStorageType;
 
 import java.math.RoundingMode;
