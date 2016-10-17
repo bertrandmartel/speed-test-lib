@@ -24,15 +24,10 @@
 
 package fr.bmartel.speedtest.examples;
 
-import fr.bmartel.speedtest.ISpeedTestListener;
-import fr.bmartel.speedtest.SpeedTestError;
-import fr.bmartel.speedtest.SpeedTestReport;
-import fr.bmartel.speedtest.SpeedTestSocket;
+import fr.bmartel.speedtest.*;
+import fr.bmartel.speedtest.model.UploadStorageType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Begin to download a file from server & stop downloading when test duration is elapsed.
@@ -78,15 +73,18 @@ public class FixedTimeDownloadExample {
      */
     public static void main(final String[] args) {
 
-        final Timer timer = new Timer();
-
         final SpeedTestSocket speedTestSocket = new SpeedTestSocket();
+
+        //speedTestSocket.setUploadStorageType(UploadStorageType.FILE_STORAGE);
 
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
                 //called when download is finished
+                LogUtils.logFinishedTask(SpeedTestMode.DOWNLOAD, report.getTotalPacketSize(),
+                        report.getTransferRateBit(),
+                        report.getTransferRateOctet(), LOGGER);
             }
 
             @Override
@@ -94,10 +92,6 @@ public class FixedTimeDownloadExample {
 
                 if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(errorMessage);
-                }
-                if (timer != null) {
-                    timer.purge();
-                    timer.cancel();
                 }
             }
 
@@ -112,16 +106,12 @@ public class FixedTimeDownloadExample {
                 if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(errorMessage);
                 }
-
-                if (timer != null) {
-                    timer.purge();
-                    timer.cancel();
-                }
             }
 
             @Override
             public void onDownloadProgress(final float percent, final SpeedTestReport downloadReport) {
                 //notify download progress
+                LogUtils.logSpeedTestReport(downloadReport, LOGGER);
             }
 
             @Override
@@ -131,41 +121,10 @@ public class FixedTimeDownloadExample {
 
             @Override
             public void onInterruption() {
-                if (timer != null) {
-                    timer.purge();
-                    timer.cancel();
-                }
             }
         });
 
-        final TimerTask task = new TimerTask() {
-
-            @Override
-            public void run() {
-
-                LogUtils.logReport(speedTestSocket, LOGGER);
-            }
-        };
-
-        timer.scheduleAtFixedRate(task, 0, REPORT_INTERVAL);
-
-        final TimerTask stopTask = new TimerTask() {
-
-            @Override
-            public void run() {
-
-                LogUtils.logReport(speedTestSocket, LOGGER);
-
-                speedTestSocket.forceStopTask();
-
-                if (timer != null) {
-                    timer.cancel();
-                    timer.purge();
-                }
-            }
-        };
-
-        timer.schedule(stopTask, SPEED_TEST_DURATION);
-        speedTestSocket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL);
+        speedTestSocket.startFixedDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL,
+                SPEED_TEST_DURATION, REPORT_INTERVAL);
     }
 }
