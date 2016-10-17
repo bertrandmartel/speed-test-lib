@@ -68,6 +68,8 @@ public class UploadFtpExample {
         //set timeout for download
         speedTestSocket.setSocketTimeout(SOCKET_TIMEOUT);
 
+        //speedTestSocket.setUploadStorageType(UploadStorageType.FILE_STORAGE);
+
         // add a listener to wait for speed examples completion and progress
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
