@@ -24,6 +24,8 @@
 
 package fr.bmartel.speedtest;
 
+import fr.bmartel.speedtest.model.UploadStorageType;
+
 import java.math.RoundingMode;
 
 /**
@@ -131,4 +133,18 @@ public interface ISpeedTestSocket {
      * @return mScale value
      */
     int getDefaultScale();
+
+    /**
+     * retrieve storage type used for uploaded data.
+     *
+     * @return storage type
+     */
+    UploadStorageType getUploadStorageType();
+
+    /**
+     * Set upload storage type.
+     *
+     * @param uploadStorageType upload storage type
+     */
+    void setUploadStorageType(UploadStorageType uploadStorageType);
 }

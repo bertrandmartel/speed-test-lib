@@ -26,9 +26,13 @@ package fr.bmartel.speedtest;
 
 import fr.bmartel.protocol.http.HttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;
+import fr.bmartel.speedtest.model.UploadStorageType;
 
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -79,6 +83,33 @@ public class SpeedTestUtils {
             for (int i = 0; i < listenerList.size(); i++) {
                 listenerList.get(i).onInterruption();
             }
+        }
+    }
+
+    /**
+     * Read data from RAM of FILE storage for upload task.
+     *
+     * @param storageType        RAM or FILE storage
+     * @param body               full upload body for RAM storage case
+     * @param uploadFile         file pointer to upload for FILE storage case
+     * @param uploadTempFileSize temporary file size (offset)
+     * @param chunkSize          chunk size to read
+     * @return byte array to flush
+     */
+    public static byte[] readUploadData(final UploadStorageType storageType,
+                                        final byte[] body,
+                                        final RandomAccessFile uploadFile,
+                                        final int uploadTempFileSize,
+                                        final int chunkSize) throws IOException {
+
+        if (storageType == UploadStorageType.RAM_STORAGE) {
+            return Arrays.copyOfRange(body, uploadTempFileSize,
+                    uploadTempFileSize + chunkSize);
+        } else {
+            final byte[] chunk = new byte[chunkSize];
+            uploadFile.seek(uploadTempFileSize);
+            uploadFile.read(chunk);
+            return chunk;
         }
     }
 
