@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package fr.bmartel.speedtest.test;
+package fr.bmartel.speedtest.test.utils;
 
 /**
  * Test utils class for unit examples.

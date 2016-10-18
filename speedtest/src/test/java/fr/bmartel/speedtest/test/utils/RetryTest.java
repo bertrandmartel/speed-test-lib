@@ -1,4 +1,4 @@
-package fr.bmartel.speedtest.test;
+package fr.bmartel.speedtest.test.utils;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;

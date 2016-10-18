@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 
-package fr.bmartel.speedtest.test;
+package fr.bmartel.speedtest.test.utils;
 
-import fr.bmartel.speedtest.ISpeedTestListener;
+import fr.bmartel.speedtest.inter.ISpeedTestListener;
 import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.SpeedTestSocket;
 import fr.bmartel.speedtest.SpeedTestTask;
