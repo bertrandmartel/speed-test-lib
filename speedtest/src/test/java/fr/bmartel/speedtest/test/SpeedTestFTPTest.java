@@ -24,9 +24,10 @@
 
 package fr.bmartel.speedtest.test;
 
+import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.inter.ISpeedTestListener;
 import fr.bmartel.speedtest.model.SpeedTestError;
-import fr.bmartel.speedtest.SpeedTestReport;
+import fr.bmartel.speedtest.model.UploadStorageType;
 import fr.bmartel.speedtest.test.utils.SpeedTestUtils;
 import fr.bmartel.speedtest.test.utils.TestCommon;
 import net.jodah.concurrentunit.Waiter;
@@ -51,6 +52,12 @@ public class SpeedTestFTPTest extends AbstractTest {
      * timestamp used to measure time interval.
      */
     private long mTimestamp;
+
+    @Test
+    public void uploadTest() throws TimeoutException {
+        uploadFTP(false);
+        uploadFTP(true);
+    }
 
     @Test
     public void downloadTest() throws TimeoutException {
@@ -119,10 +126,13 @@ public class SpeedTestFTPTest extends AbstractTest {
         mSocket.clearListeners();
     }
 
-    @Test
-    public void uploadTest() throws TimeoutException {
+    public void uploadFTP(final boolean useFileStorage) throws TimeoutException {
 
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
+
+        if (useFileStorage) {
+            mSocket.setUploadStorageType(UploadStorageType.FILE_STORAGE);
+        }
 
         final Waiter waiter = new Waiter();
         final Waiter waiter2 = new Waiter();

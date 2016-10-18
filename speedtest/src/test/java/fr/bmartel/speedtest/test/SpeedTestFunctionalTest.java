@@ -33,6 +33,7 @@ import fr.bmartel.speedtest.*;
 import fr.bmartel.speedtest.inter.IRepeatListener;
 import fr.bmartel.speedtest.inter.ISpeedTestListener;
 import fr.bmartel.speedtest.model.SpeedTestError;
+import fr.bmartel.speedtest.model.UploadStorageType;
 import fr.bmartel.speedtest.test.server.HttpServer;
 import fr.bmartel.speedtest.test.server.IHttpServerEventListener;
 import fr.bmartel.speedtest.test.server.IHttpStream;
@@ -252,8 +253,11 @@ public class SpeedTestFunctionalTest extends AbstractTest {
             }
         });
 
-        testUpload(1000000);
-        testUpload(10000000);
+        testUpload(1000000, true);
+        testUpload(10000000, true);
+
+        testUpload(1000000, false);
+        testUpload(10000000, false);
 
         stopServer();
 
@@ -343,9 +347,13 @@ public class SpeedTestFunctionalTest extends AbstractTest {
      *
      * @param size
      */
-    private void testUpload(final int size) throws TimeoutException {
+    private void testUpload(final int size, final boolean useFileStorage) throws TimeoutException {
 
         mWaiter = new Waiter();
+
+        if (useFileStorage) {
+            mSocket.setUploadStorageType(UploadStorageType.FILE_STORAGE);
+        }
 
         mSocket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL, size);
 
