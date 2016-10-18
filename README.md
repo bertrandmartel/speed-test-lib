@@ -15,6 +15,7 @@ Speed Test client library for Java/Android with HTTP & FTP support
 * download / upload progress monitoring
 * configurable hostname / port / uri (username & password for FTP)
 * configurable socket timeout and chunk size
+* configure upload file storage
 
 Check a [non-exhaustive list](./server_list.md) of compatible speed test server.
 
@@ -23,7 +24,7 @@ Check a [non-exhaustive list](./server_list.md) of compatible speed test server.
 * with Gradle, from jcenter or mavenCentral :
 
 ```
-compile 'com.github.akinaru:speedtest:1.21'
+compile 'com.github.akinaru:speedtest:1.23'
 ```
 
 ## Usage
