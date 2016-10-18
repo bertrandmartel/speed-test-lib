@@ -24,7 +24,8 @@
 
 package fr.bmartel.speedtest.test;
 
-import fr.bmartel.speedtest.RandomGen;
+import fr.bmartel.speedtest.test.utils.TestUtils;
+import fr.bmartel.speedtest.utils.RandomGen;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -50,12 +51,10 @@ public class RandomGenTest {
      */
     @Test
     public void randomGenTest() {
-
         for (int i = 0; i < SIZES.length; i++) {
-            final RandomGen random = new RandomGen(SIZES[i]);
-            final int length = random.nextArray().length;
+            final RandomGen random = new RandomGen();
+            final int length = random.generateRandomArray(SIZES[i]).length;
             Assert.assertEquals(HEADER + "random generated array are not equals", length, SIZES[i]);
         }
-
     }
 }

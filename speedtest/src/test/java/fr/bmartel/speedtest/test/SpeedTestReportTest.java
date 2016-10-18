@@ -24,8 +24,9 @@
 
 package fr.bmartel.speedtest.test;
 
-import fr.bmartel.speedtest.SpeedTestMode;
+import fr.bmartel.speedtest.model.SpeedTestMode;
 import fr.bmartel.speedtest.SpeedTestReport;
+import fr.bmartel.speedtest.test.utils.TestUtils;
 import org.junit.Assert;
 import org.junit.Test;
 

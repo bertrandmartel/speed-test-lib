@@ -27,9 +27,12 @@ package fr.bmartel.speedtest.test;
 import fr.bmartel.protocol.http.HttpFrame;
 import fr.bmartel.protocol.http.constants.HttpHeader;
 import fr.bmartel.protocol.http.states.HttpStates;
-import fr.bmartel.speedtest.ISpeedTestListener;
-import fr.bmartel.speedtest.SpeedTestError;
+import fr.bmartel.speedtest.inter.ISpeedTestListener;
+import fr.bmartel.speedtest.model.SpeedTestError;
 import fr.bmartel.speedtest.SpeedTestReport;
+import fr.bmartel.speedtest.test.model.ConnectionError;
+import fr.bmartel.speedtest.test.utils.SpeedTestUtils;
+import fr.bmartel.speedtest.test.utils.TestCommon;
 import net.jodah.concurrentunit.Waiter;
 import org.junit.Test;
 
@@ -170,9 +173,9 @@ public class SpeedTestErrorTest extends AbstractTest {
         mDownload = true;
 
         if (dispatchError) {
-            fr.bmartel.speedtest.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
+            fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
         } else {
-            fr.bmartel.speedtest.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
+            fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
                     errorMessage);
         }
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
@@ -180,9 +183,9 @@ public class SpeedTestErrorTest extends AbstractTest {
         mDownload = false;
 
         if (dispatchError) {
-            fr.bmartel.speedtest.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
+            fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
         } else {
-            fr.bmartel.speedtest.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
+            fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
                     errorMessage);
         }
 
@@ -196,9 +199,9 @@ public class SpeedTestErrorTest extends AbstractTest {
             mWaiter = new Waiter();
 
             if (dispatchError) {
-                fr.bmartel.speedtest.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
+                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
             } else {
-                fr.bmartel.speedtest.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
+                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
                         errorMessage);
             }
 
@@ -207,9 +210,9 @@ public class SpeedTestErrorTest extends AbstractTest {
             mDownload = true;
 
             if (dispatchError) {
-                fr.bmartel.speedtest.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
+                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
             } else {
-                fr.bmartel.speedtest.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
+                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
                         errorMessage);
             }
 
@@ -245,7 +248,7 @@ public class SpeedTestErrorTest extends AbstractTest {
 
         for (final HttpStates state : HttpStates.values()) {
             if (state != HttpStates.HTTP_FRAME_OK) {
-                fr.bmartel.speedtest.SpeedTestUtils.checkHttpFrameError(mForceStop, listenerList, state);
+                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpFrameError(mForceStop, listenerList, state);
                 mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
             }
         }
@@ -255,7 +258,7 @@ public class SpeedTestErrorTest extends AbstractTest {
 
         for (final HttpStates state : HttpStates.values()) {
             if (state != HttpStates.HTTP_FRAME_OK) {
-                fr.bmartel.speedtest.SpeedTestUtils.checkHttpFrameError(mForceStop, listenerList, state);
+                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpFrameError(mForceStop, listenerList, state);
                 mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
             }
         }
@@ -276,7 +279,7 @@ public class SpeedTestErrorTest extends AbstractTest {
 
         for (final HttpStates state : HttpStates.values()) {
             if (state != HttpStates.HTTP_FRAME_OK) {
-                fr.bmartel.speedtest.SpeedTestUtils.checkHttpHeaderError(mForceStop, listenerList, state);
+                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpHeaderError(mForceStop, listenerList, state);
                 mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
             }
         }
@@ -286,7 +289,7 @@ public class SpeedTestErrorTest extends AbstractTest {
 
         for (final HttpStates state : HttpStates.values()) {
             if (state != HttpStates.HTTP_FRAME_OK) {
-                fr.bmartel.speedtest.SpeedTestUtils.checkHttpHeaderError(mForceStop, listenerList, state);
+                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpHeaderError(mForceStop, listenerList, state);
                 mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
             }
         }
@@ -310,14 +313,14 @@ public class SpeedTestErrorTest extends AbstractTest {
         headers.put(HttpHeader.CONTENT_LENGTH, String.valueOf(0));
         frame.setHeaders(headers);
 
-        fr.bmartel.speedtest.SpeedTestUtils.checkHttpContentLengthError(mForceStop, listenerList, frame);
+        fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpContentLengthError(mForceStop, listenerList, frame);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         mForceStop = true;
         mSocket.forceStopTask();
 
-        fr.bmartel.speedtest.SpeedTestUtils.checkHttpContentLengthError(mForceStop, listenerList, frame);
+        fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpContentLengthError(mForceStop, listenerList, frame);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
     }

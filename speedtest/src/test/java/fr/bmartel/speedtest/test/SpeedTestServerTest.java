@@ -25,6 +25,9 @@
 package fr.bmartel.speedtest.test;
 
 import fr.bmartel.speedtest.*;
+import fr.bmartel.speedtest.inter.ISpeedTestListener;
+import fr.bmartel.speedtest.model.SpeedTestError;
+import fr.bmartel.speedtest.test.utils.TestCommon;
 import net.jodah.concurrentunit.Waiter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

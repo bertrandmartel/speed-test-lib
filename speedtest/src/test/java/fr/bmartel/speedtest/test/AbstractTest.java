@@ -25,6 +25,7 @@
 package fr.bmartel.speedtest.test;
 
 import fr.bmartel.speedtest.SpeedTestSocket;
+import fr.bmartel.speedtest.test.utils.RetryTest;
 import org.junit.Before;
 import org.junit.Rule;
 

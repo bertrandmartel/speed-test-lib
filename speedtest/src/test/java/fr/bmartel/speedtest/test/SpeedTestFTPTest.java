@@ -24,9 +24,11 @@
 
 package fr.bmartel.speedtest.test;
 
-import fr.bmartel.speedtest.ISpeedTestListener;
-import fr.bmartel.speedtest.SpeedTestError;
+import fr.bmartel.speedtest.inter.ISpeedTestListener;
+import fr.bmartel.speedtest.model.SpeedTestError;
 import fr.bmartel.speedtest.SpeedTestReport;
+import fr.bmartel.speedtest.test.utils.SpeedTestUtils;
+import fr.bmartel.speedtest.test.utils.TestCommon;
 import net.jodah.concurrentunit.Waiter;
 import org.junit.Test;
 

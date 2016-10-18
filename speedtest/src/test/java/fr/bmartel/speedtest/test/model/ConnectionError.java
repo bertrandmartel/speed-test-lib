@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package fr.bmartel.speedtest.test;
+package fr.bmartel.speedtest.test.model;
 
 /**
  * An enum to list connection error tested.
