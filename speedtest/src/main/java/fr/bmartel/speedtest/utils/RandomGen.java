@@ -44,6 +44,11 @@ public class RandomGen {
     private final Random mRandom = new Random();
 
     /**
+     * Random generated file.
+     */
+    private File mFile;
+
+    /**
      * Generate random byte array.
      *
      * @param length number of bytes to be generated
@@ -71,17 +76,17 @@ public class RandomGen {
     }
 
     /**
-     * generate random file.
+     * Generate random file.
      *
      * @param length number of bytes to be generated
      * @return file with random content
      */
     public RandomAccessFile generateRandomFile(final int length) throws IOException {
 
-        final File temp = File.createTempFile(SpeedTestConst.UPLOAD_TEMP_FILE_NAME,
+        mFile = File.createTempFile(SpeedTestConst.UPLOAD_TEMP_FILE_NAME,
                 SpeedTestConst.UPLOAD_TEMP_FILE_EXTENSION);
 
-        final RandomAccessFile randomFile = new RandomAccessFile(temp.getAbsolutePath(), "rw");
+        final RandomAccessFile randomFile = new RandomAccessFile(mFile.getAbsolutePath(), "rw");
         randomFile.setLength(length);
 
         final int iter = length / SpeedTestConst.UPLOAD_FILE_WRITE_CHUNK;
@@ -99,5 +104,14 @@ public class RandomGen {
         }
 
         return randomFile;
+    }
+
+    /**
+     * Delete random file.
+     */
+    public void deleteFile() {
+        if (mFile != null) {
+            mFile.delete();
+        }
     }
 }
