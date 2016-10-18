@@ -118,8 +118,8 @@ public class RepeatWrapper {
     /**
      * Build repeat download/upload report based on stats on all packets downlaoded until now.
      *
-     * @param scale
-     * @param roundingMode
+     * @param scale             scale value for bigdecimal
+     * @param roundingMode      rounding mode used for bigdecimal
      * @param speedTestMode     speed test mode
      * @param reportTime        time of current download
      * @param transferRateOctet transfer rate in octet/s
@@ -183,7 +183,7 @@ public class RepeatWrapper {
     }
 
     /**
-     * start download for download repeat.
+     * Start download for download repeat.
      *
      * @param hostname server hostname
      * @param port     server port
@@ -195,7 +195,7 @@ public class RepeatWrapper {
     }
 
     /**
-     * start upload for upload repeat.
+     * Start upload for upload repeat.
      *
      * @param hostname server hostname
      * @param port     server port
@@ -413,7 +413,7 @@ public class RepeatWrapper {
     }
 
     /**
-     * clear completly download/upload repeat task.
+     * Clear completly download/upload repeat task.
      *
      * @param listener speed test listener
      * @param timer    finished task timer
@@ -431,7 +431,7 @@ public class RepeatWrapper {
     }
 
     /**
-     * check if this is the first packet to be downloaded for repeat operation.
+     * Check if this is the first packet to be downloaded for repeat operation.
      *
      * @return state for first download
      */
@@ -440,7 +440,7 @@ public class RepeatWrapper {
     }
 
     /**
-     * check if this is the first packet to be uploaded for repeat operation.
+     * Check if this is the first packet to be uploaded for repeat operation.
      *
      * @return state of first upload
      */
@@ -449,7 +449,7 @@ public class RepeatWrapper {
     }
 
     /**
-     * set the first downloaded packet status.
+     * Set the first downloaded packet status.
      *
      * @param state download repeat status
      */
@@ -476,7 +476,7 @@ public class RepeatWrapper {
     }
 
     /**
-     * update total packet size to be downloaded/uploaded
+     * Update total packet size to be downloaded/uploaded.
      *
      * @param packetSize packet size in octet
      */
@@ -485,7 +485,7 @@ public class RepeatWrapper {
     }
 
     /**
-     * update temporary packet size currently downloaded/uploaded.
+     * Update temporary packet size currently downloaded/uploaded.
      *
      * @param read packet size in octet
      */
@@ -494,7 +494,7 @@ public class RepeatWrapper {
     }
 
     /**
-     * check if upload repeat task is running.
+     * Check if upload repeat task is running.
      *
      * @return repeat upload status
      */
@@ -503,7 +503,7 @@ public class RepeatWrapper {
     }
 
     /**
-     * check if repeat task is running.
+     * Check if repeat task is running.
      *
      * @return repeat status
      */

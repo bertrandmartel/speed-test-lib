@@ -55,7 +55,7 @@ public class SpeedTestConst {
     public static final int DEFAULT_SOCKET_TIMEOUT = 10000;
 
     /**
-     * time to wait for task to complete when threadpool is shutdown
+     * time to wait for task to complete when threadpool is shutdown.
      */
     public static final int THREADPOOL_WAIT_COMPLETION_MS = 500;
 

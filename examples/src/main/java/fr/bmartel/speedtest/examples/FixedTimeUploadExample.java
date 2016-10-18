@@ -128,6 +128,7 @@ public class FixedTimeUploadExample {
 
             @Override
             public void onInterruption() {
+                //triggered when forceStopTask is called
             }
         });
 
