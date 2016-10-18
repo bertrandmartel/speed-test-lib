@@ -30,9 +30,15 @@ import fr.bmartel.protocol.http.constants.StatusCodeList;
 import fr.bmartel.protocol.http.inter.IHttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;
 import fr.bmartel.speedtest.*;
+import fr.bmartel.speedtest.inter.IRepeatListener;
+import fr.bmartel.speedtest.inter.ISpeedTestListener;
+import fr.bmartel.speedtest.model.SpeedTestError;
 import fr.bmartel.speedtest.test.server.HttpServer;
 import fr.bmartel.speedtest.test.server.IHttpServerEventListener;
 import fr.bmartel.speedtest.test.server.IHttpStream;
+import fr.bmartel.speedtest.test.utils.SpeedTestUtils;
+import fr.bmartel.speedtest.test.utils.TestCommon;
+import fr.bmartel.speedtest.utils.RandomGen;
 import net.jodah.concurrentunit.Waiter;
 import org.junit.Assert;
 import org.junit.Test;
@@ -741,13 +747,13 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
                             switch (httpFrame.getUri()) {
                                 case SPEED_TEST_SERVER_URI_DL_1MO:
-                                    body = new RandomGen(1000000).nextArray();
+                                    body = new RandomGen().generateRandomArray(1000000);
                                     break;
                                 case SPEED_TEST_SERVER_URI_DL_5MO:
-                                    body = new RandomGen(5000000).nextArray();
+                                    body = new RandomGen().generateRandomArray(5000000);
                                     break;
                                 case SPEED_TEST_SERVER_URI_DL_10MO:
-                                    body = new RandomGen(10000000).nextArray();
+                                    body = new RandomGen().generateRandomArray(10000000);
                                     break;
                                 case SPEED_TEST_SERVER_URI_TIMEOUT:
                                     try {
