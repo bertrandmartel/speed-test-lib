@@ -239,11 +239,12 @@ public class SpeedTestTask {
             public void run() {
                 if (mSocket != null && !mSocket.isClosed()) {
 
+                    RandomAccessFile uploadFile = null;
+                    final RandomGen randomGen = new RandomGen();
+
                     try {
 
                         byte[] body = new byte[]{};
-                        RandomAccessFile uploadFile = null;
-                        final RandomGen randomGen = new RandomGen();
 
                         if (mSocketInterface.getUploadStorageType() == UploadStorageType.RAM_STORAGE) {
                             /* generate a file with size of fileSizeOctet octet */
@@ -351,6 +352,15 @@ public class SpeedTestTask {
                         mErrorDispatched = true;
                         closeExecutors();
                         SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
+                    } finally {
+                        if (uploadFile != null) {
+                            try {
+                                uploadFile.close();
+                                randomGen.deleteFile();
+                            } catch (IOException e) {
+                                //e.printStackTrace();
+                            }
+                        }
                     }
                 }
             }
@@ -935,6 +945,9 @@ public class SpeedTestTask {
             public void run() {
 
                 final FTPClient ftpClient = new FTPClient();
+                final RandomGen randomGen = new RandomGen();
+
+                RandomAccessFile uploadFile = null;
 
                 try {
                     ftpClient.connect(hostname, port);
@@ -943,8 +956,6 @@ public class SpeedTestTask {
                     ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
                     byte[] fileContent = new byte[]{};
-                    RandomAccessFile uploadFile = null;
-                    final RandomGen randomGen = new RandomGen();
 
                     if (mSocketInterface.getUploadStorageType() == UploadStorageType.RAM_STORAGE) {
                         /* generate a file with size of fileSizeOctet octet */
@@ -1076,6 +1087,14 @@ public class SpeedTestTask {
                     mErrorDispatched = false;
                     mSpeedTestMode = SpeedTestMode.NONE;
                     disconnectFtp(ftpClient);
+                    if (uploadFile != null) {
+                        try {
+                            uploadFile.close();
+                            randomGen.deleteFile();
+                        } catch (IOException e) {
+                            //e.printStackTrace();
+                        }
+                    }
                 }
             }
         });
