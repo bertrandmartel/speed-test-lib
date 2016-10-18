@@ -154,7 +154,7 @@ public class TestCommon {
     /**
      * accepted delay for fixed duration.
      */
-    public final static int FIXED_DURATION_OFFSET = 1000;
+    public final static int FIXED_DURATION_OFFSET = 3000;
 
     /**
      * offset in milliseconds for report interval
