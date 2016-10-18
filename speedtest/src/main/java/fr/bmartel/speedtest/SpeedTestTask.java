@@ -165,7 +165,7 @@ public class SpeedTestTask {
     /**
      * Build socket.
      *
-     * @param socketInterface
+     * @param socketInterface interface shared between repeat wrapper and speed test socket
      */
     public SpeedTestTask(final ISpeedTestSocket socketInterface, final List<ISpeedTestListener> listenerList) {
         mSocketInterface = socketInterface;
@@ -186,7 +186,7 @@ public class SpeedTestTask {
     /**
      * Set report interval state.
      *
-     * @param state
+     * @param state define if a report interval is set
      */
     public void setReportInterval(final boolean state) {
         mReportInterval = state;
@@ -786,7 +786,7 @@ public class SpeedTestTask {
      * @param ftpClient ftp client
      * @param filePath  remote file path
      * @return file size
-     * @throws Exception
+     * @throws Exception file read/write IOException
      */
     private long getFileSize(final FTPClient ftpClient, final String filePath) throws IOException {
 

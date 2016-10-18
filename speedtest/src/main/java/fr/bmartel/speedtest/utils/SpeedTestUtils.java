@@ -62,8 +62,8 @@ public class SpeedTestUtils {
     /**
      * dispatch error listener according to errors.
      *
-     * @param forceCloseSocket
-     * @param listenerList
+     * @param forceCloseSocket define if interruption callback must be called
+     * @param listenerList     list of speed test listeners
      * @param isDownload       downloading task or uploading task
      * @param errorMessage     error message from Exception
      */
@@ -105,22 +105,24 @@ public class SpeedTestUtils {
                                         final int uploadTempFileSize,
                                         final int chunkSize) throws IOException {
 
+        byte[] data;
+
         if (storageType == UploadStorageType.RAM_STORAGE) {
-            return Arrays.copyOfRange(body, uploadTempFileSize,
+            data = Arrays.copyOfRange(body, uploadTempFileSize,
                     uploadTempFileSize + chunkSize);
         } else {
-            final byte[] chunk = new byte[chunkSize];
+            data = new byte[chunkSize];
             uploadFile.seek(uploadTempFileSize);
-            uploadFile.read(chunk);
-            return chunk;
+            uploadFile.read(data);
         }
+        return data;
     }
 
     /**
      * dispatch socket timeout error.
      *
-     * @param forceCloseSocket
-     * @param listenerList
+     * @param forceCloseSocket define if interruption callback must be called
+     * @param listenerList     list of speed test listeners
      * @param isDownload       define if currently downloading or uploading
      * @param errorMessage     error message
      */
@@ -146,8 +148,8 @@ public class SpeedTestUtils {
     /**
      * check for http uri error.
      *
-     * @param forceCloseSocket
-     * @param listenerList
+     * @param forceCloseSocket define if interruption callback must be called
+     * @param listenerList     list of speed test listeners
      * @param httFrameState    http frame state to check
      */
     public static void checkHttpFrameError(final boolean forceCloseSocket,
@@ -173,8 +175,8 @@ public class SpeedTestUtils {
     /**
      * check for http header error.
      *
-     * @param forceCloseSocket
-     * @param listenerList
+     * @param forceCloseSocket define if interruption callback must be called
+     * @param listenerList     list of speed test listeners
      * @param httpHeaderState  http frame state to check
      */
     public static void checkHttpHeaderError(final boolean forceCloseSocket,
@@ -200,8 +202,8 @@ public class SpeedTestUtils {
     /**
      * check for http content length error.
      *
-     * @param forceCloseSocket
-     * @param listenerList
+     * @param forceCloseSocket define if interruption callback must be called
+     * @param listenerList     list of speed test listeners
      * @param httpFrame        http frame state to check
      */
     public static void checkHttpContentLengthError(final boolean forceCloseSocket,
