@@ -232,6 +232,16 @@ SpeedTestReport getLiveDownloadReport()
 SpeedTestReport getLiveUploadReport()
 ```
 
+### Set upload file storage type
+
+By default, data to be uploaded is stored in RAM, for large data it is recommended to used file storage : 
+
+```
+speedTestSocket.setUploadStorageType(UploadStorageType.FILE_STORAGE);
+```
+
+It will create a temporary file containing random data. File will be deleted automatically at the end of the upload.
+
 ### Set size of each packet sent to upload server
 
 ```
