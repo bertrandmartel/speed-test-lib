@@ -123,6 +123,7 @@ public class FixedTimeDownloadExample {
 
             @Override
             public void onInterruption() {
+                //triggered when forceStopTask is called
             }
         });
 
