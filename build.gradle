@@ -31,12 +31,6 @@ allprojects {
 subprojects {
     apply plugin: 'java'
 
-    dependencies {
-        testCompile 'junit:junit:4.11'
-        testCompile 'net.jodah:concurrentunit:0.4.2'
-        testCompile 'com.googlecode.json-simple:json-simple:1.1.1'
-    }
-
     jacocoTestReport {
         reports {
             html.enabled = true
