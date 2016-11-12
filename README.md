@@ -1,10 +1,10 @@
 # JSpeedTest
 
-[![Build Status](https://travis-ci.org/akinaru/speed-test-lib.svg?branch=master)](https://travis-ci.org/akinaru/speed-test-lib)
+[![Build Status](https://travis-ci.org/bertrandmartel/speed-test-lib.svg?branch=master)](https://travis-ci.org/bertrandmartel/speed-test-lib)
 [![Download](https://api.bintray.com/packages/akinaru/maven/speedtest/images/download.svg) ](https://bintray.com/akinaru/maven/speedtest/_latestVersion)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.akinaru/speedtest/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.akinaru/speedtest)
-[![Coverage Status](https://coveralls.io/repos/github/akinaru/speed-test-lib/badge.svg?branch=master)](https://coveralls.io/github/akinaru/speed-test-lib?branch=master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/55e8e347e0d24566b37fe43799665e40)](https://www.codacy.com/app/kiruazoldik92/speed-test-lib?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=akinaru/speed-test-lib&amp;utm_campaign=Badge_Grade)
+[![Coverage Status](https://coveralls.io/repos/github/bertrandmartel/speed-test-lib/badge.svg?branch=master)](https://coveralls.io/github/bertrandmartel/speed-test-lib?branch=master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/55e8e347e0d24566b37fe43799665e40)](https://www.codacy.com/app/kiruazoldik92/speed-test-lib?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=bertrandmartel/speed-test-lib&amp;utm_campaign=Badge_Grade)
 [![Javadoc](http://javadoc-badge.appspot.com/com.github.akinaru/speedtest.svg?label=javadoc)](http://javadoc-badge.appspot.com/com.github.akinaru/speedtest)
 [![License](http://img.shields.io/:license-mit-blue.svg)](LICENSE.md)
 
@@ -449,7 +449,7 @@ JRE 1.7 compliant
 
 ## External libraries
 
-* [http-endec](https://github.com/akinaru/http-endec)
+* [http-endec](https://github.com/bertrandmartel/http-endec)
 * [Apache Commons Net](https://commons.apache.org/proper/commons-net/)
 
 ## License
