@@ -233,6 +233,8 @@ public class SpeedTestTask {
         mUploadFileSize = new BigDecimal(fileSizeOctet);
         mForceCloseSocket = false;
         mErrorDispatched = false;
+        mUploadTempFileSize = 0;
+        mTimeStart = System.currentTimeMillis();
 
         connectAndExecuteTask(new Runnable() {
             @Override
@@ -749,7 +751,7 @@ public class SpeedTestTask {
         final int scale = mSocketInterface.getDefaultScale();
         final RoundingMode roundingMode = mSocketInterface.getDefaultRoundingMode();
 
-        if ((currentTime - mTimeStart) != 0) {
+        if (shallCalculateTransferRate(currentTime, mode)) {
             transferRateOps = temporaryPacketSize.divide(new BigDecimal(currentTime - mTimeStart)
                     .divide(SpeedTestConst.MILLIS_DIVIDER, scale, roundingMode), scale, roundingMode);
         }
@@ -778,6 +780,18 @@ public class SpeedTestTask {
                     1);
         }
         return report;
+    }
+
+    private boolean shallCalculateTransferRate(long currentTime, final SpeedTestMode mode) {
+        final long elapsedTime = currentTime - mTimeStart;
+
+        switch(mode) {
+            case DOWNLOAD:
+                return elapsedTime != 0;
+            case UPLOAD:
+            default:
+                return elapsedTime > 1000;
+        }
     }
 
     /**
