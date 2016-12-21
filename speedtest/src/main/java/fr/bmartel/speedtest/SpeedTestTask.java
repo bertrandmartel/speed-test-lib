@@ -162,6 +162,9 @@ public class SpeedTestTask {
      */
     private SpeedTestMode mSpeedTestMode = SpeedTestMode.NONE;
 
+    /**
+     * milliseconds divider for calculating the threshold before updating the calculation of the upload speed
+     */
     private static final long MILLISECONDS_DIVIDER = 1000;
 
     /**
