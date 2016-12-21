@@ -162,6 +162,8 @@ public class SpeedTestTask {
      */
     private SpeedTestMode mSpeedTestMode = SpeedTestMode.NONE;
 
+    private static final long MILLISECONDS_DIVIDER = 1000;
+
     /**
      * Build socket.
      *
@@ -782,16 +784,21 @@ public class SpeedTestTask {
         return report;
     }
 
-    private boolean shallCalculateTransferRate(long currentTime, final SpeedTestMode mode) {
+    private boolean shallCalculateTransferRate(final long currentTime, final SpeedTestMode mode) {
         final long elapsedTime = currentTime - mTimeStart;
+        boolean response;
 
-        switch(mode) {
+        switch (mode) {
             case DOWNLOAD:
-                return elapsedTime != 0;
+                response = elapsedTime != 0;
+                break;
             case UPLOAD:
             default:
-                return elapsedTime > 1000;
+                response = elapsedTime > MILLISECONDS_DIVIDER;
+                break;
         }
+
+        return response;
     }
 
     /**
