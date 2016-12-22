@@ -133,4 +133,14 @@ public class SpeedTestConst {
      * Temporary file extension.
      */
     public static final String UPLOAD_TEMP_FILE_EXTENSION = ".tmp";
+
+    /**
+     * default setup time for download.
+     */
+    public static final long DEFAULT_DOWNLOAD_SETUP_TIME = 0;
+
+    /**
+     * default setup time for upload.
+     */
+    public static final long DEFAULT_UPLOAD_SETUP_TIME = 0;
 }

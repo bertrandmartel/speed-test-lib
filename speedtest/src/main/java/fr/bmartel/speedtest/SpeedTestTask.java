@@ -163,11 +163,6 @@ public class SpeedTestTask {
     private SpeedTestMode mSpeedTestMode = SpeedTestMode.NONE;
 
     /**
-     * milliseconds divider for calculating the threshold before updating the calculation of the upload speed
-     */
-    private static final long MILLISECONDS_DIVIDER = 1000;
-
-    /**
      * Build socket.
      *
      * @param socketInterface interface shared between repeat wrapper and speed test socket
@@ -756,7 +751,8 @@ public class SpeedTestTask {
         final int scale = mSocketInterface.getDefaultScale();
         final RoundingMode roundingMode = mSocketInterface.getDefaultRoundingMode();
 
-        if (shallCalculateTransferRate(currentTime, mode)) {
+        if (shallCalculateTransferRate(currentTime)) {
+
             transferRateOps = temporaryPacketSize.divide(new BigDecimal(currentTime - mTimeStart)
                     .divide(SpeedTestConst.MILLIS_DIVIDER, scale, roundingMode), scale, roundingMode);
         }
@@ -787,21 +783,25 @@ public class SpeedTestTask {
         return report;
     }
 
-    private boolean shallCalculateTransferRate(final long currentTime, final SpeedTestMode mode) {
-        final long elapsedTime = currentTime - mTimeStart;
-        boolean response;
+    /**
+     * Check setup time depending on elapsed time.
+     *
+     * @param currentTime elapsed time since upload/download has started
+     * @return status if transfer rate should be computed at this time
+     */
+    private boolean shallCalculateTransferRate(final long currentTime) {
 
-        switch (mode) {
+        final long elapsedTime = currentTime - mTimeStart;
+
+        switch (mSpeedTestMode) {
             case DOWNLOAD:
-                response = elapsedTime != 0;
-                break;
+                return (elapsedTime > mSocketInterface.getDownloadSetupTime());
             case UPLOAD:
+                return (elapsedTime > mSocketInterface.getUploadSetupTime());
             default:
-                response = elapsedTime > MILLISECONDS_DIVIDER;
-                break;
         }
 
-        return response;
+        return true;
     }
 
     /**
