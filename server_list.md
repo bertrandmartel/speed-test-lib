@@ -6,8 +6,8 @@ This list is non-exhaustive
 
 Complete server list can be found here : http://www.speedtest.net/speedtest-servers.php
 
-* download : http://speedo.eltele.no/speedtest/random2000x2000.jpg
-* upload   : http://speedo.eltele.no/speedtest/upload.php
+* download : http://rbx-fr.verelox.com/speedtest/random2000x2000.jpg
+* upload   : http://rbx-fr.verelox.com/speedtest/upload.php
 
 ## speedtest mini server
 
