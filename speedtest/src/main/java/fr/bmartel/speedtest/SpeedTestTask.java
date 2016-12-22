@@ -163,6 +163,11 @@ public class SpeedTestTask {
     private SpeedTestMode mSpeedTestMode = SpeedTestMode.NONE;
 
     /**
+     * milliseconds divider for calculating the threshold before updating the calculation of the upload speed
+     */
+    private static final long MILLISECONDS_DIVIDER = 1000;
+
+    /**
      * Build socket.
      *
      * @param socketInterface interface shared between repeat wrapper and speed test socket
@@ -233,6 +238,8 @@ public class SpeedTestTask {
         mUploadFileSize = new BigDecimal(fileSizeOctet);
         mForceCloseSocket = false;
         mErrorDispatched = false;
+        mUploadTempFileSize = 0;
+        mTimeStart = System.currentTimeMillis();
 
         connectAndExecuteTask(new Runnable() {
             @Override
@@ -749,7 +756,7 @@ public class SpeedTestTask {
         final int scale = mSocketInterface.getDefaultScale();
         final RoundingMode roundingMode = mSocketInterface.getDefaultRoundingMode();
 
-        if ((currentTime - mTimeStart) != 0) {
+        if (shallCalculateTransferRate(currentTime, mode)) {
             transferRateOps = temporaryPacketSize.divide(new BigDecimal(currentTime - mTimeStart)
                     .divide(SpeedTestConst.MILLIS_DIVIDER, scale, roundingMode), scale, roundingMode);
         }
@@ -778,6 +785,23 @@ public class SpeedTestTask {
                     1);
         }
         return report;
+    }
+
+    private boolean shallCalculateTransferRate(final long currentTime, final SpeedTestMode mode) {
+        final long elapsedTime = currentTime - mTimeStart;
+        boolean response;
+
+        switch (mode) {
+            case DOWNLOAD:
+                response = elapsedTime != 0;
+                break;
+            case UPLOAD:
+            default:
+                response = elapsedTime > MILLISECONDS_DIVIDER;
+                break;
+        }
+
+        return response;
     }
 
     /**
