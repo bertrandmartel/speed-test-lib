@@ -1,13 +1,11 @@
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-group 'com.github.akinaru'
-version '1.23'
+group 'fr.bmartel'
+version '1.24'
 
 apply plugin: 'java'
 apply plugin: 'pmd'
-
-sourceCompatibility = 1.7
 
 pmd {
     toolVersion = '5.3.2'
@@ -20,15 +18,15 @@ repositories {
 }
 
 dependencies {
-    compile 'akinaru:http-endec:1.02'
+    compile 'fr.bmartel:http-endec:1.03'
     compile 'commons-net:commons-net:3.5'
     testCompile 'junit:junit:4.11'
     testCompile 'net.jodah:concurrentunit:0.4.2'
     testCompile 'com.googlecode.json-simple:json-simple:1.1.1'
 }
 
-def siteUrl = 'https://github.com/akinaru/speed-test-lib'
-def gitUrl = 'https://github.com/akinaru/speed-test-lib.git'
+def siteUrl = 'https://github.com/bertrandmartel/speed-test-lib'
+def gitUrl = 'https://github.com/bertrandmartel/speed-test-lib.git'
 
 bintray {
     user = "$System.env.BINTRAY_USER"
@@ -44,7 +42,7 @@ bintray {
         name = 'speedtest'
         desc = 'Speed Test library for Java/Android'
         websiteUrl = siteUrl
-        issueTrackerUrl = 'https://github.com/akinaru/speed-test-lib/issues'
+        issueTrackerUrl = 'https://github.com/bertrandmartel/speed-test-lib/issues'
         vcsUrl = gitUrl
         licenses = ['MIT']
         labels = ['speed-test', 'speedtest']
@@ -60,7 +58,7 @@ bintray {
             }
 
             mavenCentralSync {
-                sync = true
+                sync = false
                 //Optional (true by default). Determines whether to sync the version to Maven Central.
                 user = "$System.env.MAVEN_CENTRAL_USER_TOKEN" //OSS user token
                 password = "$System.env.MAVEN_CENTRAL_PASSWORD" //OSS user password
@@ -77,24 +75,24 @@ install {
             project {
                 description 'Speed Test library for Java/Android'
                 packaging 'jar'
-                name 'speedtest-lib'
+                name 'jspeedtest'
                 url siteUrl
                 licenses {
                     license {
                         name 'The MIT License'
-                        url 'https://github.com/akinaru/speed-test-lib/blob/master/LICENSE.md'
+                        url 'https://github.com/bertrandmartel/speed-test-lib/blob/master/LICENSE.md'
                     }
                 }
                 developers {
                     developer {
-                        id 'akinaru'
+                        id 'bertrandmartel'
                         name 'Bertrand Martel'
-                        email 'kiruazoldik92@gmail.com'
+                        email 'bmartel.fr@gmail.com'
                     }
                 }
                 scm {
-                    connection 'https://github.com/akinaru/speed-test-lib.git'
-                    developerConnection 'https://github.com/akinaru/speed-test-lib.git'
+                    connection 'https://github.com/bertrandmartel/speed-test-lib.git'
+                    developerConnection 'https://github.com/bertrandmartel/speed-test-lib.git'
                     url siteUrl
                 }
             }

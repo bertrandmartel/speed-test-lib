@@ -21,6 +21,9 @@ allprojects {
 
     repositories {
         jcenter()
+        maven {
+            url 'http://dl.bintray.com/bertrandmartel/maven'
+        }
     }
 
     jacoco {
