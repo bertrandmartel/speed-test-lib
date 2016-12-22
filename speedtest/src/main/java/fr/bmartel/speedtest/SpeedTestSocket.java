@@ -93,6 +93,16 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     private final SpeedTestTask mTask = new SpeedTestTask(this, mListenerList);
 
     /**
+     * setup time for calculating the threshold before updating the calculation of download
+     */
+    private long mDownloadSetupTime = SpeedTestConst.DEFAULT_DOWNLOAD_SETUP_TIME;
+
+    /**
+     * setup time for calculating the threshold before updating the calculation of upload
+     */
+    private long mUploadSetupTime = SpeedTestConst.DEFAULT_UPLOAD_SETUP_TIME;
+
+    /**
      * initialize report task.
      *
      * @param reportInterval report interval in milliseconds
@@ -753,6 +763,44 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      */
     public void setDefaultScale(final int scale) {
         this.mScale = scale;
+    }
+
+    /**
+     * Set the setup time for upload.
+     *
+     * @param setupTime point in time from which upload speed rate should be computed
+     */
+    public void setUploadSetupTime(final long setupTime) {
+        this.mUploadSetupTime = setupTime;
+    }
+
+    /**
+     * Set the setup time for download.
+     *
+     * @param setupTime point in time from which download speed rate should be computed
+     */
+    public void setDownloadSetupTime(final long setupTime) {
+        this.mDownloadSetupTime = setupTime;
+    }
+
+    /**
+     * Get download setup time value.
+     *
+     * @return
+     */
+    @Override
+    public long getDownloadSetupTime() {
+        return mDownloadSetupTime;
+    }
+
+    /**
+     * Get upload setup time value.
+     *
+     * @return
+     */
+    @Override
+    public long getUploadSetupTime() {
+        return mUploadSetupTime;
     }
 
     /**

@@ -149,4 +149,18 @@ public interface ISpeedTestSocket {
      * @param uploadStorageType upload storage type
      */
     void setUploadStorageType(UploadStorageType uploadStorageType);
+
+    /**
+     * Get download setup time value.
+     *
+     * @return
+     */
+    long getDownloadSetupTime();
+
+    /**
+     * Get upload setup time value.
+     *
+     * @return
+     */
+    long getUploadSetupTime();
 }
