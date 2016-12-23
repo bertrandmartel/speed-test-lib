@@ -1,5 +1,5 @@
 language: java
 script: ./gradlew build jacocoTestReport
-jdk: oraclejdk7
+jdk: oraclejdk8
 after_success:
 - ./gradlew jacocoRootReport coveralls
