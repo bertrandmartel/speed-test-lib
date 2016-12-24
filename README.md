@@ -5,7 +5,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.bmartel/jspeedtest/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.bmartel/jspeedtest)
 [![Coverage Status](https://coveralls.io/repos/github/bertrandmartel/speed-test-lib/badge.svg?branch=master)](https://coveralls.io/github/bertrandmartel/speed-test-lib?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/55e8e347e0d24566b37fe43799665e40)](https://www.codacy.com/app/bertrandmartel/speed-test-lib?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=bertrandmartel/speed-test-lib&amp;utm_campaign=Badge_Grade)
-[![Javadoc](http://javadoc-badge.appspot.com/fr.bmartel/speedtest.svg?label=javadoc)](http://javadoc-badge.appspot.com/fr.bmartel/jspeedtest)
+[![Javadoc](http://javadoc-badge.appspot.com/fr.bmartel/jspeedtest.svg?label=javadoc)](http://javadoc-badge.appspot.com/fr.bmartel/jspeedtest)
 [![License](http://img.shields.io/:license-mit-blue.svg)](LICENSE.md)
 
 Speed Test client library for Java/Android with HTTP & FTP support
