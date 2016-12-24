@@ -93,12 +93,12 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     private final SpeedTestTask mTask = new SpeedTestTask(this, mListenerList);
 
     /**
-     * setup time for calculating the threshold before updating the calculation of download
+     * setup time for calculating the threshold before updating the calculation of download.
      */
     private long mDownloadSetupTime = SpeedTestConst.DEFAULT_DOWNLOAD_SETUP_TIME;
 
     /**
-     * setup time for calculating the threshold before updating the calculation of upload
+     * setup time for calculating the threshold before updating the calculation of upload.
      */
     private long mUploadSetupTime = SpeedTestConst.DEFAULT_UPLOAD_SETUP_TIME;
 
@@ -786,7 +786,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     /**
      * Get download setup time value.
      *
-     * @return
+     * @return download setup time value
      */
     @Override
     public long getDownloadSetupTime() {
@@ -796,7 +796,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     /**
      * Get upload setup time value.
      *
-     * @return
+     * @return upload setup time value
      */
     @Override
     public long getUploadSetupTime() {
@@ -804,7 +804,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     }
 
     /**
-     * retrieve rounding mode used for BigDecimal.
+     * Retrieve rounding mode used for BigDecimal.
      *
      * @return rounding mode
      */
@@ -814,7 +814,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     }
 
     /**
-     * retrieve scale used for BigDecimal.
+     * Retrieve scale used for BigDecimal.
      *
      * @return mScale value
      */
@@ -823,11 +823,21 @@ public class SpeedTestSocket implements ISpeedTestSocket {
         return mScale;
     }
 
+    /**
+     * Retrieve upload storage type (RAM or ROM).
+     *
+     * @return upload storage type
+     */
     @Override
     public UploadStorageType getUploadStorageType() {
         return mUploadStorageType;
     }
 
+    /**
+     * Set upload storage type.
+     *
+     * @param uploadStorageType upload storage type
+     */
     @Override
     public void setUploadStorageType(final UploadStorageType uploadStorageType) {
         mUploadStorageType = uploadStorageType;

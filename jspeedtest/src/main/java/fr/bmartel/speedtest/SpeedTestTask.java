@@ -793,15 +793,19 @@ public class SpeedTestTask {
 
         final long elapsedTime = currentTime - mTimeStart;
 
+        boolean ret = true;
+
         switch (mSpeedTestMode) {
             case DOWNLOAD:
-                return (elapsedTime > mSocketInterface.getDownloadSetupTime());
+                ret = (elapsedTime > mSocketInterface.getDownloadSetupTime());
+                break;
             case UPLOAD:
-                return (elapsedTime > mSocketInterface.getUploadSetupTime());
+                ret = (elapsedTime > mSocketInterface.getUploadSetupTime());
+                break;
             default:
         }
 
-        return true;
+        return ret;
     }
 
     /**
