@@ -751,7 +751,7 @@ public class SpeedTestTask {
         final int scale = mSocketInterface.getDefaultScale();
         final RoundingMode roundingMode = mSocketInterface.getDefaultRoundingMode();
 
-        if (shallCalculateTransferRate(currentTime)) {
+        if (shallCalculateTransferRate(currentTime) && (currentTime - mTimeStart) != 0) {
 
             transferRateOps = temporaryPacketSize.divide(new BigDecimal(currentTime - mTimeStart)
                     .divide(SpeedTestConst.MILLIS_DIVIDER, scale, roundingMode), scale, roundingMode);
