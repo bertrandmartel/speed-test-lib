@@ -24,7 +24,7 @@ Check a [non-exhaustive list](./server_list.md) of compatible speed test server.
 * with Gradle, from jcenter or mavenCentral :
 
 ```
-compile 'fr.bmartel:jspeedtest:1.24'
+compile 'fr.bmartel:jspeedtest:1.25'
 ```
 
 ## Usage
