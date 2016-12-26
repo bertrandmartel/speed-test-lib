@@ -61,7 +61,7 @@ bintray {
             }
 
             mavenCentralSync {
-                sync = false
+                sync = true
                 //Optional (true by default). Determines whether to sync the version to Maven Central.
                 user = "$System.env.MAVEN_CENTRAL_USER_TOKEN" //OSS user token
                 password = "$System.env.MAVEN_CENTRAL_PASSWORD" //OSS user password
