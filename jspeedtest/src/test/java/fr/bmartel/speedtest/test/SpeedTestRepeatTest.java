@@ -32,6 +32,7 @@ import fr.bmartel.speedtest.test.utils.SpeedTestUtils;
 import fr.bmartel.speedtest.test.utils.TestCommon;
 import net.jodah.concurrentunit.Waiter;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -48,7 +49,7 @@ import java.util.concurrent.TimeoutException;
  *
  * @author Bertrand Martel
  */
-public class SpeedTestRepeatTest  extends AbstractTest {
+public class SpeedTestRepeatTest extends AbstractTest {
 
     /**
      * Waiter for speed test listener callback.
@@ -64,6 +65,7 @@ public class SpeedTestRepeatTest  extends AbstractTest {
      * Test HTTP download repeat.
      */
     @Test
+    @Ignore
     public void downloadHTTPRepeatTest() throws TimeoutException, IllegalAccessException, NoSuchFieldException {
         repeatTest(true, true);
     }
@@ -72,6 +74,7 @@ public class SpeedTestRepeatTest  extends AbstractTest {
      * Test HTTP upload repeat.
      */
     @Test
+    @Ignore
     public void uploadHTTPRepeatTest() throws TimeoutException, IllegalAccessException, NoSuchFieldException {
         repeatTest(false, true);
     }
