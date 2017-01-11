@@ -2,9 +2,12 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 group 'fr.bmartel'
-version '1.24'
+version '1.25'
 
 apply plugin: 'java'
+targetCompatibility = '1.7'
+sourceCompatibility = '1.7'
+
 apply plugin: 'pmd'
 
 pmd {
@@ -18,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    compile 'fr.bmartel:http-endec:1.03'
+    compile 'fr.bmartel:http-endec:1.04'
     compile 'commons-net:commons-net:3.5'
     testCompile 'junit:junit:4.11'
     testCompile 'net.jodah:concurrentunit:0.4.2'
@@ -58,7 +61,7 @@ bintray {
             }
 
             mavenCentralSync {
-                sync = false
+                sync = true
                 //Optional (true by default). Determines whether to sync the version to Maven Central.
                 user = "$System.env.MAVEN_CENTRAL_USER_TOKEN" //OSS user token
                 password = "$System.env.MAVEN_CENTRAL_PASSWORD" //OSS user password
@@ -136,6 +139,8 @@ task generateJavadoc(type: Javadoc) {
 }
 
 compileJava {
+    sourceCompatibility = "1.7"
+    targetCompatibility = "1.7"
     options.encoding = 'UTF-8'
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
