@@ -24,14 +24,12 @@
 
 package fr.bmartel.speedtest.examples;
 
-import fr.bmartel.speedtest.model.SpeedTestMode;
 import fr.bmartel.speedtest.SpeedTestReport;
-import fr.bmartel.speedtest.SpeedTestSocket;
+import fr.bmartel.speedtest.model.SpeedTestMode;
+import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
-import org.apache.logging.log4j.Logger;
 
 /**
  * Log utilities method for examples.
@@ -113,42 +111,16 @@ public class LogUtils {
                     break;
             }
 
-            logger.debug("upload packetSize     : " + packetSize + " octet(s)");
-            logger.debug("upload transfer rate  : " + transferRateBitPerSeconds + " bit/second   | " +
+            logger.debug("packetSize     : " + packetSize + " octet(s)");
+            logger.debug("transfer rate  : " + transferRateBitPerSeconds + " bit/second   | " +
                     transferRateBitPerSeconds.divide(VALUE_PER_SECONDS, DEFAULT_SCALE, DEFAULT_ROUNDING_MODE)
                     + " Kbit/second  | " + transferRateBitPerSeconds.divide(MEGA_VALUE_PER_SECONDS) + " Mbit/second");
-            logger.debug("upload transfer rate  : " + transferRateOctetPerSeconds + " octet/second | " +
+            logger.debug("transfer rate  : " + transferRateOctetPerSeconds + " octet/second | " +
                     transferRateOctetPerSeconds.divide(VALUE_PER_SECONDS, DEFAULT_SCALE, DEFAULT_ROUNDING_MODE)
                     + " Koctet/second | " + transferRateOctetPerSeconds.divide(MEGA_VALUE_PER_SECONDS, DEFAULT_SCALE,
                     DEFAULT_ROUNDING_MODE) + " " +
                     "Moctet/second");
             logger.debug("##################################################################");
-        }
-    }
-
-    /**
-     * print report from speed test socket object.
-     *
-     * @param speedTestSocket speed test socket instance
-     * @param logger          log4j logger
-     */
-    public static void logReport(final SpeedTestSocket speedTestSocket, final Logger logger) {
-
-        if (logger.isDebugEnabled()) {
-
-            SpeedTestReport report = null;
-
-            if (speedTestSocket.getSpeedTestMode() == SpeedTestMode.UPLOAD) {
-                report = speedTestSocket.getLiveUploadReport();
-                logger.debug("---------------current upload report--------------------");
-            } else if (speedTestSocket.getSpeedTestMode() == SpeedTestMode.DOWNLOAD) {
-                report = speedTestSocket.getLiveDownloadReport();
-                logger.debug("---------------current download report--------------------");
-            }
-
-            if (report != null) {
-                logReport(report, logger);
-            }
         }
     }
 
