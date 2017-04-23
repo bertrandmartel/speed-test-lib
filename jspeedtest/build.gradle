@@ -22,7 +22,7 @@ repositories {
 
 dependencies {
     compile 'fr.bmartel:http-endec:1.04'
-    compile 'commons-net:commons-net:3.5'
+    compile 'commons-net:commons-net:3.6'
     testCompile 'junit:junit:4.11'
     testCompile 'net.jodah:concurrentunit:0.4.2'
     testCompile 'com.googlecode.json-simple:json-simple:1.1.1'
