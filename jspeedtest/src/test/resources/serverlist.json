@@ -1,20 +1,5 @@
 [
     {
-        "host": "rbx-fr.verelox.com",
-        "download": [
-            {
-                "protocol": "http",
-                "uri": "/speedtest/random2000x2000.jpg"
-            }
-        ],
-        "upload": [
-            {
-                "protocol": "http",
-                "uri": "/speedtest/upload.php"
-            }
-        ]
-    },
-    {
         "host": "2.testdebit.info",
         "download": [
             {
