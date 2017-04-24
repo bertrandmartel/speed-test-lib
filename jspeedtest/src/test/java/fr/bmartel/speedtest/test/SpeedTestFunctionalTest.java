@@ -42,6 +42,7 @@ import fr.bmartel.speedtest.test.utils.TestCommon;
 import fr.bmartel.speedtest.utils.RandomGen;
 import net.jodah.concurrentunit.Waiter;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -461,6 +462,7 @@ public class SpeedTestFunctionalTest extends AbstractTest {
     }
 
     @Test
+    @Ignore
     public void chainDownloadUploadTest() throws TimeoutException {
 
         mSocket = new SpeedTestSocket();
