@@ -238,7 +238,7 @@
     <!--<rule ref="rulesets/java/strictexception.xml/AvoidCatchingThrowable">
         <priority>2</priority>
     </rule>-->
-    <rule ref="rulesets/java/strictexception.xml/ExceptionAsFlowControl"/>
+    <!--<rule ref="rulesets/java/strictexception.xml/ExceptionAsFlowControl"/>-->
     <rule ref="rulesets/java/strictexception.xml/AvoidCatchingNPE">
         <priority>3</priority>
     </rule>
