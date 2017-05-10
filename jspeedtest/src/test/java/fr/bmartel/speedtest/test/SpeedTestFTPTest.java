@@ -81,7 +81,7 @@ public class SpeedTestFTPTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            public void onProgress(final float percent, final SpeedTestReport report) {
                 SpeedTestUtils.testReportNotEmpty(waiter, report, packetSizeExpected, true, false);
                 waiter.assertTrue(percent >= 0 && percent <= 100);
                 waiter.resume();
@@ -97,12 +97,6 @@ public class SpeedTestFTPTest extends AbstractTest {
             public void onUploadFinished(final SpeedTestReport report) {
                 waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadFinished");
                 waiter2.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadFinished");
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadProgress");
-                waiter2.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadProgress");
             }
 
             @Override
@@ -143,12 +137,6 @@ public class SpeedTestFTPTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
-                waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onDownloadProgress");
-                waiter2.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onDownloadProgress");
-            }
-
-            @Override
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onDownloadError");
                 waiter2.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onDownloadError");
@@ -164,7 +152,7 @@ public class SpeedTestFTPTest extends AbstractTest {
             }
 
             @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport report) {
+            public void onProgress(final float percent, final SpeedTestReport report) {
                 SpeedTestUtils.testReportNotEmpty(waiter, report, packetSizeExpected, true, false);
                 waiter.assertTrue(percent >= 0 && percent <= 100);
                 waiter.resume();
@@ -200,7 +188,7 @@ public class SpeedTestFTPTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            public void onProgress(final float percent, final SpeedTestReport report) {
                 checkReportIntervalValue(requestInterval);
             }
 
@@ -212,11 +200,6 @@ public class SpeedTestFTPTest extends AbstractTest {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 mWaiter.resume();
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                checkReportIntervalValue(requestInterval);
             }
 
             @Override
@@ -278,7 +261,7 @@ public class SpeedTestFTPTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            public void onProgress(final float percent, final SpeedTestReport report) {
                 //called to notify download progress
             }
 
@@ -290,10 +273,6 @@ public class SpeedTestFTPTest extends AbstractTest {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 mWaiter.resume();
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport report) {
             }
 
             @Override
@@ -335,7 +314,7 @@ public class SpeedTestFTPTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            public void onProgress(final float percent, final SpeedTestReport report) {
                 checkReportIntervalValue(requestInterval);
             }
 
@@ -347,11 +326,6 @@ public class SpeedTestFTPTest extends AbstractTest {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 mWaiter.resume();
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                checkReportIntervalValue(requestInterval);
             }
 
             @Override

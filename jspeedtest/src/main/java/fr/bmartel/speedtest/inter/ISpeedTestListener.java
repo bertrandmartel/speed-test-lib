@@ -50,12 +50,12 @@ public interface ISpeedTestListener {
     void onDownloadFinished(SpeedTestReport report);
 
     /**
-     * monitor download progress.
+     * monitor download/upload progress.
      *
      * @param percent % of progress
      * @param report  current speed test download report
      */
-    void onDownloadProgress(float percent, SpeedTestReport report);
+    void onProgress(float percent, SpeedTestReport report);
 
     /**
      * Error catch.
@@ -71,14 +71,6 @@ public interface ISpeedTestListener {
      * @param report upload speed test report
      */
     void onUploadFinished(SpeedTestReport report);
-
-    /**
-     * monitor upload progress.
-     *
-     * @param percent % of progress
-     * @param report  current speed test upload report
-     */
-    void onUploadProgress(float percent, SpeedTestReport report);
 
     /**
      * called when speed test is interrupted.

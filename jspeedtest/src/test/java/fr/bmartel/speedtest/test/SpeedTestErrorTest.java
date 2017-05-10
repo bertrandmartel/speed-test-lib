@@ -103,7 +103,7 @@ public class SpeedTestErrorTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            public void onProgress(final float percent, final SpeedTestReport report) {
                 //called to notify download progresss
             }
 
@@ -122,11 +122,6 @@ public class SpeedTestErrorTest extends AbstractTest {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                //called to notify upload progress
             }
 
             @Override
@@ -370,7 +365,7 @@ public class SpeedTestErrorTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            public void onProgress(final float percent, final SpeedTestReport report) {
                 //called to notify download progress
             }
 
@@ -382,11 +377,6 @@ public class SpeedTestErrorTest extends AbstractTest {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                //called to notify upload progress
             }
 
             @Override

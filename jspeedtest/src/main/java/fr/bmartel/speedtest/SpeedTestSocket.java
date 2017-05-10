@@ -139,13 +139,13 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                     report = getLiveUploadReport();
 
                     for (final ISpeedTestListener listener : mListenerList) {
-                        listener.onUploadProgress(report.getProgressPercent(), report);
+                        listener.onProgress(report.getProgressPercent(), report);
                     }
                 } else {
                     report = getLiveDownloadReport();
 
                     for (final ISpeedTestListener listener : mListenerList) {
-                        listener.onDownloadProgress(report.getProgressPercent(), report);
+                        listener.onProgress(report.getProgressPercent(), report);
                     }
                 }
             }

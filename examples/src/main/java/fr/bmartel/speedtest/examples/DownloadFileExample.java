@@ -95,15 +95,8 @@ public class DownloadFileExample {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport downloadReport) {
-
+            public void onProgress(final float percent, final SpeedTestReport downloadReport) {
                 LogUtils.logSpeedTestReport(downloadReport, LOGGER);
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport uploadReport) {
-
-                LogUtils.logSpeedTestReport(uploadReport, LOGGER);
             }
 
             @Override

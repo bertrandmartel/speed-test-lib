@@ -154,7 +154,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            public void onProgress(final float percent, final SpeedTestReport report) {
                 //called to notify download progress
             }
 
@@ -171,11 +171,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                //called to notify upload progress
             }
 
             @Override
@@ -218,7 +213,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            public void onProgress(final float percent, final SpeedTestReport report) {
                 //called to notify download progress
             }
 
@@ -237,11 +232,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
                     mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
                     mWaiter.resume();
                 }
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                //called to notify upload progress
             }
 
             @Override
@@ -286,7 +276,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            public void onProgress(final float percent, final SpeedTestReport report) {
                 //called to notify download progress
             }
 
@@ -302,11 +292,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                //called to notify upload progress
             }
 
             @Override
@@ -427,7 +412,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            public void onProgress(final float percent, final SpeedTestReport report) {
                 //called to notify download progress
             }
 
@@ -440,11 +425,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                //called to notify progress
             }
 
             @Override
@@ -495,7 +475,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            public void onProgress(final float percent, final SpeedTestReport report) {
             }
 
             @Override
@@ -515,11 +495,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
                 mSocket.startDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon
                         .SPEED_TEST_SERVER_PORT + TestCommon
                         .SPEED_TEST_SERVER_URI_DL_1MO);
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                //called to notify upload progress
             }
 
             @Override
@@ -612,14 +587,8 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport downloadReport) {
+            public void onProgress(final float percent, final SpeedTestReport downloadReport) {
                 //notify download progress
-                mWaiter.assertTrue(percent >= 0 && percent <= 100);
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport uploadReport) {
-                //notify upload progress
                 mWaiter.assertTrue(percent >= 0 && percent <= 100);
             }
 

@@ -93,14 +93,8 @@ public class FixedTimeDownloadExample {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport downloadReport) {
-                //notify download progress
+            public void onProgress(final float percent, final SpeedTestReport downloadReport) {
                 LogUtils.logSpeedTestReport(downloadReport, LOGGER);
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport uploadReport) {
-                //notify upload progress
             }
 
             @Override

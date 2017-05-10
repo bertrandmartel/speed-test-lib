@@ -234,7 +234,7 @@ public class RepeatWrapper {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            public void onProgress(final float percent, final SpeedTestReport report) {
                 //nothing to do here for download repeat task listener
             }
 
@@ -245,11 +245,6 @@ public class RepeatWrapper {
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
-                //nothing to do here for download repeat task listener
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport report) {
                 //nothing to do here for download repeat task listener
             }
 
@@ -314,7 +309,7 @@ public class RepeatWrapper {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            public void onProgress(final float percent, final SpeedTestReport report) {
                 //nothing to do here for upload repeat task listener
             }
 
@@ -328,11 +323,6 @@ public class RepeatWrapper {
                 mRepeatTransferRateList.add(report.getTransferRateOctet());
                 startUploadRepeat(uri, fileSizeOctet);
                 mRepeatRequestNum++;
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                //nothing to do here for upload repeat task listener
             }
 
             @Override

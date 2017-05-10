@@ -232,12 +232,7 @@ public class SpeedTestServerTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport downloadReport) {
-                mWaiter.resume();
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport uploadReport) {
+            public void onProgress(final float percent, final SpeedTestReport downloadReport) {
                 mWaiter.resume();
             }
 

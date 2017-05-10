@@ -117,15 +117,11 @@ public class SpeedTestRepeatTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
-                if (download) {
-                    SpeedTestUtils.testReportNotEmpty(mWaiter, report, TestCommon.FILE_SIZE_REGULAR, false, true);
-                    checkRepeatVarsDuringDownload(repeatVars);
-                    mWaiterError.assertTrue(percent >= 0 && percent <= 100);
-                    mWaiter.resume();
-                } else {
-                    mWaiterError.fail("shouldnt be in onDownloadProgress");
-                }
+            public void onProgress(final float percent, final SpeedTestReport report) {
+                SpeedTestUtils.testReportNotEmpty(mWaiter, report, TestCommon.FILE_SIZE_REGULAR, false, true);
+                checkRepeatVarsDuringDownload(repeatVars);
+                mWaiterError.assertTrue(percent >= 0 && percent <= 100);
+                mWaiter.resume();
             }
 
             @Override
@@ -143,18 +139,6 @@ public class SpeedTestRepeatTest extends AbstractTest {
                             report.getTransferRateBit(),
                             report.getTransferRateOctet(),
                             false, true);
-                }
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                if (!download) {
-                    SpeedTestUtils.testReportNotEmpty(mWaiter, report, TestCommon.FILE_SIZE_REGULAR, false, true);
-                    checkRepeatVarsDuringUpload(repeatVars);
-                    mWaiterError.assertTrue(percent >= 0 && percent <= 100);
-                    mWaiter.resume();
-                } else {
-                    mWaiterError.fail("shouldnt be in onUploadProgress");
                 }
             }
 
@@ -201,7 +185,7 @@ public class SpeedTestRepeatTest extends AbstractTest {
                 Assert.fail(e.getMessage());
             }
             */
-            listenerList.get(1).onUploadProgress(0, null);
+            listenerList.get(1).onProgress(0, null);
             listenerList.get(1).onUploadFinished(null);
             listenerList.get(1).onInterruption();
 
@@ -238,7 +222,7 @@ public class SpeedTestRepeatTest extends AbstractTest {
                                 }
                             });
             Assert.assertEquals(repeatVars.isFirstUploadRepeat(), true);
-            listenerList.get(1).onDownloadProgress(0, null);
+            listenerList.get(1).onProgress(0, null);
             listenerList.get(1).onDownloadFinished(null);
             listenerList.get(1).onInterruption();
         }
@@ -435,7 +419,7 @@ public class SpeedTestRepeatTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadProgress(final float percent, final SpeedTestReport report) {
+            public void onProgress(final float percent, final SpeedTestReport report) {
                 //called to notify download progress
             }
 
@@ -447,11 +431,6 @@ public class SpeedTestRepeatTest extends AbstractTest {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadProgress(final float percent, final SpeedTestReport report) {
-                //called to notify upload progress
             }
 
             @Override
