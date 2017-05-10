@@ -153,14 +153,14 @@ public interface ISpeedTestSocket {
     /**
      * Get download setup time value.
      *
-     * @return
+     * @return download setup time
      */
     long getDownloadSetupTime();
 
     /**
      * Get upload setup time value.
      *
-     * @return
+     * @return upload setup time
      */
     long getUploadSetupTime();
 }
