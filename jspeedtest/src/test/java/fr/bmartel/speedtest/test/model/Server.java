@@ -27,6 +27,8 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Server template used in serverlist.json testing configuration file.
+ *
+ * @author Bertrand Martel
  */
 public class Server {
 

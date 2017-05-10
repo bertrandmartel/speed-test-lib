@@ -27,6 +27,8 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Model for download/upload mode in serverlist configuration file.
+ *
+ * @author Bertrand Martel
  */
 public enum ServerMode {
     @SerializedName("download")
