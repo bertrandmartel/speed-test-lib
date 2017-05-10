@@ -1,77 +1,38 @@
 [
-    {
-        "host": "2.testdebit.info",
-        "download": [
-            {
-                "protocol": "http",
-                "uri": "/fichiers/1Mo.dat"
-            }
-        ],
-        "upload": [
-            {
-                "protocol": "http",
-                "uri": "/"
-            }
-        ]
-    },
-    {
-        "host": "mirror.internode.on.net",
-        "download": [
-            {
-                "protocol": "http",
-                "uri": "/pub/speed/SpeedTest_16MB"
-            }
-        ]
-    },
-    {
-        "host": "test.talia.net",
-        "download": [
-            {
-                "protocol": "http",
-                "uri": "/dl/1mb.pak"
-            }
-        ]
-    },
-    {
-        "host": "speedtest.ftp.otenet.gr",
-        "download": [
-            {
-                "protocol": "http",
-                "uri": "/files/test1Mb.db"
-            }
-        ]
-    },
-    {
-        "host": "ftp.otenet.gr",
-        "download": [
-            {
-                "protocol": "ftp",
-                "uri": "/test1Mb.db",
-                "username": "speedtest",
-                "password": "speedtest"
-            }
-        ]
-    },
-    {
-        "host": "speedtest.serverius.net",
-        "download": [
-            {
-                "protocol": "http",
-                "uri": "/files/10mb.bin"
-            },
-            {
-                "protocol": "ftp",
-                "uri": "/10mb.bin"
-            }
-        ]
-    },
-    {
-        "host": "ovh.net",
-        "download": [
-            {
-                "protocol": "http",
-                "uri": "/files/1Mb.dat"
-            }
-        ]
-    }
+  {
+    "mode": "download",
+    "uri": "http://2.testdebit.info/fichiers/1Mo.dat"
+  },
+  {
+    "mode": "upload",
+    "uri": "http://2.testdebit.info/"
+  },
+  {
+    "mode": "download",
+    "uri": "http://mirror.internode.on.net/pub/speed/SpeedTest_16MB"
+  },
+  {
+    "mode": "download",
+    "uri": "http://test.talia.net/dl/1mb.pak"
+  },
+  {
+    "mode": "download",
+    "uri": "http://speedtest.ftp.otenet.gr/files/test1Mb.db"
+  },
+  {
+    "mode": "download",
+    "uri": "ftp://speedtest:speedtest@ftp.otenet.gr/test1Mb.db"
+  },
+  {
+    "mode": "download",
+    "uri": "http://speedtest.serverius.net/files/10mb.bin"
+  },
+  {
+    "mode": "download",
+    "uri": "ftp://speedtest.serverius.net/10mb.bin"
+  },
+  {
+    "mode": "download",
+    "uri": "http://ovh.net/files/1Mb.dat"
+  }
 ]

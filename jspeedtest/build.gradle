@@ -26,6 +26,7 @@ dependencies {
     testCompile 'junit:junit:4.11'
     testCompile 'net.jodah:concurrentunit:0.4.2'
     testCompile 'com.googlecode.json-simple:json-simple:1.1.1'
+    testCompile 'com.google.code.gson:gson:2.8.0'
 }
 
 def siteUrl = 'https://github.com/bertrandmartel/speed-test-lib'
@@ -102,7 +103,7 @@ install {
             whenConfigured {
                 p ->
                     p.dependencies = p.dependencies.findAll {
-                        dep -> (dep.artifactId.notIn(["junit", "concurrentunit", "json-simple"]))
+                        dep -> (dep.artifactId.notIn(["junit", "concurrentunit", "json-simple", "gson"]))
                     }
             }
         }

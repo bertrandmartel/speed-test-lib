@@ -24,16 +24,17 @@
 
 package fr.bmartel.speedtest.test;
 
-import fr.bmartel.speedtest.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.inter.ISpeedTestListener;
 import fr.bmartel.speedtest.model.SpeedTestError;
+import fr.bmartel.speedtest.test.model.Server;
 import fr.bmartel.speedtest.test.utils.TestCommon;
 import net.jodah.concurrentunit.Waiter;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.FileReader;
@@ -41,6 +42,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -68,144 +70,47 @@ public class SpeedTestServerTest extends AbstractTest {
 
         initSocket();
 
+        final GsonBuilder gsonBuilder = new GsonBuilder();
+        final Gson gson = gsonBuilder.create();
+
         final URL url = getClass().getResource("/" + TestCommon.SERVER_LIST_FILENAME);
 
-        final Object obj = new JSONParser().parse(new FileReader(url.getPath()));
+        final JsonReader reader = new JsonReader(new FileReader(url.getPath()));
 
-        final JSONArray servers = (JSONArray) obj;
+        final List<Server> serverList = gson.fromJson(reader,
+                new TypeToken<List<Server>>() {
+                }.getType());
 
-        for (int i = 0; i < servers.size(); i++) {
+        for (final Server server : serverList) {
 
-            final JSONObject serverObj = (JSONObject) servers.get(i);
+            mWaiter = new Waiter();
 
-            if (serverObj.containsKey("host")) {
+            final URL serverUrl = new URL(server.getUri());
 
-                final String host = serverObj.get("host").toString();
+            System.out.println("[" + server.getMode() + "] " + serverUrl.getProtocol() + " - " + server.getUri());
 
-                if (serverObj.containsKey("download")) {
+            switch (server.getMode()) {
+                case DOWNLOAD:
+                    mSocket.startDownload(server.getUri());
+                    break;
+                case UPLOAD:
 
-                    final JSONArray downloadEndpoints = (JSONArray) serverObj.get("download");
-
-                    for (int j = 0; j < downloadEndpoints.size(); j++) {
-
-                        final JSONObject downloadEndpoint = (JSONObject) downloadEndpoints.get(j);
-
-                        if (downloadEndpoint.containsKey("protocol")) {
-
-                            final String protocol = downloadEndpoint.get("protocol").toString();
-
-                            if (downloadEndpoint.containsKey("uri")) {
-
-                                final String uri = downloadEndpoint.get("uri").toString();
-
-                                switch (protocol) {
-                                    case "http":
-                                        System.out.println("[download] HTTP - testing " + host + " with uri " + uri);
-                                        mWaiter = new Waiter();
-                                        mSocket.startDownload("http://" + host + uri);
-                                        mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
-                                        mWaiter = new Waiter();
-                                        mSocket.forceStopTask();
-                                        mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
-                                        break;
-                                    case "ftp":
-
-                                        String username = SpeedTestConst.FTP_DEFAULT_USER;
-                                        String password = SpeedTestConst.FTP_DEFAULT_PASSWORD;
-
-                                        if (downloadEndpoint.containsKey("username")) {
-                                            username = downloadEndpoint.get("username").toString();
-                                        }
-                                        if (downloadEndpoint.containsKey("password")) {
-                                            password = downloadEndpoint.get("password").toString();
-                                        }
-                                        System.out.println("[download] FTP - testing " + "ftp://" + username + ":" +
-                                                password + "@" + host + ":"
-                                                + SpeedTestConst.FTP_DEFAULT_PORT + uri);
-                                        mWaiter = new Waiter();
-                                        mSocket.startDownload("ftp://" + username + ":" + password + "@" + host + ":"
-                                                + SpeedTestConst.FTP_DEFAULT_PORT + uri);
-                                        mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
-                                        mWaiter = new Waiter();
-                                        mSocket.forceStopTask();
-                                        mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
-                                        break;
-                                    default:
-                                        break;
-                                }
-
-                            } else {
-                                Assert.fail("download for host " + host + " has no uri");
-                            }
-                        } else {
-                            Assert.fail("download for host " + host + " has no protocol");
-                        }
+                    if (serverUrl.getProtocol().equals("ftp")) {
+                        final String fileName = generateFileName() + ".txt";
+                        mSocket.startUpload(server.getUri() + fileName, TestCommon.FILE_SIZE_LARGE);
+                    } else {
+                        mSocket.startUpload(server.getUri(), TestCommon.FILE_SIZE_LARGE);
                     }
-                }
-                if (serverObj.containsKey("upload")) {
-
-                    final JSONArray uploadEndpoints = (JSONArray) serverObj.get("upload");
-
-                    for (int j = 0; j < uploadEndpoints.size(); j++) {
-
-                        final JSONObject uploadEndpoint = (JSONObject) uploadEndpoints.get(j);
-
-                        if (uploadEndpoint.containsKey("protocol")) {
-
-                            final String protocol = uploadEndpoint.get("protocol").toString();
-
-                            if (uploadEndpoint.containsKey("uri")) {
-
-                                final String uri = uploadEndpoint.get("uri").toString();
-
-                                switch (protocol) {
-                                    case "http":
-                                        System.out.println("[upload] HTTP - testing " + host + " with uri " + uri);
-                                        mWaiter = new Waiter();
-                                        mSocket.startUpload("http://" + host + uri, TestCommon.FILE_SIZE_LARGE);
-                                        mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
-                                        mWaiter = new Waiter();
-                                        mSocket.forceStopTask();
-                                        mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
-                                        break;
-                                    case "ftp":
-                                        String username = SpeedTestConst.FTP_DEFAULT_USER;
-                                        String password = SpeedTestConst.FTP_DEFAULT_PASSWORD;
-
-                                        if (uploadEndpoint.containsKey("username")) {
-                                            username = uploadEndpoint.get("username").toString();
-                                        }
-                                        if (uploadEndpoint.containsKey("password")) {
-                                            password = uploadEndpoint.get("password").toString();
-                                        }
-                                        System.out.println("[upload] FTP - testing " + host + " with uri " + uri);
-                                        final String fileName = generateFileName() + ".txt";
-                                        mWaiter = new Waiter();
-                                        mSocket.startUpload("ftp://" + username + ":" + password + "@" + host + ":" +
-                                                SpeedTestConst
-                                                        .FTP_DEFAULT_PORT + uri + "/" +
-                                                fileName, TestCommon.FILE_SIZE_LARGE);
-                                        mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
-                                        mWaiter = new Waiter();
-                                        mSocket.forceStopTask();
-                                        mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
-                                        break;
-                                    default:
-                                        break;
-                                }
-
-                            } else {
-                                Assert.fail("upload for host " + host + " has no uri");
-                            }
-
-                        } else {
-                            Assert.fail("upload for host " + host + " has no protocol");
-                        }
-                    }
-                }
+                    break;
+                default:
+                    break;
             }
-        }
 
+            mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
+            mWaiter = new Waiter();
+            mSocket.forceStopTask();
+            mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
+        }
         mSocket.clearListeners();
     }
 
