@@ -663,6 +663,7 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      */
     @Override
     public void forceStopTask() {
+        mRepeatWrapper.cleanTimer();
         mTask.forceStopTask();
         mTask.closeSocket();
         shutdownAndWait();

@@ -24,7 +24,8 @@
 
 package fr.bmartel.speedtest.test;
 
-import fr.bmartel.speedtest.*;
+import fr.bmartel.speedtest.RepeatWrapper;
+import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.inter.IRepeatListener;
 import fr.bmartel.speedtest.inter.ISpeedTestListener;
 import fr.bmartel.speedtest.model.SpeedTestError;
@@ -40,7 +41,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -490,16 +490,15 @@ public class SpeedTestRepeatTest extends AbstractTest {
 
         final Method method;
 
-        Class[] cArg = new Class[2];
+        Class[] cArg = new Class[1];
         cArg[0] = ISpeedTestListener.class;
-        cArg[1] = Timer.class;
 
         method = repeatWrapper.getClass().getDeclaredMethod("clearRepeatTask", cArg);
 
         method.setAccessible(true);
         Assert.assertNotNull(method);
 
-        method.invoke(repeatWrapper, listener, new Timer());
+        method.invoke(repeatWrapper, listener);
 
         Assert.assertEquals(repeatVars.isRepeatFinished(), true);
         Assert.assertEquals(listenerList.size(), 0);

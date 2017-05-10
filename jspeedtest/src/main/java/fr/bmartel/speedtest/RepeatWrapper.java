@@ -107,6 +107,11 @@ public class RepeatWrapper {
     private final ISpeedTestSocket mSpeedTestSocket;
 
     /**
+     * Timer used in repeat methods.
+     */
+    private Timer mTimer;
+
+    /**
      * Build Speed test repeat.
      *
      * @param socket speed test socket
@@ -225,7 +230,7 @@ public class RepeatWrapper {
 
         initRepeat(true);
 
-        final Timer timer = new Timer();
+        mTimer = new Timer();
 
         final ISpeedTestListener speedTestListener = new ISpeedTestListener() {
             @Override
@@ -242,7 +247,7 @@ public class RepeatWrapper {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                clearRepeatTask(this, timer);
+                clearRepeatTask(this);
             }
 
             @Override
@@ -252,7 +257,7 @@ public class RepeatWrapper {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                clearRepeatTask(this, timer);
+                clearRepeatTask(this);
             }
 
             @Override
@@ -270,13 +275,12 @@ public class RepeatWrapper {
 
         mRepeatWindows = repeatWindow;
 
-        timer.schedule(new TimerTask() {
+        mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 mSpeedTestSocket.removeSpeedTestListener(speedTestListener);
                 mSpeedTestSocket.forceStopTask();
-                timer.cancel();
-                timer.purge();
+                cleanTimer();
                 mRepeatFinished = true;
                 if (repeatListener != null) {
                     repeatListener.onFinish(mSpeedTestSocket.getLiveDownloadReport());
@@ -284,7 +288,7 @@ public class RepeatWrapper {
             }
         }, repeatWindow);
 
-        timer.scheduleAtFixedRate(new TimerTask() {
+        mTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 if (repeatListener != null) {
@@ -316,7 +320,7 @@ public class RepeatWrapper {
 
         initRepeat(false);
 
-        final Timer timer = new Timer();
+        mTimer = new Timer();
 
         final ISpeedTestListener speedTestListener = new ISpeedTestListener() {
             @Override
@@ -331,7 +335,7 @@ public class RepeatWrapper {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                clearRepeatTask(this, timer);
+                clearRepeatTask(this);
             }
 
             @Override
@@ -343,7 +347,7 @@ public class RepeatWrapper {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                clearRepeatTask(this, timer);
+                clearRepeatTask(this);
             }
 
             @Override
@@ -361,13 +365,12 @@ public class RepeatWrapper {
 
         mRepeatWindows = repeatWindow;
 
-        timer.schedule(new TimerTask() {
+        mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 mSpeedTestSocket.removeSpeedTestListener(speedTestListener);
                 mSpeedTestSocket.forceStopTask();
-                timer.cancel();
-                timer.purge();
+                cleanTimer();
                 mRepeatFinished = true;
                 if (repeatListener != null) {
                     repeatListener.onFinish(mSpeedTestSocket.getLiveUploadReport());
@@ -375,7 +378,7 @@ public class RepeatWrapper {
             }
         }, repeatWindow);
 
-        timer.scheduleAtFixedRate(new TimerTask() {
+        mTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 if (repeatListener != null) {
@@ -385,6 +388,13 @@ public class RepeatWrapper {
         }, reportPeriodMillis, reportPeriodMillis);
 
         startUploadRepeat(hostname, port, uri, fileSizeOctet);
+    }
+
+    public void cleanTimer() {
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer.purge();
+        }
     }
 
     /**
@@ -416,15 +426,11 @@ public class RepeatWrapper {
      * Clear completly download/upload repeat task.
      *
      * @param listener speed test listener
-     * @param timer    finished task timer
      */
-    private void clearRepeatTask(final ISpeedTestListener listener, final Timer timer) {
+    private void clearRepeatTask(final ISpeedTestListener listener) {
 
         mSpeedTestSocket.removeSpeedTestListener(listener);
-        if (timer != null) {
-            timer.cancel();
-            timer.purge();
-        }
+        cleanTimer();
         mRepeatFinished = true;
         mSpeedTestSocket.closeSocket();
         mSpeedTestSocket.shutdownAndWait();
