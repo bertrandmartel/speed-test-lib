@@ -598,7 +598,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
                 duration, reportInterval, new
                         IRepeatListener() {
                             @Override
-                            public void onFinish(final SpeedTestReport report) {
+                            public void onCompletion(final SpeedTestReport report) {
 
                                 SpeedTestUtils.compareFinishReport(mSocket, waiter, packetSize, report, true);
 
@@ -637,7 +637,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
                 duration, reportInterval, packetSize, new
                         IRepeatListener() {
                             @Override
-                            public void onFinish(final SpeedTestReport report) {
+                            public void onCompletion(final SpeedTestReport report) {
 
                                 SpeedTestUtils.compareFinishReport(mSocket, waiter, packetSize, report, false);
 

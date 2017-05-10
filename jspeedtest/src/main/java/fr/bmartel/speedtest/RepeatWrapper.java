@@ -261,7 +261,7 @@ public class RepeatWrapper {
                 cleanTimer();
                 mRepeatFinished = true;
                 if (repeatListener != null) {
-                    repeatListener.onFinish(mSpeedTestSocket.getLiveDownloadReport());
+                    repeatListener.onCompletion(mSpeedTestSocket.getLiveDownloadReport());
                 }
             }
         }, repeatWindow);
@@ -334,7 +334,7 @@ public class RepeatWrapper {
                 cleanTimer();
                 mRepeatFinished = true;
                 if (repeatListener != null) {
-                    repeatListener.onFinish(mSpeedTestSocket.getLiveUploadReport());
+                    repeatListener.onCompletion(mSpeedTestSocket.getLiveUploadReport());
                 }
             }
         }, repeatWindow);

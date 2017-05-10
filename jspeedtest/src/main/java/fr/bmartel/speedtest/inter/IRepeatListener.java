@@ -38,7 +38,7 @@ public interface IRepeatListener {
      *
      * @param report speed examples report
      */
-    void onFinish(SpeedTestReport report);
+    void onCompletion(SpeedTestReport report);
 
     /**
      * called when a speed examples report is sent.

@@ -130,7 +130,7 @@ public class ChainingRepeatExample {
                 SPEED_TEST_DURATION, REPORT_INTERVAL, new
                         IRepeatListener() {
                             @Override
-                            public void onFinish(final SpeedTestReport report) {
+                            public void onCompletion(final SpeedTestReport report) {
 
                                 if (LOGGER.isDebugEnabled()) {
                                     LOGGER.debug(LogUtils.LOG_REPORT_SEPARATOR);
@@ -162,7 +162,7 @@ public class ChainingRepeatExample {
                 SPEED_TEST_DURATION, REPORT_INTERVAL, FILE_SIZE, new
                         IRepeatListener() {
                             @Override
-                            public void onFinish(final SpeedTestReport report) {
+                            public void onCompletion(final SpeedTestReport report) {
 
                                 if (LOGGER.isDebugEnabled()) {
                                     LOGGER.debug(LogUtils.LOG_REPORT_SEPARATOR);

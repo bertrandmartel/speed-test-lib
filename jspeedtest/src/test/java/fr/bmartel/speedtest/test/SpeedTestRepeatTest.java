@@ -140,7 +140,7 @@ public class SpeedTestRepeatTest extends AbstractTest {
                     TestCommon.SPEED_TEST_DURATION, TestCommon.REPORT_INTERVAL, new
                             IRepeatListener() {
                                 @Override
-                                public void onFinish(final SpeedTestReport report) {
+                                public void onCompletion(final SpeedTestReport report) {
                                     SpeedTestUtils.compareFinishReport(mSocket, finishWaiter, TestCommon
                                             .FILE_SIZE_REGULAR, report, true);
                                     testRepeatVarsPostResult(finishWaiter, repeatVars, true, TestCommon
@@ -179,7 +179,7 @@ public class SpeedTestRepeatTest extends AbstractTest {
                     TestCommon.SPEED_TEST_DURATION, TestCommon.REPORT_INTERVAL, TestCommon.FILE_SIZE_REGULAR, new
                             IRepeatListener() {
                                 @Override
-                                public void onFinish(final SpeedTestReport report) {
+                                public void onCompletion(final SpeedTestReport report) {
 
                                     SpeedTestUtils.compareFinishReport(mSocket, finishWaiter, TestCommon
                                                     .FILE_SIZE_REGULAR,
@@ -532,7 +532,7 @@ public class SpeedTestRepeatTest extends AbstractTest {
                     TestCommon.SPEED_TEST_DURATION, TestCommon.REPORT_INTERVAL, new
                             IRepeatListener() {
                                 @Override
-                                public void onFinish(final SpeedTestReport report) {
+                                public void onCompletion(final SpeedTestReport report) {
                                 }
 
                                 @Override
@@ -545,7 +545,7 @@ public class SpeedTestRepeatTest extends AbstractTest {
                     TestCommon.SPEED_TEST_DURATION, TestCommon.REPORT_INTERVAL, TestCommon.FILE_SIZE_REGULAR, new
                             IRepeatListener() {
                                 @Override
-                                public void onFinish(final SpeedTestReport report) {
+                                public void onCompletion(final SpeedTestReport report) {
                                 }
 
                                 @Override
