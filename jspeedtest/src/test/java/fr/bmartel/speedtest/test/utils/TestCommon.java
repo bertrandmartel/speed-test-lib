@@ -109,7 +109,7 @@ public class TestCommon {
     /**
      * default timeout waiting time in seconds.
      */
-    public final static int WAITING_TIMEOUT_DEFAULT_SEC = 2;
+    public final static int WAITING_TIMEOUT_DEFAULT_SEC = 4;
 
     /**
      * default timeout waiting time for long operation such as DL / UL
