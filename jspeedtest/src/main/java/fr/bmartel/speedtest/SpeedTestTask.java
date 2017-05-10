@@ -226,12 +226,14 @@ public class SpeedTestTask {
                     startFtpDownload(uri, user, pwd);
                     break;
                 default:
-                    SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, "unsupported protocol " +
-                            url.getProtocol());
+                    SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, true,
+                            SpeedTestError.UNSUPPORTED_PROTOCOL,
+                            "unsupported protocol");
                     break;
             }
         } catch (MalformedURLException e) {
-            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
+            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, true, SpeedTestError.MALFORMED_URI,
+                    e.getMessage());
         }
     }
 
@@ -242,6 +244,11 @@ public class SpeedTestTask {
      * @param fileSizeOctet file size to upload in octet
      */
     public void startUploadRequest(final String uri, final int fileSizeOctet) {
+
+        mSpeedTestMode = SpeedTestMode.UPLOAD;
+
+        mForceCloseSocket = false;
+        mErrorDispatched = false;
 
         try {
             final URL url = new URL(uri);
@@ -254,12 +261,14 @@ public class SpeedTestTask {
                     startFtpUpload(uri, fileSizeOctet);
                     break;
                 default:
-                    SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, "unsupported protocol " +
-                            url.getProtocol());
+                    SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false,
+                            SpeedTestError.UNSUPPORTED_PROTOCOL,
+                            "unsupported protocol");
                     break;
             }
         } catch (MalformedURLException e) {
-            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
+            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, SpeedTestError.MALFORMED_URI,
+                    e.getMessage());
         }
     }
 
@@ -280,15 +289,12 @@ public class SpeedTestTask {
      */
     public void writeUpload(final String uri, final int fileSizeOctet) {
 
-        mSpeedTestMode = SpeedTestMode.UPLOAD;
         try {
             final URL url = new URL(uri);
 
             this.mHostname = url.getHost();
             this.mPort = url.getPort() != -1 ? url.getPort() : 80;
             mUploadFileSize = new BigDecimal(fileSizeOctet);
-            mForceCloseSocket = false;
-            mErrorDispatched = false;
             mUploadTempFileSize = 0;
             mTimeStart = System.currentTimeMillis();
 
@@ -427,7 +433,8 @@ public class SpeedTestTask {
                 }
             }, false);
         } catch (MalformedURLException e) {
-            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
+            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, SpeedTestError.MALFORMED_URI,
+                    e.getMessage());
         }
     }
 
@@ -1002,7 +1009,9 @@ public class SpeedTestTask {
                 }
             });
         } catch (MalformedURLException e) {
-            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
+            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, true,
+                    SpeedTestError.MALFORMED_URI,
+                    e.getMessage());
         }
     }
 
@@ -1201,7 +1210,8 @@ public class SpeedTestTask {
                 }
             });
         } catch (MalformedURLException e) {
-            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
+            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, SpeedTestError.MALFORMED_URI,
+                    e.getMessage());
         }
     }
 

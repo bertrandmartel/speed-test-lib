@@ -46,6 +46,13 @@ public enum SpeedTestError {
     /**
      * connection error occured.
      */
-    CONNECTION_ERROR
-
+    CONNECTION_ERROR,
+    /**
+     * Malformed URI
+     */
+    MALFORMED_URI,
+    /**
+     * protocol can be FTP or HTTP
+     */
+    UNSUPPORTED_PROTOCOL
 }

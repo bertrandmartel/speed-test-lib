@@ -1,6 +1,7 @@
 package fr.bmartel.speedtest.test.server;
 
 import fr.bmartel.speedtest.SpeedTestSocket;
+import fr.bmartel.speedtest.model.SpeedTestError;
 import fr.bmartel.speedtest.test.AbstractTest;
 import org.junit.Before;
 
@@ -15,6 +16,12 @@ public class ServerRetryTest extends AbstractTest {
      * http server.
      */
     protected static HttpServer mServer;
+
+
+    /**
+     * Expected error.
+     */
+    protected SpeedTestError mExpectedError;
 
     /**
      * Stop server.
@@ -32,5 +39,6 @@ public class ServerRetryTest extends AbstractTest {
         }
         mSocket = new SpeedTestSocket();
         stopServer();
+        mExpectedError = null;
     }
 }

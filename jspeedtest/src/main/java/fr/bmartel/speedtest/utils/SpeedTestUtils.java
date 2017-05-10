@@ -89,6 +89,29 @@ public class SpeedTestUtils {
         }
     }
 
+    public static void dispatchError(final boolean forceCloseSocket,
+                                     final List<ISpeedTestListener> listenerList,
+                                     final boolean isDownload,
+                                     final SpeedTestError error,
+                                     final String errorMessage) {
+
+        if (!forceCloseSocket) {
+            if (isDownload) {
+                for (int i = 0; i < listenerList.size(); i++) {
+                    listenerList.get(i).onDownloadError(error, errorMessage);
+                }
+            } else {
+                for (int i = 0; i < listenerList.size(); i++) {
+                    listenerList.get(i).onUploadError(error, errorMessage);
+                }
+            }
+        } else {
+            for (int i = 0; i < listenerList.size(); i++) {
+                listenerList.get(i).onInterruption();
+            }
+        }
+    }
+
     /**
      * Read data from RAM of FILE storage for upload task.
      *

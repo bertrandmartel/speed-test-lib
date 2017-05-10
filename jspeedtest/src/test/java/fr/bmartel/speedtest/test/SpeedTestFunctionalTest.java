@@ -165,8 +165,12 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
 
             @Override
             public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
-                mWaiter.resume();
+                if (mExpectedError != null && speedTestError == mExpectedError) {
+                    mWaiter.resume();
+                } else {
+                    mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
+                    mWaiter.resume();
+                }
             }
 
             @Override
@@ -194,6 +198,13 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
         testDownload(SPEED_TEST_SERVER_URI_DL_1MO);
         testDownload(SPEED_TEST_SERVER_URI_DL_5MO);
         testDownload(SPEED_TEST_SERVER_URI_DL_10MO);
+
+        testError(SpeedTestError.MALFORMED_URI, "://" + SPEED_TEST_SERVER_HOST + ":" +
+                SPEED_TEST_SERVER_PORT +
+                SPEED_TEST_SERVER_URI_DL_1MO, true);
+        testError(SpeedTestError.UNSUPPORTED_PROTOCOL, "https://" + SPEED_TEST_SERVER_HOST + ":" +
+                SPEED_TEST_SERVER_PORT +
+                SPEED_TEST_SERVER_URI_DL_1MO, true);
 
         stopServer();
 
@@ -237,8 +248,12 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
 
             @Override
             public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
-                mWaiter.resume();
+                if (mExpectedError != null && speedTestError == mExpectedError) {
+                    mWaiter.resume();
+                } else {
+                    mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
+                    mWaiter.resume();
+                }
             }
 
             @Override
@@ -257,6 +272,13 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
 
         testUpload(1000000, false);
         testUpload(10000000, false);
+
+        testError(SpeedTestError.MALFORMED_URI, "://" + SPEED_TEST_SERVER_HOST + ":" +
+                SPEED_TEST_SERVER_PORT +
+                SPEED_TEST_SERVER_URI_DL_1MO, false);
+        testError(SpeedTestError.UNSUPPORTED_PROTOCOL, "https://" + SPEED_TEST_SERVER_HOST + ":" +
+                SPEED_TEST_SERVER_PORT +
+                SPEED_TEST_SERVER_URI_DL_1MO, false);
 
         stopServer();
 
@@ -379,6 +401,29 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
         mWaiter.await(WAITING_TIMEOUT_LONG_OPERATION, SECONDS);
 
         testTransferRate();
+
+        mSocket.forceStopTask();
+    }
+
+    /**
+     * Test URI malformed or unsupported.
+     */
+    private void testError(final SpeedTestError expectedError, final String uri, final boolean isDownload) throws
+            TimeoutException {
+
+        mWaiter = new Waiter();
+
+        mExpectedError = expectedError;
+
+        if (isDownload) {
+            mSocket.startDownload(uri);
+        } else {
+            mSocket.startUpload(uri, 1000000);
+        }
+
+        mWaiter.await(WAITING_TIMEOUT_LONG_OPERATION, SECONDS);
+
+        mExpectedError = null;
 
         mSocket.forceStopTask();
     }
