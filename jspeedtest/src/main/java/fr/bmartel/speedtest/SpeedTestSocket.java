@@ -103,6 +103,24 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     private long mUploadSetupTime = SpeedTestConst.DEFAULT_UPLOAD_SETUP_TIME;
 
     /**
+     * report interval in milliseconds.
+     */
+    private int mReportInterval = -1;
+
+    public SpeedTestSocket() {
+
+    }
+
+    /**
+     * Initialize global report interval value.
+     *
+     * @param reportInterval report value in milliseconds
+     */
+    public SpeedTestSocket(final int reportInterval) {
+        mReportInterval = reportInterval;
+    }
+
+    /**
      * initialize report task.
      *
      * @param reportInterval report interval in milliseconds
@@ -171,6 +189,10 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     public void startFixedDownload(final String uri,
                                    final int maxDuration) {
 
+        if (mReportInterval != -1 && !mTask.isReportInterval()) {
+            initReportTask(mReportInterval, true);
+            mTask.setReportInterval(true);
+        }
         mTask.renewReportThreadPool();
 
         mTask.getReportThreadPool().schedule(new Runnable() {
@@ -218,6 +240,10 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      */
     @Override
     public void startDownload(final String uri) {
+        if (mReportInterval != -1 && !mTask.isReportInterval()) {
+            initReportTask(mReportInterval, true);
+            mTask.setReportInterval(true);
+        }
         mTask.startDownloadRequest(uri);
     }
 
@@ -232,6 +258,10 @@ public class SpeedTestSocket implements ISpeedTestSocket {
                                  final int fileSizeOctet,
                                  final int maxDuration) {
 
+        if (mReportInterval != -1 && !mTask.isReportInterval()) {
+            initReportTask(mReportInterval, false);
+            mTask.setReportInterval(true);
+        }
         mTask.renewReportThreadPool();
 
         mTask.getReportThreadPool().schedule(new Runnable() {
@@ -259,7 +289,6 @@ public class SpeedTestSocket implements ISpeedTestSocket {
             final int reportInterval) {
 
         initReportTask(reportInterval, false);
-
         mTask.setReportInterval(true);
         startFixedUpload(uri, fileSizeOctet, maxDuration);
     }
@@ -289,6 +318,10 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      */
     @Override
     public void startUpload(final String uri, final int fileSizeOctet) {
+        if (mReportInterval != -1 && !mTask.isReportInterval()) {
+            initReportTask(mReportInterval, false);
+            mTask.setReportInterval(true);
+        }
         mTask.startUploadRequest(uri, fileSizeOctet);
     }
 

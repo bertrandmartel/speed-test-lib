@@ -1274,6 +1274,15 @@ public class SpeedTestTask {
     }
 
     /**
+     * Check if report interval is set.
+     *
+     * @return
+     */
+    public boolean isReportInterval() {
+        return mReportInterval;
+    }
+
+    /**
      * retrieve current speed test mode.
      *
      * @return speed test mode (UPLOAD/DOWNLOAD/NONE)
