@@ -216,7 +216,7 @@ public class SpeedTestServerTest extends AbstractTest {
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
-            public void onDownloadFinished(final SpeedTestReport report) {
+            public void onCompletion(final SpeedTestReport report) {
                 //called when download is finished
             }
 
@@ -224,11 +224,6 @@ public class SpeedTestServerTest extends AbstractTest {
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError + " : " + errorMessage);
                 mWaiter.resume();
-            }
-
-            @Override
-            public void onUploadFinished(final SpeedTestReport report) {
-                //called when upload is finished
             }
 
             @Override

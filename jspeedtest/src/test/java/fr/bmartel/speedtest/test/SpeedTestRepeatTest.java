@@ -104,16 +104,12 @@ public class SpeedTestRepeatTest extends AbstractTest {
 
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadFinished(final SpeedTestReport report) {
-
-                if (!download) {
-                    mWaiterError.fail("shouldnt be in onUploadFinished");
-                } else {
-                    SpeedTestUtils.checkSpeedTestResult(mSocket, mWaiterError, report.getTemporaryPacketSize(),
-                            TestCommon.FILE_SIZE_REGULAR, report.getTransferRateBit(),
-                            report.getTransferRateOctet(),
-                            true, true);
-                }
+            public void onCompletion(final SpeedTestReport report) {
+                SpeedTestUtils.checkSpeedTestResult(mSocket, mWaiterError, report.getTemporaryPacketSize(),
+                        TestCommon.FILE_SIZE_REGULAR,
+                        report.getTransferRateBit(),
+                        report.getTransferRateOctet(),
+                        download, true);
             }
 
             @Override
@@ -127,19 +123,6 @@ public class SpeedTestRepeatTest extends AbstractTest {
             @Override
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiterError.fail("unexpected error : " + speedTestError);
-            }
-
-            @Override
-            public void onUploadFinished(final SpeedTestReport report) {
-                if (download) {
-                    mWaiterError.fail("shouldnt be in onUploadFinished");
-                } else {
-                    SpeedTestUtils.checkSpeedTestResult(mSocket, mWaiterError, report.getTemporaryPacketSize(),
-                            TestCommon.FILE_SIZE_REGULAR,
-                            report.getTransferRateBit(),
-                            report.getTransferRateOctet(),
-                            false, true);
-                }
             }
 
             @Override
@@ -186,7 +169,7 @@ public class SpeedTestRepeatTest extends AbstractTest {
             }
             */
             listenerList.get(1).onProgress(0, null);
-            listenerList.get(1).onUploadFinished(null);
+            listenerList.get(1).onCompletion(null);
             listenerList.get(1).onInterruption();
 
         } else if (!download && http) {
@@ -223,7 +206,7 @@ public class SpeedTestRepeatTest extends AbstractTest {
                             });
             Assert.assertEquals(repeatVars.isFirstUploadRepeat(), true);
             listenerList.get(1).onProgress(0, null);
-            listenerList.get(1).onDownloadFinished(null);
+            listenerList.get(1).onCompletion(null);
             listenerList.get(1).onInterruption();
         }
 
@@ -414,8 +397,8 @@ public class SpeedTestRepeatTest extends AbstractTest {
 
         final ISpeedTestListener listener = new ISpeedTestListener() {
             @Override
-            public void onDownloadFinished(final SpeedTestReport report) {
-                //called when download is finished
+            public void onCompletion(final SpeedTestReport report) {
+                //called when download/upload is completed
             }
 
             @Override
@@ -426,11 +409,6 @@ public class SpeedTestRepeatTest extends AbstractTest {
             @Override
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 //called when download error occur
-            }
-
-            @Override
-            public void onUploadFinished(final SpeedTestReport report) {
-                //called when upload is finished
             }
 
             @Override

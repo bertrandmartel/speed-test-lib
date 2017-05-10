@@ -24,7 +24,8 @@
 
 package fr.bmartel.speedtest.examples;
 
-import fr.bmartel.speedtest.*;
+import fr.bmartel.speedtest.SpeedTestReport;
+import fr.bmartel.speedtest.SpeedTestSocket;
 import fr.bmartel.speedtest.inter.ISpeedTestListener;
 import fr.bmartel.speedtest.model.SpeedTestError;
 import fr.bmartel.speedtest.model.SpeedTestMode;
@@ -77,11 +78,6 @@ public class FixedTimeUploadExample {
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
-            public void onDownloadFinished(final SpeedTestReport report) {
-                //called when download is finished
-            }
-
-            @Override
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(errorMessage);
@@ -89,7 +85,7 @@ public class FixedTimeUploadExample {
             }
 
             @Override
-            public void onUploadFinished(final SpeedTestReport report) {
+            public void onCompletion(final SpeedTestReport report) {
                 //called when upload is finished
                 LogUtils.logFinishedTask(SpeedTestMode.UPLOAD, report.getTotalPacketSize(),
                         report.getTransferRateBit(),

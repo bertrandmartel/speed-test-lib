@@ -43,11 +43,11 @@ import fr.bmartel.speedtest.model.SpeedTestError;
 public interface ISpeedTestListener {
 
     /**
-     * monitor download process result with transfer rate in bit/s and octet/s.
+     * download/upload process completion with transfer rate in bit/s and octet/s.
      *
      * @param report download speed test report
      */
-    void onDownloadFinished(SpeedTestReport report);
+    void onCompletion(SpeedTestReport report);
 
     /**
      * monitor download/upload progress.
@@ -64,13 +64,6 @@ public interface ISpeedTestListener {
      * @param errorMessage   error message
      */
     void onError(SpeedTestError speedTestError, String errorMessage);
-
-    /**
-     * monitor upload process result with transfer rate in bit/s and octet/s.
-     *
-     * @param report upload speed test report
-     */
-    void onUploadFinished(SpeedTestReport report);
 
     /**
      * called when speed test is interrupted.

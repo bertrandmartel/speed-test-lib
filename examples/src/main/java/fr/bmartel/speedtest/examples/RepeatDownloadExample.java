@@ -77,8 +77,8 @@ public class RepeatDownloadExample {
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
-            public void onDownloadFinished(final SpeedTestReport report) {
-                //called when download is finished
+            public void onCompletion(final SpeedTestReport report) {
+                //called when download/upload is complete
             }
 
             @Override
@@ -86,11 +86,6 @@ public class RepeatDownloadExample {
                 if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(errorMessage);
                 }
-            }
-
-            @Override
-            public void onUploadFinished(final SpeedTestReport report) {
-                //called when upload is finished
             }
 
             @Override

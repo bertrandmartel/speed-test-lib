@@ -553,7 +553,7 @@ public class SpeedTestTask {
                 final SpeedTestReport report = mSocketInterface.getLiveDownloadReport();
 
                 for (int i = 0; i < mListenerList.size(); i++) {
-                    mListenerList.get(i).onDownloadFinished(report);
+                    mListenerList.get(i).onCompletion(report);
                 }
 
             } else {
@@ -643,7 +643,7 @@ public class SpeedTestTask {
                     final SpeedTestReport report = mSocketInterface.getLiveUploadReport();
 
                     for (int i = 0; i < mListenerList.size(); i++) {
-                        mListenerList.get(i).onUploadFinished(report);
+                        mListenerList.get(i).onCompletion(report);
                     }
 
                 } else {
@@ -981,7 +981,7 @@ public class SpeedTestTask {
                             final SpeedTestReport report = mSocketInterface.getLiveDownloadReport();
 
                             for (int i = 0; i < mListenerList.size(); i++) {
-                                mListenerList.get(i).onDownloadFinished(report);
+                                mListenerList.get(i).onCompletion(report);
                             }
 
                         } else {
@@ -1161,7 +1161,7 @@ public class SpeedTestTask {
                             final SpeedTestReport report = mSocketInterface.getLiveUploadReport();
 
                             for (int i = 0; i < mListenerList.size(); i++) {
-                                mListenerList.get(i).onUploadFinished(report);
+                                mListenerList.get(i).onCompletion(report);
                             }
 
                             if (!mRepeatWrapper.isRepeatUpload()) {

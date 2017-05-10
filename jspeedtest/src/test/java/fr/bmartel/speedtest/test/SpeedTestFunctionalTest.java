@@ -33,6 +33,7 @@ import fr.bmartel.speedtest.*;
 import fr.bmartel.speedtest.inter.IRepeatListener;
 import fr.bmartel.speedtest.inter.ISpeedTestListener;
 import fr.bmartel.speedtest.model.SpeedTestError;
+import fr.bmartel.speedtest.model.SpeedTestMode;
 import fr.bmartel.speedtest.model.UploadStorageType;
 import fr.bmartel.speedtest.test.server.HttpServer;
 import fr.bmartel.speedtest.test.server.IHttpServerEventListener;
@@ -147,7 +148,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
 
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadFinished(final SpeedTestReport report) {
+            public void onCompletion(final SpeedTestReport report) {
                 mExpectedTransferRateOps = report.getTransferRateOctet();
                 mExpectedTransferRateBps = report.getTransferRateBit();
                 mWaiter.resume();
@@ -166,11 +167,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
                     mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
                     mWaiter.resume();
                 }
-            }
-
-            @Override
-            public void onUploadFinished(final SpeedTestReport report) {
-                //called when upload is finished
             }
 
             @Override
@@ -207,10 +203,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
         mWaiter = new Waiter();
 
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
-            @Override
-            public void onDownloadFinished(final SpeedTestReport report) {
-                //called when download is finished
-            }
 
             @Override
             public void onProgress(final float percent, final SpeedTestReport report) {
@@ -218,7 +210,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             }
 
             @Override
-            public void onUploadFinished(final SpeedTestReport report) {
+            public void onCompletion(final SpeedTestReport report) {
                 mExpectedTransferRateOps = report.getTransferRateOctet();
                 mExpectedTransferRateBps = report.getTransferRateBit();
                 mWaiter.resume();
@@ -271,7 +263,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
 
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadFinished(final SpeedTestReport report) {
+            public void onCompletion(final SpeedTestReport report) {
                 //called when download is finished
             }
 
@@ -287,11 +279,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
                 } else {
                     mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
                 }
-            }
-
-            @Override
-            public void onUploadFinished(final SpeedTestReport report) {
-                //called when upload is finished
             }
 
             @Override
@@ -405,7 +392,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
 
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadFinished(final SpeedTestReport report) {
+            public void onCompletion(final SpeedTestReport report) {
                 SpeedTestFunctionalTest.this.mTransfeRateOctetRef = report.getTransferRateOctet();
                 SpeedTestFunctionalTest.this.mTransferRateBpsRef = report.getTransferRateBit();
                 waiter.resume();
@@ -420,11 +407,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 waiter.fail("onDownloadError : " + speedTestError);
                 waiter.resume();
-            }
-
-            @Override
-            public void onUploadFinished(final SpeedTestReport report) {
-                //called when upload is finished
             }
 
             @Override
@@ -460,18 +442,26 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
 
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
-            public void onDownloadFinished(final SpeedTestReport report) {
+            public void onCompletion(final SpeedTestReport report) {
 
                 checkResult(mWaiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
-                        report.getTransferRateOctet(), true, true);
-                mWaiter.resume();
-                chainCount++;
-                if (chainCount < 2) {
-                    mSocket.startUpload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon
-                            .SPEED_TEST_SERVER_PORT + TestCommon
-                            .SPEED_TEST_SERVER_URI_UL, totalPacketSize);
-                }
+                        report.getTransferRateOctet(), report.getSpeedTestMode() == SpeedTestMode.DOWNLOAD, true);
 
+                if (report.getSpeedTestMode() == SpeedTestMode.DOWNLOAD) {
+                    mWaiter.resume();
+                    chainCount++;
+                    if (chainCount < 2) {
+                        mSocket.startUpload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon
+                                .SPEED_TEST_SERVER_PORT + TestCommon
+                                .SPEED_TEST_SERVER_URI_UL, totalPacketSize);
+                    }
+                } else {
+                    mWaiter.resume();
+
+                    mSocket.startDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon
+                            .SPEED_TEST_SERVER_PORT + TestCommon
+                            .SPEED_TEST_SERVER_URI_DL_1MO);
+                }
             }
 
             @Override
@@ -482,19 +472,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
                 mWaiter.resume();
-            }
-
-            @Override
-            public void onUploadFinished(final SpeedTestReport report) {
-
-                checkResult(mWaiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
-                        report.getTransferRateOctet(), false, true);
-
-                mWaiter.resume();
-
-                mSocket.startDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon
-                        .SPEED_TEST_SERVER_PORT + TestCommon
-                        .SPEED_TEST_SERVER_URI_DL_1MO);
             }
 
             @Override
@@ -567,23 +544,16 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
-            public void onDownloadFinished(final SpeedTestReport report) {
-                //called when download is finished
+            public void onCompletion(final SpeedTestReport report) {
+                //called when download/upload is finished
                 checkResult(mWaiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
-                        report.getTransferRateOctet(), true, true);
+                        report.getTransferRateOctet(), report.getSpeedTestMode() == SpeedTestMode.DOWNLOAD, true);
             }
 
             @Override
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
                 mWaiter.resume();
-            }
-
-            @Override
-            public void onUploadFinished(final SpeedTestReport report) {
-                //called when upload is finished
-                checkResult(mWaiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
-                        report.getTransferRateOctet(), false, true);
             }
 
             @Override

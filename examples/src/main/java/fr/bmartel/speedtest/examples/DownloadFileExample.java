@@ -24,10 +24,10 @@
 
 package fr.bmartel.speedtest.examples;
 
-import fr.bmartel.speedtest.*;
+import fr.bmartel.speedtest.SpeedTestReport;
+import fr.bmartel.speedtest.SpeedTestSocket;
 import fr.bmartel.speedtest.inter.ISpeedTestListener;
 import fr.bmartel.speedtest.model.SpeedTestError;
-import fr.bmartel.speedtest.model.SpeedTestMode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,12 +70,11 @@ public class DownloadFileExample {
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
-            public void onDownloadFinished(final SpeedTestReport report) {
-
-                LogUtils.logFinishedTask(SpeedTestMode.DOWNLOAD, report.getTotalPacketSize(),
+            public void onCompletion(final SpeedTestReport report) {
+                //called when download/upload is complete
+                LogUtils.logFinishedTask(report.getSpeedTestMode(), report.getTotalPacketSize(),
                         report.getTransferRateBit(),
                         report.getTransferRateOctet(), LOGGER);
-
             }
 
             @Override
@@ -83,15 +82,6 @@ public class DownloadFileExample {
                 if (LOGGER.isErrorEnabled()) {
                     LOGGER.error("error " + speedTestError + " : " + errorMessage);
                 }
-            }
-
-            @Override
-            public void onUploadFinished(final SpeedTestReport report) {
-
-                LogUtils.logFinishedTask(SpeedTestMode.UPLOAD, report.getTotalPacketSize(),
-                        report.getTransferRateBit(),
-                        report.getTransferRateOctet(), LOGGER);
-
             }
 
             @Override
