@@ -44,14 +44,9 @@ public class DownloadFtpExample {
     private final static int SOCKET_TIMEOUT = 5000;
 
     /**
-     * default ftp server host used for tests.
-     */
-    public final static String FTP_SERVER_HOST = "speedtest.tele2.net";
-
-    /**
      * default ftp uri used for tests.
      */
-    public final static String FTP_SERVER_URI = "/1MB.zip";
+    public final static String FTP_SERVER_URI = "ftp://speedtest.tele2.net/1MB.zip";
 
     /**
      * logger.
@@ -124,6 +119,6 @@ public class DownloadFtpExample {
             }
         });
 
-        speedTestSocket.startFtpDownload(FTP_SERVER_HOST, FTP_SERVER_URI);
+        speedTestSocket.startDownload(FTP_SERVER_URI);
     }
 }

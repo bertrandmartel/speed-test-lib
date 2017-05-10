@@ -181,8 +181,8 @@ public class SpeedTestRepeatTest extends AbstractTest {
 
         if (download && http) {
 
-            mSocket.startDownloadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
-                    TestCommon.SPEED_TEST_SERVER_URI_DL_1MO,
+            mSocket.startDownloadRepeat("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon
+                            .SPEED_TEST_SERVER_PORT + TestCommon.SPEED_TEST_SERVER_URI_DL_1MO,
                     TestCommon.SPEED_TEST_DURATION, TestCommon.REPORT_INTERVAL, new
                             IRepeatListener() {
                                 @Override
@@ -220,8 +220,8 @@ public class SpeedTestRepeatTest extends AbstractTest {
 
         } else if (!download && http) {
 
-            mSocket.startUploadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
-                            .SPEED_TEST_SERVER_URI_UL,
+            mSocket.startUploadRepeat("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon
+                            .SPEED_TEST_SERVER_PORT + TestCommon.SPEED_TEST_SERVER_URI_UL,
                     TestCommon.SPEED_TEST_DURATION, TestCommon.REPORT_INTERVAL, TestCommon.FILE_SIZE_REGULAR, new
                             IRepeatListener() {
                                 @Override

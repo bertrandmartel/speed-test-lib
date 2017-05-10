@@ -165,14 +165,10 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     /**
      * Start download process with a fixed duration.
      *
-     * @param hostname    server mHostname
-     * @param port        server mPort
      * @param uri         uri to fetch to download file
      * @param maxDuration maximum duration of the speed test in milliseconds
      */
-    public void startFixedDownload(final String hostname,
-                                   final int port,
-                                   final String uri,
+    public void startFixedDownload(final String uri,
                                    final int maxDuration) {
 
         mTask.renewReportThreadPool();
@@ -184,188 +180,55 @@ public class SpeedTestSocket implements ISpeedTestSocket {
             }
         }, maxDuration, TimeUnit.MILLISECONDS);
 
-        startDownload(hostname, port, uri);
+        startDownload(uri);
     }
 
     /**
      * Start download process with a fixed duration.
      *
-     * @param hostname       server mHostname
-     * @param port           server mPort
      * @param uri            uri to fetch to download file
      * @param maxDuration    maximum duration of the speed test in milliseconds
      * @param reportInterval report interval in milliseconds
      */
-    public void startFixedDownload(final String hostname,
-                                   final int port,
-                                   final String uri,
+    public void startFixedDownload(final String uri,
                                    final int maxDuration,
                                    final int reportInterval) {
         initReportTask(reportInterval, true);
         mTask.setReportInterval(true);
-        startFixedDownload(hostname, port, uri, maxDuration);
-    }
-
-    /**
-     * Start download process with default to port 80.
-     *
-     * @param hostname server mHostname
-     * @param uri      uri to fetch to download file
-     */
-    public void startDownload(final String hostname,
-                              final String uri) {
-        startDownload(hostname, SpeedTestConst.HTTP_DEFAULT_PORT, uri);
-    }
-
-    /**
-     * Start download process with default to port 80 with specified report interval.
-     *
-     * @param hostname       server mHostname
-     * @param uri            uri to fetch to download file
-     * @param reportInterval report interval in milliseconds
-     */
-    public void startDownload(final String hostname,
-                              final String uri,
-                              final int reportInterval) {
-        startDownload(hostname, SpeedTestConst.HTTP_DEFAULT_PORT, uri, reportInterval);
+        startFixedDownload(uri, maxDuration);
     }
 
     /**
      * Start download process.
      *
-     * @param hostname       server mHostname
-     * @param port           server mPort
      * @param uri            uri to fetch to download file
      * @param reportInterval report interval in milliseconds
      */
-    public void startDownload(final String hostname,
-                              final int port,
-                              final String uri,
+    public void startDownload(final String uri,
                               final int reportInterval) {
         initReportTask(reportInterval, true);
         mTask.setReportInterval(true);
-        startDownload(hostname, port, uri);
+        startDownload(uri);
     }
 
     /**
      * Start download process.
      *
-     * @param hostname server mHostname
-     * @param port     server mPort
-     * @param uri      uri to fetch to download file
+     * @param uri uri to fetch to download file
      */
     @Override
-    public void startDownload(final String hostname, final int port, final String uri) {
-        mTask.startDownloadRequest(hostname, port, uri);
-    }
-
-    /**
-     * start FTP download on default port 21.
-     *
-     * @param hostname       ftp host
-     * @param uri            ftp uri
-     * @param reportInterval report interval in milliseconds
-     */
-    public void startFtpDownload(final String hostname,
-                                 final String uri,
-                                 final int reportInterval) {
-
-        initReportTask(reportInterval, true);
-        mTask.setReportInterval(true);
-
-        startFtpDownload(hostname,
-                SpeedTestConst.FTP_DEFAULT_PORT,
-                uri,
-                SpeedTestConst.FTP_DEFAULT_USER,
-                SpeedTestConst.FTP_DEFAULT_PASSWORD);
-    }
-
-    /**
-     * start fixed FTP download on default port 21.
-     *
-     * @param hostname       ftp host
-     * @param uri            ftp uri
-     * @param reportInterval report interval in milliseconds
-     */
-    public void startFtpFixedDownload(final String hostname,
-                                      final String uri,
-                                      final int maxDuration,
-                                      final int reportInterval) {
-        initReportTask(reportInterval, true);
-        mTask.setReportInterval(true);
-        startFtpFixedDownload(hostname, uri, maxDuration);
-    }
-
-    /**
-     * start FTP download on default port 21.
-     *
-     * @param hostname ftp host
-     * @param uri      ftp uri
-     */
-    public void startFtpFixedDownload(final String hostname,
-                                      final String uri,
-                                      final int maxDuration) {
-
-        mTask.renewReportThreadPool();
-
-        mTask.getReportThreadPool().schedule(new Runnable() {
-            @Override
-            public void run() {
-                forceStopTask();
-            }
-        }, maxDuration, TimeUnit.MILLISECONDS);
-
-        startFtpDownload(hostname,
-                SpeedTestConst.FTP_DEFAULT_PORT,
-                uri,
-                SpeedTestConst.FTP_DEFAULT_USER,
-                SpeedTestConst.FTP_DEFAULT_PASSWORD);
-    }
-
-    /**
-     * start FTP download on default port 21.
-     *
-     * @param hostname ftp host
-     * @param uri      ftp uri
-     */
-    public void startFtpDownload(final String hostname,
-                                 final String uri) {
-        startFtpDownload(hostname,
-                SpeedTestConst.FTP_DEFAULT_PORT,
-                uri,
-                SpeedTestConst.FTP_DEFAULT_USER,
-                SpeedTestConst.FTP_DEFAULT_PASSWORD);
-    }
-
-    /**
-     * start FTP download with specific port, user, password.
-     *
-     * @param hostname ftp host
-     * @param uri      ftp uri
-     * @param user     ftp username
-     * @param password ftp password
-     */
-    public void startFtpDownload(final String hostname,
-                                 final int port,
-                                 final String uri,
-                                 final String user,
-                                 final String password) {
-
-        mTask.startFtpDownload(hostname, port, uri, user, password);
+    public void startDownload(final String uri) {
+        mTask.startDownloadRequest(uri);
     }
 
     /**
      * Start upload process.
      *
-     * @param hostname      server mHostname
-     * @param port          server mPort
      * @param uri           uri to fetch
      * @param fileSizeOctet size of file to upload
      * @param maxDuration   maximum duration of speed test in milliseconds
      */
-    public void startFixedUpload(final String hostname,
-                                 final int port,
-                                 final String uri,
+    public void startFixedUpload(final String uri,
                                  final int fileSizeOctet,
                                  final int maxDuration) {
 
@@ -378,279 +241,90 @@ public class SpeedTestSocket implements ISpeedTestSocket {
             }
         }, maxDuration, TimeUnit.MILLISECONDS);
 
-        startUpload(hostname, port, uri, fileSizeOctet);
+        startUpload(uri, fileSizeOctet);
     }
 
     /**
      * Start upload process.
      *
-     * @param hostname       server hostname
-     * @param port           server port
      * @param uri            uri to fetch
      * @param fileSizeOctet  size of file to upload
      * @param maxDuration    maximum duration of speed test in milliseconds
      * @param reportInterval report interval in milliseconds
      */
-    public void startFixedUpload(final String hostname,
-                                 final int port,
-                                 final String uri,
-                                 final int fileSizeOctet,
-                                 final int maxDuration,
-                                 final int reportInterval) {
+    public void startFixedUpload(
+            final String uri,
+            final int fileSizeOctet,
+            final int maxDuration,
+            final int reportInterval) {
 
         initReportTask(reportInterval, false);
 
         mTask.setReportInterval(true);
-        startFixedUpload(hostname, port, uri, fileSizeOctet, maxDuration);
-    }
-
-    /**
-     * Start FTP upload for a fixed duration.
-     *
-     * @param hostname       server hostname
-     * @param uri            ftp uri
-     * @param fileSizeOctet  file size to upload in octet
-     * @param maxDuration    max duration of upload in milliseconds
-     * @param reportInterval report interval in milliseconds
-     */
-    public void startFtpFixedUpload(final String hostname,
-                                    final String uri,
-                                    final int fileSizeOctet,
-                                    final int maxDuration,
-                                    final int reportInterval) {
-
-        initReportTask(reportInterval, false);
-        mTask.setReportInterval(true);
-
-        startFtpFixedUpload(hostname, uri, fileSizeOctet, maxDuration);
-    }
-
-    /**
-     * Start FTP upload for a fixed duration.
-     *
-     * @param hostname      server hostname
-     * @param uri           ftp uri
-     * @param fileSizeOctet file size to upload in octet
-     * @param maxDuration   max duration of upload in milliseconds
-     */
-    public void startFtpFixedUpload(final String hostname,
-                                    final String uri,
-                                    final int fileSizeOctet,
-                                    final int maxDuration) {
-
-        mTask.renewReportThreadPool();
-
-        mTask.getReportThreadPool().schedule(new Runnable() {
-            @Override
-            public void run() {
-                forceStopTask();
-            }
-        }, maxDuration, TimeUnit.MILLISECONDS);
-
-        startFtpUpload(hostname, SpeedTestConst.FTP_DEFAULT_PORT, uri, fileSizeOctet,
-                SpeedTestConst.FTP_DEFAULT_USER, SpeedTestConst.FTP_DEFAULT_PASSWORD);
-    }
-
-    /**
-     * Start FTP upload.
-     *
-     * @param hostname       server hostname
-     * @param uri            ftp uri
-     * @param fileSizeOctet  file size to upload in octet
-     * @param reportInterval report interval in milliseconds
-     */
-    public void startFtpUpload(final String hostname,
-                               final String uri,
-                               final int fileSizeOctet,
-                               final int reportInterval) {
-
-        initReportTask(reportInterval, false);
-        mTask.setReportInterval(true);
-
-        startFtpUpload(hostname, SpeedTestConst.FTP_DEFAULT_PORT, uri, fileSizeOctet,
-                SpeedTestConst.FTP_DEFAULT_USER, SpeedTestConst.FTP_DEFAULT_PASSWORD);
-    }
-
-    /**
-     * Start FTP upload.
-     *
-     * @param hostname      server hostname
-     * @param uri           ftp uri
-     * @param fileSizeOctet file size to upload in octet
-     */
-    public void startFtpUpload(final String hostname,
-                               final String uri,
-                               final int fileSizeOctet) {
-
-        startFtpUpload(hostname, SpeedTestConst.FTP_DEFAULT_PORT, uri, fileSizeOctet,
-                SpeedTestConst.FTP_DEFAULT_USER, SpeedTestConst.FTP_DEFAULT_PASSWORD);
-    }
-
-    /**
-     * Start FTP upload.
-     *
-     * @param hostname      ftp host
-     * @param port          ftp port
-     * @param uri           upload uri
-     * @param fileSizeOctet file size in octet
-     * @param user          username
-     * @param password      password
-     */
-    public void startFtpUpload(final String hostname,
-                               final int port,
-                               final String uri,
-                               final int fileSizeOctet,
-                               final String user,
-                               final String password) {
-        mTask.startFtpUpload(hostname, port, uri, fileSizeOctet, user, password);
-    }
-
-    /**
-     * Start upload process with default port 80.
-     *
-     * @param hostname      server mHostname
-     * @param uri           uri to fetch
-     * @param fileSizeOctet size of file to upload
-     */
-    public void startUpload(final String hostname,
-                            final String uri,
-                            final int fileSizeOctet) {
-        startUpload(hostname, SpeedTestConst.HTTP_DEFAULT_PORT, uri, fileSizeOctet);
-    }
-
-    /**
-     * Start upload process with default port 80 & specified report interval.
-     *
-     * @param hostname       server mHostname
-     * @param uri            uri to fetch
-     * @param fileSizeOctet  size of file to upload
-     * @param reportInterval report interval in milliseconds
-     */
-    public void startUpload(final String hostname,
-                            final String uri,
-                            final int fileSizeOctet,
-                            final int reportInterval) {
-        startUpload(hostname, SpeedTestConst.HTTP_DEFAULT_PORT, uri, fileSizeOctet, reportInterval);
+        startFixedUpload(uri, fileSizeOctet, maxDuration);
     }
 
     /**
      * Start upload process.
      *
-     * @param hostname       server mHostname
-     * @param port           server mPort
      * @param uri            uri to fetch
      * @param fileSizeOctet  size of file to upload
      * @param reportInterval report interval in milliseconds
      */
-    public void startUpload(final String hostname,
-                            final int port,
-                            final String uri,
-                            final int fileSizeOctet,
-                            final int reportInterval) {
+    public void startUpload(
+            final String uri,
+            final int fileSizeOctet,
+            final int reportInterval) {
 
         initReportTask(reportInterval, false);
         mTask.setReportInterval(true);
-        startUpload(hostname, port, uri, fileSizeOctet);
+        startUpload(uri, fileSizeOctet);
     }
 
     /**
      * Start upload process.
      *
-     * @param hostname      server mHostname
-     * @param port          server mPort
      * @param uri           uri to fetch
      * @param fileSizeOctet size of file to upload
      */
     @Override
-    public void startUpload(final String hostname, final int port, final String uri, final int fileSizeOctet) {
-
-        mTask.writeUpload(hostname, port, uri, fileSizeOctet);
+    public void startUpload(final String uri, final int fileSizeOctet) {
+        mTask.startUploadRequest(uri, fileSizeOctet);
     }
 
     /**
      * Start repeat download task.
      *
-     * @param hostname           server mHostname
      * @param uri                uri to fetch to download file
      * @param repeatWindow       time window for the repeated download in milliseconds
      * @param reportPeriodMillis time interval between each report in milliseconds
      * @param repeatListener     listener for download repeat task completion & reports
      */
-    public void startDownloadRepeat(final String hostname,
-                                    final String uri,
-                                    final int repeatWindow,
-                                    final int reportPeriodMillis,
-                                    final IRepeatListener repeatListener) {
-        startDownloadRepeat(hostname, SpeedTestConst.HTTP_DEFAULT_PORT, uri, repeatWindow,
-                reportPeriodMillis, repeatListener);
-    }
-
-    /**
-     * Start repeat download task.
-     *
-     * @param hostname           server mHostname
-     * @param port               server mPort
-     * @param uri                uri to fetch to download file
-     * @param repeatWindow       time window for the repeated download in milliseconds
-     * @param reportPeriodMillis time interval between each report in milliseconds
-     * @param repeatListener     listener for download repeat task completion & reports
-     */
-    public void startDownloadRepeat(final String hostname,
-                                    final int port,
-                                    final String uri,
-                                    final int repeatWindow,
-                                    final int reportPeriodMillis,
-                                    final IRepeatListener repeatListener) {
-        mRepeatWrapper.startDownloadRepeat(hostname, port, uri, repeatWindow, reportPeriodMillis, repeatListener);
+    public void startDownloadRepeat(
+            final String uri,
+            final int repeatWindow,
+            final int reportPeriodMillis,
+            final IRepeatListener repeatListener) {
+        mRepeatWrapper.startDownloadRepeat(uri, repeatWindow, reportPeriodMillis, repeatListener);
     }
 
     /**
      * Start repeat upload task.
      *
-     * @param hostname           server mHostname
      * @param uri                uri to fetch to download file
      * @param repeatWindow       time window for the repeated upload in milliseconds
      * @param reportPeriodMillis time interval between each report in milliseconds
      * @param fileSizeOctet      file size in octet
      * @param repeatListener     listener for upload repeat task completion & reports
      */
-    public void startUploadRepeat(final String hostname,
-                                  final String uri,
-                                  final int repeatWindow,
-                                  final int reportPeriodMillis,
-                                  final int fileSizeOctet,
-                                  final IRepeatListener repeatListener) {
+    public void startUploadRepeat(
+            final String uri,
+            final int repeatWindow,
+            final int reportPeriodMillis,
+            final int fileSizeOctet,
+            final IRepeatListener repeatListener) {
 
-        startUploadRepeat(hostname,
-                SpeedTestConst.HTTP_DEFAULT_PORT,
-                uri,
-                repeatWindow,
-                reportPeriodMillis,
-                fileSizeOctet,
-                repeatListener);
-    }
-
-    /**
-     * Start repeat upload task.
-     *
-     * @param hostname           server mHostname
-     * @param port               server mPort
-     * @param uri                uri to fetch to download file
-     * @param repeatWindow       time window for the repeated upload in milliseconds
-     * @param reportPeriodMillis time interval between each report in milliseconds
-     * @param fileSizeOctet      file size in octet
-     * @param repeatListener     listener for upload repeat task completion & reports
-     */
-    public void startUploadRepeat(final String hostname,
-                                  final int port,
-                                  final String uri,
-                                  final int repeatWindow,
-                                  final int reportPeriodMillis,
-                                  final int fileSizeOctet,
-                                  final IRepeatListener repeatListener) {
-
-        mRepeatWrapper.startUploadRepeat(hostname,
-                port,
+        mRepeatWrapper.startUploadRepeat(
                 uri,
                 repeatWindow,
                 reportPeriodMillis,

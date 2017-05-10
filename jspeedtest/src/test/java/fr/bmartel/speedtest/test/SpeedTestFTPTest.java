@@ -117,7 +117,7 @@ public class SpeedTestFTPTest extends AbstractTest {
             }
         });
 
-        mSocket.startFtpDownload(TestCommon.FTP_SERVER_HOST, TestCommon.FTP_SERVER_URI);
+        mSocket.startDownload("ftp://" + TestCommon.FTP_SERVER_HOST + TestCommon.FTP_SERVER_URI);
 
         waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
@@ -188,7 +188,8 @@ public class SpeedTestFTPTest extends AbstractTest {
             }
         });
 
-        mSocket.startFtpUpload(TestCommon.FTP_SERVER_HOST, SpeedTestUtils.getFTPUploadUri(), packetSizeExpected);
+        mSocket.startUpload("ftp://" + TestCommon.FTP_SERVER_HOST + SpeedTestUtils.getFTPUploadUri(),
+                packetSizeExpected);
 
         waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
@@ -243,7 +244,7 @@ public class SpeedTestFTPTest extends AbstractTest {
 
         mWaiter = new Waiter();
         mTimestamp = 0;
-        mSocket.startFtpUpload(TestCommon.FTP_SERVER_HOST, SpeedTestUtils.getFTPUploadUri(),
+        mSocket.startUpload("ftp://" + TestCommon.FTP_SERVER_HOST + SpeedTestUtils.getFTPUploadUri(),
                 TestCommon.FILE_SIZE_REGULAR,
                 requestInterval);
 
@@ -251,7 +252,7 @@ public class SpeedTestFTPTest extends AbstractTest {
 
         mWaiter = new Waiter();
         mTimestamp = 0;
-        mSocket.startFtpDownload(TestCommon.FTP_SERVER_HOST, TestCommon.FTP_SERVER_URI,
+        mSocket.startDownload("ftp://" + TestCommon.FTP_SERVER_HOST + TestCommon.FTP_SERVER_URI,
                 requestInterval);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS);
@@ -323,14 +324,14 @@ public class SpeedTestFTPTest extends AbstractTest {
             }
         });
         mWaiter = new Waiter();
-        mSocket.startFtpFixedUpload(TestCommon.FTP_SERVER_HOST, SpeedTestUtils.getFTPUploadUri(),
+        mSocket.startFixedUpload("ftp://" + TestCommon.FTP_SERVER_HOST + SpeedTestUtils.getFTPUploadUri(),
                 packetSizeExpected, duration);
 
         mWaiter.await(duration + TestCommon.FIXED_DURATION_OFFSET, TimeUnit.MILLISECONDS);
 
         mWaiter = new Waiter();
 
-        mSocket.startFtpFixedDownload(TestCommon.FTP_SERVER_HOST, TestCommon.FTP_SERVER_URI_LARGE_FILE,
+        mSocket.startFixedDownload("ftp://" + TestCommon.FTP_SERVER_HOST + TestCommon.FTP_SERVER_URI_LARGE_FILE,
                 duration);
 
         mWaiter.await(duration + TestCommon.FIXED_DURATION_OFFSET, TimeUnit.MILLISECONDS);
@@ -388,14 +389,14 @@ public class SpeedTestFTPTest extends AbstractTest {
 
         mWaiter = new Waiter();
         mTimestamp = 0;
-        mSocket.startFtpFixedUpload(TestCommon.FTP_SERVER_HOST, SpeedTestUtils.getFTPUploadUri(),
+        mSocket.startFixedUpload("ftp://" + TestCommon.FTP_SERVER_HOST + SpeedTestUtils.getFTPUploadUri(),
                 packetSizeExpected, duration, requestInterval);
 
         mWaiter.await(duration + TestCommon.FIXED_DURATION_OFFSET, TimeUnit.MILLISECONDS);
 
         mWaiter = new Waiter();
         mTimestamp = 0;
-        mSocket.startFtpFixedDownload(TestCommon.FTP_SERVER_HOST, TestCommon.FTP_SERVER_URI_LARGE_FILE,
+        mSocket.startFixedDownload("ftp://" + TestCommon.FTP_SERVER_HOST + TestCommon.FTP_SERVER_URI_LARGE_FILE,
                 duration, requestInterval);
 
         mWaiter.await(duration + TestCommon.FIXED_DURATION_OFFSET, TimeUnit.MILLISECONDS);

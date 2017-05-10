@@ -40,21 +40,17 @@ public interface ISpeedTestSocket {
     /**
      * Start upload process.
      *
-     * @param hostname      server hostname
-     * @param port          server port
      * @param uri           uri to fetch
      * @param fileSizeOctet size of file to upload
      */
-    void startUpload(String hostname, int port, String uri, int fileSizeOctet);
+    void startUpload(String uri, int fileSizeOctet);
 
     /**
      * Start download process.
      *
-     * @param hostname server hostname
-     * @param port     server port
-     * @param uri      uri to fetch to download file
+     * @param uri uri to fetch to download file
      */
-    void startDownload(String hostname, int port, String uri);
+    void startDownload(String uri);
 
 
     /**

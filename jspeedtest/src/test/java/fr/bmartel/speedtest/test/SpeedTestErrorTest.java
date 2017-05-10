@@ -199,7 +199,8 @@ public class SpeedTestErrorTest extends AbstractTest {
             mWaiter = new Waiter();
 
             if (dispatchError) {
-                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
+                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload,
+                        errorMessage);
             } else {
                 fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
                         errorMessage);
@@ -210,7 +211,8 @@ public class SpeedTestErrorTest extends AbstractTest {
             mDownload = true;
 
             if (dispatchError) {
-                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
+                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload,
+                        errorMessage);
             } else {
                 fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
                         errorMessage);
@@ -437,10 +439,10 @@ public class SpeedTestErrorTest extends AbstractTest {
         switch (error) {
             case HTTP_UNKNOWN_HOST:
                 if (download) {
-                    mSocket.startDownload(TestCommon.SPEED_TEST_FAKE_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+                    mSocket.startDownload("http://" + TestCommon.SPEED_TEST_FAKE_HOST + TestCommon
                             .SPEED_TEST_SERVER_URI_DL_1MO);
                 } else {
-                    mSocket.startUpload(TestCommon.SPEED_TEST_FAKE_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+                    mSocket.startUpload("http://" + TestCommon.SPEED_TEST_FAKE_HOST + TestCommon
                                     .SPEED_TEST_SERVER_URI_UL,
                             TestCommon.FILE_SIZE_MEDIUM);
                 }
@@ -449,11 +451,10 @@ public class SpeedTestErrorTest extends AbstractTest {
                 break;
             case BAD_STATUS:
                 if (download) {
-                    mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
-                            TestCommon
-                                    .SPEED_TEST_SERVER_FAKE_URI);
+                    mSocket.startDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + TestCommon
+                            .SPEED_TEST_SERVER_FAKE_URI);
                 } else {
-                    mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+                    mSocket.startUpload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + TestCommon
                                     .SPEED_TEST_SERVER_FAKE_URI,
                             TestCommon.FILE_SIZE_REGULAR);
                 }
@@ -461,10 +462,10 @@ public class SpeedTestErrorTest extends AbstractTest {
                 break;
             case FTP_UNKNOWN_HOST:
                 if (download) {
-                    mSocket.startFtpDownload(TestCommon.SPEED_TEST_FAKE_HOST, TestCommon
-                            .FTP_SERVER_URI);
+                    mSocket.startDownload("http://" + TestCommon.SPEED_TEST_FAKE_HOST + TestCommon.FTP_SERVER_URI);
                 } else {
-                    mSocket.startFtpUpload(TestCommon.SPEED_TEST_FAKE_HOST, TestCommon.FTP_SERVER_UPLOAD_PREFIX_URI +
+                    mSocket.startUpload("http://" + TestCommon.SPEED_TEST_FAKE_HOST + TestCommon
+                                    .FTP_SERVER_UPLOAD_PREFIX_URI +
                                     "something.txt",
                             TestCommon.FILE_SIZE_REGULAR);
                 }
@@ -472,9 +473,9 @@ public class SpeedTestErrorTest extends AbstractTest {
                 break;
             case FTP_BAD_URI:
                 if (download) {
-                    mSocket.startFtpDownload(TestCommon.FTP_SERVER_HOST, TestCommon.FTP_FAKE_URI);
+                    mSocket.startDownload("ftp://" + TestCommon.FTP_SERVER_HOST + TestCommon.FTP_FAKE_URI);
                 } else {
-                    mSocket.startFtpUpload(TestCommon.FTP_SERVER_HOST, TestCommon.FTP_FAKE_URI,
+                    mSocket.startUpload("ftp://" + TestCommon.FTP_SERVER_HOST + TestCommon.FTP_FAKE_URI,
                             TestCommon.FILE_SIZE_REGULAR);
                 }
                 mWaiter.await(TestCommon.WAITING_TIMEOUT_LONG_OPERATION, TimeUnit.SECONDS);

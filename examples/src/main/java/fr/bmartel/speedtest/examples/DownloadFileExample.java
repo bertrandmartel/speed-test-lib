@@ -44,19 +44,9 @@ public class DownloadFileExample {
     private final static int SOCKET_TIMEOUT = 5000;
 
     /**
-     * speed examples server host name.
-     */
-    private final static String SPEED_TEST_SERVER_HOST = "2.testdebit.info";
-
-    /**
      * spedd examples server uri.
      */
-    private final static String SPEED_TEST_SERVER_URI_DL = "/fichiers/1Mo.dat";
-
-    /**
-     * speed examples server port.
-     */
-    private final static int SPEED_TEST_SERVER_PORT = 80;
+    private final static String SPEED_TEST_SERVER_URI_DL = "http://2.testdebit.info/fichiers/1Mo.dat";
 
     /**
      * logger.
@@ -129,6 +119,6 @@ public class DownloadFileExample {
             }
         });
 
-        speedTestSocket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL);
+        speedTestSocket.startDownload(SPEED_TEST_SERVER_URI_DL);
     }
 }

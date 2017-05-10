@@ -190,43 +190,36 @@ public class RepeatWrapper {
     /**
      * Start download for download repeat.
      *
-     * @param hostname server hostname
-     * @param port     server port
-     * @param uri      uri to fetch to download file
+     * @param uri uri to fetch to download file
      */
-    private void startDownloadRepeat(final String hostname, final int port, final String uri) {
+    private void startDownloadRepeat(final String uri) {
         mRepeatDownload = true;
-        mSpeedTestSocket.startDownload(hostname, port, uri);
+        mSpeedTestSocket.startDownload(uri);
     }
 
     /**
      * Start upload for upload repeat.
      *
-     * @param hostname server hostname
-     * @param port     server port
-     * @param uri      uri to fetch to upload file
+     * @param uri uri to fetch to upload file
      * @fileSizeOctet file size in octet
      */
-    private void startUploadRepeat(final String hostname, final int port, final String uri, final int fileSizeOctet) {
-        mSpeedTestSocket.startUpload(hostname, port, uri, fileSizeOctet);
+    private void startUploadRepeat(final String uri, final int fileSizeOctet) {
+        mSpeedTestSocket.startUpload(uri, fileSizeOctet);
     }
 
     /**
      * Start repeat download task.
      *
-     * @param hostname           server hostname
-     * @param port               server port
      * @param uri                uri to fetch to download file
      * @param repeatWindow       time window for the repeated download in milliseconds
      * @param reportPeriodMillis time interval between each report in milliseconds
      * @param repeatListener     listener for download repeat task completion & reports
      */
-    public void startDownloadRepeat(final String hostname,
-                                    final int port,
-                                    final String uri,
-                                    final int repeatWindow,
-                                    final int reportPeriodMillis,
-                                    final IRepeatListener repeatListener) {
+    public void startDownloadRepeat(
+            final String uri,
+            final int repeatWindow,
+            final int reportPeriodMillis,
+            final IRepeatListener repeatListener) {
 
         initRepeat(true);
 
@@ -236,7 +229,7 @@ public class RepeatWrapper {
             @Override
             public void onDownloadFinished(final SpeedTestReport report) {
                 mRepeatTransferRateList.add(report.getTransferRateOctet());
-                startDownloadRepeat(hostname, port, uri);
+                startDownloadRepeat(uri);
                 mRepeatRequestNum++;
             }
 
@@ -296,27 +289,24 @@ public class RepeatWrapper {
                 }
             }
         }, reportPeriodMillis, reportPeriodMillis);
-        startDownloadRepeat(hostname, port, uri);
+        startDownloadRepeat(uri);
     }
 
     /**
      * Start repeat upload task.
      *
-     * @param hostname           server hostname
-     * @param port               server port
      * @param uri                uri to fetch to download file
      * @param repeatWindow       time window for the repeated upload in milliseconds
      * @param reportPeriodMillis time interval between each report in milliseconds
      * @param fileSizeOctet      file size in octet
      * @param repeatListener     listener for upload repeat task completion & reports
      */
-    public void startUploadRepeat(final String hostname,
-                                  final int port,
-                                  final String uri,
-                                  final int repeatWindow,
-                                  final int reportPeriodMillis,
-                                  final int fileSizeOctet,
-                                  final IRepeatListener repeatListener) {
+    public void startUploadRepeat(
+            final String uri,
+            final int repeatWindow,
+            final int reportPeriodMillis,
+            final int fileSizeOctet,
+            final IRepeatListener repeatListener) {
 
         initRepeat(false);
 
@@ -341,7 +331,7 @@ public class RepeatWrapper {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 mRepeatTransferRateList.add(report.getTransferRateOctet());
-                startUploadRepeat(hostname, port, uri, fileSizeOctet);
+                startUploadRepeat(uri, fileSizeOctet);
                 mRepeatRequestNum++;
             }
 
@@ -387,7 +377,7 @@ public class RepeatWrapper {
             }
         }, reportPeriodMillis, reportPeriodMillis);
 
-        startUploadRepeat(hostname, port, uri, fileSizeOctet);
+        startUploadRepeat(uri, fileSizeOctet);
     }
 
     public void cleanTimer() {

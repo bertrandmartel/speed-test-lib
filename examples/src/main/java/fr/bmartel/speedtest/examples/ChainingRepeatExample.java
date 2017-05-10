@@ -40,19 +40,9 @@ import org.apache.logging.log4j.Logger;
 public class ChainingRepeatExample {
 
     /**
-     * speed examples server host name.
-     */
-    private final static String SPEED_TEST_SERVER_HOST = "2.testdebit.info";
-
-    /**
      * spedd examples server uri.
      */
-    private final static String SPEED_TEST_SERVER_URI_DL = "/fichiers/1Mo.dat";
-
-    /**
-     * speed examples server port.
-     */
-    private final static int SPEED_TEST_SERVER_PORT = 80;
+    private final static String SPEED_TEST_SERVER_URI_DL = "http://2.testdebit.info/fichiers/1Mo.dat";
 
     /**
      * logger.
@@ -155,7 +145,7 @@ public class ChainingRepeatExample {
      */
     private static void startDownload() {
 
-        speedTestSocket.startDownloadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL,
+        speedTestSocket.startDownloadRepeat(SPEED_TEST_SERVER_URI_DL,
                 SPEED_TEST_DURATION, REPORT_INTERVAL, new
                         IRepeatListener() {
                             @Override
@@ -186,7 +176,7 @@ public class ChainingRepeatExample {
      */
     private static void startUpload() {
 
-        speedTestSocket.startUploadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT,
+        speedTestSocket.startUploadRepeat(
                 SPEED_TEST_SERVER_URI_UL,
                 SPEED_TEST_DURATION, REPORT_INTERVAL, FILE_SIZE, new
                         IRepeatListener() {

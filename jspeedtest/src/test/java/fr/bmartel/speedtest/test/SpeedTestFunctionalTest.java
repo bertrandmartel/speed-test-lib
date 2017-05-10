@@ -37,6 +37,7 @@ import fr.bmartel.speedtest.model.UploadStorageType;
 import fr.bmartel.speedtest.test.server.HttpServer;
 import fr.bmartel.speedtest.test.server.IHttpServerEventListener;
 import fr.bmartel.speedtest.test.server.IHttpStream;
+import fr.bmartel.speedtest.test.server.ServerRetryTest;
 import fr.bmartel.speedtest.test.utils.SpeedTestUtils;
 import fr.bmartel.speedtest.test.utils.TestCommon;
 import fr.bmartel.speedtest.utils.RandomGen;
@@ -46,6 +47,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 
@@ -56,7 +59,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  *
  * @author Bertrand Martel
  */
-public class SpeedTestFunctionalTest extends AbstractTest {
+public class SpeedTestFunctionalTest extends ServerRetryTest {
 
     /**
      * speed examples server host name.
@@ -97,11 +100,6 @@ public class SpeedTestFunctionalTest extends AbstractTest {
      * default timeout waiting time for long operation such as DL / UL
      */
     private final static int WAITING_TIMEOUT_LONG_OPERATION = 10;
-
-    /**
-     * http server.
-     */
-    private static HttpServer mServer;
 
     /**
      * transfer rate reference in octet.
@@ -334,7 +332,8 @@ public class SpeedTestFunctionalTest extends AbstractTest {
         mSocket.setSocketTimeout(mSocketTimeout);
 
         download = true;
-        mSocket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_TIMEOUT);
+        mSocket.startDownload("http://" + SPEED_TEST_SERVER_HOST + ":" + SPEED_TEST_SERVER_PORT +
+                SPEED_TEST_SERVER_URI_TIMEOUT);
 
         mWaiter.await(WAITING_TIMEOUT_LONG_OPERATION, SECONDS);
 
@@ -356,7 +355,8 @@ public class SpeedTestFunctionalTest extends AbstractTest {
             mSocket.setUploadStorageType(UploadStorageType.FILE_STORAGE);
         }
 
-        mSocket.startUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL, size);
+        mSocket.startUpload("http://" + SPEED_TEST_SERVER_HOST + ":" + SPEED_TEST_SERVER_PORT +
+                SPEED_TEST_SERVER_URI_UL, size);
 
         mWaiter.await(WAITING_TIMEOUT_LONG_OPERATION, SECONDS);
 
@@ -374,7 +374,7 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
         mWaiter = new Waiter();
 
-        mSocket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, uri);
+        mSocket.startDownload("http://" + SPEED_TEST_SERVER_HOST + ":" + SPEED_TEST_SERVER_PORT + uri);
 
         mWaiter.await(WAITING_TIMEOUT_LONG_OPERATION, SECONDS);
 
@@ -449,7 +449,8 @@ public class SpeedTestFunctionalTest extends AbstractTest {
             }
         });
 
-        mSocket.startDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL_1MO);
+        mSocket.startDownload("http://" + SPEED_TEST_SERVER_HOST + ":" + SPEED_TEST_SERVER_PORT +
+                SPEED_TEST_SERVER_URI_DL_1MO);
 
         waiter.await(WAITING_TIMEOUT_LONG_OPERATION, SECONDS);
 
@@ -482,7 +483,8 @@ public class SpeedTestFunctionalTest extends AbstractTest {
                 mWaiter.resume();
                 chainCount++;
                 if (chainCount < 2) {
-                    mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+                    mSocket.startUpload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon
+                            .SPEED_TEST_SERVER_PORT + TestCommon
                             .SPEED_TEST_SERVER_URI_UL, totalPacketSize);
                 }
 
@@ -506,7 +508,8 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
                 mWaiter.resume();
 
-                mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+                mSocket.startDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon
+                        .SPEED_TEST_SERVER_PORT + TestCommon
                         .SPEED_TEST_SERVER_URI_DL_1MO);
             }
 
@@ -529,7 +532,8 @@ public class SpeedTestFunctionalTest extends AbstractTest {
 
         mWaiter = new Waiter();
 
-        mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+        mSocket.startDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon
+                .SPEED_TEST_SERVER_PORT + TestCommon
                 .SPEED_TEST_SERVER_URI_DL_1MO);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_LONG_OPERATION, SECONDS, 3);
@@ -657,7 +661,8 @@ public class SpeedTestFunctionalTest extends AbstractTest {
                                      final int chainCount,
                                      final int packetSize) {
 
-        mSocket.startDownloadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+        mSocket.startDownloadRepeat("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon
+                        .SPEED_TEST_SERVER_PORT + TestCommon
                         .SPEED_TEST_SERVER_URI_DL_1MO,
                 duration, reportInterval, new
                         IRepeatListener() {
@@ -695,7 +700,8 @@ public class SpeedTestFunctionalTest extends AbstractTest {
                                    final int chainCount,
                                    final int packetSize) {
 
-        mSocket.startUploadRepeat(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
+        mSocket.startUploadRepeat("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon
+                        .SPEED_TEST_SERVER_PORT + TestCommon
                         .SPEED_TEST_SERVER_URI_UL,
                 duration, reportInterval, packetSize, new
                         IRepeatListener() {
@@ -755,7 +761,15 @@ public class SpeedTestFunctionalTest extends AbstractTest {
                     switch (httpFrame.getMethod()) {
                         case "GET":
 
-                            switch (httpFrame.getUri()) {
+                            URL url = null;
+                            try {
+                                url = new URL(httpFrame.getUri());
+                            } catch (MalformedURLException e) {
+                                e.printStackTrace();
+                                return;
+                            }
+
+                            switch (url.getPath()) {
                                 case SPEED_TEST_SERVER_URI_DL_1MO:
                                     body = new RandomGen().generateRandomArray(1000000);
                                     break;
@@ -813,9 +827,5 @@ public class SpeedTestFunctionalTest extends AbstractTest {
         }).start();
 
         waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, SECONDS);
-    }
-
-    private void stopServer() {
-        mServer.closeServer();
     }
 }

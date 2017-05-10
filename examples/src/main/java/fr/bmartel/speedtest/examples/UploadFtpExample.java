@@ -47,7 +47,7 @@ public class UploadFtpExample {
     /**
      * default ftp server host used for tests.
      */
-    public final static String FTP_SERVER_HOST = "speedtest.tele2.net";
+    public final static String FTP_URL = "ftp://speedtest.tele2.net/upload/";
 
     /**
      * file size in octet.
@@ -128,6 +128,6 @@ public class UploadFtpExample {
         });
 
         final String fileName = SpeedTestUtils.generateFileName() + ".txt";
-        speedTestSocket.startFtpUpload(FTP_SERVER_HOST, "/upload/" + fileName, FTP_FILE_SIZE);
+        speedTestSocket.startUpload(FTP_URL + fileName, FTP_FILE_SIZE);
     }
 }

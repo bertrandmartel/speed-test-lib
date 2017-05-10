@@ -39,19 +39,9 @@ import org.apache.logging.log4j.Logger;
 public class FixedTimeUploadExample {
 
     /**
-     * speed examples server host name.
-     */
-    private final static String SPEED_TEST_SERVER_HOST = "2.testdebit.info";
-
-    /**
      * spedd examples server uri.
      */
-    private static final String SPEED_TEST_SERVER_URI_UL = "/";
-
-    /**
-     * speed examples server port.
-     */
-    private final static int SPEED_TEST_SERVER_PORT = 80;
+    private static final String SPEED_TEST_SERVER_URI_UL = "http://2.testdebit.info/";
 
     /**
      * upload 10Mo file size.
@@ -132,7 +122,7 @@ public class FixedTimeUploadExample {
             }
         });
 
-        speedTestSocket.startFixedUpload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_UL,
+        speedTestSocket.startFixedUpload(SPEED_TEST_SERVER_URI_UL,
                 FILE_SIZE, SPEED_TEST_DURATION, REPORT_INTERVAL);
     }
 }

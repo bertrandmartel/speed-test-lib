@@ -39,14 +39,9 @@ import org.apache.logging.log4j.Logger;
 public class RepeatDownloadExample {
 
     /**
-     * speed examples server host name.
-     */
-    private final static String SPEED_TEST_SERVER_HOST = "2.testdebit.info";
-
-    /**
      * spedd examples server uri.
      */
-    private final static String SPEED_TEST_SERVER_URI_DL = "/fichiers/10Mo.dat";
+    private final static String SPEED_TEST_SERVER_URI_DL = "http://2.testdebit.info/fichiers/10Mo.dat";
 
     /**
      * logger.
@@ -123,7 +118,7 @@ public class RepeatDownloadExample {
             }
         });
 
-        speedTestSocket.startDownloadRepeat(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_URI_DL,
+        speedTestSocket.startDownloadRepeat(SPEED_TEST_SERVER_URI_DL,
                 SPEED_TEST_DURATION, REPORT_INTERVAL, new
                         IRepeatListener() {
                             @Override

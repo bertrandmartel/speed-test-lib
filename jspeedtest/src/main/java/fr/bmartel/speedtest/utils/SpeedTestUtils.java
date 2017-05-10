@@ -26,8 +26,8 @@ package fr.bmartel.speedtest.utils;
 
 import fr.bmartel.protocol.http.HttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;
-import fr.bmartel.speedtest.inter.ISpeedTestListener;
 import fr.bmartel.speedtest.SpeedTestConst;
+import fr.bmartel.speedtest.inter.ISpeedTestListener;
 import fr.bmartel.speedtest.model.SpeedTestError;
 import fr.bmartel.speedtest.model.UploadStorageType;
 
@@ -143,7 +143,6 @@ public class SpeedTestUtils {
             }
         }
     }
-
 
     /**
      * check for http uri error.

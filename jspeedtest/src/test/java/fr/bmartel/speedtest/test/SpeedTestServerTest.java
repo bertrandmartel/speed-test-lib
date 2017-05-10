@@ -102,7 +102,7 @@ public class SpeedTestServerTest extends AbstractTest {
                                     case "http":
                                         System.out.println("[download] HTTP - testing " + host + " with uri " + uri);
                                         mWaiter = new Waiter();
-                                        mSocket.startDownload(host, uri);
+                                        mSocket.startDownload("http://" + host + uri);
                                         mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
                                         mWaiter = new Waiter();
                                         mSocket.forceStopTask();
@@ -119,10 +119,12 @@ public class SpeedTestServerTest extends AbstractTest {
                                         if (downloadEndpoint.containsKey("password")) {
                                             password = downloadEndpoint.get("password").toString();
                                         }
-                                        System.out.println("[download] FTP - testing " + host + " with uri " + uri);
+                                        System.out.println("[download] FTP - testing " + "ftp://" + username + ":" +
+                                                password + "@" + host + ":"
+                                                + SpeedTestConst.FTP_DEFAULT_PORT + uri);
                                         mWaiter = new Waiter();
-                                        mSocket.startFtpDownload(host, SpeedTestConst.FTP_DEFAULT_PORT, uri,
-                                                username, password);
+                                        mSocket.startDownload("ftp://" + username + ":" + password + "@" + host + ":"
+                                                + SpeedTestConst.FTP_DEFAULT_PORT + uri);
                                         mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
                                         mWaiter = new Waiter();
                                         mSocket.forceStopTask();
@@ -160,7 +162,7 @@ public class SpeedTestServerTest extends AbstractTest {
                                     case "http":
                                         System.out.println("[upload] HTTP - testing " + host + " with uri " + uri);
                                         mWaiter = new Waiter();
-                                        mSocket.startUpload(host, uri, TestCommon.FILE_SIZE_LARGE);
+                                        mSocket.startUpload("http://" + host + uri, TestCommon.FILE_SIZE_LARGE);
                                         mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
                                         mWaiter = new Waiter();
                                         mSocket.forceStopTask();
@@ -179,8 +181,10 @@ public class SpeedTestServerTest extends AbstractTest {
                                         System.out.println("[upload] FTP - testing " + host + " with uri " + uri);
                                         final String fileName = generateFileName() + ".txt";
                                         mWaiter = new Waiter();
-                                        mSocket.startFtpUpload(host, SpeedTestConst.FTP_DEFAULT_PORT, uri + "/" +
-                                                fileName, TestCommon.FILE_SIZE_LARGE, username, password);
+                                        mSocket.startUpload("ftp://" + username + ":" + password + "@" + host + ":" +
+                                                SpeedTestConst
+                                                        .FTP_DEFAULT_PORT + uri + "/" +
+                                                fileName, TestCommon.FILE_SIZE_LARGE);
                                         mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, SECONDS);
                                         mWaiter = new Waiter();
                                         mSocket.forceStopTask();

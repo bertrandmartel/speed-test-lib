@@ -39,19 +39,9 @@ import org.apache.logging.log4j.Logger;
 public class FixedTimeDownloadExample {
 
     /**
-     * speed examples server host name.
-     */
-    private final static String SPEED_TEST_SERVER_HOST = "2.testdebit.info";
-
-    /**
      * spedd examples server uri.
      */
-    private final static String SPEED_TEST_SERVER_URI_DL = "/fichiers/100Mo.dat";
-
-    /**
-     * speed examples server port.
-     */
-    private final static int SPEED_TEST_SERVER_PORT = 80;
+    private final static String SPEED_TEST_SERVER_URI_DL = "http://2.testdebit.info/fichiers/100Mo.dat";
 
     /**
      * amount of time between each speed test reports set to 1s.
@@ -127,7 +117,7 @@ public class FixedTimeDownloadExample {
             }
         });
 
-        speedTestSocket.startFixedDownload(SPEED_TEST_SERVER_HOST, SPEED_TEST_SERVER_PORT, SPEED_TEST_SERVER_URI_DL,
+        speedTestSocket.startFixedDownload(SPEED_TEST_SERVER_URI_DL,
                 SPEED_TEST_DURATION, REPORT_INTERVAL);
     }
 }

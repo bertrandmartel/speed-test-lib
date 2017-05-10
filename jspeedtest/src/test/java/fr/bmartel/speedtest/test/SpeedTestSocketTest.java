@@ -192,8 +192,8 @@ public class SpeedTestSocketTest extends AbstractTest {
             }
         });
 
-        mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
-                .SPEED_TEST_SERVER_URI_DL);
+        mSocket.startDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon.SPEED_TEST_SERVER_PORT +
+                TestCommon.SPEED_TEST_SERVER_URI_DL);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
@@ -211,8 +211,8 @@ public class SpeedTestSocketTest extends AbstractTest {
 
         mWaiter = new Waiter();
 
-        mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
-                        .SPEED_TEST_SERVER_URI_UL,
+        mSocket.startUpload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon.SPEED_TEST_SERVER_PORT +
+                        TestCommon.SPEED_TEST_SERVER_URI_UL,
                 TestCommon.FILE_SIZE_MEDIUM);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
@@ -368,8 +368,8 @@ public class SpeedTestSocketTest extends AbstractTest {
 
         Assert.assertNull(HEADER + "socket value at init", field.get(task));
 
-        socket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
-                .SPEED_TEST_SERVER_URI_DL);
+        socket.startDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon.SPEED_TEST_SERVER_PORT +
+                TestCommon.SPEED_TEST_SERVER_URI_DL);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
@@ -383,8 +383,7 @@ public class SpeedTestSocketTest extends AbstractTest {
 
         initCountDown();
 
-        socket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST,
-                TestCommon.SPEED_TEST_SERVER_URI_UL,
+        socket.startUpload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + TestCommon.SPEED_TEST_SERVER_URI_UL,
                 TestCommon.FILE_SIZE_MEDIUM);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
@@ -399,7 +398,7 @@ public class SpeedTestSocketTest extends AbstractTest {
 
         initCountDown();
 
-        socket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_URI_DL);
+        socket.startDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + TestCommon.SPEED_TEST_SERVER_URI_DL);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
@@ -506,8 +505,8 @@ public class SpeedTestSocketTest extends AbstractTest {
 
         mWaiter = new Waiter();
 
-        mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
-                .SPEED_TEST_SERVER_URI_DL);
+        mSocket.startDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon.SPEED_TEST_SERVER_PORT +
+                TestCommon.SPEED_TEST_SERVER_URI_DL);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
@@ -570,8 +569,8 @@ public class SpeedTestSocketTest extends AbstractTest {
 
         mWaiter = new Waiter();
 
-        mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
-                        .SPEED_TEST_SERVER_URI_UL,
+        mSocket.startUpload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon.SPEED_TEST_SERVER_PORT +
+                        TestCommon.SPEED_TEST_SERVER_URI_UL,
                 TestCommon.FILE_SIZE_REGULAR);
         mWaiter.await(4, TimeUnit.SECONDS);
 
@@ -649,8 +648,8 @@ public class SpeedTestSocketTest extends AbstractTest {
 
         //final int threadCount = Thread.activeCount();
 
-        mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
-                .SPEED_TEST_SERVER_URI_DL_1MO);
+        mSocket.startDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon.SPEED_TEST_SERVER_PORT +
+                TestCommon.SPEED_TEST_SERVER_URI_DL_1MO);
 
         waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
@@ -725,8 +724,8 @@ public class SpeedTestSocketTest extends AbstractTest {
 
         //final int threadCount = Thread.activeCount();
 
-        mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT, TestCommon
-                        .SPEED_TEST_SERVER_URI_UL,
+        mSocket.startUpload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon.SPEED_TEST_SERVER_PORT +
+                        TestCommon.SPEED_TEST_SERVER_URI_UL,
                 packetSizeExpected);
 
         waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
@@ -786,15 +785,15 @@ public class SpeedTestSocketTest extends AbstractTest {
         });
 
         mWaiter = new Waiter();
-        mSocket.startFixedUpload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
-                TestCommon.SPEED_TEST_SERVER_URI_UL,
+        mSocket.startFixedUpload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon
+                        .SPEED_TEST_SERVER_PORT + TestCommon.SPEED_TEST_SERVER_URI_UL,
                 packetSizeExpected, duration);
 
         mWaiter.await(duration + TestCommon.FIXED_DURATION_OFFSET, TimeUnit.MILLISECONDS);
 
         mWaiter = new Waiter();
-        mSocket.startFixedDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
-                TestCommon.SPEED_TEST_SERVER_URI_DL, duration);
+        mSocket.startFixedDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon
+                .SPEED_TEST_SERVER_PORT + TestCommon.SPEED_TEST_SERVER_URI_DL, duration);
 
         mWaiter.await(duration + TestCommon.FIXED_DURATION_OFFSET, TimeUnit.MILLISECONDS);
 
@@ -867,7 +866,7 @@ public class SpeedTestSocketTest extends AbstractTest {
         mSocket.clearListeners();
     }
     */
-    
+
     @Test
     public void downloadWithReportIntervalTest() throws TimeoutException {
 
@@ -916,31 +915,31 @@ public class SpeedTestSocketTest extends AbstractTest {
 
         mWaiter = new Waiter();
         mTimestamp = 0;
-        mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST,
-                TestCommon.SPEED_TEST_SERVER_PORT,
-                TestCommon.SPEED_TEST_SERVER_URI_UL,
+        mSocket.startUpload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" +
+                        TestCommon.SPEED_TEST_SERVER_PORT +
+                        TestCommon.SPEED_TEST_SERVER_URI_UL,
                 packetSizeExpected, requestInterval);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS);
 
         mWaiter = new Waiter();
         mTimestamp = 0;
-        mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST, TestCommon.SPEED_TEST_SERVER_PORT,
+        mSocket.startDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon.SPEED_TEST_SERVER_PORT +
                 TestCommon.SPEED_TEST_SERVER_URI_DL_1MO, requestInterval);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS);
 
         mWaiter = new Waiter();
         mTimestamp = 0;
-        mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_HOST,
-                TestCommon.SPEED_TEST_SERVER_URI_UL,
+        mSocket.startUpload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" +
+                        TestCommon.SPEED_TEST_SERVER_URI_UL,
                 packetSizeExpected, requestInterval);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS);
 
         mWaiter = new Waiter();
         mTimestamp = 0;
-        mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_HOST,
+        mSocket.startDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST +
                 TestCommon.SPEED_TEST_SERVER_URI_DL_1MO, requestInterval);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_VERY_LONG_OPERATION, TimeUnit.SECONDS);
