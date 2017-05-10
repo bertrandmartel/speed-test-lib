@@ -87,7 +87,7 @@ public class UploadFtpExample {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (LOGGER.isErrorEnabled()) {
                     LOGGER.error("Download error " + speedTestError + " : " + errorMessage);
                 }
@@ -100,13 +100,6 @@ public class UploadFtpExample {
                         report.getTransferRateBit(),
                         report.getTransferRateOctet(), LOGGER);
 
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error("Upload error " + speedTestError + " : " + errorMessage);
-                }
             }
 
             @Override

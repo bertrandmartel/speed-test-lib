@@ -82,8 +82,7 @@ public class RepeatDownloadExample {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(errorMessage);
                 }
@@ -92,14 +91,6 @@ public class RepeatDownloadExample {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-
-                if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error(errorMessage);
-                }
             }
 
             @Override

@@ -64,23 +64,15 @@ public class SpeedTestUtils {
      *
      * @param forceCloseSocket define if interruption callback must be called
      * @param listenerList     list of speed test listeners
-     * @param isDownload       downloading task or uploading task
      * @param errorMessage     error message from Exception
      */
     public static void dispatchError(final boolean forceCloseSocket,
                                      final List<ISpeedTestListener> listenerList,
-                                     final boolean isDownload,
                                      final String errorMessage) {
 
         if (!forceCloseSocket) {
-            if (isDownload) {
-                for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.CONNECTION_ERROR, errorMessage);
-                }
-            } else {
-                for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onUploadError(SpeedTestError.CONNECTION_ERROR, errorMessage);
-                }
+            for (int i = 0; i < listenerList.size(); i++) {
+                listenerList.get(i).onError(SpeedTestError.CONNECTION_ERROR, errorMessage);
             }
         } else {
             for (int i = 0; i < listenerList.size(); i++) {
@@ -91,19 +83,12 @@ public class SpeedTestUtils {
 
     public static void dispatchError(final boolean forceCloseSocket,
                                      final List<ISpeedTestListener> listenerList,
-                                     final boolean isDownload,
                                      final SpeedTestError error,
                                      final String errorMessage) {
 
         if (!forceCloseSocket) {
-            if (isDownload) {
-                for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(error, errorMessage);
-                }
-            } else {
-                for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onUploadError(error, errorMessage);
-                }
+            for (int i = 0; i < listenerList.size(); i++) {
+                listenerList.get(i).onError(error, errorMessage);
             }
         } else {
             for (int i = 0; i < listenerList.size(); i++) {
@@ -146,23 +131,15 @@ public class SpeedTestUtils {
      *
      * @param forceCloseSocket define if interruption callback must be called
      * @param listenerList     list of speed test listeners
-     * @param isDownload       define if currently downloading or uploading
      * @param errorMessage     error message
      */
     public static void dispatchSocketTimeout(final boolean forceCloseSocket,
                                              final List<ISpeedTestListener> listenerList,
-                                             final boolean isDownload,
                                              final String errorMessage) {
 
         if (!forceCloseSocket) {
-            if (isDownload) {
-                for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.SOCKET_TIMEOUT, errorMessage);
-                }
-            } else {
-                for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onUploadError(SpeedTestError.SOCKET_TIMEOUT, errorMessage);
-                }
+            for (int i = 0; i < listenerList.size(); i++) {
+                listenerList.get(i).onError(SpeedTestError.SOCKET_TIMEOUT, errorMessage);
             }
         }
     }
@@ -182,7 +159,7 @@ public class SpeedTestUtils {
 
             if (!forceCloseSocket) {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE,
+                    listenerList.get(i).onError(SpeedTestError.INVALID_HTTP_RESPONSE,
                             SpeedTestConst.PARSING_ERROR +
                                     "http frame");
                 }
@@ -209,7 +186,7 @@ public class SpeedTestUtils {
 
             if (!forceCloseSocket) {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE,
+                    listenerList.get(i).onError(SpeedTestError.INVALID_HTTP_RESPONSE,
                             SpeedTestConst.PARSING_ERROR +
                                     "http headers");
                 }
@@ -236,7 +213,7 @@ public class SpeedTestUtils {
 
             if (!forceCloseSocket) {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error content length " +
+                    listenerList.get(i).onError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error content length " +
                             "is inconsistent");
                 }
             } else {

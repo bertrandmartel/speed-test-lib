@@ -221,7 +221,7 @@ public class SpeedTestServerTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError + " : " + errorMessage);
                 mWaiter.resume();
             }
@@ -229,12 +229,6 @@ public class SpeedTestServerTest extends AbstractTest {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError + " : " + errorMessage);
-                mWaiter.resume();
             }
 
             @Override

@@ -56,11 +56,6 @@ public class SpeedTestErrorTest extends AbstractTest {
     private static String errorMessage = "this is an error message";
 
     /**
-     * download/upload mode for testing error callback.
-     */
-    private static boolean mDownload = true;
-
-    /**
      * define if force stop is to be expected in error callback.
      */
     private static boolean mForceStop;
@@ -113,8 +108,8 @@ public class SpeedTestErrorTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError.equals(error) && mDownload) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (speedTestError.equals(error)) {
                     if (mNoCheckMessage) {
                         mWaiter.assertEquals(errorMessage, SpeedTestErrorTest.this.errorMessage);
                     }
@@ -127,18 +122,6 @@ public class SpeedTestErrorTest extends AbstractTest {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError.equals(error) && !mDownload && !mForceStop) {
-                    if (mNoCheckMessage) {
-                        mWaiter.assertEquals(errorMessage, SpeedTestErrorTest.this.errorMessage);
-                    }
-                    mWaiter.resume();
-                } else {
-                    mWaiter.fail("error " + error + " expected");
-                }
             }
 
             @Override
@@ -170,22 +153,19 @@ public class SpeedTestErrorTest extends AbstractTest {
             throws TimeoutException {
 
         mForceStop = false;
-        mDownload = true;
 
         if (dispatchError) {
-            fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
+            fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList, errorMessage);
         } else {
-            fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
+            fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList,
                     errorMessage);
         }
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-        mDownload = false;
-
         if (dispatchError) {
-            fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload, errorMessage);
+            fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList, errorMessage);
         } else {
-            fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
+            fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList,
                     errorMessage);
         }
 
@@ -195,26 +175,23 @@ public class SpeedTestErrorTest extends AbstractTest {
 
             mSocket.forceStopTask();
             mForceStop = true;
-            mDownload = false;
             mWaiter = new Waiter();
 
             if (dispatchError) {
-                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload,
+                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList,
                         errorMessage);
             } else {
-                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
+                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList,
                         errorMessage);
             }
 
             mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-            mDownload = true;
-
             if (dispatchError) {
-                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList, mDownload,
+                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList,
                         errorMessage);
             } else {
-                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList, mDownload,
+                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList,
                         errorMessage);
             }
 
@@ -246,7 +223,6 @@ public class SpeedTestErrorTest extends AbstractTest {
         final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
 
         mForceStop = false;
-        mDownload = true;
 
         for (final HttpStates state : HttpStates.values()) {
             if (state != HttpStates.HTTP_FRAME_OK) {
@@ -277,7 +253,6 @@ public class SpeedTestErrorTest extends AbstractTest {
         final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
 
         mForceStop = false;
-        mDownload = true;
 
         for (final HttpStates state : HttpStates.values()) {
             if (state != HttpStates.HTTP_FRAME_OK) {
@@ -308,7 +283,6 @@ public class SpeedTestErrorTest extends AbstractTest {
         final List<ISpeedTestListener> listenerList = initErrorListener(SpeedTestError.INVALID_HTTP_RESPONSE);
 
         mForceStop = false;
-        mDownload = true;
 
         final HttpFrame frame = new HttpFrame();
         final HashMap<String, String> headers = new HashMap<>();
@@ -401,28 +375,13 @@ public class SpeedTestErrorTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-
-                if (download) {
-                    dispatchConnectionError(error, speedTestError);
-                } else {
-                    mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onDownloadError");
-                }
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
+                dispatchConnectionError(error, speedTestError);
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-
-                if (download) {
-                    mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadError");
-                } else {
-                    dispatchConnectionError(error, speedTestError);
-                }
             }
 
             @Override

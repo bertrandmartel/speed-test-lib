@@ -226,13 +226,13 @@ public class SpeedTestTask {
                     startFtpDownload(uri, user, pwd);
                     break;
                 default:
-                    SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, true,
+                    SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList,
                             SpeedTestError.UNSUPPORTED_PROTOCOL,
                             "unsupported protocol");
                     break;
             }
         } catch (MalformedURLException e) {
-            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, true, SpeedTestError.MALFORMED_URI,
+            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, SpeedTestError.MALFORMED_URI,
                     e.getMessage());
         }
     }
@@ -261,13 +261,13 @@ public class SpeedTestTask {
                     startFtpUpload(uri, fileSizeOctet);
                     break;
                 default:
-                    SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false,
+                    SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList,
                             SpeedTestError.UNSUPPORTED_PROTOCOL,
                             "unsupported protocol");
                     break;
             }
         } catch (MalformedURLException e) {
-            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, SpeedTestError.MALFORMED_URI,
+            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, SpeedTestError.MALFORMED_URI,
                     e.getMessage());
         }
     }
@@ -409,16 +409,16 @@ public class SpeedTestTask {
                             closeSocket();
                             closeExecutors();
                             if (!mForceCloseSocket) {
-                                SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList,
-                                        false, SpeedTestConst.SOCKET_WRITE_ERROR);
+                                SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList, SpeedTestConst
+                                        .SOCKET_WRITE_ERROR);
                             } else {
-                                SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
+                                SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, e.getMessage());
                             }
                         } catch (IOException e) {
                             mReportInterval = false;
                             mErrorDispatched = true;
                             closeExecutors();
-                            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
+                            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, e.getMessage());
                         } finally {
                             if (uploadFile != null) {
                                 try {
@@ -433,7 +433,7 @@ public class SpeedTestTask {
                 }
             }, false);
         } catch (MalformedURLException e) {
-            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, SpeedTestError.MALFORMED_URI,
+            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, SpeedTestError.MALFORMED_URI,
                     e.getMessage());
         }
     }
@@ -498,7 +498,7 @@ public class SpeedTestTask {
 
         } catch (IOException e) {
             if (!mErrorDispatched) {
-                SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, download, e.getMessage());
+                SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, e.getMessage());
             }
         }
     }
@@ -561,7 +561,7 @@ public class SpeedTestTask {
                 mReportInterval = false;
 
                 for (int i = 0; i < mListenerList.size(); i++) {
-                    mListenerList.get(i).onDownloadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error status code " +
+                    mListenerList.get(i).onError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error status code " +
                             httpFrame.getStatusCode());
                 }
 
@@ -574,13 +574,13 @@ public class SpeedTestTask {
 
         } catch (SocketTimeoutException e) {
             mReportInterval = false;
-            SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList, true, e.getMessage());
+            SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList, e.getMessage());
             mTimeEnd = System.currentTimeMillis();
             closeSocket();
             closeExecutors();
         } catch (IOException | InterruptedException e) {
             mReportInterval = false;
-            catchError(true, e.getMessage());
+            catchError(e.getMessage());
         }
         mErrorDispatched = false;
     }
@@ -650,7 +650,7 @@ public class SpeedTestTask {
                     mReportInterval = false;
 
                     for (int i = 0; i < mListenerList.size(); i++) {
-                        mListenerList.get(i).onUploadError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error status code" +
+                        mListenerList.get(i).onError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error status code" +
                                 " " + frame.getStatusCode());
                     }
 
@@ -665,14 +665,14 @@ public class SpeedTestTask {
             closeSocket();
             if (!mErrorDispatched && !mForceCloseSocket) {
                 for (int i = 0; i < mListenerList.size(); i++) {
-                    mListenerList.get(i).onUploadError(SpeedTestError.SOCKET_ERROR, "mSocket error");
+                    mListenerList.get(i).onError(SpeedTestError.SOCKET_ERROR, "mSocket error");
                 }
             }
             closeExecutors();
         } catch (IOException | InterruptedException e) {
             mReportInterval = false;
             if (!mErrorDispatched) {
-                catchError(false, e.getMessage());
+                catchError(e.getMessage());
             }
         }
         mErrorDispatched = false;
@@ -697,12 +697,11 @@ public class SpeedTestTask {
                             throw new SocketTimeoutException();
                         }
                     } catch (SocketTimeoutException e) {
-                        SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList,
-                                true, SpeedTestConst.SOCKET_WRITE_ERROR);
+                        SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList, SpeedTestConst.SOCKET_WRITE_ERROR);
                         closeSocket();
                         closeExecutors();
                     } catch (IOException e) {
-                        SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, true, e.getMessage());
+                        SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, e.getMessage());
                         closeExecutors();
                     }
                 }
@@ -773,11 +772,10 @@ public class SpeedTestTask {
     /**
      * catch an error.
      *
-     * @param isDownload   downloading task or uploading task
      * @param errorMessage error message from Exception
      */
-    private void catchError(final boolean isDownload, final String errorMessage) {
-        SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, isDownload, errorMessage);
+    private void catchError(final String errorMessage) {
+        SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, errorMessage);
         mTimeEnd = System.currentTimeMillis();
         closeSocket();
         closeExecutors();
@@ -989,7 +987,7 @@ public class SpeedTestTask {
                         } else {
 
                             mReportInterval = false;
-                            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, true, "cant create stream " +
+                            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, "cant create stream " +
                                     "from uri " + uri + " with reply code : " + ftpclient.getReplyCode());
                         }
 
@@ -1000,7 +998,7 @@ public class SpeedTestTask {
                     } catch (IOException e) {
                         //e.printStackTrace();
                         mReportInterval = false;
-                        catchError(true, e.getMessage());
+                        catchError(e.getMessage());
                     } finally {
                         mErrorDispatched = false;
                         mSpeedTestMode = SpeedTestMode.NONE;
@@ -1009,7 +1007,7 @@ public class SpeedTestTask {
                 }
             });
         } catch (MalformedURLException e) {
-            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, true,
+            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList,
                     SpeedTestError.MALFORMED_URI,
                     e.getMessage());
         }
@@ -1099,7 +1097,7 @@ public class SpeedTestTask {
                             }
 
                             if (mForceCloseSocket) {
-                                SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, "");
+                                SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, "");
                             } else {
                                 for (int i = 0; i < step; i++) {
 
@@ -1172,7 +1170,7 @@ public class SpeedTestTask {
 
                         } else {
                             mReportInterval = false;
-                            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, "cant create stream" +
+                            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, "cant create stream" +
                                     " " +
                                     "from uri " + uri + " with reply code : " + ftpClient.getReplyCode());
                         }
@@ -1181,10 +1179,9 @@ public class SpeedTestTask {
                         mReportInterval = false;
                         mErrorDispatched = true;
                         if (!mForceCloseSocket) {
-                            SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList,
-                                    false, SpeedTestConst.SOCKET_WRITE_ERROR);
+                            SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList, SpeedTestConst.SOCKET_WRITE_ERROR);
                         } else {
-                            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
+                            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, e.getMessage());
                         }
                         closeSocket();
                         closeExecutors();
@@ -1192,7 +1189,7 @@ public class SpeedTestTask {
                         //e.printStackTrace();
                         mReportInterval = false;
                         mErrorDispatched = true;
-                        SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, e.getMessage());
+                        SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, e.getMessage());
                         closeExecutors();
                     } finally {
                         mErrorDispatched = false;
@@ -1210,7 +1207,7 @@ public class SpeedTestTask {
                 }
             });
         } catch (MalformedURLException e) {
-            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, false, SpeedTestError.MALFORMED_URI,
+            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, SpeedTestError.MALFORMED_URI,
                     e.getMessage());
         }
     }

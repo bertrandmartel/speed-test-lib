@@ -132,11 +132,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
     private Waiter mWaiter;
 
     /**
-     * Define if download mode enabled.
-     */
-    private boolean download;
-
-    /**
      * number of chain for DL/UL/DL chain requests.
      */
     private int chainCount = 1;
@@ -164,7 +159,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (mExpectedError != null && speedTestError == mExpectedError) {
                     mWaiter.resume();
                 } else {
@@ -176,12 +171,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
-                mWaiter.resume();
             }
 
             @Override
@@ -234,12 +223,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
-                mWaiter.resume();
-            }
-
-            @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 mExpectedTransferRateOps = report.getTransferRateOctet();
                 mExpectedTransferRateBps = report.getTransferRateBit();
@@ -247,7 +230,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             }
 
             @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (mExpectedError != null && speedTestError == mExpectedError) {
                     mWaiter.resume();
                 } else {
@@ -308,34 +291,17 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (download) {
-                    if (speedTestError == SpeedTestError.SOCKET_TIMEOUT) {
-                        mWaiter.resume();
-                    } else {
-                        mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
-                    }
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
+                if (speedTestError == SpeedTestError.SOCKET_TIMEOUT) {
+                    mWaiter.resume();
                 } else {
-                    mWaiter.fail("onDownloadError : shouldnt be in that cb" + speedTestError);
+                    mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
                 }
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (!download) {
-                    if (speedTestError == SpeedTestError.SOCKET_TIMEOUT) {
-                        mWaiter.resume();
-                    } else {
-                        mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
-                    }
-                } else {
-                    mWaiter.fail("onUploadError : shouldnt be in that cb" + speedTestError);
-                }
             }
 
             @Override
@@ -353,7 +319,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
 
         mSocket.setSocketTimeout(mSocketTimeout);
 
-        download = true;
         mSocket.startDownload("http://" + SPEED_TEST_SERVER_HOST + ":" + SPEED_TEST_SERVER_PORT +
                 SPEED_TEST_SERVER_URI_TIMEOUT);
 
@@ -467,7 +432,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 waiter.fail("onDownloadError : " + speedTestError);
                 waiter.resume();
             }
@@ -475,12 +440,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                waiter.fail("onUploadError : " + speedTestError);
-                waiter.resume();
             }
 
             @Override
@@ -540,7 +499,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
                 mWaiter.resume();
             }
@@ -556,12 +515,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
                 mSocket.startDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon
                         .SPEED_TEST_SERVER_PORT + TestCommon
                         .SPEED_TEST_SERVER_URI_DL_1MO);
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                mWaiter.resume();
             }
 
             @Override
@@ -646,7 +599,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
                 mWaiter.resume();
             }
@@ -656,12 +609,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
                 //called when upload is finished
                 checkResult(mWaiter, totalPacketSize, report.getTotalPacketSize(), report.getTransferRateBit(),
                         report.getTransferRateOctet(), false, true);
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                mWaiter.resume();
             }
 
             @Override

@@ -129,12 +129,8 @@ public class SpeedTestRepeatTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (!download) {
-                    mWaiterError.fail("shouldnt be in onUploadError");
-                } else {
-                    mWaiterError.fail("unexpected error : " + speedTestError);
-                }
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
+                mWaiterError.fail("unexpected error : " + speedTestError);
             }
 
             @Override
@@ -147,15 +143,6 @@ public class SpeedTestRepeatTest extends AbstractTest {
                             report.getTransferRateBit(),
                             report.getTransferRateOctet(),
                             false, true);
-                }
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (download) {
-                    mWaiterError.fail("shouldnt be in onUploadError");
-                } else {
-                    mWaiterError.fail("unexpected error : " + speedTestError);
                 }
             }
 
@@ -453,18 +440,13 @@ public class SpeedTestRepeatTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 //called when download error occur
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                //called when upload error occur
             }
 
             @Override

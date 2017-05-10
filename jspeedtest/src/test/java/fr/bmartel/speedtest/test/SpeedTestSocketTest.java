@@ -165,7 +165,7 @@ public class SpeedTestSocketTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail("onDownloadError : shoudlnt be in onDownloadError");
                 mWaiter.resume();
             }
@@ -173,12 +173,6 @@ public class SpeedTestSocketTest extends AbstractTest {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                mWaiter.fail("onUploadError : " + TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                mWaiter.resume();
             }
 
             @Override
@@ -252,18 +246,13 @@ public class SpeedTestSocketTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 //called when download error occur
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                //called when upload error occur
             }
 
             @Override
@@ -315,7 +304,7 @@ public class SpeedTestSocketTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiterError.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
                 mWaiterError.resume();
             }
@@ -323,12 +312,6 @@ public class SpeedTestSocketTest extends AbstractTest {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                mWaiterError.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                mWaiterError.resume();
             }
 
             @Override
@@ -476,7 +459,7 @@ public class SpeedTestSocketTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
                 mWaiter.resume();
             }
@@ -484,12 +467,6 @@ public class SpeedTestSocketTest extends AbstractTest {
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                mWaiter.resume();
             }
 
             @Override
@@ -542,18 +519,13 @@ public class SpeedTestSocketTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //called when upload is finished
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
             }
 
             @Override
@@ -617,7 +589,7 @@ public class SpeedTestSocketTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 waiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
                 waiter2.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
             }
@@ -626,12 +598,6 @@ public class SpeedTestSocketTest extends AbstractTest {
             public void onUploadFinished(final SpeedTestReport report) {
                 waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadFinished");
                 waiter2.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadFinished");
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadError");
-                waiter2.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadError");
             }
 
             @Override
@@ -689,7 +655,7 @@ public class SpeedTestSocketTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 waiter.fail(TestCommon.DOWNLOAD_ERROR_STR + " : shouldnt be in onDownloadError");
                 waiter2.fail(TestCommon.DOWNLOAD_ERROR_STR + " : shouldnt be in onDownloadError");
             }
@@ -701,12 +667,6 @@ public class SpeedTestSocketTest extends AbstractTest {
                         report.getTransferRateOctet(),
                         false, false);
                 waiter2.resume();
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                waiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
-                waiter2.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
             }
 
             @Override
@@ -759,18 +719,13 @@ public class SpeedTestSocketTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail("unexpected error in onDownloadError : " + speedTestError);
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 mWaiter.resume();
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                mWaiter.fail("unexpected error in onUploadError : " + speedTestError);
             }
 
             @Override
@@ -888,18 +843,13 @@ public class SpeedTestSocketTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail("unexpected error in onDownloadError : " + speedTestError);
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 mWaiter.resume();
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                mWaiter.fail("unexpected error in onUploadError : " + speedTestError);
             }
 
             @Override

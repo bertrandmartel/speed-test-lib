@@ -239,18 +239,13 @@ public class RepeatWrapper {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 clearRepeatTask(this);
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 //nothing to do here for download repeat task listener
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                clearRepeatTask(this);
             }
 
             @Override
@@ -324,7 +319,7 @@ public class RepeatWrapper {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 clearRepeatTask(this);
             }
 
@@ -333,11 +328,6 @@ public class RepeatWrapper {
                 mRepeatTransferRateList.add(report.getTransferRateOctet());
                 startUploadRepeat(uri, fileSizeOctet);
                 mRepeatRequestNum++;
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                clearRepeatTask(this);
             }
 
             @Override

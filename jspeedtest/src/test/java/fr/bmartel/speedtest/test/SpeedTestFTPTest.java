@@ -88,7 +88,7 @@ public class SpeedTestFTPTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 waiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError + " : " + errorMessage);
                 waiter2.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError + " : " + errorMessage);
             }
@@ -97,12 +97,6 @@ public class SpeedTestFTPTest extends AbstractTest {
             public void onUploadFinished(final SpeedTestReport report) {
                 waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadFinished");
                 waiter2.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadFinished");
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadError");
-                waiter2.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onUploadError");
             }
 
             @Override
@@ -155,7 +149,7 @@ public class SpeedTestFTPTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 waiter.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onDownloadError");
                 waiter2.fail(TestCommon.UPLOAD_ERROR_STR + " : shouldnt be in onDownloadError");
             }
@@ -167,12 +161,6 @@ public class SpeedTestFTPTest extends AbstractTest {
                         report.getTransferRateOctet(), false,
                         false);
                 waiter2.resume();
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                waiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError + " : " + errorMessage);
-                waiter2.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError + " : " + errorMessage);
             }
 
             @Override
@@ -217,18 +205,13 @@ public class SpeedTestFTPTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail("unexpected error in onDownloadError : " + speedTestError + " : " + errorMessage);
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 mWaiter.resume();
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                mWaiter.fail("unexpected error in onUploadError : " + speedTestError + " : " + errorMessage);
             }
 
             @Override
@@ -300,18 +283,13 @@ public class SpeedTestFTPTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail("unexpected error in onDownloadError : " + speedTestError + " : " + errorMessage);
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 mWaiter.resume();
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                mWaiter.fail("unexpected error in onUploadError : " + speedTestError + " : " + errorMessage);
             }
 
             @Override
@@ -362,18 +340,13 @@ public class SpeedTestFTPTest extends AbstractTest {
             }
 
             @Override
-            public void onDownloadError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail("unexpected error in onDownloadError : " + speedTestError + " : " + errorMessage);
             }
 
             @Override
             public void onUploadFinished(final SpeedTestReport report) {
                 mWaiter.resume();
-            }
-
-            @Override
-            public void onUploadError(final SpeedTestError speedTestError, final String errorMessage) {
-                mWaiter.fail("unexpected error in onUploadError : " + speedTestError + " : " + errorMessage);
             }
 
             @Override
