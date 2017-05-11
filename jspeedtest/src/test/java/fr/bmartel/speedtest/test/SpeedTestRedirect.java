@@ -73,7 +73,7 @@ public class SpeedTestRedirect extends AbstractTest {
 
             }
         });
-        mSocket.startDownload("http://stackoverflow.com/users/2614364/bertrand");
+        mSocket.startDownload("http://bmartel.fr/test2");
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
         mSocket.forceStopTask();
         mSocket.clearListeners();
