@@ -872,8 +872,7 @@ public class SpeedTestTask {
 
         } else {
 
-            if (totalPacketSize != BigDecimal.ZERO) {
-
+            if (totalPacketSize.compareTo(BigDecimal.ZERO) != 0) {
                 percent = temporaryPacketSize.multiply(SpeedTestConst.PERCENT_MAX).divide(totalPacketSize, scale,
                         roundingMode);
             }
