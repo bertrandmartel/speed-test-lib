@@ -196,4 +196,5 @@ public class TestCommon {
      */
     public final static String SERVER_LIST_FILENAME = "serverlist.json";
 
+    public static final String SPEED_TEST_SERVER_404_URI = "http://example.com/auth";
 }

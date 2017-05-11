@@ -390,11 +390,9 @@ public class SpeedTestErrorTest extends AbstractTest {
                 break;
             case BAD_STATUS:
                 if (download) {
-                    mSocket.startDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + TestCommon
-                            .SPEED_TEST_SERVER_FAKE_URI);
+                    mSocket.startDownload(TestCommon.SPEED_TEST_SERVER_404_URI);
                 } else {
-                    mSocket.startUpload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + TestCommon
-                                    .SPEED_TEST_SERVER_FAKE_URI,
+                    mSocket.startUpload(TestCommon.SPEED_TEST_SERVER_404_URI,
                             TestCommon.FILE_SIZE_REGULAR);
                 }
                 mWaiter.await(TestCommon.WAITING_TIMEOUT_LONG_OPERATION, TimeUnit.SECONDS);

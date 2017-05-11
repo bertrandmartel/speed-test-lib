@@ -475,7 +475,7 @@ public class SpeedTestTask {
                 public void run() {
 
                     if (download) {
-                        startSocketDownloadTask();
+                        startSocketDownloadTask(mHostname);
                     } else {
                         startSocketUploadTask();
                     }
@@ -505,8 +505,10 @@ public class SpeedTestTask {
 
     /**
      * start download reading task.
+     *
+     * @String hostname hostname to reach
      */
-    private void startSocketDownloadTask() {
+    private void startSocketDownloadTask(final String hostname) {
 
         mDownloadTemporaryPacketSize = 0;
 
@@ -556,6 +558,28 @@ public class SpeedTestTask {
                     mListenerList.get(i).onCompletion(report);
                 }
 
+            } else if ((httpFrame.getStatusCode() == 301 || httpFrame.getStatusCode() == 302) &&
+                    httpFrame.getHeaders().containsKey("location")) {
+                // redirect to Location
+                final String location = httpFrame.getHeaders().get("location");
+
+                if (location.charAt(0) == '/') {
+                    mReportInterval = false;
+                    finishDownload();
+                    startDownloadRequest("http://" + hostname + location);
+                } else if (location.startsWith("https")) {
+                    //unsupported protocol
+                    mReportInterval = false;
+                    for (int i = 0; i < mListenerList.size(); i++) {
+                        mListenerList.get(i).onError(SpeedTestError.UNSUPPORTED_PROTOCOL, "unsupported protocol : " +
+                                "https");
+                    }
+                    finishDownload();
+                } else {
+                    mReportInterval = false;
+                    finishDownload();
+                    startDownloadRequest(location);
+                }
             } else {
 
                 mReportInterval = false;
@@ -565,26 +589,37 @@ public class SpeedTestTask {
                             httpFrame.getStatusCode());
                 }
 
-                closeSocket();
-
-                if (!mRepeatWrapper.isRepeatDownload()) {
-                    closeExecutors();
-                }
+                finishDownload();
             }
 
-        } catch (SocketTimeoutException e) {
+        } catch (
+                SocketTimeoutException e
+                )
+
+        {
             mReportInterval = false;
             SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList, e.getMessage());
             mTimeEnd = System.currentTimeMillis();
             closeSocket();
             closeExecutors();
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException |
+                InterruptedException e
+                )
+
+        {
             mReportInterval = false;
             catchError(e.getMessage());
         }
+
         mErrorDispatched = false;
     }
 
+    private void finishDownload() {
+        closeSocket();
+        if (!mRepeatWrapper.isRepeatDownload()) {
+            closeExecutors();
+        }
+    }
 
     /**
      * start download reading loop + monitor progress.
@@ -697,7 +732,8 @@ public class SpeedTestTask {
                             throw new SocketTimeoutException();
                         }
                     } catch (SocketTimeoutException e) {
-                        SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList, SpeedTestConst.SOCKET_WRITE_ERROR);
+                        SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList, SpeedTestConst
+                                .SOCKET_WRITE_ERROR);
                         closeSocket();
                         closeExecutors();
                     } catch (IOException e) {
@@ -1179,7 +1215,8 @@ public class SpeedTestTask {
                         mReportInterval = false;
                         mErrorDispatched = true;
                         if (!mForceCloseSocket) {
-                            SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList, SpeedTestConst.SOCKET_WRITE_ERROR);
+                            SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList, SpeedTestConst
+                                    .SOCKET_WRITE_ERROR);
                         } else {
                             SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, e.getMessage());
                         }
