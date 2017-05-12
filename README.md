@@ -78,6 +78,12 @@ speedTestSocket.startDownload("http://2.testdebit.info/fichiers/1Mo.dat");
 speedTestSocket.startDownload("ftp://speedtest.tele2.net/1MB.zip");
 ```
 
+* FTP download 1Mo from `ftp.otenet.gr` with credentials (username/password), default is anonymous/no password
+
+```
+speedTestSocket.startDownload("ftp://speedtest:speedtest@ftp.otenet.gr/test1Mb.db");
+```
+
 ### Upload
 
 * HTTP upload 1Mo to `2.testdebit.info`
