@@ -55,7 +55,6 @@ http://speedtest.ftp.otenet.gr
 http://speedtest.serverius.net
 
 * http download : http://speedtest.serverius.net/files/10mb.bin
-* ftp download : ftp://speedtest.serverius.net/10mb.bin
 
 ## ovh.net
 
@@ -87,9 +86,6 @@ http://ovh.net/files
 }, {
     "mode": "download",
     "uri": "http://speedtest.serverius.net/files/10mb.bin"
-}, {
-    "mode": "download",
-    "uri": "ftp://speedtest.serverius.net/10mb.bin"
 }, {
     "mode": "download",
     "uri": "http://ovh.net/files/1Mb.dat"

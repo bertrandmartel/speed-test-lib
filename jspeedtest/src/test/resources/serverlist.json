@@ -29,10 +29,6 @@
   },
   {
     "mode": "download",
-    "uri": "ftp://speedtest.serverius.net/10mb.bin"
-  },
-  {
-    "mode": "download",
     "uri": "http://ovh.net/files/1Mb.dat"
   }
 ]
