@@ -530,10 +530,10 @@ public class SpeedTestTask {
             final HttpStates httpHeaderState = httpFrame.parseHeader(mSocket.getInputStream());
             SpeedTestUtils.checkHttpHeaderError(mForceCloseSocket, mListenerList, httpHeaderState);
 
-            SpeedTestUtils.checkHttpContentLengthError(mForceCloseSocket, mListenerList, httpFrame);
-
             if (httpFrame.getStatusCode() == SpeedTestConst.HTTP_OK &&
                     httpFrame.getReasonPhrase().equalsIgnoreCase("ok")) {
+
+                SpeedTestUtils.checkHttpContentLengthError(mForceCloseSocket, mListenerList, httpFrame);
 
                 mDownloadPckSize = new BigDecimal(httpFrame.getContentLength());
 
