@@ -1073,7 +1073,7 @@ public class SpeedTestTask {
             String pwd = SpeedTestConst.FTP_DEFAULT_PASSWORD;
 
             if (userInfo != null && userInfo.indexOf(':') != -1) {
-                user = userInfo.substring(0, userInfo.indexOf(':') - 1);
+                user = userInfo.substring(0, userInfo.indexOf(':'));
                 pwd = userInfo.substring(userInfo.indexOf(':') + 1);
             }
 
