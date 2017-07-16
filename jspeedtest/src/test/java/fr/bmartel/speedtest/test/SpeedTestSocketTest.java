@@ -383,29 +383,11 @@ public class SpeedTestSocketTest extends AbstractTest {
     }
 
     /**
-     * test download report empty.
-     */
-    @Test
-    public void downloadReportEmptyTest() {
-
-        final SpeedTestReport report = mSocket.getLiveDownloadReport();
-
-        Assert.assertEquals(HEADER + "download report empty - mode incorrect", report.getSpeedTestMode(),
-                SpeedTestMode.DOWNLOAD);
-        SpeedTestUtils.testReportEmpty("download report empty - ", report, false);
-    }
-
-    /**
      * test upload report empty.
      */
     @Test
-    public void uploadReportEmptyTest() {
-
-        final SpeedTestReport report = mSocket.getLiveUploadReport();
-
-        Assert.assertEquals(HEADER + "upload report empty - mode incorrect", report.getSpeedTestMode(),
-                SpeedTestMode.UPLOAD);
-
+    public void reportEmptyTest() {
+        final SpeedTestReport report = mSocket.getLiveReport();
         SpeedTestUtils.testReportEmpty("upload report empty - ", report, false);
     }
 
@@ -447,7 +429,7 @@ public class SpeedTestSocketTest extends AbstractTest {
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-        final SpeedTestReport report = mSocket.getLiveDownloadReport();
+        final SpeedTestReport report = mSocket.getLiveReport();
 
         Assert.assertEquals(HEADER + "download report not empty - mode incorrect", report.getSpeedTestMode(),
                 SpeedTestMode.DOWNLOAD);
@@ -496,7 +478,7 @@ public class SpeedTestSocketTest extends AbstractTest {
                 TestCommon.FILE_SIZE_REGULAR);
         mWaiter.await(4, TimeUnit.SECONDS);
 
-        final SpeedTestReport report = mSocket.getLiveUploadReport();
+        final SpeedTestReport report = mSocket.getLiveReport();
 
         Assert.assertEquals(HEADER + "upload report not empty - mode incorrect", report.getSpeedTestMode(),
                 SpeedTestMode.UPLOAD);

@@ -69,5 +69,4 @@ public interface ISpeedTestListener {
      * called when speed test is interrupted.
      */
     void onInterruption();
-
 }

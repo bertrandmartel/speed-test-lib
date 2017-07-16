@@ -551,10 +551,10 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
                 ((transferRateBps.floatValue() - 0.1) <= check));
 
         if (isDownload) {
-            SpeedTestUtils.testReportNotEmpty(waiter, mSocket.getLiveDownloadReport(), expectedPacketSize, false,
+            SpeedTestUtils.testReportNotEmpty(waiter, mSocket.getLiveReport(), expectedPacketSize, false,
                     isRepeat);
         } else {
-            SpeedTestUtils.testReportNotEmpty(waiter, mSocket.getLiveUploadReport(), expectedPacketSize, false,
+            SpeedTestUtils.testReportNotEmpty(waiter, mSocket.getLiveReport(), expectedPacketSize, false,
                     isRepeat);
         }
     }

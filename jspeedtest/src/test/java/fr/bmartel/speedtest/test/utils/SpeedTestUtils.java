@@ -99,11 +99,8 @@ public class SpeedTestUtils {
                                                     isRepeat) {
         SpeedTestReport report;
 
-        if (download) {
-            report = socket.getLiveDownloadReport();
-        } else {
-            report = socket.getLiveUploadReport();
-        }
+        report = socket.getLiveReport();
+
         testReportNotEmpty(waiter, report, packetSize, false, isRepeat);
 
         if (!isRepeat) {
@@ -194,11 +191,8 @@ public class SpeedTestUtils {
                                            final boolean download) {
         SpeedTestReport liveReport;
 
-        if (download) {
-            liveReport = socket.getLiveDownloadReport();
-        } else {
-            liveReport = socket.getLiveUploadReport();
-        }
+        liveReport = socket.getLiveReport();
+
         SpeedTestUtils.testReportNotEmpty(waiter, report, packetSize, false, true);
         SpeedTestUtils.testReportNotEmpty(waiter, liveReport, packetSize, false, true);
 

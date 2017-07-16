@@ -261,7 +261,7 @@ public class RepeatWrapper {
                 cleanTimer();
                 mRepeatFinished = true;
                 if (repeatListener != null) {
-                    repeatListener.onCompletion(mSpeedTestSocket.getLiveDownloadReport());
+                    repeatListener.onCompletion(mSpeedTestSocket.getLiveReport());
                 }
             }
         }, repeatWindow);
@@ -270,7 +270,7 @@ public class RepeatWrapper {
             @Override
             public void run() {
                 if (repeatListener != null) {
-                    repeatListener.onReport(mSpeedTestSocket.getLiveDownloadReport());
+                    repeatListener.onReport(mSpeedTestSocket.getLiveReport());
                 }
             }
         }, reportPeriodMillis, reportPeriodMillis);
@@ -334,7 +334,7 @@ public class RepeatWrapper {
                 cleanTimer();
                 mRepeatFinished = true;
                 if (repeatListener != null) {
-                    repeatListener.onCompletion(mSpeedTestSocket.getLiveUploadReport());
+                    repeatListener.onCompletion(mSpeedTestSocket.getLiveReport());
                 }
             }
         }, repeatWindow);
@@ -343,7 +343,7 @@ public class RepeatWrapper {
             @Override
             public void run() {
                 if (repeatListener != null) {
-                    repeatListener.onReport(mSpeedTestSocket.getLiveUploadReport());
+                    repeatListener.onReport(mSpeedTestSocket.getLiveReport());
                 }
             }
         }, reportPeriodMillis, reportPeriodMillis);

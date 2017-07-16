@@ -73,18 +73,11 @@ public interface ISpeedTestSocket {
     void forceStopTask();
 
     /**
-     * get a temporary download report at this moment.
+     * get a temporary download/upload report at this moment.
      *
      * @return speed test download report
      */
-    SpeedTestReport getLiveDownloadReport();
-
-    /**
-     * get a temporary upload report at this moment.
-     *
-     * @return speed test upload report
-     */
-    SpeedTestReport getLiveUploadReport();
+    SpeedTestReport getLiveReport();
 
     /**
      * Close socket streams and socket object.
