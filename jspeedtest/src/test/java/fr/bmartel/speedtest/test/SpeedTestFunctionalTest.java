@@ -155,61 +155,83 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
     private int chainCount = 1;
 
     @Test
-    public void downloadTest() throws TimeoutException {
-
-        calculateReference();
-
-        mSocket = new SpeedTestSocket();
-
-        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
-
-        mSocket.addSpeedTestListener(new ISpeedTestListener() {
-            @Override
-            public void onCompletion(final SpeedTestReport report) {
-                mExpectedTransferRateOps = report.getTransferRateOctet();
-                mExpectedTransferRateBps = report.getTransferRateBit();
-                mWaiter.resume();
-            }
-
-            @Override
-            public void onProgress(final float percent, final SpeedTestReport report) {
-                //called to notify download progress
-            }
-
-            @Override
-            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (mExpectedError != null && speedTestError == mExpectedError) {
-                    mWaiter.resume();
-                } else {
-                    mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
-                    mWaiter.resume();
-                }
-            }
-        });
-
+    public void download1MTest() throws TimeoutException {
+        initTask(true);
         testDownload(SPEED_TEST_SERVER_URI_DL_1MO);
+        stopTask();
+    }
 
+    @Test
+    public void downloadRedirectTest() throws TimeoutException {
+        initTask(true);
         testDownload(SPEED_TEST_SERVER_URI_301);
         testDownload(SPEED_TEST_SERVER_URI_302);
         testDownload(SPEED_TEST_SERVER_URI_307);
+        stopTask();
+    }
 
+    @Test
+    public void download5MTest() throws TimeoutException {
+        initTask(true);
         testDownload(SPEED_TEST_SERVER_URI_DL_5MO);
-        testDownload(SPEED_TEST_SERVER_URI_DL_10MO);
+        stopTask();
+    }
 
+    @Test
+    public void download10MTest() throws TimeoutException {
+        initTask(true);
+        testDownload(SPEED_TEST_SERVER_URI_DL_10MO);
+        stopTask();
+    }
+
+    @Test
+    public void downloadErrorTest() throws TimeoutException {
+        initTask(true);
         testError(SpeedTestError.MALFORMED_URI, "://" + SPEED_TEST_SERVER_HOST + ":" +
                 SPEED_TEST_SERVER_PORT +
                 SPEED_TEST_SERVER_URI_DL_1MO, true);
         testError(SpeedTestError.UNSUPPORTED_PROTOCOL, "https://" + SPEED_TEST_SERVER_HOST + ":" +
                 SPEED_TEST_SERVER_PORT +
                 SPEED_TEST_SERVER_URI_DL_1MO, true);
-
-        stopServer();
-
-        mSocket.clearListeners();
+        stopTask();
     }
 
     @Test
-    public void uploadTest() throws TimeoutException {
+    public void upload1MTest() throws TimeoutException {
+        initTask(false);
+        testUpload(SPEED_TEST_SERVER_URI_UL, 1000000, true);
+        stopTask();
+    }
+
+    @Test
+    public void uploadRedirectTest() throws TimeoutException {
+        initTask(false);
+        testUpload(SPEED_TEST_SERVER_URI_301, 1000000, true);
+        testUpload(SPEED_TEST_SERVER_URI_302, 1000000, true);
+        testUpload(SPEED_TEST_SERVER_URI_307, 1000000, true);
+        stopTask();
+    }
+
+    @Test
+    public void upload10MTest() throws TimeoutException {
+        initTask(false);
+        testUpload(SPEED_TEST_SERVER_URI_UL, 10000000, true);
+        stopTask();
+    }
+
+    @Test
+    public void uploadErrorTest() throws TimeoutException {
+        initTask(false);
+        testError(SpeedTestError.MALFORMED_URI, "://" + SPEED_TEST_SERVER_HOST + ":" +
+                SPEED_TEST_SERVER_PORT +
+                SPEED_TEST_SERVER_URI_DL_1MO, false);
+        testError(SpeedTestError.UNSUPPORTED_PROTOCOL, "https://" + SPEED_TEST_SERVER_HOST + ":" +
+                SPEED_TEST_SERVER_PORT +
+                SPEED_TEST_SERVER_URI_DL_1MO, false);
+        stopTask();
+    }
+
+    private void initTask(final boolean download) throws TimeoutException {
 
         calculateReference();
 
@@ -238,32 +260,19 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
                 if (mExpectedError != null && speedTestError == mExpectedError) {
                     mWaiter.resume();
                 } else {
-                    mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
+                    if (download) {
+                        mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
+                    } else {
+                        mWaiter.fail(TestCommon.UPLOAD_ERROR_STR + speedTestError);
+                    }
                     mWaiter.resume();
                 }
             }
         });
+    }
 
-        testUpload(SPEED_TEST_SERVER_URI_UL, 1000000, true);
-
-        testUpload(SPEED_TEST_SERVER_URI_301, 1000000, true);
-        testUpload(SPEED_TEST_SERVER_URI_302, 1000000, true);
-        testUpload(SPEED_TEST_SERVER_URI_307, 1000000, true);
-
-        testUpload(SPEED_TEST_SERVER_URI_UL, 10000000, true);
-
-        testUpload(SPEED_TEST_SERVER_URI_UL, 1000000, false);
-        testUpload(SPEED_TEST_SERVER_URI_UL, 10000000, false);
-
-        testError(SpeedTestError.MALFORMED_URI, "://" + SPEED_TEST_SERVER_HOST + ":" +
-                SPEED_TEST_SERVER_PORT +
-                SPEED_TEST_SERVER_URI_DL_1MO, false);
-        testError(SpeedTestError.UNSUPPORTED_PROTOCOL, "https://" + SPEED_TEST_SERVER_HOST + ":" +
-                SPEED_TEST_SERVER_PORT +
-                SPEED_TEST_SERVER_URI_DL_1MO, false);
-
+    private void stopTask() {
         stopServer();
-
         mSocket.clearListeners();
     }
 
