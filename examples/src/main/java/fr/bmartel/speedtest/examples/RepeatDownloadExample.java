@@ -100,26 +100,26 @@ public class RepeatDownloadExample {
         });
 
         speedTestSocket.startDownloadRepeat(SPEED_TEST_SERVER_URI_DL,
-                SPEED_TEST_DURATION, REPORT_INTERVAL, new
-                        IRepeatListener() {
-                            @Override
-                            public void onCompletion(final SpeedTestReport report) {
+                SPEED_TEST_DURATION, REPORT_INTERVAL,
+                new IRepeatListener() {
+                    @Override
+                    public void onCompletion(final SpeedTestReport report) {
 
-                                if (LOGGER.isDebugEnabled()) {
-                                    LOGGER.debug(LogUtils.LOG_REPORT_SEPARATOR);
-                                    LOGGER.debug("---------------------DOWNLOAD FINISHED------------------");
-                                    LOGGER.debug(LogUtils.LOG_REPORT_SEPARATOR);
-                                }
-                                LogUtils.logReport(report, LOGGER);
-                            }
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug(LogUtils.LOG_REPORT_SEPARATOR);
+                            LOGGER.debug("---------------------DOWNLOAD FINISHED------------------");
+                            LOGGER.debug(LogUtils.LOG_REPORT_SEPARATOR);
+                        }
+                        LogUtils.logReport(report, LOGGER);
+                    }
 
-                            @Override
-                            public void onReport(final SpeedTestReport report) {
-                                if (LOGGER.isDebugEnabled()) {
-                                    LOGGER.debug("---------------current download report------------------");
-                                }
-                                LogUtils.logReport(report, LOGGER);
-                            }
-                        });
+                    @Override
+                    public void onReport(final SpeedTestReport report) {
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("---------------current download report------------------");
+                        }
+                        LogUtils.logReport(report, LOGGER);
+                    }
+                });
     }
 }

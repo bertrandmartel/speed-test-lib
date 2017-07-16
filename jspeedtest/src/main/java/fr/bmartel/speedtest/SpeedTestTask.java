@@ -431,7 +431,7 @@ public class SpeedTestTask {
                         }
                     }
                 }
-            }, false);
+            }, false, fileSizeOctet);
         } catch (MalformedURLException e) {
             SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, SpeedTestError.MALFORMED_URI,
                     e.getMessage());
@@ -441,10 +441,11 @@ public class SpeedTestTask {
     /**
      * Create and connect mSocket.
      *
-     * @param task     task to be executed when connected to mSocket
-     * @param download define if it is a download or upload test
+     * @param task       task to be executed when connected to mSocket
+     * @param download   define if it is a download or upload test
+     * @param uploadSize upload package size (if !download)
      */
-    private void connectAndExecuteTask(final Runnable task, final boolean download) {
+    private void connectAndExecuteTask(final Runnable task, final boolean download, final int uploadSize) {
 
         // close mSocket before recreating it
         if (mSocket != null) {
@@ -477,7 +478,7 @@ public class SpeedTestTask {
                     if (download) {
                         startSocketDownloadTask(mHostname);
                     } else {
-                        startSocketUploadTask();
+                        startSocketUploadTask(mHostname, uploadSize);
                     }
                     mSpeedTestMode = SpeedTestMode.NONE;
                 }
@@ -558,14 +559,16 @@ public class SpeedTestTask {
                     mListenerList.get(i).onCompletion(report);
                 }
 
-            } else if ((httpFrame.getStatusCode() == 301 || httpFrame.getStatusCode() == 302) &&
+            } else if ((httpFrame.getStatusCode() == 301 ||
+                    httpFrame.getStatusCode() == 302 ||
+                    httpFrame.getStatusCode() == 307) &&
                     httpFrame.getHeaders().containsKey("location")) {
                 // redirect to Location
                 final String location = httpFrame.getHeaders().get("location");
 
                 if (location.charAt(0) == '/') {
                     mReportInterval = false;
-                    finishDownload();
+                    finishTask();
                     startDownloadRequest("http://" + hostname + location);
                 } else if (location.startsWith("https")) {
                     //unsupported protocol
@@ -574,10 +577,10 @@ public class SpeedTestTask {
                         mListenerList.get(i).onError(SpeedTestError.UNSUPPORTED_PROTOCOL, "unsupported protocol : " +
                                 "https");
                     }
-                    finishDownload();
+                    finishTask();
                 } else {
                     mReportInterval = false;
-                    finishDownload();
+                    finishTask();
                     startDownloadRequest(location);
                 }
             } else {
@@ -589,7 +592,7 @@ public class SpeedTestTask {
                             httpFrame.getStatusCode());
                 }
 
-                finishDownload();
+                finishTask();
             }
 
         } catch (
@@ -614,7 +617,7 @@ public class SpeedTestTask {
         mErrorDispatched = false;
     }
 
-    private void finishDownload() {
+    private void finishTask() {
         closeSocket();
         if (!mRepeatWrapper.isRepeatDownload()) {
             closeExecutors();
@@ -654,8 +657,11 @@ public class SpeedTestTask {
 
     /**
      * start upload writing task.
+     *
+     * @param hostname hostname to reach
+     * @param size     upload packet size
      */
-    private void startSocketUploadTask() {
+    private void startSocketUploadTask(final String hostname, final int size) {
 
         try {
             final HttpFrame frame = new HttpFrame();
@@ -667,13 +673,9 @@ public class SpeedTestTask {
                 if (frame.getStatusCode() == SpeedTestConst.HTTP_OK && frame.getReasonPhrase().equalsIgnoreCase("ok")) {
 
                     mTimeEnd = System.currentTimeMillis();
-
-                    closeSocket();
                     mReportInterval = false;
 
-                    if (!mRepeatWrapper.isRepeatUpload()) {
-                        closeExecutors();
-                    }
+                    finishTask();
 
                     final SpeedTestReport report = mSocketInterface.getLiveUploadReport();
 
@@ -681,6 +683,31 @@ public class SpeedTestTask {
                         mListenerList.get(i).onCompletion(report);
                     }
 
+                } else if ((frame.getStatusCode() == 301 ||
+                        frame.getStatusCode() == 302 ||
+                        frame.getStatusCode() == 307) &&
+                        frame.getHeaders().containsKey("location")) {
+                    // redirect to Location
+                    final String location = frame.getHeaders().get("location");
+
+                    if (location.charAt(0) == '/') {
+                        mReportInterval = false;
+                        finishTask();
+                        startUploadRequest("http://" + hostname + location, size);
+                    } else if (location.startsWith("https")) {
+                        //unsupported protocol
+                        mReportInterval = false;
+                        for (int i = 0; i < mListenerList.size(); i++) {
+                            mListenerList.get(i).onError(SpeedTestError.UNSUPPORTED_PROTOCOL, "unsupported protocol :" +
+                                    " " +
+                                    "https");
+                        }
+                        finishTask();
+                    } else {
+                        mReportInterval = false;
+                        finishTask();
+                        startUploadRequest(location, size);
+                    }
                 } else {
                     mReportInterval = false;
 
@@ -688,12 +715,7 @@ public class SpeedTestTask {
                         mListenerList.get(i).onError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error status code" +
                                 " " + frame.getStatusCode());
                     }
-
-                    closeSocket();
-
-                    if (!mRepeatWrapper.isRepeatUpload()) {
-                        closeExecutors();
-                    }
+                    finishTask();
                 }
                 return;
             }
@@ -742,7 +764,7 @@ public class SpeedTestTask {
                     }
                 }
             }
-        }, true);
+        }, true, 0);
     }
 
     /**
@@ -1319,7 +1341,7 @@ public class SpeedTestTask {
     /**
      * Check if report interval is set.
      *
-     * @return
+     * @return report interval
      */
     public boolean isReportInterval() {
         return mReportInterval;

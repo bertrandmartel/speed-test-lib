@@ -46,7 +46,7 @@ public class DownloadFileExample {
     /**
      * spedd examples server uri.
      */
-    private final static String SPEED_TEST_SERVER_URI_DL = "http://2.testdebit.info/fichiers/1Mo.dat";
+    private final static String SPEED_TEST_SERVER_URI_DL = "http://bmartel.fr/test2";
 
     /**
      * logger.

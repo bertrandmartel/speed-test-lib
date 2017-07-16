@@ -26,10 +26,12 @@ package fr.bmartel.speedtest.test;
 
 import fr.bmartel.protocol.http.HttpResponseFrame;
 import fr.bmartel.protocol.http.HttpVersion;
+import fr.bmartel.protocol.http.StatusCodeObject;
 import fr.bmartel.protocol.http.constants.StatusCodeList;
 import fr.bmartel.protocol.http.inter.IHttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;
-import fr.bmartel.speedtest.*;
+import fr.bmartel.speedtest.SpeedTestReport;
+import fr.bmartel.speedtest.SpeedTestSocket;
 import fr.bmartel.speedtest.inter.IRepeatListener;
 import fr.bmartel.speedtest.inter.ISpeedTestListener;
 import fr.bmartel.speedtest.model.SpeedTestError;
@@ -86,6 +88,21 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
      * speed examples 10Mo server uri.
      */
     private final static String SPEED_TEST_SERVER_URI_DL_10MO = "/fichiers/10Mo.dat";
+
+    /**
+     * 301 endpoint.
+     */
+    private final static String SPEED_TEST_SERVER_URI_301 = "/file/301";
+
+    /**
+     * 302 endpoint.
+     */
+    private final static String SPEED_TEST_SERVER_URI_302 = "/file/302";
+
+    /**
+     * 307 endpoint.
+     */
+    private final static String SPEED_TEST_SERVER_URI_307 = "/file/307";
 
     /**
      * socket timeout uri.
@@ -176,6 +193,11 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
         });
 
         testDownload(SPEED_TEST_SERVER_URI_DL_1MO);
+
+        testDownload(SPEED_TEST_SERVER_URI_301);
+        testDownload(SPEED_TEST_SERVER_URI_302);
+        testDownload(SPEED_TEST_SERVER_URI_307);
+
         testDownload(SPEED_TEST_SERVER_URI_DL_5MO);
         testDownload(SPEED_TEST_SERVER_URI_DL_10MO);
 
@@ -232,11 +254,16 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             }
         });
 
-        testUpload(1000000, true);
-        testUpload(10000000, true);
+        testUpload(SPEED_TEST_SERVER_URI_UL, 1000000, true);
 
-        testUpload(1000000, false);
-        testUpload(10000000, false);
+        testUpload(SPEED_TEST_SERVER_URI_301, 1000000, true);
+        testUpload(SPEED_TEST_SERVER_URI_302, 1000000, true);
+        testUpload(SPEED_TEST_SERVER_URI_307, 1000000, true);
+
+        testUpload(SPEED_TEST_SERVER_URI_UL, 10000000, true);
+
+        testUpload(SPEED_TEST_SERVER_URI_UL, 1000000, false);
+        testUpload(SPEED_TEST_SERVER_URI_UL, 10000000, false);
 
         testError(SpeedTestError.MALFORMED_URI, "://" + SPEED_TEST_SERVER_HOST + ":" +
                 SPEED_TEST_SERVER_PORT +
@@ -306,7 +333,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
      *
      * @param size
      */
-    private void testUpload(final int size, final boolean useFileStorage) throws TimeoutException {
+    private void testUpload(final String url, final int size, final boolean useFileStorage) throws TimeoutException {
 
         mWaiter = new Waiter();
 
@@ -315,7 +342,7 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
         }
 
         mSocket.startUpload("http://" + SPEED_TEST_SERVER_HOST + ":" + SPEED_TEST_SERVER_PORT +
-                SPEED_TEST_SERVER_URI_UL, size);
+                url, size);
 
         mWaiter.await(WAITING_TIMEOUT_LONG_OPERATION, SECONDS);
 
@@ -689,62 +716,98 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
 
                     byte[] body = "OK".getBytes();
 
-                    switch (httpFrame.getMethod()) {
-                        case "GET":
+                    try {
+                        final URL url = new URL(httpFrame.getUri());
 
-                            URL url = null;
-                            try {
-                                url = new URL(httpFrame.getUri());
-                            } catch (MalformedURLException e) {
-                                e.printStackTrace();
-                                return;
-                            }
+                        switch (httpFrame.getMethod()) {
+                            case "GET":
 
-                            switch (url.getPath()) {
-                                case SPEED_TEST_SERVER_URI_DL_1MO:
-                                    body = new RandomGen().generateRandomArray(1000000);
-                                    break;
-                                case SPEED_TEST_SERVER_URI_DL_5MO:
-                                    body = new RandomGen().generateRandomArray(5000000);
-                                    break;
-                                case SPEED_TEST_SERVER_URI_DL_10MO:
-                                    body = new RandomGen().generateRandomArray(10000000);
-                                    break;
-                                case SPEED_TEST_SERVER_URI_TIMEOUT:
-                                    try {
-                                        Thread.sleep(mSocketTimeout + 1000);
-                                    } catch (InterruptedException e) {
-                                        waiter.fail(e.getMessage());
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
+                                switch (url.getPath()) {
+                                    case SPEED_TEST_SERVER_URI_DL_1MO:
+                                        body = new RandomGen().generateRandomArray(1000000);
+                                        break;
+                                    case SPEED_TEST_SERVER_URI_DL_5MO:
+                                        body = new RandomGen().generateRandomArray(5000000);
+                                        break;
+                                    case SPEED_TEST_SERVER_URI_DL_10MO:
+                                        body = new RandomGen().generateRandomArray(10000000);
+                                        break;
+                                    case SPEED_TEST_SERVER_URI_302:
+                                        sendRedirect("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" +
+                                                        TestCommon.SPEED_TEST_SERVER_PORT + TestCommon
+                                                        .SPEED_TEST_SERVER_URI_DL_1MO,
+                                                StatusCodeList.FOUND, httpStream);
+                                        return;
+                                    case SPEED_TEST_SERVER_URI_307:
+                                        sendRedirect("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" +
+                                                        TestCommon.SPEED_TEST_SERVER_PORT + TestCommon
+                                                        .SPEED_TEST_SERVER_URI_DL_1MO,
+                                                StatusCodeList.TEMPORARY_REDIRECT, httpStream);
+                                        return;
+                                    case SPEED_TEST_SERVER_URI_301:
+                                        sendRedirect("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" +
+                                                        TestCommon.SPEED_TEST_SERVER_PORT + TestCommon
+                                                        .SPEED_TEST_SERVER_URI_DL_1MO,
+                                                StatusCodeList.MOVED_PERMANENTLY, httpStream);
+                                        return;
+                                    case SPEED_TEST_SERVER_URI_TIMEOUT:
+                                        try {
+                                            Thread.sleep(mSocketTimeout + 1000);
+                                        } catch (InterruptedException e) {
+                                            waiter.fail(e.getMessage());
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
 
-                        case "POST":
+                            case "POST":
 
-                            switch (httpFrame.getUri()) {
-                                case SPEED_TEST_SERVER_URI_UL:
-                                    break;
-                                case SPEED_TEST_SERVER_URI_TIMEOUT:
-                                    try {
-                                        Thread.sleep(mSocketTimeout + 1000);
-                                    } catch (InterruptedException e) {
-                                        waiter.fail(e.getMessage());
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
+                                switch (url.getPath()) {
+                                    case SPEED_TEST_SERVER_URI_302:
+                                        sendRedirect("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" +
+                                                        TestCommon.SPEED_TEST_SERVER_PORT + TestCommon
+                                                        .SPEED_TEST_SERVER_URI_DL_1MO,
+                                                StatusCodeList.FOUND, httpStream);
+                                        return;
+                                    case SPEED_TEST_SERVER_URI_307:
+                                        sendRedirect("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" +
+                                                        TestCommon.SPEED_TEST_SERVER_PORT + TestCommon
+                                                        .SPEED_TEST_SERVER_URI_DL_1MO,
+                                                StatusCodeList.TEMPORARY_REDIRECT, httpStream);
+                                        return;
+                                    case SPEED_TEST_SERVER_URI_301:
+                                        sendRedirect("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" +
+                                                        TestCommon.SPEED_TEST_SERVER_PORT + TestCommon
+                                                        .SPEED_TEST_SERVER_URI_DL_1MO,
+                                                StatusCodeList.MOVED_PERMANENTLY, httpStream);
+                                        return;
+                                    case SPEED_TEST_SERVER_URI_UL:
+                                        break;
+                                    case SPEED_TEST_SERVER_URI_TIMEOUT:
+                                        try {
+                                            Thread.sleep(mSocketTimeout + 1000);
+                                        } catch (InterruptedException e) {
+                                            waiter.fail(e.getMessage());
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
 
-                        default:
-                            break;
+                            default:
+                                break;
+                        }
+                        httpStream.writeHttpFrame(new HttpResponseFrame(
+                                StatusCodeList.OK, new HttpVersion(1, 1),
+                                new HashMap<String, String>(), body).toString().getBytes());
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                        return;
                     }
-                    httpStream.writeHttpFrame(new HttpResponseFrame(
-                            StatusCodeList.OK, new HttpVersion(1, 1),
-                            new HashMap<String, String>(), body).toString().getBytes());
+
                 }
             }
 
@@ -758,5 +821,13 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
         }).start();
 
         waiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, SECONDS);
+    }
+
+    private void sendRedirect(final String url, final StatusCodeObject code, final IHttpStream httpStream) {
+        final HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("Location", url);
+        httpStream.writeHttpFrame(new HttpResponseFrame(
+                code, new HttpVersion(1, 1),
+                headers, new byte[]{}).toString().getBytes());
     }
 }
