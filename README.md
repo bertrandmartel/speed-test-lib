@@ -24,7 +24,7 @@ Check a [non-exhaustive list](./server_list.md) of compatible speed test server.
 * with Gradle, from jcenter or mavenCentral :
 
 ```gradle
-compile 'fr.bmartel:jspeedtest:1.30.1'
+compile 'fr.bmartel:jspeedtest:1.31.0'
 ```
 
 ## Usage
@@ -55,11 +55,6 @@ speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
         System.out.println("[PROGRESS] progress : " + percent + "%");
         System.out.println("[PROGRESS] rate in octet/s : " + report.getTransferRateOctet());
         System.out.println("[PROGRESS] rate in bit/s   : " + report.getTransferRateBit());
-    }
-
-    @Override
-    public void onInterruption() {
-        // triggered when forceStopTask is called
     }
 });
 ```
@@ -102,7 +97,6 @@ speedTestSocket.startUpload("ftp://speedtest.tele2.net/upload/" + fileName, 1000
 ### Fixed duration download
 
 Download during a fixed duration. Download will be stopped when the max duration is reached.
-At the end of the max duration, `onInterruption` is called if download has not be fully completed
 
 * HTTP download for 10s max, a 100 Mo file from `2.testdebit.info`
 
@@ -119,7 +113,6 @@ speedTestSocket.startFixedDownload("ftp://speedtest.tele2.net/100MB.zip");
 ### Fixed duration Upload
 
 Upload during a fixed duration. Upload will be stopped when the max duration is reached
-At the end of the max duration, `onInterruption` is called if upload has not be fully completed
 
 * HTTP upload for 10s max, a 10Mo file to `2.testdebit.info`
 
@@ -212,13 +205,13 @@ speedTestSocket.startUploadRepeat("http://2.testdebit.info/", 1000000
 * retrieve current download report : 
 
 ```java
-SpeedTestReport getLiveDownloadReport()
+SpeedTestReport getLiveReport()
 ```
 
 * retrieve current upload report : 
 
 ```java
-SpeedTestReport getLiveUploadReport()
+SpeedTestReport getLiveReport()
 ```
 
 ### Set setup time
@@ -317,11 +310,6 @@ public class SpeedTestTask extends AsyncTask<Void, Void, String> {
                 Log.v("speedtest", "[PROGRESS] progress : " + percent + "%");
                 Log.v("speedtest", "[PROGRESS] rate in octet/s : " + report.getTransferRateOctet());
                 Log.v("speedtest", "[PROGRESS] rate in bit/s   : " + report.getTransferRateBit());
-            }
-
-            @Override
-            public void onInterruption() {
-                // triggered when forceStopTask is called
             }
         });
 
@@ -438,4 +426,4 @@ JRE 1.7 compliant
 
 ## License
 
-The MIT License (MIT) Copyright (c) 2016 Bertrand Martel
+The MIT License (MIT) Copyright (c) 2016-2017 Bertrand Martel
