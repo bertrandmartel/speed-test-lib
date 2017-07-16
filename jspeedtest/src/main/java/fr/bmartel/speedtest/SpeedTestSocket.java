@@ -107,6 +107,11 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      */
     private int mReportInterval = -1;
 
+    /**
+     * default repeat interval in milliseconds.
+     */
+    private final static int DEFAULT_REPEAT_INTERVAL = 1000;
+
     public SpeedTestSocket() {
 
     }
@@ -317,6 +322,23 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     /**
      * Start repeat download task.
      *
+     * @param uri            uri to fetch to download file
+     * @param repeatWindow   time window for the repeated download in milliseconds
+     * @param repeatListener listener for download repeat task completion & reports
+     */
+    public void startDownloadRepeat(
+            final String uri,
+            final int repeatWindow,
+            final IRepeatListener repeatListener) {
+
+        final int reportPeriodMillis = (mReportInterval != -1) ? mReportInterval : DEFAULT_REPEAT_INTERVAL;
+
+        startDownloadRepeat(uri, repeatWindow, reportPeriodMillis, repeatListener);
+    }
+
+    /**
+     * Start repeat download task.
+     *
      * @param uri                uri to fetch to download file
      * @param repeatWindow       time window for the repeated download in milliseconds
      * @param reportPeriodMillis time interval between each report in milliseconds
@@ -328,6 +350,30 @@ public class SpeedTestSocket implements ISpeedTestSocket {
             final int reportPeriodMillis,
             final IRepeatListener repeatListener) {
         mRepeatWrapper.startDownloadRepeat(uri, repeatWindow, reportPeriodMillis, repeatListener);
+    }
+
+    /**
+     * Start repeat upload task.
+     *
+     * @param uri            uri to fetch to download file
+     * @param repeatWindow   time window for the repeated upload in milliseconds
+     * @param fileSizeOctet  file size in octet
+     * @param repeatListener listener for upload repeat task completion & reports
+     */
+    public void startUploadRepeat(
+            final String uri,
+            final int repeatWindow,
+            final int fileSizeOctet,
+            final IRepeatListener repeatListener) {
+
+        final int reportPeriodMillis = (mReportInterval != -1) ? mReportInterval : DEFAULT_REPEAT_INTERVAL;
+
+        startUploadRepeat(
+                uri,
+                repeatWindow,
+                reportPeriodMillis,
+                fileSizeOctet,
+                repeatListener);
     }
 
     /**
