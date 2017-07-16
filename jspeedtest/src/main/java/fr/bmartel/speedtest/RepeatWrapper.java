@@ -32,10 +32,7 @@ import fr.bmartel.speedtest.model.SpeedTestMode;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * Repeat tasks speed test wrapper : this is used to repeat download/upload requests during a fix duration.
@@ -47,7 +44,7 @@ public class RepeatWrapper {
     /**
      * transfer rate list.
      */
-    private List<BigDecimal> mRepeatTransferRateList = new ArrayList<>();
+    private List<BigDecimal> mRepeatTransferRateList = Collections.synchronizedList(new ArrayList<BigDecimal>());
 
     /**
      * define if download repeat task is finished.
