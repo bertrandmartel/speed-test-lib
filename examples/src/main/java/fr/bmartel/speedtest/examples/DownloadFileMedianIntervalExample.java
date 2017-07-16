@@ -21,44 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package fr.bmartel.speedtest.examples;
 
 import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.SpeedTestSocket;
 import fr.bmartel.speedtest.inter.ISpeedTestListener;
+import fr.bmartel.speedtest.model.ComputationMethod;
 import fr.bmartel.speedtest.model.SpeedTestError;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Upload File Speed test example.
+ * Download file Speed Test example with transfer rate computed between each time interval.
  *
  * @author Bertrand Martel
  */
-public class UploadFileExample {
+public class DownloadFileMedianIntervalExample {
 
     /**
      * socket timeout used in ms.
      */
-    private static final int SOCKET_TIMEOUT = 5000;
+    private final static int SOCKET_TIMEOUT = 5000;
 
     /**
      * spedd examples server uri.
      */
-    private static final String SPEED_TEST_SERVER_URI_UL = "http://2.testdebit.info/";
-    /**
-     * upload 10Mo file size.
-     */
-    private static final int FILE_SIZE = 10000000;
+    private final static String SPEED_TEST_SERVER_URI_DL = "http://2.testdebit.info/fichiers/10Mo.dat";
 
     /**
      * logger.
      */
-    private static final Logger LOGGER = LogManager.getLogger(UploadFileExample.class.getName());
+    private final static Logger LOGGER = LogManager.getLogger(DownloadFileExample.class.getName());
 
     /**
-     * upload file example main.
+     * Download file example main.
      *
      * @param args no args required
      */
@@ -70,23 +66,23 @@ public class UploadFileExample {
         //set timeout for download
         speedTestSocket.setSocketTimeout(SOCKET_TIMEOUT);
 
-        //speedTestSocket.setUploadStorageType(UploadStorageType.FILE_STORAGE);
+        speedTestSocket.setComputationMethod(ComputationMethod.MEDIAN_INTERVAL);
 
         // add a listener to wait for speed examples completion and progress
         speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
             @Override
             public void onCompletion(final SpeedTestReport report) {
+                //called when download/upload is complete
                 LogUtils.logFinishedTask(report.getSpeedTestMode(), report.getTotalPacketSize(),
                         report.getTransferRateBit(),
                         report.getTransferRateOctet(), LOGGER);
-
             }
 
             @Override
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error("Download error " + speedTestError + " : " + errorMessage);
+                    LOGGER.error("error " + speedTestError + " : " + errorMessage);
                 }
             }
 
@@ -96,6 +92,6 @@ public class UploadFileExample {
             }
         });
 
-        speedTestSocket.startUpload(SPEED_TEST_SERVER_URI_UL, FILE_SIZE);
+        speedTestSocket.startDownload(SPEED_TEST_SERVER_URI_DL, 1000);
     }
 }

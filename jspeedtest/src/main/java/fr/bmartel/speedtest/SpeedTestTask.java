@@ -75,6 +75,11 @@ public class SpeedTestTask {
     private long mTimeStart;
 
     /**
+     * start time for the current transfer rate computation.
+     */
+    private long mTimeComputeStart;
+
+    /**
      * end time triggered in millis.
      */
     private long mTimeEnd;
@@ -85,9 +90,19 @@ public class SpeedTestTask {
     private int mUploadTempFileSize;
 
     /**
+     * number of bit uploaded since last transfer rate computation.
+     */
+    private int mUlComputationTempFileSize;
+
+    /**
      * this is the number of packet downloaded at this time.
      */
     private int mDownloadTemporaryPacketSize;
+
+    /**
+     * number of packet download since the last computation.
+     */
+    private int mDlComputationTempPacketSize;
 
     /**
      * this is the number of packet to download.
@@ -297,8 +312,12 @@ public class SpeedTestTask {
             this.mHostname = url.getHost();
             this.mPort = url.getPort() != -1 ? url.getPort() : 80;
             mUploadFileSize = new BigDecimal(fileSizeOctet);
+
             mUploadTempFileSize = 0;
+            mUlComputationTempFileSize = 0;
+
             mTimeStart = System.currentTimeMillis();
+            mTimeComputeStart = System.currentTimeMillis();
 
             connectAndExecuteTask(new Runnable() {
                 @Override
@@ -326,6 +345,7 @@ public class SpeedTestTask {
                                     "*/*\r\nContent-Length: " + fileSizeOctet + "\r\n\r\n";
 
                             mUploadTempFileSize = 0;
+                            mUlComputationTempFileSize = 0;
 
                             final int uploadChunkSize = mSocketInterface.getUploadChunkSize();
 
@@ -339,6 +359,7 @@ public class SpeedTestTask {
                                 }
 
                                 mTimeStart = System.currentTimeMillis();
+                                mTimeComputeStart = System.currentTimeMillis();
                                 mTimeEnd = 0;
 
                                 if (mRepeatWrapper.isFirstUpload()) {
@@ -364,6 +385,7 @@ public class SpeedTestTask {
                                     }
 
                                     mUploadTempFileSize += uploadChunkSize;
+                                    mUlComputationTempFileSize += uploadChunkSize;
 
                                     if (mRepeatWrapper.isRepeatUpload()) {
                                         mRepeatWrapper.updateTempPacketSize(uploadChunkSize);
@@ -388,7 +410,9 @@ public class SpeedTestTask {
                                 if (remain != 0 && writeFlushSocket(chunk) != 0) {
                                     throw new SocketTimeoutException();
                                 } else {
+
                                     mUploadTempFileSize += remain;
+                                    mUlComputationTempFileSize += remain;
 
                                     if (mRepeatWrapper.isRepeatUpload()) {
                                         mRepeatWrapper.updateTempPacketSize(remain);
@@ -516,11 +540,13 @@ public class SpeedTestTask {
     private void startSocketDownloadTask(final String hostname) {
 
         mDownloadTemporaryPacketSize = 0;
+        mDlComputationTempPacketSize = 0;
 
         try {
             final HttpFrame httpFrame = new HttpFrame();
 
             mTimeStart = System.currentTimeMillis();
+            mTimeComputeStart = System.currentTimeMillis();
             mTimeEnd = 0;
 
             if (mRepeatWrapper.isFirstDownload()) {
@@ -642,6 +668,7 @@ public class SpeedTestTask {
         while ((read = mSocket.getInputStream().read(buffer)) != -1) {
 
             mDownloadTemporaryPacketSize += read;
+            mDlComputationTempPacketSize += read;
 
             if (mRepeatWrapper.isRepeatDownload()) {
                 mRepeatWrapper.updateTempPacketSize(read);
@@ -882,10 +909,29 @@ public class SpeedTestTask {
         final int scale = mSocketInterface.getDefaultScale();
         final RoundingMode roundingMode = mSocketInterface.getDefaultRoundingMode();
 
-        if (shallCalculateTransferRate(currentTime) && (currentTime - mTimeStart) != 0) {
+        switch (mSocketInterface.getComputationMethod()) {
+            case MEDIAN_ALL_TIME:
+                if (shallCalculateTransferRate(currentTime) && (currentTime - mTimeStart) != 0) {
+                    transferRateOps = temporaryPacketSize.divide(new BigDecimal(currentTime - mTimeStart)
+                            .divide(SpeedTestConst.MILLIS_DIVIDER, scale, roundingMode), scale, roundingMode);
+                }
+                break;
+            case MEDIAN_INTERVAL:
 
-            transferRateOps = temporaryPacketSize.divide(new BigDecimal(currentTime - mTimeStart)
-                    .divide(SpeedTestConst.MILLIS_DIVIDER, scale, roundingMode), scale, roundingMode);
+                final BigDecimal tempPacket = (mode == SpeedTestMode.DOWNLOAD) ? new BigDecimal
+                        (mDlComputationTempPacketSize) : new BigDecimal(mUlComputationTempFileSize);
+
+                if (shallCalculateTransferRate(currentTime) && (currentTime - mTimeComputeStart) != 0) {
+                    transferRateOps = tempPacket.divide(new BigDecimal(currentTime - mTimeComputeStart)
+                            .divide(SpeedTestConst.MILLIS_DIVIDER, scale, roundingMode), scale, roundingMode);
+                }
+                // reset those values for the next computation
+                mDlComputationTempPacketSize = 0;
+                mUlComputationTempFileSize = 0;
+                mTimeComputeStart = System.currentTimeMillis();
+                break;
+            default:
+                break;
         }
 
         final BigDecimal transferRateBitps = transferRateOps.multiply(SpeedTestConst.BIT_MULTIPLIER);
@@ -994,8 +1040,11 @@ public class SpeedTestTask {
                         ftpclient.setFileType(FTP.BINARY_FILE_TYPE);
 
                         mDownloadTemporaryPacketSize = 0;
+                        mDlComputationTempPacketSize = 0;
 
                         mTimeStart = System.currentTimeMillis();
+                        mTimeComputeStart = System.currentTimeMillis();
+
                         mTimeEnd = 0;
 
                         if (mRepeatWrapper.isFirstDownload()) {
@@ -1017,7 +1066,9 @@ public class SpeedTestTask {
 
                             int read;
                             while ((read = mFtpInputstream.read(bytesArray)) != -1) {
+
                                 mDownloadTemporaryPacketSize += read;
+                                mDlComputationTempPacketSize += read;
 
                                 if (mRepeatWrapper.isRepeatDownload()) {
                                     mRepeatWrapper.updateTempPacketSize(read);
@@ -1141,6 +1192,7 @@ public class SpeedTestTask {
                         if (mFtpOutputstream != null) {
 
                             mUploadTempFileSize = 0;
+                            mUlComputationTempFileSize = 0;
 
                             final int uploadChunkSize = mSocketInterface.getUploadChunkSize();
 
@@ -1148,6 +1200,7 @@ public class SpeedTestTask {
                             final int remain = fileSizeOctet % uploadChunkSize;
 
                             mTimeStart = System.currentTimeMillis();
+                            mTimeComputeStart = System.currentTimeMillis();
                             mTimeEnd = 0;
 
                             if (mRepeatWrapper.isFirstUpload()) {
@@ -1175,6 +1228,7 @@ public class SpeedTestTask {
                                     mFtpOutputstream.write(chunk, 0, uploadChunkSize);
 
                                     mUploadTempFileSize += uploadChunkSize;
+                                    mUlComputationTempFileSize += uploadChunkSize;
 
                                     if (mRepeatWrapper.isRepeatUpload()) {
                                         mRepeatWrapper.updateTempPacketSize(uploadChunkSize);
@@ -1202,6 +1256,7 @@ public class SpeedTestTask {
                                     mFtpOutputstream.write(chunk, 0, remain);
 
                                     mUploadTempFileSize += remain;
+                                    mUlComputationTempFileSize += remain;
 
                                     if (mRepeatWrapper.isRepeatUpload()) {
                                         mRepeatWrapper.updateTempPacketSize(remain);

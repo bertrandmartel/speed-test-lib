@@ -27,6 +27,7 @@ package fr.bmartel.speedtest;
 import fr.bmartel.speedtest.inter.IRepeatListener;
 import fr.bmartel.speedtest.inter.ISpeedTestListener;
 import fr.bmartel.speedtest.inter.ISpeedTestSocket;
+import fr.bmartel.speedtest.model.ComputationMethod;
 import fr.bmartel.speedtest.model.SpeedTestMode;
 import fr.bmartel.speedtest.model.UploadStorageType;
 
@@ -106,6 +107,11 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      * report interval in milliseconds.
      */
     private int mReportInterval = -1;
+
+    /**
+     * Computation method used to calculate transfer rate.
+     */
+    private ComputationMethod mComputationMethod = ComputationMethod.MEDIAN_ALL_TIME;
 
     /**
      * default repeat interval in milliseconds.
@@ -500,6 +506,26 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      */
     public void setDefaultScale(final int scale) {
         this.mScale = scale;
+    }
+
+    /**
+     * Set computation method used to calculate transfer rate.
+     *
+     * @param computationMethod model value
+     */
+    @Override
+    public void setComputationMethod(final ComputationMethod computationMethod) {
+        mComputationMethod = computationMethod;
+    }
+
+    /**
+     * Get the computation method.
+     *
+     * @return computation method
+     */
+    @Override
+    public ComputationMethod getComputationMethod() {
+        return mComputationMethod;
     }
 
     /**

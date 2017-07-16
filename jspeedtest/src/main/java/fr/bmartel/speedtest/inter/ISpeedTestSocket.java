@@ -26,6 +26,7 @@ package fr.bmartel.speedtest.inter;
 
 import fr.bmartel.speedtest.RepeatWrapper;
 import fr.bmartel.speedtest.SpeedTestReport;
+import fr.bmartel.speedtest.model.ComputationMethod;
 import fr.bmartel.speedtest.model.UploadStorageType;
 
 import java.math.RoundingMode;
@@ -152,4 +153,18 @@ public interface ISpeedTestSocket {
      * @return upload setup time
      */
     long getUploadSetupTime();
+
+    /**
+     * Set computation method used to calculate transfer rate.
+     *
+     * @param computationMethod model value
+     */
+    void setComputationMethod(ComputationMethod computationMethod);
+
+    /**
+     * Get the computation method.
+     *
+     * @return computation method
+     */
+    ComputationMethod getComputationMethod();
 }
