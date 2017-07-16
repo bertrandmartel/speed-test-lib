@@ -392,7 +392,7 @@ public class SpeedTestTask {
                                     }
 
                                     if (!mReportInterval) {
-                                        final SpeedTestReport report = mSocketInterface.getLiveReport();
+                                        final SpeedTestReport report = getReport(SpeedTestMode.UPLOAD);
 
                                         for (int j = 0; j < mListenerList.size(); j++) {
                                             mListenerList.get(j).onProgress(report.getProgressPercent(), report);
@@ -420,7 +420,7 @@ public class SpeedTestTask {
                                 }
 
                                 if (!mReportInterval) {
-                                    final SpeedTestReport report = mSocketInterface.getLiveReport();
+                                    final SpeedTestReport report = getReport(SpeedTestMode.UPLOAD);
 
                                     for (int j = 0; j < mListenerList.size(); j++) {
                                         mListenerList.get(j).onProgress(SpeedTestConst.PERCENT_MAX.floatValue(),
@@ -584,7 +584,7 @@ public class SpeedTestTask {
                     closeExecutors();
                 }
 
-                final SpeedTestReport report = mSocketInterface.getLiveReport();
+                final SpeedTestReport report = getReport(SpeedTestMode.DOWNLOAD);
 
                 for (int i = 0; i < mListenerList.size(); i++) {
                     mListenerList.get(i).onCompletion(report);
@@ -675,7 +675,7 @@ public class SpeedTestTask {
             }
 
             if (!mReportInterval) {
-                final SpeedTestReport report = mSocketInterface.getLiveReport();
+                final SpeedTestReport report = getReport(SpeedTestMode.DOWNLOAD);
                 for (int i = 0; i < mListenerList.size(); i++) {
                     mListenerList.get(i).onProgress(report.getProgressPercent(), report);
                 }
@@ -709,7 +709,7 @@ public class SpeedTestTask {
 
                     finishTask();
 
-                    final SpeedTestReport report = mSocketInterface.getLiveReport();
+                    final SpeedTestReport report = getReport(SpeedTestMode.UPLOAD);
 
                     for (int i = 0; i < mListenerList.size(); i++) {
                         mListenerList.get(i).onCompletion(report);
@@ -1075,7 +1075,7 @@ public class SpeedTestTask {
                                 }
 
                                 if (!mReportInterval) {
-                                    final SpeedTestReport report = mSocketInterface.getLiveReport();
+                                    final SpeedTestReport report = getReport(SpeedTestMode.DOWNLOAD);
 
                                     for (int i = 0; i < mListenerList.size(); i++) {
                                         mListenerList.get(i).onProgress(report.getProgressPercent(), report);
@@ -1092,7 +1092,7 @@ public class SpeedTestTask {
                             mTimeEnd = System.currentTimeMillis();
 
                             mReportInterval = false;
-                            final SpeedTestReport report = mSocketInterface.getLiveReport();
+                            final SpeedTestReport report = getReport(SpeedTestMode.DOWNLOAD);
 
                             for (int i = 0; i < mListenerList.size(); i++) {
                                 mListenerList.get(i).onCompletion(report);
@@ -1236,7 +1236,7 @@ public class SpeedTestTask {
 
                                     if (!mReportInterval) {
 
-                                        final SpeedTestReport report = mSocketInterface.getLiveReport();
+                                        final SpeedTestReport report = getReport(SpeedTestMode.UPLOAD);
 
                                         for (int j = 0; j < mListenerList.size(); j++) {
                                             mListenerList.get(j).onProgress(report.getProgressPercent(), report);
@@ -1263,7 +1263,7 @@ public class SpeedTestTask {
                                     }
                                 }
                                 if (!mReportInterval) {
-                                    final SpeedTestReport report = mSocketInterface.getLiveReport();
+                                    final SpeedTestReport report = getReport(SpeedTestMode.UPLOAD);
 
                                     for (int j = 0; j < mListenerList.size(); j++) {
                                         mListenerList.get(j).onProgress(SpeedTestConst.PERCENT_MAX.floatValue(),
@@ -1276,7 +1276,7 @@ public class SpeedTestTask {
                             mFtpOutputstream.close();
 
                             mReportInterval = false;
-                            final SpeedTestReport report = mSocketInterface.getLiveReport();
+                            final SpeedTestReport report = getReport(SpeedTestMode.UPLOAD);
 
                             for (int i = 0; i < mListenerList.size(); i++) {
                                 mListenerList.get(i).onCompletion(report);
