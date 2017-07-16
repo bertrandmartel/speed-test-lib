@@ -226,13 +226,14 @@ public class SpeedTestTask {
                     startFtpDownload(uri, user, pwd);
                     break;
                 default:
-                    SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList,
+                    SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket, mListenerList,
                             SpeedTestError.UNSUPPORTED_PROTOCOL,
                             "unsupported protocol");
                     break;
             }
         } catch (MalformedURLException e) {
-            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, SpeedTestError.MALFORMED_URI,
+            SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket, mListenerList,
+                    SpeedTestError.MALFORMED_URI,
                     e.getMessage());
         }
     }
@@ -261,13 +262,14 @@ public class SpeedTestTask {
                     startFtpUpload(uri, fileSizeOctet);
                     break;
                 default:
-                    SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList,
+                    SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket, mListenerList,
                             SpeedTestError.UNSUPPORTED_PROTOCOL,
                             "unsupported protocol");
                     break;
             }
         } catch (MalformedURLException e) {
-            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, SpeedTestError.MALFORMED_URI,
+            SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket, mListenerList,
+                    SpeedTestError.MALFORMED_URI,
                     e.getMessage());
         }
     }
@@ -412,13 +414,15 @@ public class SpeedTestTask {
                                 SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList, SpeedTestConst
                                         .SOCKET_WRITE_ERROR);
                             } else {
-                                SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, e.getMessage());
+                                SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket, mListenerList,
+                                        e.getMessage());
                             }
                         } catch (IOException e) {
                             mReportInterval = false;
                             mErrorDispatched = true;
                             closeExecutors();
-                            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, e.getMessage());
+                            SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket,
+                                    mListenerList, e.getMessage());
                         } finally {
                             if (uploadFile != null) {
                                 try {
@@ -433,7 +437,8 @@ public class SpeedTestTask {
                 }
             }, false, fileSizeOctet);
         } catch (MalformedURLException e) {
-            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, SpeedTestError.MALFORMED_URI,
+            SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket, mListenerList,
+                    SpeedTestError.MALFORMED_URI,
                     e.getMessage());
         }
     }
@@ -498,7 +503,7 @@ public class SpeedTestTask {
 
         } catch (IOException e) {
             if (!mErrorDispatched) {
-                SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, e.getMessage());
+                SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket, mListenerList, e.getMessage());
             }
         }
     }
@@ -525,15 +530,16 @@ public class SpeedTestTask {
 
             final HttpStates httFrameState = httpFrame.decodeFrame(mSocket.getInputStream());
 
-            SpeedTestUtils.checkHttpFrameError(mForceCloseSocket, mListenerList, httFrameState);
+            SpeedTestUtils.checkHttpFrameError(mSocketInterface, mForceCloseSocket, mListenerList, httFrameState);
 
             final HttpStates httpHeaderState = httpFrame.parseHeader(mSocket.getInputStream());
-            SpeedTestUtils.checkHttpHeaderError(mForceCloseSocket, mListenerList, httpHeaderState);
+            SpeedTestUtils.checkHttpHeaderError(mSocketInterface, mForceCloseSocket, mListenerList, httpHeaderState);
 
             if (httpFrame.getStatusCode() == SpeedTestConst.HTTP_OK &&
                     httpFrame.getReasonPhrase().equalsIgnoreCase("ok")) {
 
-                SpeedTestUtils.checkHttpContentLengthError(mForceCloseSocket, mListenerList, httpFrame);
+                SpeedTestUtils.checkHttpContentLengthError(mSocketInterface, mForceCloseSocket,
+                        mListenerList, httpFrame);
 
                 mDownloadPckSize = new BigDecimal(httpFrame.getContentLength());
 
@@ -758,7 +764,8 @@ public class SpeedTestTask {
                         closeSocket();
                         closeExecutors();
                     } catch (IOException e) {
-                        SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, e.getMessage());
+                        SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket,
+                                mListenerList, e.getMessage());
                         closeExecutors();
                     }
                 }
@@ -832,7 +839,7 @@ public class SpeedTestTask {
      * @param errorMessage error message from Exception
      */
     private void catchError(final String errorMessage) {
-        SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, errorMessage);
+        SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket, mListenerList, errorMessage);
         mTimeEnd = System.currentTimeMillis();
         closeSocket();
         closeExecutors();
@@ -1043,8 +1050,9 @@ public class SpeedTestTask {
                         } else {
 
                             mReportInterval = false;
-                            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, "cant create stream " +
-                                    "from uri " + uri + " with reply code : " + ftpclient.getReplyCode());
+                            SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket,
+                                    mListenerList, "cant create stream " +
+                                            "from uri " + uri + " with reply code : " + ftpclient.getReplyCode());
                         }
 
                         if (!mRepeatWrapper.isRepeatDownload()) {
@@ -1057,13 +1065,12 @@ public class SpeedTestTask {
                         catchError(e.getMessage());
                     } finally {
                         mErrorDispatched = false;
-                        mSpeedTestMode = SpeedTestMode.NONE;
                         disconnectFtp(ftpclient);
                     }
                 }
             });
         } catch (MalformedURLException e) {
-            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList,
+            SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket, mListenerList,
                     SpeedTestError.MALFORMED_URI,
                     e.getMessage());
         }
@@ -1153,7 +1160,7 @@ public class SpeedTestTask {
                             }
 
                             if (mForceCloseSocket) {
-                                SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, "");
+                                SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket, mListenerList, "");
                             } else {
                                 for (int i = 0; i < step; i++) {
 
@@ -1226,9 +1233,10 @@ public class SpeedTestTask {
 
                         } else {
                             mReportInterval = false;
-                            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, "cant create stream" +
-                                    " " +
-                                    "from uri " + uri + " with reply code : " + ftpClient.getReplyCode());
+                            SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket,
+                                    mListenerList, "cant create stream" +
+                                            " " +
+                                            "from uri " + uri + " with reply code : " + ftpClient.getReplyCode());
                         }
                     } catch (SocketTimeoutException e) {
                         //e.printStackTrace();
@@ -1238,7 +1246,8 @@ public class SpeedTestTask {
                             SpeedTestUtils.dispatchSocketTimeout(mForceCloseSocket, mListenerList, SpeedTestConst
                                     .SOCKET_WRITE_ERROR);
                         } else {
-                            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, e.getMessage());
+                            SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket,
+                                    mListenerList, e.getMessage());
                         }
                         closeSocket();
                         closeExecutors();
@@ -1246,11 +1255,11 @@ public class SpeedTestTask {
                         //e.printStackTrace();
                         mReportInterval = false;
                         mErrorDispatched = true;
-                        SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, e.getMessage());
+                        SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket,
+                                mListenerList, e.getMessage());
                         closeExecutors();
                     } finally {
                         mErrorDispatched = false;
-                        mSpeedTestMode = SpeedTestMode.NONE;
                         disconnectFtp(ftpClient);
                         if (uploadFile != null) {
                             try {
@@ -1264,7 +1273,8 @@ public class SpeedTestTask {
                 }
             });
         } catch (MalformedURLException e) {
-            SpeedTestUtils.dispatchError(mForceCloseSocket, mListenerList, SpeedTestError.MALFORMED_URI,
+            SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket, mListenerList,
+                    SpeedTestError.MALFORMED_URI,
                     e.getMessage());
         }
     }
@@ -1286,7 +1296,6 @@ public class SpeedTestTask {
      * close socket / stop download/upload operations.
      */
     public void forceStopTask() {
-        mSpeedTestMode = SpeedTestMode.NONE;
         mForceCloseSocket = true;
         if (mFtpInputstream != null) {
             try {

@@ -92,11 +92,6 @@ public class RepeatDownloadExample {
             public void onProgress(final float percent, final SpeedTestReport downloadReport) {
                 //notify progress
             }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
-            }
         });
 
         speedTestSocket.startDownloadRepeat(SPEED_TEST_SERVER_URI_DL,

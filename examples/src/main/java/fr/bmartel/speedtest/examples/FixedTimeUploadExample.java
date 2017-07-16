@@ -97,11 +97,6 @@ public class FixedTimeUploadExample {
                 //notify progress
                 LogUtils.logSpeedTestReport(uploadReport, LOGGER);
             }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
-            }
         });
 
         speedTestSocket.startFixedUpload(SPEED_TEST_SERVER_URI_UL,

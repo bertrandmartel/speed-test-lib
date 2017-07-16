@@ -64,9 +64,4 @@ public interface ISpeedTestListener {
      * @param errorMessage   error message
      */
     void onError(SpeedTestError speedTestError, String errorMessage);
-
-    /**
-     * called when speed test is interrupted.
-     */
-    void onInterruption();
 }

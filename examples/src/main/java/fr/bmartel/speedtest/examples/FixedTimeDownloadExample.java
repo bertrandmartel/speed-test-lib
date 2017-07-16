@@ -90,11 +90,6 @@ public class FixedTimeDownloadExample {
             public void onProgress(final float percent, final SpeedTestReport downloadReport) {
                 LogUtils.logSpeedTestReport(downloadReport, LOGGER);
             }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
-            }
         });
 
         speedTestSocket.startFixedDownload(SPEED_TEST_SERVER_URI_DL,

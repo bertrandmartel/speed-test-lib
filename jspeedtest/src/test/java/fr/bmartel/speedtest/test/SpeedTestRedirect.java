@@ -67,11 +67,6 @@ public class SpeedTestRedirect extends AbstractTest {
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
 
             }
-
-            @Override
-            public void onInterruption() {
-
-            }
         });
         mSocket.startDownload("http://bmartel.fr/test2");
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
@@ -104,11 +99,6 @@ public class SpeedTestRedirect extends AbstractTest {
                 } else {
                     mWaiter.fail("expected UNSUPPORTED_PROTOCOL, got : " + speedTestError);
                 }
-            }
-
-            @Override
-            public void onInterruption() {
-
             }
         });
         mSocket.startDownload("http://bmartel.fr");

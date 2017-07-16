@@ -100,6 +100,9 @@ public class SpeedTestErrorTest extends AbstractTest {
             @Override
             public void onCompletion(final SpeedTestReport report) {
                 //called when download is finished
+                if (mForceStop) {
+                    mWaiter.resume();
+                }
             }
 
             @Override
@@ -116,16 +119,6 @@ public class SpeedTestErrorTest extends AbstractTest {
                     mWaiter.resume();
                 } else {
                     mWaiter.fail("error " + error + " expected");
-                }
-            }
-
-            @Override
-            public void onInterruption() {
-
-                if (mForceStop) {
-                    mWaiter.resume();
-                } else {
-                    mWaiter.fail("error in onInterruption");
                 }
             }
         });
@@ -145,7 +138,7 @@ public class SpeedTestErrorTest extends AbstractTest {
         mForceStop = false;
 
         if (dispatchError) {
-            fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList, errorMessage);
+            fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mSocket, mForceStop, listenerList, errorMessage);
         } else {
             fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList,
                     errorMessage);
@@ -153,7 +146,7 @@ public class SpeedTestErrorTest extends AbstractTest {
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         if (dispatchError) {
-            fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList, errorMessage);
+            fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mSocket, mForceStop, listenerList, errorMessage);
         } else {
             fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList,
                     errorMessage);
@@ -168,7 +161,7 @@ public class SpeedTestErrorTest extends AbstractTest {
             mWaiter = new Waiter();
 
             if (dispatchError) {
-                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList,
+                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mSocket, mForceStop, listenerList,
                         errorMessage);
             } else {
                 fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList,
@@ -178,7 +171,7 @@ public class SpeedTestErrorTest extends AbstractTest {
             mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
             if (dispatchError) {
-                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mForceStop, listenerList,
+                fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchError(mSocket, mForceStop, listenerList,
                         errorMessage);
             } else {
                 fr.bmartel.speedtest.utils.SpeedTestUtils.dispatchSocketTimeout(mForceStop, listenerList,
@@ -216,7 +209,7 @@ public class SpeedTestErrorTest extends AbstractTest {
 
         for (final HttpStates state : HttpStates.values()) {
             if (state != HttpStates.HTTP_FRAME_OK) {
-                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpFrameError(mForceStop, listenerList, state);
+                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpFrameError(mSocket, mForceStop, listenerList, state);
                 mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
             }
         }
@@ -226,7 +219,7 @@ public class SpeedTestErrorTest extends AbstractTest {
 
         for (final HttpStates state : HttpStates.values()) {
             if (state != HttpStates.HTTP_FRAME_OK) {
-                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpFrameError(mForceStop, listenerList, state);
+                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpFrameError(mSocket, mForceStop, listenerList, state);
                 mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
             }
         }
@@ -246,7 +239,8 @@ public class SpeedTestErrorTest extends AbstractTest {
 
         for (final HttpStates state : HttpStates.values()) {
             if (state != HttpStates.HTTP_FRAME_OK) {
-                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpHeaderError(mForceStop, listenerList, state);
+                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpHeaderError(mSocket, mForceStop, listenerList,
+                        state);
                 mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
             }
         }
@@ -256,7 +250,8 @@ public class SpeedTestErrorTest extends AbstractTest {
 
         for (final HttpStates state : HttpStates.values()) {
             if (state != HttpStates.HTTP_FRAME_OK) {
-                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpHeaderError(mForceStop, listenerList, state);
+                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpHeaderError(mSocket, mForceStop, listenerList,
+                        state);
                 mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
             }
         }
@@ -279,14 +274,14 @@ public class SpeedTestErrorTest extends AbstractTest {
         headers.put(HttpHeader.CONTENT_LENGTH, String.valueOf(0));
         frame.setHeaders(headers);
 
-        fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpContentLengthError(mForceStop, listenerList, frame);
+        fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpContentLengthError(mSocket, mForceStop, listenerList, frame);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         mForceStop = true;
         mSocket.forceStopTask();
 
-        fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpContentLengthError(mForceStop, listenerList, frame);
+        fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpContentLengthError(mSocket, mForceStop, listenerList, frame);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
     }
@@ -367,11 +362,6 @@ public class SpeedTestErrorTest extends AbstractTest {
             @Override
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 dispatchConnectionError(error, speedTestError);
-            }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
             }
         });
 

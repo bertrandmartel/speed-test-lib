@@ -28,6 +28,7 @@ import fr.bmartel.protocol.http.HttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;
 import fr.bmartel.speedtest.SpeedTestConst;
 import fr.bmartel.speedtest.inter.ISpeedTestListener;
+import fr.bmartel.speedtest.inter.ISpeedTestSocket;
 import fr.bmartel.speedtest.model.SpeedTestError;
 import fr.bmartel.speedtest.model.UploadStorageType;
 
@@ -66,7 +67,8 @@ public class SpeedTestUtils {
      * @param listenerList     list of speed test listeners
      * @param errorMessage     error message from Exception
      */
-    public static void dispatchError(final boolean forceCloseSocket,
+    public static void dispatchError(final ISpeedTestSocket speedTestSocket,
+                                     final boolean forceCloseSocket,
                                      final List<ISpeedTestListener> listenerList,
                                      final String errorMessage) {
 
@@ -76,15 +78,17 @@ public class SpeedTestUtils {
             }
         } else {
             for (int i = 0; i < listenerList.size(); i++) {
-                listenerList.get(i).onInterruption();
+                listenerList.get(i).onCompletion(speedTestSocket.getLiveReport());
             }
         }
     }
 
-    public static void dispatchError(final boolean forceCloseSocket,
-                                     final List<ISpeedTestListener> listenerList,
-                                     final SpeedTestError error,
-                                     final String errorMessage) {
+    public static void dispatchError(
+            final ISpeedTestSocket speedTestSocket,
+            final boolean forceCloseSocket,
+            final List<ISpeedTestListener> listenerList,
+            final SpeedTestError error,
+            final String errorMessage) {
 
         if (!forceCloseSocket) {
             for (int i = 0; i < listenerList.size(); i++) {
@@ -92,7 +96,7 @@ public class SpeedTestUtils {
             }
         } else {
             for (int i = 0; i < listenerList.size(); i++) {
-                listenerList.get(i).onInterruption();
+                listenerList.get(i).onCompletion(speedTestSocket.getLiveReport());
             }
         }
     }
@@ -151,9 +155,11 @@ public class SpeedTestUtils {
      * @param listenerList     list of speed test listeners
      * @param httFrameState    http frame state to check
      */
-    public static void checkHttpFrameError(final boolean forceCloseSocket,
-                                           final List<ISpeedTestListener> listenerList,
-                                           final HttpStates httFrameState) {
+    public static void checkHttpFrameError(
+            final ISpeedTestSocket speedTestSocket,
+            final boolean forceCloseSocket,
+            final List<ISpeedTestListener> listenerList,
+            final HttpStates httFrameState) {
 
         if (httFrameState != HttpStates.HTTP_FRAME_OK) {
 
@@ -165,7 +171,7 @@ public class SpeedTestUtils {
                 }
             } else {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onInterruption();
+                    listenerList.get(i).onCompletion(speedTestSocket.getLiveReport());
                 }
             }
         }
@@ -178,9 +184,11 @@ public class SpeedTestUtils {
      * @param listenerList     list of speed test listeners
      * @param httpHeaderState  http frame state to check
      */
-    public static void checkHttpHeaderError(final boolean forceCloseSocket,
-                                            final List<ISpeedTestListener> listenerList,
-                                            final HttpStates httpHeaderState) {
+    public static void checkHttpHeaderError(
+            final ISpeedTestSocket speedTestSocket,
+            final boolean forceCloseSocket,
+            final List<ISpeedTestListener> listenerList,
+            final HttpStates httpHeaderState) {
 
         if (httpHeaderState != HttpStates.HTTP_FRAME_OK) {
 
@@ -192,7 +200,7 @@ public class SpeedTestUtils {
                 }
             } else {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onInterruption();
+                    listenerList.get(i).onCompletion(speedTestSocket.getLiveReport());
                 }
             }
         }
@@ -205,9 +213,11 @@ public class SpeedTestUtils {
      * @param listenerList     list of speed test listeners
      * @param httpFrame        http frame state to check
      */
-    public static void checkHttpContentLengthError(final boolean forceCloseSocket,
-                                                   final List<ISpeedTestListener> listenerList,
-                                                   final HttpFrame httpFrame) {
+    public static void checkHttpContentLengthError(
+            final ISpeedTestSocket speedTestSocket,
+            final boolean forceCloseSocket,
+            final List<ISpeedTestListener> listenerList,
+            final HttpFrame httpFrame) {
 
         if (httpFrame.getContentLength() <= 0) {
 
@@ -218,7 +228,7 @@ public class SpeedTestUtils {
                 }
             } else {
                 for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onInterruption();
+                    listenerList.get(i).onCompletion(speedTestSocket.getLiveReport());
                 }
             }
         }

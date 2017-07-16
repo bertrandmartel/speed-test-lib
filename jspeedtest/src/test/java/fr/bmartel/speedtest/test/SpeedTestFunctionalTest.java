@@ -185,11 +185,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
                     mWaiter.resume();
                 }
             }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
-            }
         });
 
         testDownload(SPEED_TEST_SERVER_URI_DL_1MO);
@@ -247,11 +242,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
                     mWaiter.resume();
                 }
             }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
-            }
         });
 
         testUpload(SPEED_TEST_SERVER_URI_UL, 1000000, true);
@@ -306,11 +296,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
                 } else {
                     mWaiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
                 }
-            }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
             }
         });
 
@@ -435,11 +420,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
                 waiter.fail("onDownloadError : " + speedTestError);
                 waiter.resume();
             }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
-            }
         });
 
         mSocket.startDownload("http://" + SPEED_TEST_SERVER_HOST + ":" + SPEED_TEST_SERVER_PORT +
@@ -499,11 +479,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
                 mWaiter.resume();
-            }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
             }
         });
 
@@ -587,11 +562,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
             public void onProgress(final float percent, final SpeedTestReport downloadReport) {
                 //notify download progress
                 mWaiter.assertTrue(percent >= 0 && percent <= 100);
-            }
-
-            @Override
-            public void onInterruption() {
-                //triggered when foceStopTask is called
             }
         });
 

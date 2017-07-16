@@ -123,6 +123,7 @@ public class SpeedTestServerTest extends AbstractTest {
             @Override
             public void onCompletion(final SpeedTestReport report) {
                 //called when download is finished
+                mWaiter.resume();
             }
 
             @Override
@@ -133,11 +134,6 @@ public class SpeedTestServerTest extends AbstractTest {
 
             @Override
             public void onProgress(final float percent, final SpeedTestReport downloadReport) {
-                mWaiter.resume();
-            }
-
-            @Override
-            public void onInterruption() {
                 mWaiter.resume();
             }
         });

@@ -72,7 +72,7 @@ public class ChainingRepeatExample {
     /**
      * speed examples server uri.
      */
-    private final static String SPEED_TEST_SERVER_URI_UL = "/";
+    private final static String SPEED_TEST_SERVER_URI_UL = "http://2.testdebit.info/";
 
     /**
      * upload 1Mo file size.
@@ -110,11 +110,6 @@ public class ChainingRepeatExample {
             @Override
             public void onProgress(final float percent, final SpeedTestReport downloadReport) {
                 //notify progress
-            }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
             }
         });
 

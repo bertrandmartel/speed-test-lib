@@ -242,11 +242,6 @@ public class RepeatWrapper {
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 clearRepeatTask(this);
             }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
-            }
         };
 
         mSpeedTestSocket.addSpeedTestListener(speedTestListener);
@@ -314,11 +309,6 @@ public class RepeatWrapper {
                 mRepeatTransferRateList.add(report.getTransferRateOctet());
                 startUploadRepeat(uri, fileSizeOctet);
                 mRepeatRequestNum++;
-            }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
             }
         };
 

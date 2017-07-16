@@ -137,9 +137,19 @@ public class LogUtils {
             logger.debug("progress             : " + report.getProgressPercent() + "%");
             logger.debug("transfer rate bit    : " + report.getTransferRateBit() + "b/s");
             logger.debug("transfer rate octet  : " + report.getTransferRateOctet() + "B/s");
-            logger.debug("uploaded for now     : " + report.getTemporaryPacketSize()
-                    + "/" + report.getTotalPacketSize());
 
+            switch (report.getSpeedTestMode()) {
+                case DOWNLOAD:
+                    logger.debug("downloaded for now     : " + report.getTemporaryPacketSize()
+                            + "/" + report.getTotalPacketSize());
+                    break;
+                case UPLOAD:
+                    logger.debug("uploaded for now     : " + report.getTemporaryPacketSize()
+                            + "/" + report.getTotalPacketSize());
+                    break;
+                default:
+                    break;
+            }
             if (report.getStartTime() > 0) {
                 logger.debug("amount of time       : " +
                         ((report.getReportTime() - report.getStartTime()) / 1000) + "s");

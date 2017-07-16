@@ -96,11 +96,6 @@ public class UploadFtpExample {
             public void onProgress(final float percent, final SpeedTestReport downloadReport) {
                 LogUtils.logSpeedTestReport(downloadReport, LOGGER);
             }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
-            }
         });
 
         final String fileName = SpeedTestUtils.generateFileName() + ".txt";

@@ -157,6 +157,7 @@ public class SpeedTestSocketTest extends AbstractTest {
             @Override
             public void onCompletion(final SpeedTestReport report) {
                 //called when download is finished
+                mWaiter.resume();
             }
 
             @Override
@@ -167,11 +168,6 @@ public class SpeedTestSocketTest extends AbstractTest {
             @Override
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail("onDownloadError : shoudlnt be in onDownloadError");
-                mWaiter.resume();
-            }
-
-            @Override
-            public void onInterruption() {
                 mWaiter.resume();
             }
         });
@@ -190,9 +186,6 @@ public class SpeedTestSocketTest extends AbstractTest {
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
-        Assert.assertEquals(HEADER + "speed test mode value after forceStopTask", mSocket.getSpeedTestMode(),
-                SpeedTestMode.NONE);
-
         mWaiter = new Waiter();
 
         mSocket.startUpload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" + TestCommon.SPEED_TEST_SERVER_PORT +
@@ -209,9 +202,6 @@ public class SpeedTestSocketTest extends AbstractTest {
         mSocket.forceStopTask();
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
-
-        Assert.assertEquals(HEADER + "speed test mode value after forceStopTask", mSocket.getSpeedTestMode(),
-                SpeedTestMode.NONE);
 
         mSocket.clearListeners();
     }
@@ -238,11 +228,6 @@ public class SpeedTestSocketTest extends AbstractTest {
             @Override
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 //called when download error occur
-            }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
             }
         };
 
@@ -276,6 +261,7 @@ public class SpeedTestSocketTest extends AbstractTest {
             @Override
             public void onCompletion(final SpeedTestReport report) {
                 //called when download is finished
+                mWaiter.resume();
             }
 
             @Override
@@ -286,11 +272,6 @@ public class SpeedTestSocketTest extends AbstractTest {
             @Override
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiterError.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
-                mWaiterError.resume();
-            }
-
-            @Override
-            public void onInterruption() {
                 mWaiterError.resume();
             }
         });
@@ -330,7 +311,7 @@ public class SpeedTestSocketTest extends AbstractTest {
 
         socket.forceStopTask();
 
-        mWaiterError.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         Assert.assertTrue(HEADER + "socket closed after stop download", ((Socket) field.get(task)).isClosed());
 
@@ -345,7 +326,7 @@ public class SpeedTestSocketTest extends AbstractTest {
 
         socket.forceStopTask();
 
-        mWaiterError.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         Assert.assertTrue(HEADER + "socket closed after stop upload", ((Socket) field.get(task)).isClosed());
 
@@ -359,7 +340,7 @@ public class SpeedTestSocketTest extends AbstractTest {
 
         socket.forceStopTask();
 
-        mWaiterError.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
+        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
 
         socket.closeSocket();
         Assert.assertTrue(HEADER + "socket closed after stop download", ((Socket) field.get(task)).isClosed());
@@ -415,11 +396,6 @@ public class SpeedTestSocketTest extends AbstractTest {
                 mWaiter.fail(TestCommon.UNEXPECTED_ERROR_STR + speedTestError);
                 mWaiter.resume();
             }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
-            }
         });
 
         mWaiter = new Waiter();
@@ -463,11 +439,6 @@ public class SpeedTestSocketTest extends AbstractTest {
             @Override
             public void onProgress(final float percent, final SpeedTestReport report) {
                 mWaiter.resume();
-            }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
             }
         });
 
@@ -525,11 +496,6 @@ public class SpeedTestSocketTest extends AbstractTest {
                 waiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
                 waiter2.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError);
             }
-
-            @Override
-            public void onInterruption() {
-
-            }
         });
 
         //final int threadCount = Thread.activeCount();
@@ -583,11 +549,6 @@ public class SpeedTestSocketTest extends AbstractTest {
                 waiter.assertTrue(percent >= 0 && percent <= 100);
                 waiter.resume();
             }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
-            }
         });
 
         //final int threadCount = Thread.activeCount();
@@ -629,11 +590,6 @@ public class SpeedTestSocketTest extends AbstractTest {
             @Override
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail("unexpected error in onDownloadError : " + speedTestError);
-            }
-
-            @Override
-            public void onInterruption() {
-                mWaiter.resume();
             }
         });
 
@@ -743,11 +699,6 @@ public class SpeedTestSocketTest extends AbstractTest {
             @Override
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail("unexpected error in onDownloadError : " + speedTestError);
-            }
-
-            @Override
-            public void onInterruption() {
-                mWaiter.fail("shouldnt be in onInterruption");
             }
         });
 

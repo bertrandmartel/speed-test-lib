@@ -124,11 +124,6 @@ public class SpeedTestRepeatTest extends AbstractTest {
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiterError.fail("unexpected error : " + speedTestError);
             }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
-            }
         });
 
         Assert.assertEquals(listenerList.size(), 1);
@@ -170,7 +165,6 @@ public class SpeedTestRepeatTest extends AbstractTest {
             */
             listenerList.get(1).onProgress(0, null);
             listenerList.get(1).onCompletion(null);
-            listenerList.get(1).onInterruption();
 
         } else if (!download && http) {
 
@@ -207,7 +201,6 @@ public class SpeedTestRepeatTest extends AbstractTest {
             Assert.assertEquals(repeatVars.isFirstUploadRepeat(), true);
             listenerList.get(1).onProgress(0, null);
             listenerList.get(1).onCompletion(null);
-            listenerList.get(1).onInterruption();
         }
 
         //Assert.assertEquals(listenerList.size(), 2);
@@ -409,11 +402,6 @@ public class SpeedTestRepeatTest extends AbstractTest {
             @Override
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 //called when download error occur
-            }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
             }
         };
 

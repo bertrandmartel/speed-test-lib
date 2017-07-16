@@ -92,11 +92,6 @@ public class SpeedTestFTPTest extends AbstractTest {
                 waiter.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError + " : " + errorMessage);
                 waiter2.fail(TestCommon.DOWNLOAD_ERROR_STR + speedTestError + " : " + errorMessage);
             }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
-            }
         });
 
         mSocket.startDownload("ftp://" + TestCommon.FTP_SERVER_HOST + TestCommon.FTP_SERVER_URI);
@@ -144,11 +139,6 @@ public class SpeedTestFTPTest extends AbstractTest {
                 waiter.assertTrue(percent >= 0 && percent <= 100);
                 waiter.resume();
             }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
-            }
         });
 
         mSocket.startUpload("ftp://" + TestCommon.FTP_SERVER_HOST + SpeedTestUtils.getFTPUploadUri(),
@@ -182,11 +172,6 @@ public class SpeedTestFTPTest extends AbstractTest {
             @Override
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail("unexpected error in onDownloadError : " + speedTestError + " : " + errorMessage);
-            }
-
-            @Override
-            public void onInterruption() {
-                mWaiter.fail("shouldnt be in onInterruption");
             }
         });
 
@@ -251,11 +236,6 @@ public class SpeedTestFTPTest extends AbstractTest {
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail("unexpected error in onDownloadError : " + speedTestError + " : " + errorMessage);
             }
-
-            @Override
-            public void onInterruption() {
-                mWaiter.resume();
-            }
         });
         mWaiter = new Waiter();
         mSocket.startFixedUpload("ftp://" + TestCommon.FTP_SERVER_HOST + SpeedTestUtils.getFTPUploadUri(),
@@ -298,11 +278,6 @@ public class SpeedTestFTPTest extends AbstractTest {
             @Override
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
                 mWaiter.fail("unexpected error in onDownloadError : " + speedTestError + " : " + errorMessage);
-            }
-
-            @Override
-            public void onInterruption() {
-                mWaiter.resume();
             }
         });
 

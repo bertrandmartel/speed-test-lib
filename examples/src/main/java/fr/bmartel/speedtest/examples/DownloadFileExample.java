@@ -46,7 +46,7 @@ public class DownloadFileExample {
     /**
      * spedd examples server uri.
      */
-    private final static String SPEED_TEST_SERVER_URI_DL = "http://bmartel.fr/test2";
+    private final static String SPEED_TEST_SERVER_URI_DL = "http://2.testdebit.info/fichiers/10Mo.dat";
 
     /**
      * logger.
@@ -87,11 +87,6 @@ public class DownloadFileExample {
             @Override
             public void onProgress(final float percent, final SpeedTestReport downloadReport) {
                 LogUtils.logSpeedTestReport(downloadReport, LOGGER);
-            }
-
-            @Override
-            public void onInterruption() {
-                //triggered when forceStopTask is called
             }
         });
 
