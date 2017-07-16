@@ -23,7 +23,7 @@ Check a [non-exhaustive list](./server_list.md) of compatible speed test server.
 
 * with Gradle, from jcenter or mavenCentral :
 
-```
+```gradle
 compile 'fr.bmartel:jspeedtest:1.30.1'
 ```
 
@@ -31,7 +31,7 @@ compile 'fr.bmartel:jspeedtest:1.30.1'
 
 * setup a speed test listener to monitor progress, completion and error catch :
 
-```
+```java
 SpeedTestSocket speedTestSocket = new SpeedTestSocket();
 
 // add a listener to wait for speedtest completion and progress
@@ -68,19 +68,19 @@ speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
 * HTTP download 1Mo from `2.testdebit.info`
 
-```
+```java
 speedTestSocket.startDownload("http://2.testdebit.info/fichiers/1Mo.dat");
 ```
 
 * FTP download 1Mo from `speedtest.tele2.net`
 
-```
+```java
 speedTestSocket.startDownload("ftp://speedtest.tele2.net/1MB.zip");
 ```
 
 * FTP download 1Mo from `ftp.otenet.gr` with credentials (username/password), default is anonymous/no password
 
-```
+```java
 speedTestSocket.startDownload("ftp://speedtest:speedtest@ftp.otenet.gr/test1Mb.db");
 ```
 
@@ -88,13 +88,13 @@ speedTestSocket.startDownload("ftp://speedtest:speedtest@ftp.otenet.gr/test1Mb.d
 
 * HTTP upload 1Mo to `2.testdebit.info`
 
-```
+```java
 speedTestSocket.startUpload("http://2.testdebit.info/", 1000000);
 ```
 
 * FTP upload a 1Mo file to `speedtest.tele2.net`
 
-```
+```java
 String fileName = SpeedTestUtils.generateFileName() + ".txt";
 speedTestSocket.startUpload("ftp://speedtest.tele2.net/upload/" + fileName, 1000000);
 ```
@@ -106,13 +106,13 @@ At the end of the max duration, `onInterruption` is called if download has not b
 
 * HTTP download for 10s max, a 100 Mo file from `2.testdebit.info`
 
-```
+```java
 speedTestSocket.startFixedDownload("http://2.testdebit.info/fichiers/100Mo.dat", 10000);
 ```
 
 * FTP download for 10s max, a 100 Mo file from `speedtest.tele2.net`
 
-```
+```java
 speedTestSocket.startFixedDownload("ftp://speedtest.tele2.net/100MB.zip");
 ```
 
@@ -123,13 +123,13 @@ At the end of the max duration, `onInterruption` is called if upload has not be 
 
 * HTTP upload for 10s max, a 10Mo file to `2.testdebit.info`
 
-```
+```java
 speedTestSocket.startFixedUpload("http://2.testdebit.info/", 10000000, 10000);
 ```
 
 * FTP upload for 10s max, a 10Mo file to `speedtest.tele2.net`
 
-```
+```java
 String fileName = SpeedTestUtils.generateFileName() + ".txt";
 speedTestSocket.startFixedUpload("ftp://speedtest.tele2.net/upload/" + fileName, 10000000, 10000);
 ```
@@ -140,25 +140,25 @@ You can define your own report interval (interval between each `onDownloadProgre
 
 * HTTP download with download reports each 1.5 seconds
 
-```
+```java
 speedTestSocket.startDownload("http://2.testdebit.info/fichiers/1Mo.dat", 1500);
 ```
 
 * FTP download with download reports each 1.5 seconds
 
-```
+```java
 speedTestSocket.startDownload("ftp://speedtest.tele2.net/1MB.zip", 1500);
 ```
 
 * HTTP upload with upload reports each 1.5 seconds
 
-```
+```java
 speedTestSocket.startUpload("http://2.testdebit.info/", 10000000, 1500);
 ```
 
 * FTP upload with upload reports each 1.5 seconds
 
-```
+```java
 String fileName = SpeedTestUtils.generateFileName() + ".txt";
 speedTestSocket.startUpload("ftp://speedtest.tele2.net/upload/" + fileName, 10000000, 1500);
 ```
@@ -171,7 +171,7 @@ You can chain multiple download/upload requests during a fixed duration. This wa
 
 The following will download regularly for 20 seconds a file of 1Mo with download report each 2 seconds. Download reports will appear in `onReport` callback of `IRepeatListener` instead of `onDownloadProgress` :
 
-```
+```java
 speedTestSocket.startDownloadRepeat("http://2.testdebit.info/fichiers/1Mo.dat",
     20000, 2000, new
             IRepeatListener() {
@@ -191,7 +191,7 @@ speedTestSocket.startDownloadRepeat("http://2.testdebit.info/fichiers/1Mo.dat",
 
 The following will upload regularly for 20 seconds a file of 1Mo with download report each 2 seconds. Upload reports will appear in `onReport` callback of `IRepeatListener` instead of `onUploadProgress` :
 
-```
+```java
 speedTestSocket.startUploadRepeat("http://2.testdebit.info/", 1000000
     20000, 2000, new
             IRepeatListener() {
@@ -210,12 +210,14 @@ speedTestSocket.startUploadRepeat("http://2.testdebit.info/", 1000000
 ### Get live download & upload
 
 * retrieve current download report : 
-```
+
+```java
 SpeedTestReport getLiveDownloadReport()
 ```
 
 * retrieve current upload report : 
-```
+
+```java
 SpeedTestReport getLiveUploadReport()
 ```
 
@@ -226,11 +228,11 @@ Setup time is the amount of time in milliseconds from which speed test will be c
 The following will set the setup time to 5 seconds which mean, the speed rate will begin to be computed 5 seconds after the speed test start :
 
 * download
-```
+```java
 speedTestSocket.setDownloadSetupTime(5000);
 ```
 * upload
-```
+```java
 speedTestSocket.setUploadSetupTime(5000);
 ```
 
@@ -238,7 +240,7 @@ speedTestSocket.setUploadSetupTime(5000);
 
 By default, data to be uploaded is stored in RAM, for large data it is recommended to used file storage : 
 
-```
+```java
 speedTestSocket.setUploadStorageType(UploadStorageType.FILE_STORAGE);
 ```
 
@@ -246,7 +248,7 @@ It will create a temporary file containing random data. File will be deleted aut
 
 ### Set size of each packet sent to upload server
 
-```
+```java
 speedTestSocket.setUploadChunkSize(65535);
 ```
 
@@ -254,7 +256,7 @@ speedTestSocket.setUploadChunkSize(65535);
 
 You can set download/upload socket timeout in milliseconds :
 
-```
+```java
 speedTestSocket.setSocketTimeout(5000);
 ```
 
@@ -264,14 +266,14 @@ These settings are used to alter transfer rate float rounding / scale :
 
 * set RoundingMode :
 
-```
+```java
 speedTestSocket.setDefaultRoundingMode(RoundingMode.HALF_EVEN);
 ```
 Default `RoundingMode` used for transfer rate calculation is `HALF_EVEN`. It can be override with : 
 
 * set Scale :
 
-```
+```java
 speedTestSocket.setDefaultScale(4);
 ```
 Default scale used for transfer rate calculation is 4
@@ -279,13 +281,14 @@ Default scale used for transfer rate calculation is 4
 ## Android Integration
 
 * add Internet permission to manifest : 
-```
+
+```xml
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 
 * use an `AsyncTask` to run your speed test :
 
-```
+```java
 public class SpeedTestTask extends AsyncTask<Void, Void, String> {
 
     @Override
@@ -337,55 +340,55 @@ All following examples use speed test server `1.testdebit.info` for HTTP and `sp
 
 * HTTP download (1Mo)
 
-```
+```bash
 ./gradlew downloadFile
 ```
 
 * HTTP upload (1Mo)
 
-```
+```bash
 ./gradlew uploadFile
 ```
 
 * FTP download (1Mo)
 
-```
+```bash
 ./gradlew downloadFTP
 ```
 
 * FTP upload (1Mo)
 
-```
+```bash
 ./gradlew uploadFTP
 ```
 
 * download during a fixed duration (size: 100Mo, duration: 15s, report interval: 1s)
 
-```
+```bash
 ./gradlew fixedDownload
 ```
 
 * upload during a fixed duration (size: 100Mo, duration: 15s, report interval: 1s)
 
-```
+```bash
 ./gradlew fixedUpload
 ```
 
 * download repeatedly a file during a fixed duration (size:10Mo, duration 11s, report interval: 1s)
 
-```
+```bash
 ./gradlew repeatDownload
 ```
 
 * upload repeatedly a file during a fixed duration (size:1Mo, duration 11s, report interval: 1s)
 
-```
+```bash
 ./gradlew repeatUpload
 ```
 
 * successive 2 x (download + upload) repeatedly a file during a fixed duration (1 download size:1Mo, duration 3s, report interval: 1s following by 1 upload size:1Mo, duration 3s, report interval: 1s)
 
-```
+```bash
 ./gradlew repeatChain
 ```
 
@@ -412,19 +415,19 @@ JRE 1.7 compliant
 
 * build without test :
 
-```
+```bash
 ./gradlew clean build -x test
 ```
 
 * build with test :
 
-```
+```bash
 ./gradlew clean build
 ```
 
 * run specific test
 
-```
+```bash
 ./gradlew test --tests "fr.bmartel.speedtest.test.SpeedTestFunctionalTest"
 ```
 
