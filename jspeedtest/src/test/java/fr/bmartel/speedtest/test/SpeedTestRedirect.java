@@ -73,37 +73,4 @@ public class SpeedTestRedirect extends AbstractTest {
         mSocket.forceStopTask();
         mSocket.clearListeners();
     }
-
-    @Test
-    public void redirectErrorTest() throws TimeoutException {
-
-        mWaiter = new Waiter();
-
-        mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
-
-        mSocket.addSpeedTestListener(new ISpeedTestListener() {
-            @Override
-            public void onCompletion(final SpeedTestReport report) {
-                mWaiter.fail("error expected");
-            }
-
-            @Override
-            public void onProgress(final float percent, final SpeedTestReport report) {
-
-            }
-
-            @Override
-            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
-                if (speedTestError == SpeedTestError.UNSUPPORTED_PROTOCOL) {
-                    mWaiter.resume();
-                } else {
-                    mWaiter.fail("expected UNSUPPORTED_PROTOCOL, got : " + speedTestError);
-                }
-            }
-        });
-        mSocket.startDownload("http://bmartel.fr");
-        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
-        mSocket.forceStopTask();
-        mSocket.clearListeners();
-    }
 }
