@@ -24,7 +24,7 @@ Check a [non-exhaustive list](./server_list.md) of compatible speed test server.
 * with Gradle, from jcenter or mavenCentral :
 
 ```gradle
-compile 'fr.bmartel:jspeedtest:1.31.0'
+compile 'fr.bmartel:jspeedtest:1.31.1'
 ```
 
 ## Usage
@@ -155,6 +155,14 @@ speedTestSocket.startUpload("http://2.testdebit.info/", 10000000, 1500);
 String fileName = SpeedTestUtils.generateFileName() + ".txt";
 speedTestSocket.startUpload("ftp://speedtest.tele2.net/upload/" + fileName, 10000000, 1500);
 ```
+
+### Use proxy server
+
+```java
+speedTestSocket.setProxyServer("http://216.56.48.118:9000");
+```
+
+default proxy server port is 8080
 
 ### Chain download/upload requests
 
@@ -348,6 +356,12 @@ All following examples use speed test server `1.testdebit.info` for HTTP and `sp
 
 ```bash
 ./gradlew uploadFTP
+```
+
+* HTTP download (1Mo) through proxy server 216.56.48.118:9000 
+
+```bash
+./gradlew downloadFileProxy
 ```
 
 * download during a fixed duration (size: 100Mo, duration: 15s, report interval: 1s)

@@ -62,6 +62,16 @@ public class TestCommon {
     public final static String SPEED_TEST_SERVER_HOST = "2.testdebit.info";
 
     /**
+     * proxy server used.
+     */
+    public final static String SPEED_TEST_PROXY_SERVER = "http://216.56.48.118:9000";
+
+    /**
+     * redirect server.
+     */
+    public final static String SPEED_TEST_REDIRECT_SERVER = "http://bmartel.fr/test2";
+
+    /**
      * fake server host name.
      */
     public final static String SPEED_TEST_FAKE_HOST = "this.is.something.fake";
