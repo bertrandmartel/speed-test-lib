@@ -747,19 +747,19 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
                                     case SPEED_TEST_SERVER_URI_302:
                                         sendRedirect("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" +
                                                         TestCommon.SPEED_TEST_SERVER_PORT + TestCommon
-                                                        .SPEED_TEST_SERVER_URI_DL_1MO,
+                                                        .SPEED_TEST_SERVER_URI_UL,
                                                 StatusCodeList.FOUND, httpStream);
                                         return;
                                     case SPEED_TEST_SERVER_URI_307:
                                         sendRedirect("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" +
                                                         TestCommon.SPEED_TEST_SERVER_PORT + TestCommon
-                                                        .SPEED_TEST_SERVER_URI_DL_1MO,
+                                                        .SPEED_TEST_SERVER_URI_UL,
                                                 StatusCodeList.TEMPORARY_REDIRECT, httpStream);
                                         return;
                                     case SPEED_TEST_SERVER_URI_301:
                                         sendRedirect("http://" + TestCommon.SPEED_TEST_SERVER_HOST + ":" +
                                                         TestCommon.SPEED_TEST_SERVER_PORT + TestCommon
-                                                        .SPEED_TEST_SERVER_URI_DL_1MO,
+                                                        .SPEED_TEST_SERVER_URI_UL,
                                                 StatusCodeList.MOVED_PERMANENTLY, httpStream);
                                         return;
                                     case SPEED_TEST_SERVER_URI_UL:
