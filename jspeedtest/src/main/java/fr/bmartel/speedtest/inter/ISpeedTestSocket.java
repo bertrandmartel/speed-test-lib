@@ -167,4 +167,12 @@ public interface ISpeedTestSocket {
      * @return computation method
      */
     ComputationMethod getComputationMethod();
+
+    /**
+     * Set proxy server for all DL/UL tasks.
+     *
+     * @param proxyUrl proxy URL
+     * @return false if malformed
+     */
+    boolean setProxyServer(String proxyUrl);
 }

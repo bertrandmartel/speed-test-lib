@@ -248,6 +248,17 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     }
 
     /**
+     * Set proxy server for all DL/UL tasks.
+     *
+     * @param proxyUrl proxy URL
+     * @return false if malformed
+     */
+    @Override
+    public boolean setProxyServer(final String proxyUrl) {
+        return mTask.setProxy(proxyUrl);
+    }
+
+    /**
      * Start upload process.
      *
      * @param uri           uri to fetch

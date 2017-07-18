@@ -65,6 +65,11 @@ public class SpeedTestTask {
     private int mPort;
 
     /**
+     * proxy URL.
+     */
+    private URL mProxyUrl;
+
+    /**
      * socket object.
      */
     private Socket mSocket;
@@ -206,6 +211,21 @@ public class SpeedTestTask {
     }
 
     /**
+     * Set proxy URI.
+     *
+     * @param proxyUri proxy URI
+     * @return false if malformed
+     */
+    public boolean setProxy(final String proxyUri) {
+        try {
+            mProxyUrl = (proxyUri != null) ? new URL(proxyUri) : null;
+        } catch (MalformedURLException e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * start download task.
      *
      * @param uri uri to fetch to download file
@@ -222,10 +242,18 @@ public class SpeedTestTask {
 
             switch (url.getProtocol()) {
                 case "http":
-                    this.mHostname = url.getHost();
-                    this.mPort = url.getPort() != -1 ? url.getPort() : 80;
-                    final String downloadRequest = "GET " + uri + " HTTP/1.1\r\n" + "Host: " + url.getHost() +
-                            "\r\n\r\n";
+                    String downloadRequest;
+
+                    if (mProxyUrl != null) {
+                        this.mHostname = mProxyUrl.getHost();
+                        this.mPort = mProxyUrl.getPort() != -1 ? mProxyUrl.getPort() : 8080;
+                        downloadRequest = "GET " + uri + " HTTP/1.1\r\n" + "Host: " + url.getHost() +
+                                "\r\nProxy-Connection: Keep-Alive" + "\r\n\r\n";
+                    } else {
+                        this.mHostname = url.getHost();
+                        this.mPort = url.getPort() != -1 ? url.getPort() : 80;
+                        downloadRequest = "GET " + uri + " HTTP/1.1\r\n" + "Host: " + url.getHost() + "\r\n\r\n";
+                    }
                     writeDownload(downloadRequest.getBytes());
                     break;
                 case "ftp":
@@ -309,8 +337,13 @@ public class SpeedTestTask {
         try {
             final URL url = new URL(uri);
 
-            this.mHostname = url.getHost();
-            this.mPort = url.getPort() != -1 ? url.getPort() : 80;
+            if (mProxyUrl != null) {
+                this.mHostname = mProxyUrl.getHost();
+                this.mPort = mProxyUrl.getPort() != -1 ? mProxyUrl.getPort() : 8080;
+            } else {
+                this.mHostname = url.getHost();
+                this.mPort = url.getPort() != -1 ? url.getPort() : 80;
+            }
             mUploadFileSize = new BigDecimal(fileSizeOctet);
 
             mUploadTempFileSize = 0;
@@ -339,11 +372,16 @@ public class SpeedTestTask {
                                 uploadFile.seek(0);
                             }
 
-                            final String head = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + url.getHost() +
-                                    "\r\nAccept:" +
-                                    " " +
-                                    "*/*\r\nContent-Length: " + fileSizeOctet + "\r\n\r\n";
+                            String head;
 
+                            if (mProxyUrl != null) {
+                                head = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + url.getHost() +
+                                        "\r\nAccept: " + "*/*\r\nContent-Length: " + fileSizeOctet +
+                                        "\r\nProxy-Connection: Keep-Alive" + "\r\n\r\n";
+                            } else {
+                                head = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + url.getHost() +
+                                        "\r\nAccept: " + "*/*\r\nContent-Length: " + fileSizeOctet + "\r\n\r\n";
+                            }
                             mUploadTempFileSize = 0;
                             mUlComputationTempFileSize = 0;
 
