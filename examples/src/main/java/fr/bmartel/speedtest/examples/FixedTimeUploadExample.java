@@ -45,7 +45,7 @@ public class FixedTimeUploadExample {
     private static final String SPEED_TEST_SERVER_URI_UL = "http://2.testdebit.info/";
 
     /**
-     * upload 10Mo file size.
+     * upload 100Mo file size.
      */
     private static final int FILE_SIZE = 100000000;
 

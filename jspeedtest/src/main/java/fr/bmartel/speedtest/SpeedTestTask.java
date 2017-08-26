@@ -594,15 +594,15 @@ public class SpeedTestTask {
 
             final HttpStates httFrameState = httpFrame.decodeFrame(mSocket.getInputStream());
 
-            SpeedTestUtils.checkHttpFrameError(mSocketInterface, mForceCloseSocket, mListenerList, httFrameState);
+            SpeedTestUtils.checkHttpFrameError(mForceCloseSocket, mListenerList, httFrameState);
 
             final HttpStates httpHeaderState = httpFrame.parseHeader(mSocket.getInputStream());
-            SpeedTestUtils.checkHttpHeaderError(mSocketInterface, mForceCloseSocket, mListenerList, httpHeaderState);
+            SpeedTestUtils.checkHttpHeaderError(mForceCloseSocket, mListenerList, httpHeaderState);
 
             if (httpFrame.getStatusCode() == SpeedTestConst.HTTP_OK &&
                     httpFrame.getReasonPhrase().equalsIgnoreCase("ok")) {
 
-                SpeedTestUtils.checkHttpContentLengthError(mSocketInterface, mForceCloseSocket,
+                SpeedTestUtils.checkHttpContentLengthError(mForceCloseSocket,
                         mListenerList, httpFrame);
 
                 mDownloadPckSize = new BigDecimal(httpFrame.getContentLength());
@@ -867,8 +867,7 @@ public class SpeedTestTask {
 
         final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        @SuppressWarnings("unchecked")
-        final Future<Integer> future = executor.submit(new Callable() {
+        @SuppressWarnings("unchecked") final Future<Integer> future = executor.submit(new Callable() {
 
             /**
              * execute sequential write/flush task.
@@ -904,10 +903,10 @@ public class SpeedTestTask {
      * @param errorMessage error message from Exception
      */
     private void catchError(final String errorMessage) {
-        SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket, mListenerList, errorMessage);
         mTimeEnd = System.currentTimeMillis();
         closeSocket();
         closeExecutors();
+        SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket, mListenerList, errorMessage);
     }
 
 
@@ -1137,7 +1136,6 @@ public class SpeedTestTask {
                             }
 
                         } else {
-
                             mReportInterval = false;
                             SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket,
                                     mListenerList, "cant create stream " +
@@ -1251,6 +1249,11 @@ public class SpeedTestTask {
                             }
 
                             if (mForceCloseSocket) {
+                                mFtpOutputstream.close();
+                                mReportInterval = false;
+                                if (!mRepeatWrapper.isRepeatUpload()) {
+                                    closeExecutors();
+                                }
                                 SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket, mListenerList, "");
                             } else {
                                 for (int i = 0; i < step; i++) {
@@ -1310,20 +1313,19 @@ public class SpeedTestTask {
                                     }
                                 }
                                 mTimeEnd = System.currentTimeMillis();
+                                mFtpOutputstream.close();
+                                mReportInterval = false;
+
+                                if (!mRepeatWrapper.isRepeatUpload()) {
+                                    closeExecutors();
+                                }
+
+                                final SpeedTestReport report = getReport(SpeedTestMode.UPLOAD);
+
+                                for (int i = 0; i < mListenerList.size(); i++) {
+                                    mListenerList.get(i).onCompletion(report);
+                                }
                             }
-                            mFtpOutputstream.close();
-
-                            mReportInterval = false;
-                            final SpeedTestReport report = getReport(SpeedTestMode.UPLOAD);
-
-                            for (int i = 0; i < mListenerList.size(); i++) {
-                                mListenerList.get(i).onCompletion(report);
-                            }
-
-                            if (!mRepeatWrapper.isRepeatUpload()) {
-                                closeExecutors();
-                            }
-
                         } else {
                             mReportInterval = false;
                             SpeedTestUtils.dispatchError(mSocketInterface, mForceCloseSocket,

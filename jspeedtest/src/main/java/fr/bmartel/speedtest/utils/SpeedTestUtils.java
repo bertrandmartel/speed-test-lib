@@ -156,23 +156,15 @@ public class SpeedTestUtils {
      * @param httFrameState    http frame state to check
      */
     public static void checkHttpFrameError(
-            final ISpeedTestSocket speedTestSocket,
             final boolean forceCloseSocket,
             final List<ISpeedTestListener> listenerList,
             final HttpStates httFrameState) {
 
-        if (httFrameState != HttpStates.HTTP_FRAME_OK) {
-
-            if (!forceCloseSocket) {
-                for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onError(SpeedTestError.INVALID_HTTP_RESPONSE,
-                            SpeedTestConst.PARSING_ERROR +
-                                    "http frame");
-                }
-            } else {
-                for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onCompletion(speedTestSocket.getLiveReport());
-                }
+        if (httFrameState != HttpStates.HTTP_FRAME_OK && !forceCloseSocket) {
+            for (int i = 0; i < listenerList.size(); i++) {
+                listenerList.get(i).onError(SpeedTestError.INVALID_HTTP_RESPONSE,
+                        SpeedTestConst.PARSING_ERROR +
+                                "http frame");
             }
         }
     }
@@ -185,23 +177,15 @@ public class SpeedTestUtils {
      * @param httpHeaderState  http frame state to check
      */
     public static void checkHttpHeaderError(
-            final ISpeedTestSocket speedTestSocket,
             final boolean forceCloseSocket,
             final List<ISpeedTestListener> listenerList,
             final HttpStates httpHeaderState) {
 
-        if (httpHeaderState != HttpStates.HTTP_FRAME_OK) {
-
-            if (!forceCloseSocket) {
-                for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onError(SpeedTestError.INVALID_HTTP_RESPONSE,
-                            SpeedTestConst.PARSING_ERROR +
-                                    "http headers");
-                }
-            } else {
-                for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onCompletion(speedTestSocket.getLiveReport());
-                }
+        if (httpHeaderState != HttpStates.HTTP_FRAME_OK && !forceCloseSocket) {
+            for (int i = 0; i < listenerList.size(); i++) {
+                listenerList.get(i).onError(SpeedTestError.INVALID_HTTP_RESPONSE,
+                        SpeedTestConst.PARSING_ERROR +
+                                "http headers");
             }
         }
     }
@@ -214,22 +198,14 @@ public class SpeedTestUtils {
      * @param httpFrame        http frame state to check
      */
     public static void checkHttpContentLengthError(
-            final ISpeedTestSocket speedTestSocket,
             final boolean forceCloseSocket,
             final List<ISpeedTestListener> listenerList,
             final HttpFrame httpFrame) {
 
-        if (httpFrame.getContentLength() <= 0) {
-
-            if (!forceCloseSocket) {
-                for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error content length " +
-                            "is inconsistent");
-                }
-            } else {
-                for (int i = 0; i < listenerList.size(); i++) {
-                    listenerList.get(i).onCompletion(speedTestSocket.getLiveReport());
-                }
+        if (httpFrame.getContentLength() <= 0 && !forceCloseSocket) {
+            for (int i = 0; i < listenerList.size(); i++) {
+                listenerList.get(i).onError(SpeedTestError.INVALID_HTTP_RESPONSE, "Error content length " +
+                        "is inconsistent");
             }
         }
     }

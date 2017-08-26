@@ -209,17 +209,7 @@ public class SpeedTestErrorTest extends AbstractTest {
 
         for (final HttpStates state : HttpStates.values()) {
             if (state != HttpStates.HTTP_FRAME_OK) {
-                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpFrameError(mSocket, mForceStop, listenerList, state);
-                mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
-            }
-        }
-
-        mSocket.forceStopTask();
-        mForceStop = true;
-
-        for (final HttpStates state : HttpStates.values()) {
-            if (state != HttpStates.HTTP_FRAME_OK) {
-                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpFrameError(mSocket, mForceStop, listenerList, state);
+                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpFrameError(mForceStop, listenerList, state);
                 mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
             }
         }
@@ -239,19 +229,7 @@ public class SpeedTestErrorTest extends AbstractTest {
 
         for (final HttpStates state : HttpStates.values()) {
             if (state != HttpStates.HTTP_FRAME_OK) {
-                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpHeaderError(mSocket, mForceStop, listenerList,
-                        state);
-                mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
-            }
-        }
-
-        mSocket.forceStopTask();
-        mForceStop = true;
-
-        for (final HttpStates state : HttpStates.values()) {
-            if (state != HttpStates.HTTP_FRAME_OK) {
-                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpHeaderError(mSocket, mForceStop, listenerList,
-                        state);
+                fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpHeaderError(mForceStop, listenerList, state);
                 mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
             }
         }
@@ -274,14 +252,7 @@ public class SpeedTestErrorTest extends AbstractTest {
         headers.put(HttpHeader.CONTENT_LENGTH, String.valueOf(0));
         frame.setHeaders(headers);
 
-        fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpContentLengthError(mSocket, mForceStop, listenerList, frame);
-
-        mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
-
-        mForceStop = true;
-        mSocket.forceStopTask();
-
-        fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpContentLengthError(mSocket, mForceStop, listenerList, frame);
+        fr.bmartel.speedtest.utils.SpeedTestUtils.checkHttpContentLengthError(mForceStop, listenerList, frame);
 
         mWaiter.await(TestCommon.WAITING_TIMEOUT_DEFAULT_SEC, TimeUnit.SECONDS);
     }
