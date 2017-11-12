@@ -33,6 +33,7 @@ import fr.bmartel.speedtest.test.server.ServerRetryTest;
 import fr.bmartel.speedtest.test.utils.TestCommon;
 import net.jodah.concurrentunit.Waiter;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -75,6 +76,7 @@ public class SpeedTestHttpsTest extends ServerRetryTest {
     }
 
     @Test
+    @Ignore
     public void downloadHttpsRedirectTest() throws TimeoutException {
         initTask(true);
         testDownload(TestCommon.SPEED_TEST_SERVER_URI_REDIRECT_HTTPS);
