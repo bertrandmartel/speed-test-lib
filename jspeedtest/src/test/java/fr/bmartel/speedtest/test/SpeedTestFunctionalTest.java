@@ -190,9 +190,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
         testError(SpeedTestError.MALFORMED_URI, "://" + SPEED_TEST_SERVER_HOST + ":" +
                 SPEED_TEST_SERVER_PORT +
                 SPEED_TEST_SERVER_URI_DL_1MO, true);
-        testError(SpeedTestError.UNSUPPORTED_PROTOCOL, "https://" + SPEED_TEST_SERVER_HOST + ":" +
-                SPEED_TEST_SERVER_PORT +
-                SPEED_TEST_SERVER_URI_DL_1MO, true);
         stopTask();
     }
 
@@ -223,9 +220,6 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
     public void uploadErrorTest() throws TimeoutException {
         initTask(false);
         testError(SpeedTestError.MALFORMED_URI, "://" + SPEED_TEST_SERVER_HOST + ":" +
-                SPEED_TEST_SERVER_PORT +
-                SPEED_TEST_SERVER_URI_DL_1MO, false);
-        testError(SpeedTestError.UNSUPPORTED_PROTOCOL, "https://" + SPEED_TEST_SERVER_HOST + ":" +
                 SPEED_TEST_SERVER_PORT +
                 SPEED_TEST_SERVER_URI_DL_1MO, false);
         stopTask();

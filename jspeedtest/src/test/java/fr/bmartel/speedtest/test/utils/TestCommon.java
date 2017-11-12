@@ -25,7 +25,7 @@
 package fr.bmartel.speedtest.test.utils;
 
 /**
- * Commong vars for tests.
+ * Common vars for tests.
  *
  * @author Bertrand Martel
  */
@@ -64,7 +64,7 @@ public class TestCommon {
     /**
      * proxy server used.
      */
-    public final static String SPEED_TEST_PROXY_SERVER = "http://216.56.48.118:9000";
+    public final static String SPEED_TEST_PROXY_SERVER = "http://120.194.18.90:81";
 
     /**
      * redirect server.
@@ -87,9 +87,14 @@ public class TestCommon {
     public final static String SPEED_TEST_SERVER_URI_DL_1MO = "/fichiers/1Mo.dat";
 
     /**
-     * A fake uri to test connection error.
+     * sample URI for https test.
      */
-    public final static String SPEED_TEST_SERVER_FAKE_URI = "/fichiers/qsdqdqsdqsd";
+    public final static String SPEED_TEST_SERVER_URI_HTTPS = "https://www.example.com/";
+
+    /**
+     * sample URI redirect for https test.
+     */
+    public final static String SPEED_TEST_SERVER_URI_REDIRECT_HTTPS = "https://stackoverflow.com/users/2614364";
 
     /**
      * speed examples server port.

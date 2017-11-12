@@ -37,6 +37,7 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
+import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -63,6 +64,11 @@ public class SpeedTestTask {
      * socket server port.
      */
     private int mPort;
+
+    /**
+     * Protocol used (http/https/ftp...).
+     */
+    private String mProtocol;
 
     /**
      * proxy URL.
@@ -240,8 +246,11 @@ public class SpeedTestTask {
         try {
             final URL url = new URL(uri);
 
-            switch (url.getProtocol()) {
+            mProtocol = url.getProtocol();
+
+            switch (mProtocol) {
                 case "http":
+                case "https":
                     String downloadRequest;
 
                     if (mProxyUrl != null) {
@@ -251,7 +260,11 @@ public class SpeedTestTask {
                                 "\r\nProxy-Connection: Keep-Alive" + "\r\n\r\n";
                     } else {
                         this.mHostname = url.getHost();
-                        this.mPort = url.getPort() != -1 ? url.getPort() : 80;
+                        if (url.getProtocol().equals("http")) {
+                            this.mPort = url.getPort() != -1 ? url.getPort() : 80;
+                        } else {
+                            this.mPort = url.getPort() != -1 ? url.getPort() : 443;
+                        }
                         downloadRequest = "GET " + uri + " HTTP/1.1\r\n" + "Host: " + url.getHost() + "\r\n\r\n";
                     }
                     writeDownload(downloadRequest.getBytes());
@@ -299,6 +312,7 @@ public class SpeedTestTask {
 
             switch (url.getProtocol()) {
                 case "http":
+                case "https":
                     writeUpload(uri, fileSizeOctet);
                     break;
                 case "ftp":
@@ -337,12 +351,18 @@ public class SpeedTestTask {
         try {
             final URL url = new URL(uri);
 
+            mProtocol = url.getProtocol();
+
             if (mProxyUrl != null) {
                 this.mHostname = mProxyUrl.getHost();
                 this.mPort = mProxyUrl.getPort() != -1 ? mProxyUrl.getPort() : 8080;
             } else {
                 this.mHostname = url.getHost();
-                this.mPort = url.getPort() != -1 ? url.getPort() : 80;
+                if ("http".equals(mProtocol)) {
+                    this.mPort = url.getPort() != -1 ? url.getPort() : 80;
+                } else {
+                    this.mPort = url.getPort() != -1 ? url.getPort() : 443;
+                }
             }
             mUploadFileSize = new BigDecimal(fileSizeOctet);
 
@@ -519,8 +539,12 @@ public class SpeedTestTask {
             closeSocket();
         }
         try {
-            /* create a basic mSocket connection */
-            mSocket = new Socket();
+            if ("https".equals(mProtocol)) {
+                final SSLSocketFactory ssf = (SSLSocketFactory) SSLSocketFactory.getDefault();
+                mSocket = ssf.createSocket();
+            } else {
+                mSocket = new Socket();
+            }
 
             if (mSocketInterface.getSocketTimeout() != 0 && download) {
                 mSocket.setSoTimeout(mSocketInterface.getSocketTimeout());
@@ -543,7 +567,7 @@ public class SpeedTestTask {
                 public void run() {
 
                     if (download) {
-                        startSocketDownloadTask(mHostname);
+                        startSocketDownloadTask(mProtocol, mHostname);
                     } else {
                         startSocketUploadTask(mHostname, uploadSize);
                     }
@@ -575,7 +599,7 @@ public class SpeedTestTask {
      *
      * @String hostname hostname to reach
      */
-    private void startSocketDownloadTask(final String hostname) {
+    private void startSocketDownloadTask(final String protocol, final String hostname) {
 
         mDownloadTemporaryPacketSize = 0;
         mDlComputationTempPacketSize = 0;
@@ -638,15 +662,7 @@ public class SpeedTestTask {
                 if (location.charAt(0) == '/') {
                     mReportInterval = false;
                     finishTask();
-                    startDownloadRequest("http://" + hostname + location);
-                } else if (location.startsWith("https")) {
-                    //unsupported protocol
-                    mReportInterval = false;
-                    for (int i = 0; i < mListenerList.size(); i++) {
-                        mListenerList.get(i).onError(SpeedTestError.UNSUPPORTED_PROTOCOL, "unsupported protocol : " +
-                                "https");
-                    }
-                    finishTask();
+                    startDownloadRequest(protocol + "://" + hostname + location);
                 } else {
                     mReportInterval = false;
                     finishTask();
