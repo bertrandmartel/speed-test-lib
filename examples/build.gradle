@@ -105,6 +105,13 @@ task repeatChain(type: JavaExec) {
     args ""
 }
 
+task repeatChainFixed(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    classpath += sourceSets.main.resources
+    main = "fr.bmartel.speedtest.examples.ChainingFixedExample"
+    args ""
+}
+
 task generateJavadoc(type: Javadoc) {
     source = sourceSets.main.allJava
     classpath = configurations.compile
