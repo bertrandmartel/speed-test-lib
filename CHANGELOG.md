@@ -1,11 +1,85 @@
 # Change Log
 
-## [Unreleased](https://github.com/bertrandmartel/speed-test-lib/tree/HEAD)
+## [1.31.3](https://github.com/bertrandmartel/speed-test-lib/tree/1.31.3) (2017-11-12)
+[Full Changelog](https://github.com/bertrandmartel/speed-test-lib/compare/1.31.2...1.31.3)
 
-[Full Changelog](https://github.com/bertrandmartel/speed-test-lib/compare/1.25...HEAD)
+**Implemented enhancements:**
+
+- https support [\#53](https://github.com/bertrandmartel/speed-test-lib/issues/53)
+
+**Fixed bugs:**
+
+- How do I start startFixedUpload after the startFixedDownload method is finished? [\#50](https://github.com/bertrandmartel/speed-test-lib/issues/50)
 
 **Closed issues:**
 
+- Irrelevant Results for downloading [\#44](https://github.com/bertrandmartel/speed-test-lib/issues/44)
+
+## [1.31.2](https://github.com/bertrandmartel/speed-test-lib/tree/1.31.2) (2017-08-26)
+[Full Changelog](https://github.com/bertrandmartel/speed-test-lib/compare/1.31.1...1.31.2)
+
+**Implemented enhancements:**
+
+- Is there a way to filter the connection through a proxy? [\#47](https://github.com/bertrandmartel/speed-test-lib/issues/47)
+
+## [1.31.1](https://github.com/bertrandmartel/speed-test-lib/tree/1.31.1) (2017-07-18)
+[Full Changelog](https://github.com/bertrandmartel/speed-test-lib/compare/1.31.0...1.31.1)
+
+## [1.31.0](https://github.com/bertrandmartel/speed-test-lib/tree/1.31.0) (2017-07-16)
+[Full Changelog](https://github.com/bertrandmartel/speed-test-lib/compare/1.30...1.31.0)
+
+**Implemented enhancements:**
+
+- Socket constructors & params [\#39](https://github.com/bertrandmartel/speed-test-lib/issues/39)
+- onCompletion not called [\#38](https://github.com/bertrandmartel/speed-test-lib/issues/38)
+- Refactor fields to reduce methods number [\#35](https://github.com/bertrandmartel/speed-test-lib/issues/35)
+- Speed test for pages [\#29](https://github.com/bertrandmartel/speed-test-lib/issues/29)
+- Add update stat interval [\#28](https://github.com/bertrandmartel/speed-test-lib/issues/28)
+
+**Fixed bugs:**
+
+- Not working on android? [\#43](https://github.com/bertrandmartel/speed-test-lib/issues/43)
+- forceStopTask\(\) not work [\#37](https://github.com/bertrandmartel/speed-test-lib/issues/37)
+- Division by zero [\#30](https://github.com/bertrandmartel/speed-test-lib/issues/30)
+
+**Closed issues:**
+
+- ConcurrentModificationException [\#45](https://github.com/bertrandmartel/speed-test-lib/issues/45)
+- onError -- reports back URL [\#42](https://github.com/bertrandmartel/speed-test-lib/issues/42)
+- start\*\*\*Download & start\*\*\*Upload overrides with FTP account params [\#40](https://github.com/bertrandmartel/speed-test-lib/issues/40)
+
+**Merged pull requests:**
+
+- Username & Password for FTP Upload Bugfix [\#46](https://github.com/bertrandmartel/speed-test-lib/pull/46) ([trisgerra](https://github.com/trisgerra))
+
+## [1.30](https://github.com/bertrandmartel/speed-test-lib/tree/1.30) (2017-05-11)
+[Full Changelog](https://github.com/bertrandmartel/speed-test-lib/compare/1.26...1.30)
+
+**Implemented enhancements:**
+
+- java.lang.OutOfMemoryError in generateRandomArray\(\)  [\#34](https://github.com/bertrandmartel/speed-test-lib/issues/34)
+- Crash when uploading\(set file size\) [\#27](https://github.com/bertrandmartel/speed-test-lib/issues/27)
+
+**Fixed bugs:**
+
+- java.lang.OutOfMemoryError in generateRandomArray\\(\\)  [\#34](https://github.com/bertrandmartel/speed-test-lib/issues/34)
+- Crash when uploading\\(set file size\\) [\#27](https://github.com/bertrandmartel/speed-test-lib/issues/27)
+
+**Closed issues:**
+
+- Is there a good way to get the best server URL? [\#36](https://github.com/bertrandmartel/speed-test-lib/issues/36)
+- Unexpected download speed [\#32](https://github.com/bertrandmartel/speed-test-lib/issues/32)
+
+## [1.26](https://github.com/bertrandmartel/speed-test-lib/tree/1.26) (2017-04-24)
+[Full Changelog](https://github.com/bertrandmartel/speed-test-lib/compare/1.25...1.26)
+
+**Closed issues:**
+
+- Download speed gives irrelevant values after some tests [\#33](https://github.com/bertrandmartel/speed-test-lib/issues/33)
+- Speed Test Seems to stop after n iterations [\#31](https://github.com/bertrandmartel/speed-test-lib/issues/31)
+- It's possible to get the float Mb\s? [\#25](https://github.com/bertrandmartel/speed-test-lib/issues/25)
+- Eclipse doest not found the classes [\#24](https://github.com/bertrandmartel/speed-test-lib/issues/24)
+- Test not starting when internet speed is below around 10 kbps [\#23](https://github.com/bertrandmartel/speed-test-lib/issues/23)
 - Java compativility issue [\#20](https://github.com/bertrandmartel/speed-test-lib/issues/20)
 - Possible concurrency issue when starting upload [\#11](https://github.com/bertrandmartel/speed-test-lib/issues/11)
 
