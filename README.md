@@ -440,4 +440,4 @@ JRE 1.7 compliant
 
 ## License
 
-The MIT License (MIT) Copyright (c) 2016-2017 Bertrand Martel
+The MIT License (MIT) Copyright (c) 2016-2018 Bertrand Martel
