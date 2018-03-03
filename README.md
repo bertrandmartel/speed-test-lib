@@ -61,10 +61,10 @@ speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
 
 ### Download
 
-* HTTP download 1Mo from `2.testdebit.info`
+* HTTP download 1Mo from `http://ipv4.ikoula.testdebit.info`
 
 ```java
-speedTestSocket.startDownload("http://2.testdebit.info/fichiers/1Mo.dat");
+speedTestSocket.startDownload("http://ipv4.ikoula.testdebit.info/1M.iso");
 ```
 
 * FTP download 1Mo from `speedtest.tele2.net`
@@ -81,10 +81,10 @@ speedTestSocket.startDownload("ftp://speedtest:speedtest@ftp.otenet.gr/test1Mb.d
 
 ### Upload
 
-* HTTP upload 1Mo to `2.testdebit.info`
+* HTTP upload 1Mo to `http://ipv4.ikoula.testdebit.info`
 
 ```java
-speedTestSocket.startUpload("http://2.testdebit.info/", 1000000);
+speedTestSocket.startUpload("http://ipv4.ikoula.testdebit.info/", 1000000);
 ```
 
 * FTP upload a 1Mo file to `speedtest.tele2.net`
@@ -98,10 +98,10 @@ speedTestSocket.startUpload("ftp://speedtest.tele2.net/upload/" + fileName, 1000
 
 Download during a fixed duration. Download will be stopped when the max duration is reached.
 
-* HTTP download for 10s max, a 100 Mo file from `2.testdebit.info`
+* HTTP download for 10s max, a 100 Mo file from `http://ipv4.ikoula.testdebit.info`
 
 ```java
-speedTestSocket.startFixedDownload("http://2.testdebit.info/fichiers/100Mo.dat", 10000);
+speedTestSocket.startFixedDownload("http://ipv4.ikoula.testdebit.info/100M.iso", 10000);
 ```
 
 * FTP download for 10s max, a 100 Mo file from `speedtest.tele2.net`
@@ -114,10 +114,10 @@ speedTestSocket.startFixedDownload("ftp://speedtest.tele2.net/100MB.zip");
 
 Upload during a fixed duration. Upload will be stopped when the max duration is reached
 
-* HTTP upload for 10s max, a 10Mo file to `2.testdebit.info`
+* HTTP upload for 10s max, a 10Mo file to `http://ipv4.ikoula.testdebit.info`
 
 ```java
-speedTestSocket.startFixedUpload("http://2.testdebit.info/", 10000000, 10000);
+speedTestSocket.startFixedUpload("http://ipv4.ikoula.testdebit.info/", 10000000, 10000);
 ```
 
 * FTP upload for 10s max, a 10Mo file to `speedtest.tele2.net`
@@ -134,7 +134,7 @@ You can define your own report interval (interval between each `onDownloadProgre
 * HTTP download with download reports each 1.5 seconds
 
 ```java
-speedTestSocket.startDownload("http://2.testdebit.info/fichiers/1Mo.dat", 1500);
+speedTestSocket.startDownload("http://ipv4.ikoula.testdebit.info/1M.iso", 1500);
 ```
 
 * FTP download with download reports each 1.5 seconds
@@ -146,7 +146,7 @@ speedTestSocket.startDownload("ftp://speedtest.tele2.net/1MB.zip", 1500);
 * HTTP upload with upload reports each 1.5 seconds
 
 ```java
-speedTestSocket.startUpload("http://2.testdebit.info/", 10000000, 1500);
+speedTestSocket.startUpload("http://ipv4.ikoula.testdebit.info/", 10000000, 1500);
 ```
 
 * FTP upload with upload reports each 1.5 seconds
@@ -173,7 +173,7 @@ You can chain multiple download/upload requests during a fixed duration. This wa
 The following will download regularly for 20 seconds a file of 1Mo with download report each 2 seconds. Download reports will appear in `onReport` callback of `IRepeatListener` instead of `onDownloadProgress` :
 
 ```java
-speedTestSocket.startDownloadRepeat("http://2.testdebit.info/fichiers/1Mo.dat",
+speedTestSocket.startDownloadRepeat("http://ipv4.ikoula.testdebit.info/1M.iso",
     20000, 2000, new
             IRepeatListener() {
                 @Override
@@ -193,7 +193,7 @@ speedTestSocket.startDownloadRepeat("http://2.testdebit.info/fichiers/1Mo.dat",
 The following will upload regularly for 20 seconds a file of 1Mo with download report each 2 seconds. Upload reports will appear in `onReport` callback of `IRepeatListener` instead of `onUploadProgress` :
 
 ```java
-speedTestSocket.startUploadRepeat("http://2.testdebit.info/", 1000000
+speedTestSocket.startUploadRepeat("http://ipv4.ikoula.testdebit.info/", 1000000
     20000, 2000, new
             IRepeatListener() {
                 @Override
@@ -321,7 +321,7 @@ public class SpeedTestTask extends AsyncTask<Void, Void, String> {
             }
         });
 
-        speedTestSocket.startDownload("http://2.testdebit.info/fichiers/1Mo.dat");
+        speedTestSocket.startDownload("http://ipv4.ikoula.testdebit.info/1M.iso");
 
         return null;
     }
@@ -332,7 +332,7 @@ Execute it with : `new SpeedTestTask().execute();`
 
 ## Features examples
 
-All following examples use speed test server `1.testdebit.info` for HTTP and `speedtest.tele2.net` for FTP
+All following examples use speed test server `http://ipv4.ikoula.testdebit.info` for HTTP and `speedtest.tele2.net` for FTP
 
 * HTTP download (1Mo)
 

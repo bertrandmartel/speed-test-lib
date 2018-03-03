@@ -1,11 +1,11 @@
 [
   {
     "mode": "download",
-    "uri": "http://2.testdebit.info/fichiers/1Mo.dat"
+    "uri": "http://ipv4.ikoula.testdebit.info/1M.iso"
   },
   {
     "mode": "upload",
-    "uri": "http://2.testdebit.info/"
+    "uri": "http://ipv4.ikoula.testdebit.info/"
   },
   {
     "mode": "download",

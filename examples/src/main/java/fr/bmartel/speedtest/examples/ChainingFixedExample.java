@@ -17,7 +17,7 @@ public class ChainingFixedExample {
     /**
      * spedd examples server uri.
      */
-    private final static String SPEED_TEST_SERVER_URI_DL = "http://2.testdebit.info/fichiers/10Mo.dat";
+    private final static String SPEED_TEST_SERVER_URI_DL = "http://ipv4.ikoula.testdebit.info/10M.iso";
 
     /**
      * logger.
@@ -47,7 +47,7 @@ public class ChainingFixedExample {
     /**
      * speed examples server uri.
      */
-    private final static String SPEED_TEST_SERVER_URI_UL = "http://2.testdebit.info/";
+    private final static String SPEED_TEST_SERVER_URI_UL = "http://ipv4.ikoula.testdebit.info/";
 
     /**
      * upload 10Mo file size.

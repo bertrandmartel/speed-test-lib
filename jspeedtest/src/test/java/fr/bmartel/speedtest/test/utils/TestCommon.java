@@ -59,12 +59,12 @@ public class TestCommon {
     /**
      * speed examples server host name.
      */
-    public final static String SPEED_TEST_SERVER_HOST = "2.testdebit.info";
+    public final static String SPEED_TEST_SERVER_HOST = "ipv4.ikoula.testdebit.info";
 
     /**
      * proxy server used.
      */
-    public final static String SPEED_TEST_PROXY_SERVER = "http://120.194.18.90:81";
+    public final static String SPEED_TEST_PROXY_SERVER = "http://45.76.227.143:3128";
 
     /**
      * redirect server.
@@ -79,12 +79,12 @@ public class TestCommon {
     /**
      * speed examples server uri.
      */
-    public final static String SPEED_TEST_SERVER_URI_DL = "/fichiers/100Mo.dat";
+    public final static String SPEED_TEST_SERVER_URI_DL = "/100M.iso";
 
     /**
      * speed examples 1Mo server uri.
      */
-    public final static String SPEED_TEST_SERVER_URI_DL_1MO = "/fichiers/1Mo.dat";
+    public final static String SPEED_TEST_SERVER_URI_DL_1MO = "/1M.iso";
 
     /**
      * sample URI for https test.

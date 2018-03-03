@@ -46,7 +46,7 @@ public class UploadFileMedianIntervalExample {
     /**
      * spedd examples server uri.
      */
-    private final static String SPEED_TEST_SERVER_URI_UL = "http://2.testdebit.info/";
+    private final static String SPEED_TEST_SERVER_URI_UL = "http://ipv4.ikoula.testdebit.info/";
 
     /**
      * logger.

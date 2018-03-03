@@ -41,7 +41,7 @@ public class FixedTimeDownloadExample {
     /**
      * spedd examples server uri.
      */
-    private final static String SPEED_TEST_SERVER_URI_DL = "http://2.testdebit.info/fichiers/100Mo.dat";
+    private final static String SPEED_TEST_SERVER_URI_DL = "http://ipv4.ikoula.testdebit.info/100M.iso";
 
     /**
      * amount of time between each speed test reports set to 1s.

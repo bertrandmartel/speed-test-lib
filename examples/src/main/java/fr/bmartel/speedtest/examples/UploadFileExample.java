@@ -46,7 +46,7 @@ public class UploadFileExample {
     /**
      * spedd examples server uri.
      */
-    private static final String SPEED_TEST_SERVER_URI_UL = "http://2.testdebit.info/";
+    private static final String SPEED_TEST_SERVER_URI_UL = "http://ipv4.ikoula.testdebit.info/";
     /**
      * upload 10Mo file size.
      */

@@ -46,12 +46,12 @@ public class DownloadFileProxyExample {
     /**
      * speed examples server uri.
      */
-    private final static String SPEED_TEST_SERVER_URI_DL = "http://2.testdebit.info/fichiers/10Mo.dat";
+    private final static String SPEED_TEST_SERVER_URI_DL = "http://ipv4.ikoula.testdebit.info/10M.iso";
 
     /**
      * proxy server uri.
      */
-    private final static String PROXY_SERVER = "http://216.56.48.118:9000";
+    private final static String PROXY_SERVER = "http://45.76.227.143:3128";
 
     /**
      * logger.

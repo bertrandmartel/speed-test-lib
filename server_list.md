@@ -28,8 +28,8 @@ http://speedtest.tele2.net
 
 https://testdebit.info/
 
-* http download : http://2.testdebit.info/fichiers/1Mo.dat
-* http upload : http://2.testdebit.info/
+* http download : http://ipv4.ikoula.testdebit.info/1M.iso
+* http upload : http://ipv4.ikoula.testdebit.info/
 
 ## mirror.internode.on.net
 
@@ -67,10 +67,10 @@ http://ovh.net/files
 ```
 [{
     "mode": "download",
-    "uri": "http://2.testdebit.info/fichiers/1Mo.dat"
+    "uri": "http://ipv4.ikoula.testdebit.info/1M.iso"
 }, {
     "mode": "upload",
-    "uri": "http://2.testdebit.info/"
+    "uri": "http://ipv4.ikoula.testdebit.info/"
 }, {
     "mode": "download",
     "uri": "http://mirror.internode.on.net/pub/speed/SpeedTest_16MB"
