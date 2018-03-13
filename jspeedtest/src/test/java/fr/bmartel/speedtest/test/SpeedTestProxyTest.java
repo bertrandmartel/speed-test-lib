@@ -33,6 +33,7 @@ import fr.bmartel.speedtest.test.server.ServerRetryTest;
 import fr.bmartel.speedtest.test.utils.TestCommon;
 import net.jodah.concurrentunit.Waiter;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -68,6 +69,7 @@ public class SpeedTestProxyTest extends ServerRetryTest {
     private Waiter mWaiter;
 
     @Test
+    @Ignore
     public void downloadProxy1MTest() throws TimeoutException {
         initTask(true);
         testDownload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + TestCommon.SPEED_TEST_SERVER_URI_DL_1MO);
@@ -75,6 +77,7 @@ public class SpeedTestProxyTest extends ServerRetryTest {
     }
 
     @Test
+    @Ignore
     public void downloadProxyRedirectTest() throws TimeoutException {
         initTask(true);
         testDownload(TestCommon.SPEED_TEST_REDIRECT_SERVER);
@@ -82,6 +85,7 @@ public class SpeedTestProxyTest extends ServerRetryTest {
     }
 
     @Test
+    @Ignore
     public void uploadProxy1MTest() throws TimeoutException {
         initTask(false);
         testUpload("http://" + TestCommon.SPEED_TEST_SERVER_HOST + TestCommon.SPEED_TEST_SERVER_URI_UL, 1000000, true);
