@@ -163,8 +163,8 @@ public class SpeedTestProxyTest extends ServerRetryTest {
         Assert.assertNotNull(mExpectedTransferRateOps);
         Assert.assertNotNull(mExpectedTransferRateBps);
 
-        Assert.assertTrue(mExpectedTransferRateBps.intValue() > 0);
-        Assert.assertTrue(mExpectedTransferRateOps.intValue() > 0);
+        Assert.assertTrue(mExpectedTransferRateBps.longValue() > 0);
+        Assert.assertTrue(mExpectedTransferRateOps.longValue() > 0);
     }
 
     /**

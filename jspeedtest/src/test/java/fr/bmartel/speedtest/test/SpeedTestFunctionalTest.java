@@ -46,6 +46,7 @@ import fr.bmartel.speedtest.test.utils.TestCommon;
 import fr.bmartel.speedtest.utils.RandomGen;
 import net.jodah.concurrentunit.Waiter;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -153,6 +154,12 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
      * number of chain for DL/UL/DL chain requests.
      */
     private int chainCount = 1;
+
+    @Before
+    public void setup() {
+        mExpectedTransferRateOps = null;
+        mExpectedTransferRateBps = null;
+    }
 
     @Test
     public void download1MTest() throws TimeoutException {
@@ -388,8 +395,8 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
         Assert.assertNotNull(mExpectedTransferRateOps);
         Assert.assertNotNull(mExpectedTransferRateBps);
 
-        Assert.assertTrue(mExpectedTransferRateBps.intValue() > 0);
-        Assert.assertTrue(mExpectedTransferRateOps.intValue() > 0);
+        Assert.assertTrue(mExpectedTransferRateBps.longValue() > 0);
+        Assert.assertTrue(mExpectedTransferRateOps.longValue() > 0);
     }
 
     /**
@@ -408,8 +415,8 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
         mSocket.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onCompletion(final SpeedTestReport report) {
-                SpeedTestFunctionalTest.this.mTransfeRateOctetRef = report.getTransferRateOctet();
-                SpeedTestFunctionalTest.this.mTransferRateBpsRef = report.getTransferRateBit();
+                mTransfeRateOctetRef = report.getTransferRateOctet();
+                mTransferRateBpsRef = report.getTransferRateBit();
                 waiter.resume();
             }
 
@@ -434,8 +441,8 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
 
         Assert.assertNotNull(mTransfeRateOctetRef);
         Assert.assertNotNull(mTransferRateBpsRef);
-        Assert.assertTrue(mTransfeRateOctetRef.intValue() > 0);
-        Assert.assertTrue(mTransferRateBpsRef.intValue() > 0);
+        Assert.assertTrue(mTransfeRateOctetRef.longValue() > 0);
+        Assert.assertTrue(mTransferRateBpsRef.longValue() > 0);
     }
 
     @Test
@@ -520,8 +527,8 @@ public class SpeedTestFunctionalTest extends ServerRetryTest {
         }
         waiter.assertNotNull(transferRateBps);
         waiter.assertNotNull(transferRateOps);
-        waiter.assertTrue(transferRateBps.intValue() > 0);
-        waiter.assertTrue(transferRateOps.intValue() > 0);
+        waiter.assertTrue(transferRateBps.longValue() > 0);
+        waiter.assertTrue(transferRateOps.longValue() > 0);
 
         //check transfer rate O = 8xB
         final float check = transferRateOps.multiply(new BigDecimal("8")).floatValue();

@@ -262,7 +262,7 @@ public class SpeedTestRepeatTest extends AbstractTest {
         try {
             Assert.assertEquals(repeatVars.getStartDateRepeat(), 0);
             Assert.assertEquals(repeatVars.getRepeatWindows(), 0);
-            Assert.assertEquals(repeatVars.getRepeatPacketSize().intValue(), 0);
+            Assert.assertEquals(repeatVars.getRepeatPacketSize().longValue(), 0);
             Assert.assertEquals(repeatVars.getRepeatTempPckSize(), 0);
             Assert.assertNotNull(repeatVars.getRepeatTransferRateList());
             Assert.assertEquals(repeatVars.getRepeatTransferRateList().size(), 0);
@@ -299,7 +299,7 @@ public class SpeedTestRepeatTest extends AbstractTest {
             waiter.assertEquals(repeatVars.isRepeatUpload(), !download);
             waiter.assertTrue(repeatVars.getStartDateRepeat() != 0);
             waiter.assertEquals(repeatVars.getRepeatWindows(), repeatWindow);
-            waiter.assertTrue(repeatVars.getRepeatPacketSize().intValue() != 0);
+            waiter.assertTrue(repeatVars.getRepeatPacketSize().longValue() != 0);
             waiter.assertTrue(repeatVars.getRepeatTempPckSize() != 0);
             waiter.assertNotNull(repeatVars.getRepeatTransferRateList());
             waiter.assertEquals(repeatVars.getRepeatTransferRateList().size(), requestNum);

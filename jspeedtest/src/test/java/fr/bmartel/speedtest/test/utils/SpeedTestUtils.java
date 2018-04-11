@@ -113,10 +113,8 @@ public class SpeedTestUtils {
 
         waiter.assertNotNull(transferRateBps);
         waiter.assertNotNull(transferRateOps);
-        waiter.assertTrue(transferRateBps.intValue()
-                > 0);
-        waiter.assertTrue(transferRateBps.intValue()
-                > 0);
+        waiter.assertTrue(transferRateBps.longValue() > 0);
+        waiter.assertTrue(transferRateBps.longValue() > 0);
         final float check = transferRateOps.multiply(new BigDecimal("8")).floatValue();
 
         waiter.assertTrue(((transferRateBps.floatValue() + 0.1) >= check) &&
@@ -155,13 +153,13 @@ public class SpeedTestUtils {
         waiter.assertTrue(report.getStartTime() != 0);
         if (!authorizeTemporaryEmpty) {
             waiter.assertTrue(report.getTemporaryPacketSize() > 0);
-            waiter.assertTrue(report.getTransferRateBit().intValue() > 0);
-            waiter.assertTrue(report.getTransferRateOctet().intValue() > 0);
+            waiter.assertTrue(report.getTransferRateBit().longValue() > 0);
+            waiter.assertTrue(report.getTransferRateOctet().longValue() > 0);
         } else {
             //temporary packet size can be 0 if DL/UL has not begun yet
             waiter.assertTrue(report.getTemporaryPacketSize() >= 0);
-            waiter.assertTrue(report.getTransferRateBit().intValue() >= 0);
-            waiter.assertTrue(report.getTransferRateOctet().intValue() >= 0);
+            waiter.assertTrue(report.getTransferRateBit().longValue() >= 0);
+            waiter.assertTrue(report.getTransferRateOctet().longValue() >= 0);
         }
         if (!isRepeat) {
             //for non repeat task the total packet size is the same as the user input. For repeat task it can be >
@@ -236,28 +234,19 @@ public class SpeedTestUtils {
                                        final SpeedTestReport report,
                                        final boolean isRepeat) {
 
-        Assert.assertEquals(headerMessage + "progress incorrect", report.getProgressPercent(),
-                0, 0);
-        Assert.assertNotEquals(headerMessage + "time incorrect", report.getReportTime(),
-                0);
+        Assert.assertEquals(headerMessage + "progress incorrect", report.getProgressPercent(), 0, 0);
+        Assert.assertNotEquals(headerMessage + "time incorrect", report.getReportTime(), 0);
         if (!isRepeat) {
-            Assert.assertEquals(headerMessage + "request num incorrect", report.getRequestNum(),
-                    1);
+            Assert.assertEquals(headerMessage + "request num incorrect", report.getRequestNum(), 1);
         }
-        Assert.assertEquals(headerMessage + "start time incorrect", report.getStartTime(),
-                0);
+        Assert.assertEquals(headerMessage + "start time incorrect", report.getStartTime(), 0);
         Assert.assertEquals(headerMessage + "temporary packet size incorrect", report
-                        .getTemporaryPacketSize(),
-                0);
+                .getTemporaryPacketSize(), 0);
         Assert.assertEquals(headerMessage + "total packet size incorrect", report
-                        .getTotalPacketSize(),
-                0);
+                .getTotalPacketSize(), 0);
         Assert.assertEquals(headerMessage + "transfer rate bps incorrect", report
-                        .getTransferRateBit
-                                ().intValue(),
-                0);
+                .getTransferRateBit().longValue(), 0);
         Assert.assertEquals(headerMessage + "transfer rate ops incorrect", report
-                        .getTransferRateOctet().intValue(),
-                0);
+                .getTransferRateOctet().longValue(), 0);
     }
 }
