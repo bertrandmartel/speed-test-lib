@@ -70,9 +70,9 @@ public class SpeedTestConst {
     public static final BigDecimal PERCENT_MAX = new BigDecimal("100");
 
     /**
-     * millisecond divider.
+     * nanosecond divider.
      */
-    public static final BigDecimal MILLIS_DIVIDER = new BigDecimal("1000");
+    public static final BigDecimal NANO_DIVIDER = new BigDecimal("1000000000");
 
     /**
      * bit multiplier value.

@@ -140,7 +140,7 @@ public class LogUtils {
 
             switch (report.getSpeedTestMode()) {
                 case DOWNLOAD:
-                    logger.debug("downloaded for now     : " + report.getTemporaryPacketSize()
+                    logger.debug("downloaded for now   : " + report.getTemporaryPacketSize()
                             + "/" + report.getTotalPacketSize());
                     break;
                 case UPLOAD:
@@ -152,7 +152,7 @@ public class LogUtils {
             }
             if (report.getStartTime() > 0) {
                 logger.debug("amount of time       : " +
-                        ((report.getReportTime() - report.getStartTime()) / 1000) + "s");
+                        ((report.getReportTime() - report.getStartTime()) / 1000000000) + "s");
             }
             logger.debug(LOG_REPORT_SEPARATOR);
         }

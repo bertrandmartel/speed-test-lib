@@ -140,9 +140,10 @@ public class RepeatWrapper {
 
         if (mStartDateRepeat != 0) {
             if (!mRepeatFinished) {
-                progressPercent = new BigDecimal(System.currentTimeMillis() - mStartDateRepeat).multiply
+                long test = System.nanoTime() - mStartDateRepeat;
+                progressPercent = new BigDecimal(test).multiply
                         (SpeedTestConst.PERCENT_MAX)
-                        .divide(new BigDecimal(mRepeatWindows), scale, roundingMode);
+                        .divide(new BigDecimal(mRepeatWindows).multiply(new BigDecimal(1000000)), scale, roundingMode);
             } else {
                 progressPercent = SpeedTestConst.PERCENT_MAX;
             }
@@ -170,7 +171,7 @@ public class RepeatWrapper {
             temporaryPacketSize = mRepeatTempPckSize;
         } else {
             temporaryPacketSize = mRepeatTempPckSize;
-            downloadRepeatReportTime = mStartDateRepeat + mRepeatWindows;
+            downloadRepeatReportTime = new BigDecimal(mStartDateRepeat).add(new BigDecimal(mRepeatWindows).multiply(new BigDecimal(1000000))).longValue();
         }
 
         return new SpeedTestReport(speedTestMode,

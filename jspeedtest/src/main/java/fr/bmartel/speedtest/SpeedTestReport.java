@@ -58,12 +58,12 @@ public class SpeedTestReport {
     private final BigDecimal mTransferRateBit;
 
     /**
-     * upload start time in millis since 1970.
+     * upload start time in nanoseconds.
      */
     private final long mStartTime;
 
     /**
-     * upload report time in millis since 1970.
+     * upload report time in nanoseconds.
      */
     private final long mReportTime;
 
@@ -87,8 +87,8 @@ public class SpeedTestReport {
      *
      * @param speedTestMode     speed examples mode (DOWNLOAD/UPLOAD)
      * @param progressPercent   speed examples progress in percent (%)
-     * @param startTime         upload start time in millis since 1970
-     * @param reportTime        upload report time in millis since 1970
+     * @param startTime         upload start time in nanoseconds
+     * @param reportTime        upload report time in nanoseconds
      * @param tempPacketSize    current size of file to upload
      * @param totalPacketSize   total file size
      * @param transferRateOctet transfer rate in octet/s
