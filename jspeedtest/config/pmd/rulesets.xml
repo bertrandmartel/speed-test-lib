@@ -200,13 +200,15 @@
 
     <!-- optimizations -->
 
+    <!--
     <rule ref="rulesets/java/optimizations.xml/LocalVariableCouldBeFinal">
         <priority>4</priority>
     </rule>
+
     <rule ref="rulesets/java/optimizations.xml/MethodArgumentCouldBeFinal">
         <priority>4</priority>
     </rule>
-    <!--
+
     <rule ref="rulesets/java/optimizations.xml/AvoidInstantiatingObjectsInLoops">
         <priority>2</priority>
     </rule>
