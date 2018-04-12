@@ -607,15 +607,6 @@ public class SpeedTestTask {
         try {
             final HttpFrame httpFrame = new HttpFrame();
 
-            mTimeStart = System.currentTimeMillis();
-            mTimeComputeStart = System.currentTimeMillis();
-            mTimeEnd = 0;
-
-            if (mRepeatWrapper.isFirstDownload()) {
-                mRepeatWrapper.setFirstDownloadRepeat(false);
-                mRepeatWrapper.setStartDate(mTimeStart);
-            }
-
             final HttpStates httFrameState = httpFrame.decodeFrame(mSocket.getInputStream());
 
             SpeedTestUtils.checkHttpFrameError(mForceCloseSocket, mListenerList, httFrameState);
@@ -633,6 +624,15 @@ public class SpeedTestTask {
 
                 if (mRepeatWrapper.isRepeatDownload()) {
                     mRepeatWrapper.updatePacketSize(mDownloadPckSize);
+                }
+
+                mTimeStart = System.currentTimeMillis();
+                mTimeComputeStart = System.currentTimeMillis();
+                mTimeEnd = 0;
+
+                if (mRepeatWrapper.isFirstDownload()) {
+                    mRepeatWrapper.setFirstDownloadRepeat(false);
+                    mRepeatWrapper.setStartDate(mTimeStart);
                 }
 
                 downloadReadingLoop();
