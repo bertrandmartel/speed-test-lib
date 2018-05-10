@@ -37,12 +37,6 @@ http://mirror.internode.on.net/pub/speed
 
 * http download : http://mirror.internode.on.net/pub/speed/SpeedTest_16MB
 
-## test.talia.net
-
-http://test.talia.net
-
-* http download : http://test.talia.net/dl/1mb.pak
-
 ## speedtest.ftp.otenet.gr
 
 http://speedtest.ftp.otenet.gr
@@ -74,9 +68,6 @@ http://ovh.net/files
 }, {
     "mode": "download",
     "uri": "http://mirror.internode.on.net/pub/speed/SpeedTest_16MB"
-}, {
-    "mode": "download",
-    "uri": "http://test.talia.net/dl/1mb.pak"
 }, {
     "mode": "download",
     "uri": "http://speedtest.ftp.otenet.gr/files/test1Mb.db"

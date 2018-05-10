@@ -13,10 +13,6 @@
   },
   {
     "mode": "download",
-    "uri": "http://test.talia.net/dl/1mb.pak"
-  },
-  {
-    "mode": "download",
     "uri": "http://speedtest.ftp.otenet.gr/files/test1Mb.db"
   },
   {
