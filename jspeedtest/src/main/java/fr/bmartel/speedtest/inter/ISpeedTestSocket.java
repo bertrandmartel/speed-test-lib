@@ -27,6 +27,7 @@ package fr.bmartel.speedtest.inter;
 import fr.bmartel.speedtest.RepeatWrapper;
 import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.model.ComputationMethod;
+import fr.bmartel.speedtest.model.FtpMode;
 import fr.bmartel.speedtest.model.UploadStorageType;
 
 import java.math.RoundingMode;
@@ -175,4 +176,11 @@ public interface ISpeedTestSocket {
      * @return false if malformed
      */
     boolean setProxyServer(String proxyUrl);
+
+    /**
+     * Get FTP mode.
+     *
+     * @return ftp mode
+     */
+    FtpMode getFtpMode();
 }

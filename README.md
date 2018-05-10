@@ -279,6 +279,16 @@ speedTestSocket.setDefaultScale(4);
 ```
 Default scale used for transfer rate calculation is 4
 
+### FTP mode
+
+Set passive/active mode with :
+
+```java
+speedTestSocket.setFtpMode(FtpMode.ACTIVE);
+```
+
+default is `FtpMode.PASSIVE`
+
 ## Android Integration
 
 * add Internet permission to manifest : 

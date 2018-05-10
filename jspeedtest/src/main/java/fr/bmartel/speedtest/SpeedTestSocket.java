@@ -28,6 +28,7 @@ import fr.bmartel.speedtest.inter.IRepeatListener;
 import fr.bmartel.speedtest.inter.ISpeedTestListener;
 import fr.bmartel.speedtest.inter.ISpeedTestSocket;
 import fr.bmartel.speedtest.model.ComputationMethod;
+import fr.bmartel.speedtest.model.FtpMode;
 import fr.bmartel.speedtest.model.SpeedTestMode;
 import fr.bmartel.speedtest.model.UploadStorageType;
 
@@ -62,6 +63,11 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      * BigDecimal RoundingMode used in transfer rate calculation.
      */
     private RoundingMode mRoundingMode = SpeedTestConst.DEFAULT_ROUNDING_MODE;
+
+    /**
+     * FTP mode passive or active.
+     */
+    private FtpMode mFtpMode = FtpMode.PASSIVE;
 
     /**
      * Upload storage type.
@@ -530,6 +536,15 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     }
 
     /**
+     * Set FTP mode passive or active.
+     *
+     * @param mode ftp mode.
+     */
+    public void setFtpMode(final FtpMode mode) {
+        this.mFtpMode = mode;
+    }
+
+    /**
      * Get the computation method.
      *
      * @return computation method
@@ -622,5 +637,13 @@ public class SpeedTestSocket implements ISpeedTestSocket {
      */
     public void clearListeners() {
         mListenerList.clear();
+    }
+
+    /**
+     * Get FTP mode.
+     */
+    @Override
+    public FtpMode getFtpMode() {
+        return mFtpMode;
     }
 }

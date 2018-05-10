@@ -26,11 +26,13 @@ package fr.bmartel.speedtest.test;
 
 import fr.bmartel.speedtest.SpeedTestReport;
 import fr.bmartel.speedtest.inter.ISpeedTestListener;
+import fr.bmartel.speedtest.model.FtpMode;
 import fr.bmartel.speedtest.model.SpeedTestError;
 import fr.bmartel.speedtest.model.UploadStorageType;
 import fr.bmartel.speedtest.test.utils.SpeedTestUtils;
 import fr.bmartel.speedtest.test.utils.TestCommon;
 import net.jodah.concurrentunit.Waiter;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
@@ -53,15 +55,20 @@ public class SpeedTestFTPTest extends AbstractTest {
      */
     private long mTimestamp;
 
+    @Before
+    public void setup() {
+        mSocket.setFtpMode(FtpMode.PASSIVE);
+    }
+
     @Test
     public void uploadTest() throws TimeoutException {
         uploadFTP(false);
         uploadFTP(true);
+        mSocket.setFtpMode(FtpMode.ACTIVE);
+        uploadFTP(true);
     }
 
-    @Test
-    public void downloadTest() throws TimeoutException {
-
+    private void downloadFtp() throws TimeoutException {
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 
         final Waiter waiter = new Waiter();
@@ -103,7 +110,14 @@ public class SpeedTestFTPTest extends AbstractTest {
         mSocket.clearListeners();
     }
 
-    public void uploadFTP(final boolean useFileStorage) throws TimeoutException {
+    @Test
+    public void downloadTest() throws TimeoutException {
+        downloadFtp();
+        mSocket.setFtpMode(FtpMode.ACTIVE);
+        downloadFtp();
+    }
+
+    private void uploadFTP(final boolean useFileStorage) throws TimeoutException {
 
         mSocket.setSocketTimeout(TestCommon.DEFAULT_SOCKET_TIMEOUT);
 

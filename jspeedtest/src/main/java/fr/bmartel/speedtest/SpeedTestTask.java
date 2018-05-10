@@ -28,6 +28,7 @@ import fr.bmartel.protocol.http.HttpFrame;
 import fr.bmartel.protocol.http.states.HttpStates;
 import fr.bmartel.speedtest.inter.ISpeedTestListener;
 import fr.bmartel.speedtest.inter.ISpeedTestSocket;
+import fr.bmartel.speedtest.model.FtpMode;
 import fr.bmartel.speedtest.model.SpeedTestError;
 import fr.bmartel.speedtest.model.SpeedTestMode;
 import fr.bmartel.speedtest.model.UploadStorageType;
@@ -270,7 +271,6 @@ public class SpeedTestTask {
                     writeDownload(downloadRequest.getBytes());
                     break;
                 case "ftp":
-
                     final String userInfo = url.getUserInfo();
                     String user = SpeedTestConst.FTP_DEFAULT_USER;
                     String pwd = SpeedTestConst.FTP_DEFAULT_PASSWORD;
@@ -1089,7 +1089,11 @@ public class SpeedTestTask {
                     try {
                         ftpclient.connect(url.getHost(), url.getPort() != -1 ? url.getPort() : 21);
                         ftpclient.login(user, password);
-                        ftpclient.enterLocalPassiveMode();
+                        if (mSocketInterface.getFtpMode() == FtpMode.PASSIVE) {
+                            ftpclient.enterLocalPassiveMode();
+                        } else {
+                            ftpclient.enterLocalActiveMode();
+                        }
                         ftpclient.setFileType(FTP.BINARY_FILE_TYPE);
 
                         mDownloadTemporaryPacketSize = 0;
@@ -1226,7 +1230,11 @@ public class SpeedTestTask {
                     try {
                         ftpClient.connect(url.getHost(), url.getPort() != -1 ? url.getPort() : 21);
                         ftpClient.login(finalUser, finalPwd);
-                        ftpClient.enterLocalPassiveMode();
+                        if (mSocketInterface.getFtpMode() == FtpMode.PASSIVE) {
+                            ftpClient.enterLocalPassiveMode();
+                        } else {
+                            ftpClient.enterLocalActiveMode();
+                        }
                         ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
                         byte[] fileContent = new byte[]{};
