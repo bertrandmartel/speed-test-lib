@@ -112,12 +112,12 @@ public class SpeedTestConst {
     /**
      * default username for FTP download/upload.
      */
-    public static final String FTP_DEFAULT_USER = "anonymous";
+    public static String FTP_DEFAULT_USER = "anonymous";
 
     /**
      * default password for FTP download/upload.
      */
-    public static final String FTP_DEFAULT_PASSWORD = "";
+    public static  String FTP_DEFAULT_PASSWORD = "";
 
     /**
      * Chunk to write at each iteration for upload file generation.
