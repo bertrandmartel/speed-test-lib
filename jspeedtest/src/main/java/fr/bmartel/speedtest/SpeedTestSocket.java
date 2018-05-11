@@ -254,6 +254,24 @@ public class SpeedTestSocket implements ISpeedTestSocket {
     }
 
     /**
+     * Start download process.
+     *
+     * @param uri uri to fetch to download file
+     * @param username username
+     * @param password password
+     * @param maxDuration max duration for download
+     * @param reportInterval report time interval
+     */
+    @Override
+    public void startDownload(final String uri, final String username, final String password, final int maxDuration, final int reportInterval) {
+        initReportTask(reportInterval);
+        mTask.setReportInterval(true);
+        SpeedTestConst.FTP_DEFAULT_USER = username;
+        SpeedTestConst.FTP_DEFAULT_PASSWORD = password;
+        startFixedDownload(uri, maxDuration);
+    }
+
+    /**
      * Set proxy server for all DL/UL tasks.
      *
      * @param proxyUrl proxy URL

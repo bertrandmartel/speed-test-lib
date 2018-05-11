@@ -54,6 +54,16 @@ public interface ISpeedTestSocket {
      */
     void startDownload(String uri);
 
+    /**
+     * Start download process.
+     *
+     * @param uri uri to fetch to download file
+     * @param username username of ftp
+     * @param password password of ftp
+     * @param maxDuration maxDuration for download file
+     * @param reportInterval report Interval
+     */
+    void startDownload(final String uri,String username,String password,int maxDuration,int reportInterval);
 
     /**
      * Add a speed test listener to list.
