@@ -258,7 +258,7 @@ public class SpeedTestTask {
                         this.mHostname = mProxyUrl.getHost();
                         this.mPort = mProxyUrl.getPort() != -1 ? mProxyUrl.getPort() : 8080;
                         downloadRequest = "GET " + uri + " HTTP/1.1\r\n" + "Host: " + url.getHost() +
-                                "\r\nProxy-Connection: Keep-Alive" + "\r\n\r\n";
+                                "\r\nProxy-Connection: Keep-Alive" + "\r\nUser-Agent: curl/7.29.0\r\n\r\n";
                     } else {
                         this.mHostname = url.getHost();
                         if (url.getProtocol().equals("http")) {
@@ -266,7 +266,7 @@ public class SpeedTestTask {
                         } else {
                             this.mPort = url.getPort() != -1 ? url.getPort() : 443;
                         }
-                        downloadRequest = "GET " + uri + " HTTP/1.1\r\n" + "Host: " + url.getHost() + "\r\n\r\n";
+                        downloadRequest = "GET " + uri + " HTTP/1.1\r\n" + "Host: " + url.getHost() + "\r\nUser-Agent: curl/7.29.0\r\n\r\n";
                     }
                     writeDownload(downloadRequest.getBytes());
                     break;

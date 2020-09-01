@@ -1,6 +1,35 @@
-apply plugin: 'com.github.dcendents.android-maven'
+import com.amazonaws.auth.policy.Policy
+import com.amazonaws.auth.policy.Principal
+import com.amazonaws.auth.policy.Statement
+import com.amazonaws.auth.policy.actions.S3Actions
+import com.amazonaws.auth.policy.resources.S3BucketResource
+import com.amazonaws.auth.policy.resources.S3ObjectResource
+import jp.classmethod.aws.gradle.s3.BucketPolicyTask
+import jp.classmethod.aws.gradle.s3.CreateBucketTask
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'jp.classmethod.aws'
+apply plugin: 'jp.classmethod.aws.s3'
+apply plugin: 'com.novoda.bintray-release'
 
+task create(type: CreateBucketTask) {
+    bucketName "sweepr-partner-nexus-repository"
+    region 'us-west-1'
+    ifNotExists true
+}
+
+task setBucketPolicy(type: BucketPolicyTask, dependsOn: create) {
+    bucketName "sweepr-partner-nexus-repository"
+    policy new Policy().withStatements(
+            new Statement(Statement.Effect.Allow)
+                    .withPrincipals(Principal.AllUsers)
+                    .withActions(S3Actions.GetObject)
+                    .withResources(new S3ObjectResource("sweepr-partner-nexus-repository", '*')),
+            new Statement(Statement.Effect.Allow)
+                    .withPrincipals(Principal.AllUsers)
+                    .withActions(S3Actions.ListObjects)
+                    .withResources(new S3BucketResource("sweepr-partner-nexus-repository"))
+    )
+}
 group 'fr.bmartel'
 version '1.32.1'
 
@@ -73,42 +102,6 @@ bintray {
     }
 }
 
-install {
-    repositories.mavenInstaller {
-        pom {
-            project {
-                description 'Speed Test library for Java/Android'
-                packaging 'jar'
-                name 'jspeedtest'
-                url siteUrl
-                licenses {
-                    license {
-                        name 'The MIT License'
-                        url 'https://github.com/bertrandmartel/speed-test-lib/blob/master/LICENSE.md'
-                    }
-                }
-                developers {
-                    developer {
-                        id 'bertrandmartel'
-                        name 'Bertrand Martel'
-                        email 'bmartel.fr@gmail.com'
-                    }
-                }
-                scm {
-                    connection 'https://github.com/bertrandmartel/speed-test-lib.git'
-                    developerConnection 'https://github.com/bertrandmartel/speed-test-lib.git'
-                    url siteUrl
-                }
-            }
-            whenConfigured {
-                p ->
-                    p.dependencies = p.dependencies.findAll {
-                        dep -> (dep.artifactId.notIn(["junit", "concurrentunit", "json-simple", "gson"]))
-                    }
-            }
-        }
-    }
-}
 
 Object.metaClass.notIn = { Object collection ->
     !(delegate in collection)
@@ -129,8 +122,11 @@ artifacts {
     archives sourcesJar
 }
 
-task findConventions << {
-    println project.getConvention()
+task findConventions {
+    doLast {
+        println project.getConvention()
+    }
+
 }
 
 task generateJavadoc(type: Javadoc) {
@@ -153,6 +149,29 @@ compileTestJava {
 
 test {
     testLogging.showStandardStreams = true
+}
+
+publish {
+    userOrg = ''
+    groupId = 'com.sweepr'
+    artifactId = 'networktest'
+    publishVersion = '1.0.8'
+    desc = 'Discovery UPnP devices via SSDP protocol'
+    licences = ['MIT']
+    uploadName = 'networktest'
+    website = 'https://github.com/rosebud-iot/jspeedtest.git'
+}
+
+publishing {
+    repositories {
+        maven {
+            url "s3://sweepr-partner-nexus-repository/releases"
+            credentials(AwsCredentials) {
+                accessKey awsCredentials.AWSAccessKeyId
+                secretKey awsCredentials.AWSSecretKey
+            }
+        }
+    }
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
