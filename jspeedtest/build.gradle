@@ -1,12 +1,11 @@
 
 apply plugin: 'maven-publish'
 apply plugin: 'com.github.alexfu.androidautoversion'
+apply plugin: 'com.github.dcendents.android-maven'
 
 
-group 'fr.bmartel'
-version '1.32.1'
 def LIB_GROUP_ID = 'io.sweepr'
-def LIB_ARTIFACT_ID = 'sweepr-backendapi'
+def LIB_ARTIFACT_ID = 'speedtest'
 def LIB_VERSION = androidAutoVersion.versionName
 group = 'io.sweepr'
 version = androidAutoVersion.versionName
@@ -109,18 +108,17 @@ publishing {
     }
 
     publications {
-        sweeprbackendapi(MavenPublication) {
+        speedtestlib(MavenPublication) {
             groupId LIB_GROUP_ID
             artifactId LIB_ARTIFACT_ID
             version LIB_VERSION
-            artifact("$buildDir/outputs/aar/jspeedtest.aar")
             artifact(sourcesJar)
 
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
 
                 //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
-                configurations.api.allDependencies.each {
+                configurations.compile.allDependencies.each {
                     def dependencyNode = dependenciesNode.appendNode('dependency')
                     dependencyNode.appendNode('groupId', it.group)
                     dependencyNode.appendNode('artifactId', it.name)
