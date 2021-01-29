@@ -1,35 +1,27 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
+
 buildscript {
     repositories {
         google()
         jcenter()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.2'
-        classpath "jp.classmethod.aws:gradle-aws-plugin:0.31"
-        classpath 'com.novoda:bintray-release:0.9.1'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath "com.github.alexfu:androidautoversion:3.3.0"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
-ext {
-    awsCredentials = new ProfileCredentialsProvider().credentials
-}
+
 allprojects {
     apply plugin: 'base'
 
     repositories {
         google()
         jcenter()
-        maven {
-            url "s3://sweepr-partner-nexus-repository/releases"
-            credentials(AwsCredentials) {
-                accessKey awsCredentials.AWSAccessKeyId
-                secretKey awsCredentials.AWSSecretKey
-            }
-        }
     }
 }
 
