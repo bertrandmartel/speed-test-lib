@@ -1,14 +1,10 @@
 
 apply plugin: 'maven-publish'
-apply plugin: 'com.github.alexfu.androidautoversion'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.novoda.bintray-release'
 
 
-def LIB_GROUP_ID = 'io.sweepr'
-def LIB_ARTIFACT_ID = 'speedtest'
-def LIB_VERSION = androidAutoVersion.versionName
-group = 'io.sweepr'
-version = androidAutoVersion.versionName
+group 'fr.bmartel'
+version '1.32.1'
 
 apply plugin: 'java'
 targetCompatibility = '1.7'
@@ -35,6 +31,49 @@ dependencies {
     testCompile 'com.google.code.gson:gson:2.8.0'
 }
 
+def siteUrl = 'https://github.com/bertrandmartel/speed-test-lib'
+def gitUrl = 'https://github.com/bertrandmartel/speed-test-lib.git'
+
+bintray {
+    user = "$System.env.BINTRAY_USER"
+    key = "$System.env.BINTRAY_KEY"
+
+    configurations = ['archives'] //When uploading configuration files
+
+    dryRun = false //Whether to run this as dry-run, without deploying
+    publish = true //If version should be auto published after an upload
+
+    pkg {
+        repo = 'maven'
+        name = 'speedtest'
+        desc = 'Speed Test library for Java/Android'
+        websiteUrl = siteUrl
+        issueTrackerUrl = 'https://github.com/bertrandmartel/speed-test-lib/issues'
+        vcsUrl = gitUrl
+        licenses = ['MIT']
+        labels = ['speed-test', 'speedtest']
+        publicDownloadNumbers = true
+
+        version {
+            name = project.version //Bintray logical version name
+            vcsTag = project.version
+
+            gpg {
+                sign = true
+                passphrase = "$System.env.GPG_PASSPHRASE"
+            }
+
+            mavenCentralSync {
+                sync = true
+                //Optional (true by default). Determines whether to sync the version to Maven Central.
+                user = "$System.env.MAVEN_CENTRAL_USER_TOKEN" //OSS user token
+                password = "$System.env.MAVEN_CENTRAL_PASSWORD" //OSS user password
+                close = '1'
+                //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
+            }
+        }
+    }
+}
 
 
 
@@ -87,6 +126,18 @@ test {
     testLogging.showStandardStreams = true
 }
 
+publish {
+    userOrg = ''
+    groupId = 'com.sweepr'
+    artifactId = 'networktest'
+    publishVersion = '1.0.11'
+    desc = 'Discovery UPnP devices via SSDP protocol'
+    licences = ['MIT']
+    uploadName = 'networktest'
+    website = 'https://github.com/rosebud-iot/jspeedtest.git'
+}
+
+
 publishing {
     repositories {
         maven {
@@ -106,27 +157,10 @@ publishing {
             }
         }
     }
+}
 
-    publications {
-        speedtestlib(MavenPublication) {
-            groupId LIB_GROUP_ID
-            artifactId LIB_ARTIFACT_ID
-            version LIB_VERSION
-            artifact(sourcesJar)
+task prepareKotlinBuildScriptModel {
 
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-
-                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
-                configurations.compile.allDependencies.each {
-                    def dependencyNode = dependenciesNode.appendNode('dependency')
-                    dependencyNode.appendNode('groupId', it.group)
-                    dependencyNode.appendNode('artifactId', it.name)
-                    dependencyNode.appendNode('version', it.version)
-                }
-            }
-        }
-    }
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
