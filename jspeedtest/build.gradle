@@ -1,172 +1,99 @@
-
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.alexfu.androidautoversion'
 apply plugin: 'maven-publish'
-apply plugin: 'com.novoda.bintray-release'
 
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
 
-group 'fr.bmartel'
-version '1.32.1'
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 30
 
-apply plugin: 'java'
-targetCompatibility = '1.7'
-sourceCompatibility = '1.7'
+        versionCode androidAutoVersion.versionCode
+        versionName androidAutoVersion.versionName + "." + (System.getenv("GITHUB_RUN_ID") ?: "0")
 
-apply plugin: 'pmd'
+        setProperty("archivesBaseName", "networktest")
 
-pmd {
-    toolVersion = '5.3.2'
-    ruleSets = []
-    ruleSetFiles = files('config/pmd/rulesets.xml')
-}
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
 
-repositories {
-    mavenCentral()
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    compile 'fr.bmartel:http-endec:1.04'
-    compile 'commons-net:commons-net:3.6'
-    testCompile 'junit:junit:4.11'
-    testCompile 'net.jodah:concurrentunit:0.4.2'
-    testCompile 'com.googlecode.json-simple:json-simple:1.1.1'
-    testCompile 'com.google.code.gson:gson:2.8.0'
+    implementation 'fr.bmartel:http-endec:1.04'
+    implementation 'commons-net:commons-net:3.6'
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'net.jodah:concurrentunit:0.4.2'
+    testImplementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    testImplementation 'com.google.code.gson:gson:2.8.6'
 }
 
-def siteUrl = 'https://github.com/bertrandmartel/speed-test-lib'
-def gitUrl = 'https://github.com/bertrandmartel/speed-test-lib.git'
+def sweeprProperties = new Properties()
+def sweeprPropertiesFile = rootProject.file("sweepr.properties")
 
-bintray {
-    user = "$System.env.BINTRAY_USER"
-    key = "$System.env.BINTRAY_KEY"
+if (sweeprPropertiesFile.exists()) {
+    sweeprProperties.load(new FileInputStream(sweeprPropertiesFile))
+} else {
+    sweeprProperties.setProperty('github.username', System.getenv("GPR_USER") ?: "undefined-user")
+    sweeprProperties.setProperty('github.token', System.getenv("GPR_API_KEY") ?: "undefined-token")
+}
 
-    configurations = ['archives'] //When uploading configuration files
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId 'com.sweepr'
+            artifactId 'networktest'
+            version androidAutoVersion.versionName
 
-    dryRun = false //Whether to run this as dry-run, without deploying
-    publish = true //If version should be auto published after an upload
+            artifact("$buildDir/outputs/aar/networktest-release.aar")
 
-    pkg {
-        repo = 'maven'
-        name = 'speedtest'
-        desc = 'Speed Test library for Java/Android'
-        websiteUrl = siteUrl
-        issueTrackerUrl = 'https://github.com/bertrandmartel/speed-test-lib/issues'
-        vcsUrl = gitUrl
-        licenses = ['MIT']
-        labels = ['speed-test', 'speedtest']
-        publicDownloadNumbers = true
+            pom {
+                name = 'NetworkTest'
+                description = 'Discovery UPnP devices via SSDP protocol'
+                url = 'https://github.com/rosebud-iot/speed-test-lib.git'
 
-        version {
-            name = project.version //Bintray logical version name
-            vcsTag = project.version
-
-            gpg {
-                sign = true
-                passphrase = "$System.env.GPG_PASSPHRASE"
+                licenses {
+                    license {
+                        name = 'MIT'
+                    }
+                }
             }
 
-            mavenCentralSync {
-                sync = true
-                //Optional (true by default). Determines whether to sync the version to Maven Central.
-                user = "$System.env.MAVEN_CENTRAL_USER_TOKEN" //OSS user token
-                password = "$System.env.MAVEN_CENTRAL_PASSWORD" //OSS user password
-                close = '1'
-                //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
+            // include dependencies
+            pom.withXml {
+                def dependencies = asNode().appendNode('dependencies')
+                configurations.getByName("releaseCompileClasspath").getResolvedConfiguration().getFirstLevelModuleDependencies().each {
+                    def dependency = dependencies.appendNode('dependency')
+                    dependency.appendNode('groupId', it.moduleGroup)
+                    dependency.appendNode('artifactId', it.moduleName)
+                    dependency.appendNode('version', it.moduleVersion)
+                }
             }
         }
     }
-}
 
-
-
-
-Object.metaClass.notIn = { Object collection ->
-    !(delegate in collection)
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
-
-task findConventions {
-    doLast {
-        println project.getConvention()
-    }
-
-}
-
-task generateJavadoc(type: Javadoc) {
-    source = sourceSets.main.allJava
-    classpath = configurations.compile
-    destinationDir = file("./doc/")
-}
-
-compileJava {
-    sourceCompatibility = "1.7"
-    targetCompatibility = "1.7"
-    options.encoding = 'UTF-8'
-    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-}
-
-compileTestJava {
-    options.encoding = 'UTF-8'
-    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-}
-
-test {
-    testLogging.showStandardStreams = true
-}
-
-publish {
-    userOrg = ''
-    groupId = 'com.sweepr'
-    artifactId = 'networktest'
-    publishVersion = '1.0.11'
-    desc = 'Discovery UPnP devices via SSDP protocol'
-    licences = ['MIT']
-    uploadName = 'networktest'
-    website = 'https://github.com/rosebud-iot/jspeedtest.git'
-}
-
-
-publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            /** Configure path of your package repository on Github
-             ** Replace GITHUB_USERID with your/organisation Github userID
-             ** and REPOSITORY with the repository name on GitHub
-             */
-            url = uri("https://maven.pkg.github.com/rosebud-iot/speed-test-lib")
+            url = uri("https://maven.pkg.github.com/rosebud-iot/mobile-framework-android")
             credentials {
-                /** Create github.properties in root project folder file with
-                 ** gpr.usr=GITHUB_USER_ID & gpr.key=PERSONAL_ACCESS_TOKEN
-                 ** Set env variable GPR_USER & GPR_API_KEY if not adding a properties file**/
-
-                username = System.getenv("GPR_USER")
-                password = System.getenv("GPR_API_KEY")
+                username = sweeprProperties["github.username"]
+                password = sweeprProperties["github.token"]
             }
-        }
-    }
-}
-
-task prepareKotlinBuildScriptModel {
-
-}
-
-if (JavaVersion.current().isJava8Compatible()) {
-    allprojects {
-        tasks.withType(Javadoc) {
-            options.addStringOption('Xdoclint:none', '-quiet')
         }
     }
 }

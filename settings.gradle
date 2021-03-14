@@ -1,2 +1,2 @@
-include ':jspeedtest',':examples'
+include ':jspeedtest'
 
