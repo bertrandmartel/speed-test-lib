@@ -13,7 +13,7 @@ android {
         versionCode androidAutoVersion.versionCode
         versionName androidAutoVersion.versionName + "." + (System.getenv("GITHUB_RUN_ID") ?: "0")
 
-        setProperty("archivesBaseName", "networktest")
+        setProperty("archivesBaseName", "networking")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -56,10 +56,10 @@ publishing {
     publications {
         release(MavenPublication) {
             groupId 'com.sweepr'
-            artifactId 'networktest'
+            artifactId 'networking'
             version androidAutoVersion.versionName
 
-            artifact("$buildDir/outputs/aar/networktest-release.aar")
+            artifact("$buildDir/outputs/aar/networking-release.aar")
 
             pom {
                 name = 'NetworkTest'
