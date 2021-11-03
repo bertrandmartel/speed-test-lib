@@ -3,12 +3,12 @@ apply plugin: 'com.github.alexfu.androidautoversion'
 apply plugin: 'maven-publish'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 30
+        targetSdkVersion 31
 
         versionCode androidAutoVersion.versionCode
         versionName androidAutoVersion.versionName + "." + (System.getenv("GITHUB_RUN_ID") ?: "0")
@@ -39,7 +39,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'net.jodah:concurrentunit:0.4.2'
     testImplementation 'com.googlecode.json-simple:json-simple:1.1.1'
-    testImplementation 'com.google.code.gson:gson:2.8.6'
+    testImplementation 'com.google.code.gson:gson:2.8.7'
 }
 
 def sweeprProperties = new Properties()
@@ -52,7 +52,25 @@ if (sweeprPropertiesFile.exists()) {
     sweeprProperties.setProperty('github.token', System.getenv("GPR_API_KEY") ?: "undefined-token")
 }
 
+// Ensure that the publish task depends on assembly
+tasks.all { task ->
+    if (task instanceof AbstractPublishToMaven) {
+        task.dependsOn assemble
+    }
+}
+
 publishing {
+    repositories {
+        maven {
+            name = "GitHubInternalPackages"
+            url = uri("https://maven.pkg.github.com/rosebud-iot/mobile-framework-android")
+            credentials {
+                username = sweeprProperties["github.username"]
+                password = sweeprProperties["github.token"]
+            }
+        }
+    }
+
     publications {
         release(MavenPublication) {
             groupId 'com.sweepr'
@@ -82,17 +100,6 @@ publishing {
                     dependency.appendNode('artifactId', it.moduleName)
                     dependency.appendNode('version', it.moduleVersion)
                 }
-            }
-        }
-    }
-
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/rosebud-iot/mobile-framework-android")
-            credentials {
-                username = sweeprProperties["github.username"]
-                password = sweeprProperties["github.token"]
             }
         }
     }
