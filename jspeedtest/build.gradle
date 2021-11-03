@@ -69,6 +69,15 @@ publishing {
                 password = sweeprProperties["github.token"]
             }
         }
+
+        maven {
+            name = "GitHubPublicPackages"
+            url = uri("https://maven.pkg.github.com/sweepr-sdk/android")
+            credentials {
+                username = sweeprProperties["github.username"]
+                password = sweeprProperties["github.token"]
+            }
+        }
     }
 
     publications {
