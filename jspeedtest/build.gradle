@@ -3,12 +3,12 @@ apply plugin: 'com.github.alexfu.androidautoversion'
 apply plugin: 'maven-publish'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 31
+        targetSdkVersion 30
 
         versionCode androidAutoVersion.versionCode
         versionName androidAutoVersion.versionName + "." + (System.getenv("GITHUB_RUN_ID") ?: "0")
