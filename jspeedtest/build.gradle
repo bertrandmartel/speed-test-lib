@@ -26,6 +26,18 @@ android {
         }
     }
 
+    publishing {
+        singleVariant("release") {
+            withJavadocJar()
+        }
+        /*
+        multipleVariants {
+            withJavadocJar()
+            allVariants()
+        }
+         */
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -40,6 +52,13 @@ dependencies {
     testImplementation 'net.jodah:concurrentunit:0.4.2'
     testImplementation 'com.googlecode.json-simple:json-simple:1.1.1'
     testImplementation 'com.google.code.gson:gson:2.8.7'
+}
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+        options.compilerArgs << "-Xlint:all" // << "-Werror"
+    }
 }
 
 def sweeprProperties = new Properties()
