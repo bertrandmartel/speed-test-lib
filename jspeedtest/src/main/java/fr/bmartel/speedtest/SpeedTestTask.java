@@ -883,7 +883,7 @@ public class SpeedTestTask {
 
         final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        @SuppressWarnings("unchecked") final Future<Integer> future = executor.submit(new Callable() {
+        final Future<Integer> future = executor.submit(new Callable<Integer>() {
 
             /**
              * execute sequential write/flush task.
