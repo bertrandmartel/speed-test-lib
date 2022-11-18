@@ -3,12 +3,15 @@ apply plugin: 'com.github.alexfu.androidautoversion'
 apply plugin: 'maven-publish'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 33
+    buildToolsVersion "33.0.0"
+
+    namespace "com.sweepr.networking"
+    testNamespace "com.sweepr.networking"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 30
+        targetSdkVersion 33
 
         versionCode androidAutoVersion.versionCode
         versionName androidAutoVersion.versionName + "." + (System.getenv("GITHUB_RUN_ID") ?: "0")
@@ -51,7 +54,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'net.jodah:concurrentunit:0.4.2'
     testImplementation 'com.googlecode.json-simple:json-simple:1.1.1'
-    testImplementation 'com.google.code.gson:gson:2.8.7'
+    testImplementation 'com.google.code.gson:gson:2.8.9'
 }
 
 gradle.projectsEvaluated {
