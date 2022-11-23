@@ -15,7 +15,7 @@ public final class TestAwaiter implements ISpeedTestListener {
     private static final long TIMEOUT_MILLIS = 20000;
     private static final String TAG = "TestAwaiter";
 
-    private final Semaphore sem = new Semaphore(1);
+    private final Semaphore sem = new Semaphore(0);
 
     private SpeedTestReport report;
     private SpeedTestError error;
