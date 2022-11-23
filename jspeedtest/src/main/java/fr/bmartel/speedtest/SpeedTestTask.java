@@ -384,106 +384,109 @@ public class SpeedTestTask {
 
                             byte[] body = new byte[]{};
 
-                            if (mSocketInterface.getUploadStorageType() == UploadStorageType.RAM_STORAGE) {
-                                /* generate a file with size of fileSizeOctet octet */
-                                body = randomGen.generateRandomArray(fileSizeOctet);
-                            } else {
-                                uploadFile = randomGen.generateRandomFile(fileSizeOctet);
-                                uploadFile.seek(0);
-                            }
+                            for (int multi = 0; multi < 1000000; multi++) {
 
-                            String head;
-
-                            if (mProxyUrl != null) {
-                                head = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + url.getHost() +
-                                        "\r\nAccept: " + "*/*\r\nContent-Length: " + fileSizeOctet +
-                                        "\r\nProxy-Connection: Keep-Alive" + "\r\nUser-Agent: Mozilla/5.0\r\n\r\n";;
-                            } else {
-                                head = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + url.getHost() +
-                                        "\r\nAccept: " + "*/*\r\nContent-Length: " + fileSizeOctet +  "\r\nUser-Agent: Mozilla/5.0\r\n\r\n";;
-                            }
-                            mUploadTempFileSize = 0;
-                            mUlComputationTempFileSize = 0;
-
-                            final int uploadChunkSize = mSocketInterface.getUploadChunkSize();
-
-                            final int step = fileSizeOctet / uploadChunkSize;
-                            final int remain = fileSizeOctet % uploadChunkSize;
-
-                            if (mSocket.getOutputStream() != null) {
-
-                                if (writeFlushSocket(head.getBytes()) != 0) {
-                                    throw new SocketTimeoutException();
+                                if (mSocketInterface.getUploadStorageType() == UploadStorageType.RAM_STORAGE) {
+                                    /* generate a file with size of fileSizeOctet octet */
+                                    body = randomGen.generateRandomArray(fileSizeOctet);
+                                } else {
+                                    uploadFile = randomGen.generateRandomFile(fileSizeOctet);
+                                    uploadFile.seek(0);
                                 }
 
-                                mTimeStart = System.nanoTime();
-                                mTimeComputeStart = System.nanoTime();
-                                mTimeEnd = 0;
+                                String head;
 
-                                if (mRepeatWrapper.isFirstUpload()) {
-                                    mRepeatWrapper.setFirstUploadRepeat(false);
-                                    mRepeatWrapper.setStartDate(mTimeStart);
+                                if (mProxyUrl != null) {
+                                    head = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + url.getHost() +
+                                            "\r\nAccept: " + "*/*\r\nContent-Length: " + fileSizeOctet +
+                                            "\r\nProxy-Connection: Keep-Alive" + "\r\nUser-Agent: Mozilla/5.0\r\n\r\n";;
+                                } else {
+                                    head = "POST " + uri + " HTTP/1.1\r\n" + "Host: " + url.getHost() +
+                                            "\r\nAccept: " + "*/*\r\nContent-Length: " + fileSizeOctet +  "\r\nUser-Agent: Mozilla/5.0\r\n\r\n";;
                                 }
+                                mUploadTempFileSize = 0;
+                                mUlComputationTempFileSize = 0;
 
-                                if (mRepeatWrapper.isRepeatUpload()) {
-                                    mRepeatWrapper.updatePacketSize(mUploadFileSize);
-                                }
+                                final int uploadChunkSize = mSocketInterface.getUploadChunkSize();
 
-                                for (int i = 0; i < step; i++) {
+                                final int step = fileSizeOctet / uploadChunkSize;
+                                final int remain = fileSizeOctet % uploadChunkSize;
+
+                                if (mSocket.getOutputStream() != null) {
+
+                                    if (writeFlushSocket(head.getBytes()) != 0) {
+                                        throw new SocketTimeoutException();
+                                    }
+
+                                    mTimeStart = System.nanoTime();
+                                    mTimeComputeStart = System.nanoTime();
+                                    mTimeEnd = 0;
+
+                                    if (mRepeatWrapper.isFirstUpload()) {
+                                        mRepeatWrapper.setFirstUploadRepeat(false);
+                                        mRepeatWrapper.setStartDate(mTimeStart);
+                                    }
+
+                                    if (mRepeatWrapper.isRepeatUpload()) {
+                                        mRepeatWrapper.updatePacketSize(mUploadFileSize);
+                                    }
+
+                                    for (int i = 0; i < step; i++) {
+
+                                        final byte[] chunk = SpeedTestUtils.readUploadData(mSocketInterface
+                                                        .getUploadStorageType(),
+                                                body,
+                                                uploadFile,
+                                                mUploadTempFileSize,
+                                                uploadChunkSize);
+
+                                        if (writeFlushSocket(chunk) != 0) {
+                                            throw new SocketTimeoutException();
+                                        }
+
+                                        mUploadTempFileSize += uploadChunkSize;
+                                        mUlComputationTempFileSize += uploadChunkSize;
+
+                                        if (mRepeatWrapper.isRepeatUpload()) {
+                                            mRepeatWrapper.updateTempPacketSize(uploadChunkSize);
+                                        }
+
+                                        if (!mReportInterval) {
+                                            final SpeedTestReport report = getReport(SpeedTestMode.UPLOAD);
+
+                                            for (int j = 0; j < mListenerList.size(); j++) {
+                                                mListenerList.get(j).onProgress(report.getProgressPercent(), report);
+                                            }
+                                        }
+                                    }
 
                                     final byte[] chunk = SpeedTestUtils.readUploadData(mSocketInterface
                                                     .getUploadStorageType(),
                                             body,
                                             uploadFile,
                                             mUploadTempFileSize,
-                                            uploadChunkSize);
+                                            remain);
 
-                                    if (writeFlushSocket(chunk) != 0) {
+                                    if (remain != 0 && writeFlushSocket(chunk) != 0) {
                                         throw new SocketTimeoutException();
-                                    }
+                                    } else {
 
-                                    mUploadTempFileSize += uploadChunkSize;
-                                    mUlComputationTempFileSize += uploadChunkSize;
+                                        mUploadTempFileSize += remain;
+                                        mUlComputationTempFileSize += remain;
 
-                                    if (mRepeatWrapper.isRepeatUpload()) {
-                                        mRepeatWrapper.updateTempPacketSize(uploadChunkSize);
+                                        if (mRepeatWrapper.isRepeatUpload()) {
+                                            mRepeatWrapper.updateTempPacketSize(remain);
+                                        }
                                     }
 
                                     if (!mReportInterval) {
                                         final SpeedTestReport report = getReport(SpeedTestMode.UPLOAD);
 
                                         for (int j = 0; j < mListenerList.size(); j++) {
-                                            mListenerList.get(j).onProgress(report.getProgressPercent(), report);
+                                            mListenerList.get(j).onProgress(SpeedTestConst.PERCENT_MAX.floatValue(),
+                                                    report);
+
                                         }
-                                    }
-                                }
-
-                                final byte[] chunk = SpeedTestUtils.readUploadData(mSocketInterface
-                                                .getUploadStorageType(),
-                                        body,
-                                        uploadFile,
-                                        mUploadTempFileSize,
-                                        remain);
-
-                                if (remain != 0 && writeFlushSocket(chunk) != 0) {
-                                    throw new SocketTimeoutException();
-                                } else {
-
-                                    mUploadTempFileSize += remain;
-                                    mUlComputationTempFileSize += remain;
-
-                                    if (mRepeatWrapper.isRepeatUpload()) {
-                                        mRepeatWrapper.updateTempPacketSize(remain);
-                                    }
-                                }
-
-                                if (!mReportInterval) {
-                                    final SpeedTestReport report = getReport(SpeedTestMode.UPLOAD);
-
-                                    for (int j = 0; j < mListenerList.size(); j++) {
-                                        mListenerList.get(j).onProgress(SpeedTestConst.PERCENT_MAX.floatValue(),
-                                                report);
-
                                     }
                                 }
                             }
