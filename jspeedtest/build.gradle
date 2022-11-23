@@ -16,8 +16,10 @@ android {
         versionCode androidAutoVersion.versionCode
         versionName androidAutoVersion.versionName + "." + (System.getenv("GITHUB_RUN_ID") ?: "0")
 
+        multiDexEnabled true
         setProperty("archivesBaseName", "networking")
 
+        testApplicationId "com.sweepr.framework.androidTest"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -55,6 +57,9 @@ dependencies {
     testImplementation 'net.jodah:concurrentunit:0.4.2'
     testImplementation 'com.googlecode.json-simple:json-simple:1.1.1'
     testImplementation 'com.google.code.gson:gson:2.8.9'
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 }
 
 gradle.projectsEvaluated {
